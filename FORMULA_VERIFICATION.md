@@ -225,7 +225,32 @@ reference conditions — DIN 1343 / ISO 2533.
 
 ---
 
-## 5. Bottom line
+## 5. Fixes applied (2026-07-13)
+
+All flagged items have been fixed in `index.html`, except the orifice plate
+calculator (3.1), which the owner decided to drop.
+
+- **2.1 fixed** — the "Which machine" motor estimate now uses the true isothermal
+  formula `P_work · Q_work · ln(ratio) / 0.47` for both vacuum and compression. The
+  arbitrary 65 kJ/m³ cap is gone (the correct expression is naturally bounded at
+  37.3 kJ/m³). Verified in-browser: 300 m³/h at 200 mbar abs now gives 5.8 kW
+  (was 11.5 kW); the maths panel text was corrected to match.
+- **4.1 fixed** — the flow-converter answer label now switches between "Real flow at
+  the inlet" and "Reference flow (the datasheet figure)" with the direction.
+- **4.2 fixed** — "Total for all machines" now includes the CO₂ allowance
+  (`total = curve × N`); verified total = 2 × curve for the 2-machine example.
+- **4.3 fixed** — conveying acceleration term now uses the textbook solids
+  coefficient: `(1 + 1.6·μ)·ρv²/2` (solids accelerated to ≈0.8× gas velocity).
+  Example still converges (DN50, ~217 mbar, 2.2 kW motor).
+- **4.4 fixed** — Magnus validity range noted in the vapour tab's maths panel.
+- **4.5 fixed** — every "Show the maths" panel now carries a one-line source citation
+  (Busch technical manual, Leybold Fundamentals, Giampaolo, Crane TP-410, Mills,
+  DIN 1343, WMO/Sonntag).
+
+All calculators were re-run end-to-end in Chromium after the changes: correct values,
+no JavaScript errors.
+
+## 6. Bottom line
 
 | Calculator | Verdict |
 |---|---|
@@ -235,11 +260,11 @@ reference conditions — DIN 1343 / ISO 2533.
 | Compressor sizing | ✓ verified (minor 4.2) |
 | Conveying sizing | ✓ verified as rule-of-thumb (note 4.3) |
 | Which machine — selection logic | ✓ verified |
-| **Which machine — motor estimate** | **✗ fix (2.1)** |
+| **Which machine — motor estimate** | **✓ fixed (2.1, 5)** |
 | Vapour & wet gas | ✓ verified (note 4.4) |
 | Pump-down time | ✓ verified |
 | Leak check | ✓ verified |
 | Pipe loss | ✓ verified |
 | Power & motor current | ✓ verified |
 | Unit converter & reference tables | ✓ verified |
-| Orifice plate testing | ✗ does not exist in the app (3.1) |
+| Orifice plate testing | not in the app — dropped by owner decision (3.1) |
