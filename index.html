@@ -21,6 +21,18 @@ body.inpage #backbtn{display:block;}
 .bub.c1 .ic{background:var(--teal-bg);border-color:#B9CEDC;color:var(--teal);}
 .bub.c2 .ic{background:var(--green-bg);border-color:#bfdccb;color:var(--green);}
 .bub.c3 .ic{background:var(--accent-bg);border-color:#E2C1A4;color:var(--accent);}
+.catrow{display:flex;align-items:center;gap:14px;width:100%;background:#fff;border:1px solid var(--line);border-radius:16px;padding:13px 14px;margin:12px 0;cursor:pointer;font-family:var(--sans);text-align:left;box-shadow:0 2px 8px rgba(23,30,35,.08);transition:transform .1s;}
+.catrow:active{transform:scale(.98);}
+.catrow .ic{width:56px;height:56px;border-radius:15px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);}
+.catrow .ic svg{width:29px;height:29px;}
+.catrow>div{flex:1;}
+.catrow b{font-size:16.5px;color:var(--ink);display:block;}
+.catrow small{color:var(--soft);font-size:12.8px;line-height:1.35;display:block;margin-top:1px;}
+.catrow .chev{font-size:26px;color:var(--soft);flex:0 0 auto;font-weight:700;}
+.catrow.c1 .ic{background:var(--teal-bg);border-color:#B9CEDC;color:var(--teal);}
+.catrow.c2 .ic{background:var(--green-bg);border-color:#bfdccb;color:var(--green);}
+.catrow.c3 .ic{background:var(--accent-bg);border-color:#E2C1A4;color:var(--accent);}
+.catrow.c4 .ic,.bub.c4 .ic{background:#E4F0EE;border-color:#B7D6CF;color:#1F6F63;}
 #logo{flex:0 0 auto;margin-right:11px;display:block;}
 body.inpage #logo{display:none;}
 main{max-width:720px;margin:0 auto;padding:18px 16px 100px;}
@@ -86,17 +98,27 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .kelv{background:var(--teal-bg);border-radius:8px;padding:9px 11px;font-size:13.5px;color:#3d4f55;margin:8px 0;}
 
 </style></head>
-<body><header><div class="hrow"><button id="backbtn" onclick="show('home')">&#8249; Home</button><svg id="logo" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 12 7.8 8.4"/><circle cx="12" cy="12" r="1.3" fill="#fff" stroke="none"/><path d="M12 4.6v1.7M19.4 12h-1.7M4.6 12h1.7M17.2 6.8l-1.2 1.2" opacity=".65"/></svg><div><h1 id="hdr_t">Vacuum &amp; Compressor Toolkit</h1><p id="hdr_s">Learn it, fill it in, pick your units</p></div></div></header>
+<body><header><div class="hrow"><button id="backbtn" onclick="goBack()">&#8249; Back</button><svg id="logo" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 12 7.8 8.4"/><circle cx="12" cy="12" r="1.3" fill="#fff" stroke="none"/><path d="M12 4.6v1.7M19.4 12h-1.7M4.6 12h1.7M17.2 6.8l-1.2 1.2" opacity=".65"/></svg><div><h1 id="hdr_t">Vacuum &amp; Compressor Toolkit</h1><p id="hdr_s">Learn it, fill it in, pick your units</p></div></div></header>
 <main><section class="page active" id="home">
-<h2>Pick a tool</h2>
-<p class="sub">Tap a bubble to open it. Each calculator starts empty: tap <b>Insert example</b> to watch one work, and the small <b>?</b> by any box if you are unsure.</p>
-<div class="sec-lab">Learn &amp; look up</div>
+<h2>Pick an area</h2>
+<p class="sub">Four areas, each with its own tools inside. Every calculator starts empty: tap <b>Insert example</b> to watch one work, and the small <b>?</b> by any box if you are unsure.</p>
+<button class="catrow c1" onclick="show('cat_learn')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="7.5" r="2.6"/><circle cx="17" cy="9.5" r="2.1"/><circle cx="11.5" cy="17" r="2.9"/><path d="M10 8.1l4.9 1M15.9 11.3l-2.9 3.4"/></svg></span><div><b>Learn &amp; look up</b><small>The gas laws with toys, a unit converter and reference tables</small></div><span class="chev">&#8250;</span></button>
+<button class="catrow c2" onclick="show('cat_size')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15.5a8 8 0 0 1 16 0"/><path d="M12 15.5 7.7 11.2"/><circle cx="12" cy="15.5" r="1.4"/><path d="M12 7.7v1.5M17.5 10l-1 1M6.5 10l1 1" opacity=".65"/></svg></span><div><b>Sizing</b><small>Flow conversion, vacuum pumps, compressors, conveying, wet gas</small></div><span class="chev">&#8250;</span></button>
+<button class="catrow c4" onclick="show('cat_water')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.3c3.1 3.9 5.1 6.8 5.1 9.2a5.1 5.1 0 0 1-10.2 0c0-2.4 2-5.3 5.1-9.2Z"/><path d="M9.6 14a2.6 2.6 0 0 0 2.6 2.6"/></svg></span><div><b>Water &amp; heat</b><small>Orifice sizing, water heat load, cooling tower make-up</small></div><span class="chev">&#8250;</span></button>
+<button class="catrow c3" onclick="show('cat_site')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="5" width="15" height="15.5" rx="2"/><path d="M9 5V3.5h6V5"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg></span><div><b>On-site checks</b><small>Pump-down time, leak check, pipe loss, power and motor</small></div><span class="chev">&#8250;</span></button>
+<div class="card"><h3>Keep it on your phone</h3><p style="font-size:14.5px">Save this file once and it works offline forever. iPhone: open in Safari, Share, Add to Home Screen. Android: open in Chrome, menu, Add to Home Screen. Computer: keep the file handy and open it.</p></div>
+<div class="note warn">Good working estimates for checks and quoting &mdash; always confirm the final machine and motor size with the maker's selection software.</div>
+</section><section class="page" id="cat_learn">
+<h2>Learn &amp; look up</h2>
+<p class="sub">Tap a tool to open it.</p>
 <div class="bubs">
 <button class="bub c1" onclick="show('learn')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="7.5" r="2.6"/><circle cx="17" cy="9.5" r="2.1"/><circle cx="11.5" cy="17" r="2.9"/><path d="M10 8.1l4.9 1M15.9 11.3l-2.9 3.4"/></svg></span><span>Learn the gas laws</span></button>
 <button class="bub c1" onclick="show('cv')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13M14 4.5 17.5 8 14 11.5M20 16H7M10 12.5 6.5 16l3.5 3.5"/></svg></span><span>Unit converter</span></button>
 <button class="bub c1" onclick="show('ref')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16M10.5 10v9"/></svg></span><span>Reference tables</span></button>
 </div>
-<div class="sec-lab">Sizing</div>
+</section><section class="page" id="cat_size">
+<h2>Sizing</h2>
+<p class="sub">Tap a tool to open it.</p>
 <div class="bubs">
 <button class="bub c2" onclick="show('fc')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5 13.5 6M3.5 14.5 13.5 18M3.5 9.5v5M13.5 6v12"/><path d="M16.5 12h4.5M18.8 9.8 21 12l-2.2 2.2"/></svg></span><span>Normal / Actual flow</span></button>
 <button class="bub c2" onclick="show('vac')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15.5a8 8 0 0 1 16 0"/><path d="M12 15.5 7.7 11.2"/><circle cx="12" cy="15.5" r="1.4"/><path d="M12 7.7v1.5M17.5 10l-1 1M6.5 10l1 1" opacity=".65"/></svg></span><span>Vacuum pump sizing</span></button>
@@ -105,21 +127,23 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <button class="bub c2" onclick="show('mp')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3.5" width="6" height="5" rx="1.2"/><rect x="3.5" y="15.5" width="6" height="5" rx="1.2"/><rect x="14.5" y="15.5" width="6" height="5" rx="1.2"/><path d="M12 8.5v3M12 11.5H6.5v4M12 11.5h5.5v4"/></svg></span><span>Which machine</span></button>
 <button class="bub c2" onclick="show('vap')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.3c3.1 3.9 5.1 6.8 5.1 9.2a5.1 5.1 0 0 1-10.2 0c0-2.4 2-5.3 5.1-9.2Z"/><path d="M9.6 14a2.6 2.6 0 0 0 2.6 2.6"/></svg></span><span>Vapour &amp; wet gas</span></button>
 </div>
-<div class="sec-lab">Water &amp; heat</div>
+</section><section class="page" id="cat_water">
+<h2>Water &amp; heat</h2>
+<p class="sub">Tap a tool to open it.</p>
 <div class="bubs">
-<button class="bub c1" onclick="show('orf')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5V9M12 15v5.5"/><path d="M3.5 12h9M10.3 9.8 12.5 12l-2.2 2.2"/><path d="M15.5 12H21" stroke-dasharray="2 2.2"/></svg></span><span>Orifice sizing</span></button>
-<button class="bub c1" onclick="show('hl')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.2 4.2a1.8 1.8 0 0 1 3.6 0v8.4a4.2 4.2 0 1 1-3.6 0Z"/><circle cx="12" cy="16.4" r="1.7" fill="currentColor" stroke="none"/><path d="M12 14.2V9.5"/></svg></span><span>Heat load, water</span></button>
-<button class="bub c1" onclick="show('mw')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h6c-1.2 2.6-1.2 4.8.2 7 1.5 2.3 1.6 5-.3 9H9.1c-1.9-4-1.8-6.7-.3-9C10.2 9.8 10.2 7.6 9 5Z"/><path d="M9 2.6c1 .7 2 .7 3 0s2-.7 3 0" opacity=".6"/></svg></span><span>Cooling tower make-up</span></button>
+<button class="bub c4" onclick="show('orf')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.5V9M12 15v5.5"/><path d="M3.5 12h9M10.3 9.8 12.5 12l-2.2 2.2"/><path d="M15.5 12H21" stroke-dasharray="2 2.2"/></svg></span><span>Orifice sizing</span></button>
+<button class="bub c4" onclick="show('hl')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.2 4.2a1.8 1.8 0 0 1 3.6 0v8.4a4.2 4.2 0 1 1-3.6 0Z"/><circle cx="12" cy="16.4" r="1.7" fill="currentColor" stroke="none"/><path d="M12 14.2V9.5"/></svg></span><span>Heat load, water</span></button>
+<button class="bub c4" onclick="show('mw')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5h6c-1.2 2.6-1.2 4.8.2 7 1.5 2.3 1.6 5-.3 9H9.1c-1.9-4-1.8-6.7-.3-9C10.2 9.8 10.2 7.6 9 5Z"/><path d="M9 2.6c1 .7 2 .7 3 0s2-.7 3 0" opacity=".6"/></svg></span><span>Cooling tower make-up</span></button>
 </div>
-<div class="sec-lab">On-site checks</div>
+</section><section class="page" id="cat_site">
+<h2>On-site checks</h2>
+<p class="sub">Tap a tool to open it.</p>
 <div class="bubs">
 <button class="bub c3" onclick="show('pd')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="13.5" r="7"/><path d="M12 9.7v3.8l2.9 1.7M9.8 3.5h4.4M12 3.5v3"/></svg></span><span>Pump-down time</span></button>
 <button class="bub c3" onclick="show('lk')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="10.5" cy="10.5" r="5.8"/><path d="M14.7 14.7 20 20"/><path d="M10.5 7.9c1.2 1.5 1.9 2.6 1.9 3.5a1.9 1.9 0 1 1-3.8 0c0-.9.7-2 1.9-3.5Z"/></svg></span><span>Leak check</span></button>
 <button class="bub c3" onclick="show('pl')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5h18M3 15.5h18"/><path d="M5.5 10.4 18.5 13.6" stroke-dasharray="2.6 2.4"/></svg></span><span>Pipe loss</span></button>
 <button class="bub c3" onclick="show('pw')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7.5" width="13" height="10" rx="2"/><path d="M16.5 10h2.2l1.8 1.8v3.7h-4"/><path d="M10.8 9.3 8.6 12.7h2.8l-2.2 3.4"/></svg></span><span>Power &amp; motor</span></button>
 </div>
-<div class="card"><h3>Keep it on your phone</h3><p style="font-size:14.5px">Save this file once and it works offline forever. iPhone: open in Safari, Share, Add to Home Screen. Android: open in Chrome, menu, Add to Home Screen. Computer: keep the file handy and open it.</p></div>
-<div class="note warn">Good working estimates for checks and quoting &mdash; always confirm the final machine and motor size with the maker's selection software.</div>
 </section><section class="page" id="learn">
 <h2>Learn the gas laws</h2>
 <p class="sub">Five simple rules sit under everything in this tool. Each one has a toy. Drag the sliders and watch the numbers obey the rule.</p>
@@ -752,8 +776,12 @@ function clr(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(
 function hp(id){var e=document.getElementById(id);if(e)e.classList.toggle("open");}
 window.ex=ex;window.clr=clr;window.hp=hp;window.show=show;
 
-var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the gas laws",fc:"Normal / Actual flow",vac:"Vacuum pump sizing",cmp:"Compressor sizing",pc:"Conveying sizing",mp:"Which machine",vap:"Vapour & wet gas",pd:"Pump-down time",lk:"Leak check",pl:"Pipe loss",pw:"Power & motor",cv:"Unit converter",ref:"Reference tables",orf:"Orifice sizing",hl:"Heat load, water",mw:"Cooling tower make-up",cw:"Conveying step-by-step"};
+var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the gas laws",fc:"Normal / Actual flow",vac:"Vacuum pump sizing",cmp:"Compressor sizing",pc:"Conveying sizing",mp:"Which machine",vap:"Vapour & wet gas",pd:"Pump-down time",lk:"Leak check",pl:"Pipe loss",pw:"Power & motor",cv:"Unit converter",ref:"Reference tables",orf:"Orifice sizing",hl:"Heat load, water",mw:"Cooling tower make-up",cw:"Conveying step-by-step",cat_learn:"Learn & look up",cat_size:"Sizing",cat_water:"Water & heat",cat_site:"On-site checks"};
+var PARENT={learn:"cat_learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_water",hl:"cat_water",mw:"cat_water",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site"};
+var CUR="home";
+function goBack(){show(PARENT[CUR]||"home");}
 function show(id){
+ CUR=id;
  var ps=document.querySelectorAll(".page");for(var i=0;i<ps.length;i++)ps[i].classList.toggle("active",ps[i].id===id);
  document.body.classList.toggle("inpage",id!=="home");
  document.getElementById("hdr_t").textContent=TT[id]||TT.home;
