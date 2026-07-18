@@ -163,7 +163,7 @@ by a factor of P_atm/P_inlet:
 - The deeper the vacuum, the worse it gets, until the 65 kJ/m³ cap kicks in — and the
   cap itself is wrong: the true peak of `P·ln(P_atm/P)` is **37.3 kJ/m³** (at
   P = P_atm/e ≈ 37.3 kPa), so even the "capped" value is ~74 % too high.
-- The in-app "Show the maths" text ("flow × 101.3 kPa × ln(pressure ratio)") documents
+- The in-app "Show the math" text ("flow × 101.3 kPa × ln(pressure ratio)") documents
   the bug: that expression is only valid when the flow is measured as *free air*, which
   contradicts the input's definition.
 
@@ -217,7 +217,7 @@ any temperature; above ~60 °C error grows (still <1 % to 80 °C, ~2 % at 100 °
 for wet-gas sizing; a hint in the help text wouldn't hurt.
 
 ### 4.5 No in-app source citations
-The "Show the maths" panels describe every formula in plain words (good) but cite no
+The "Show the math" panels describe every formula in plain words (good) but cite no
 standards or texts. Recommend one line each, e.g.: pump-down & leak — Busch technical
 manual / Leybold Fundamentals; pipe loss — Darcy-Weisbach + Swamee-Jain (Crane TP-410);
 power — isothermal compression (Giampaolo); vapour — Magnus/WMO; conveying — Mills;
@@ -234,7 +234,7 @@ calculator (3.1), which the owner decided to drop.
   formula `P_work · Q_work · ln(ratio) / 0.47` for both vacuum and compression. The
   arbitrary 65 kJ/m³ cap is gone (the correct expression is naturally bounded at
   37.3 kJ/m³). Verified in-browser: 300 m³/h at 200 mbar abs now gives 5.8 kW
-  (was 11.5 kW); the maths panel text was corrected to match.
+  (was 11.5 kW); the math panel text was corrected to match.
 - **4.1 fixed** — the flow-converter answer label now switches between "Real flow at
   the inlet" and "Reference flow (the datasheet figure)" with the direction.
 - **4.2 fixed** — "Total for all machines" now includes the CO₂ allowance
@@ -242,8 +242,8 @@ calculator (3.1), which the owner decided to drop.
 - **4.3 fixed** — conveying acceleration term now uses the textbook solids
   coefficient: `(1 + 1.6·μ)·ρv²/2` (solids accelerated to ≈0.8× gas velocity).
   Example still converges (DN50, ~217 mbar, 2.2 kW motor).
-- **4.4 fixed** — Magnus validity range noted in the vapour tab's maths panel.
-- **4.5 fixed** — every "Show the maths" panel now carries a one-line source citation
+- **4.4 fixed** — Magnus validity range noted in the vapour tab's math panel.
+- **4.5 fixed** — every "Show the math" panel now carries a one-line source citation
   (Busch technical manual, Leybold Fundamentals, Giampaolo, Crane TP-410, Mills,
   DIN 1343, WMO/Sonntag).
 
