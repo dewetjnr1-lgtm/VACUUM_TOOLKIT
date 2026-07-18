@@ -84,9 +84,20 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .note{font-size:13.5px;border-radius:10px;padding:13px;margin:12px 0;}
 .note.warn{background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn);}
 .demo{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px;margin:12px 0;}
-.demo-row{display:flex;align-items:center;gap:10px;font-size:14px;margin-bottom:10px;}
-.demo-row input[type=range]{flex:1;accent-color:var(--accent);}
+.demo-row{display:flex;align-items:center;gap:6px;font-size:14px;margin-bottom:14px;}
+.demo-row input[type=range]{flex:1;accent-color:var(--accent);height:34px;-webkit-appearance:none;appearance:none;background:transparent;margin:0;min-width:50px;}
+.demo-row input[type=range]::-webkit-slider-runnable-track{height:10px;border-radius:6px;background:var(--line);}
+.demo-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:32px;height:32px;border-radius:50%;background:var(--accent);border:3px solid #fff;box-shadow:0 1px 5px rgba(23,30,35,.35);margin-top:-11px;}
+.demo-row input[type=range]::-moz-range-track{height:10px;border-radius:6px;background:var(--line);}
+.demo-row input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:var(--accent);border:3px solid #fff;box-shadow:0 1px 5px rgba(23,30,35,.35);}
+.rngbtn{flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--accent);font-size:19px;font-weight:700;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
+.rngbtn:active{background:var(--accent-bg);transform:scale(.92);}
 .lawcv{width:100%;height:170px;display:block;background:var(--paper);border-radius:8px;border:1px solid var(--line);}
+.ex-card{background:var(--teal-bg);border:1px solid #B9CEDC;border-radius:10px;padding:13px;margin-top:12px;}
+.ex-card b{color:var(--teal);}
+.ex-card .exmath{font-family:var(--mono);font-size:13.5px;background:#fff;border-radius:8px;padding:9px 10px;margin:8px 0;white-space:pre-wrap;}
+.ex-card .exsrc{font-size:11.5px;color:var(--soft);margin-top:8px;}
+.exbtn2{background:none;border:1px solid var(--teal);color:var(--teal);border-radius:20px;padding:5px 12px;font-size:12.5px;font-weight:700;cursor:pointer;margin-top:8px;}
 .demo-out{font-size:14px;margin-top:10px;}.demo-out b{font-family:var(--mono);color:var(--accent);}
 .glos{font-size:14.5px;margin:10px 0;}.glos b{color:var(--hdr);}
 .formula{background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:12px 10px;text-align:center;font-family:var(--mono);font-size:19px;font-weight:700;color:var(--hdr);margin:10px 0 8px;}
@@ -182,8 +193,9 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="demo-out">Started: <b>100</b> kPa of push in <b>10</b> litres of room. Now: <b id="by_vv">7.0</b> litres, <b id="by_pp">143</b> kPa</div>
 <div class="plug" id="by_plug">100 &times; 10 = 143 &times; 7.0 = 1,000 always</div>
 </div>
-<div class="try">Try this: drag the room down to 5.0 litres, exactly half of where it started. Watch the piston wall glow brighter as the balls slam it harder, and the push lands on exactly 200 kPa, exactly double. That is the law working.</div>
-<p style="font-size:13.5px;color:var(--soft)">At work: a vacuum pump does the opposite, it gives the gas a bigger room so the push falls. The vacuum, compressor and pump-down tabs all lean on this.</p></div>
+<div class="try">Try this: drag the room down to 5.0 litres, exactly half of where it started. Watch the piston wall glow warmer as the room shrinks, and the push lands on exactly 200 kPa, exactly double. That is the law working.</div>
+<p style="font-size:13.5px;color:var(--soft)">At work: a vacuum pump does the opposite, it gives the gas a bigger room so the push falls. The vacuum, compressor and pump-down tabs all lean on this.</p>
+<div class="ex-card" id="ex_boyle"></div></div>
 </section>
 <section class="page" id="learn_charles">
 <h2>Charles's law</h2>
@@ -199,7 +211,8 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="plug" id="ch_plug">5.0 / 273 = 6.8 / 373 = 0.018 always</div>
 </div>
 <div class="try">Try this: drag all the way to 273 &deg;C. That is 546 K, double the Kelvin it started at, and the room lands on 10.0 litres, exactly double, while the balls visibly speed up too. Notice it does not double at 273 &deg;C on the Celsius side alone, only the Kelvin doubling counts.</div>
-<p style="font-size:13.5px;color:var(--soft)">At work: warm gas at a pump inlet takes up more room than the cool reference on a datasheet. The flow converter corrects for exactly this.</p></div>
+<p style="font-size:13.5px;color:var(--soft)">At work: warm gas at a pump inlet takes up more room than the cool reference on a datasheet. The flow converter corrects for exactly this.</p>
+<div class="ex-card" id="ex_charles"></div></div>
 </section>
 <section class="page" id="learn_gl">
 <h2>Gay-Lussac's law</h2>
@@ -213,8 +226,9 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="demo-out">Started: <b>100</b> kPa at <b>0</b> &deg;C (273 K). Now: <b id="gl_tt">100</b> &deg;C (<b id="gl_tk">373</b> K), push <b id="gl_pp">137</b> kPa</div>
 <div class="plug" id="gl_plug">100 / 273 = 137 / 373 = 0.37 always</div>
 </div>
-<div class="try">Try this: drag to 273 &deg;C, double the Kelvin. The sealed canister cannot grow, so watch the gauge needle swing round and the walls glow hotter instead, and the push lands on exactly 200 kPa, double. Same shape of rule as Charles, just with push growing instead of room.</div>
-<p style="font-size:13.5px;color:var(--soft)">At work: it is why discharge gas comes out warmer than it went in, and why sealed-up gas and heat together are a safety matter.</p></div>
+<div class="try">Try this: drag to 273 &deg;C, double the Kelvin. The sealed canister cannot grow, so watch the gauge needle swing round and the walls glow warmer instead, and the push lands on exactly 200 kPa, double. Same shape of rule as Charles, just with push growing instead of room.</div>
+<p style="font-size:13.5px;color:var(--soft)">At work: it is why discharge gas comes out warmer than it went in, and why sealed-up gas and heat together are a safety matter.</p>
+<div class="ex-card" id="ex_gl"></div></div>
 </section>
 <section class="page" id="learn_combined">
 <h2>The combined gas law</h2>
@@ -229,7 +243,8 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="demo-out">Started: <b>100</b> kPa, <b>10</b> litres, <b>0</b> &deg;C. Now: room <b id="cb_vv">10.0</b> L, temperature <b id="cb_tt">0</b> &deg;C, push <b id="cb_pp">100</b> kPa</div>
 <div class="plug" id="cb_plug">100 &times; 10 / 273 = 100 &times; 10.0 / 273 = 3.66 always</div>
 </div>
-<div class="try">Try this: shrink the room to 5.0 litres and heat to 100 &deg;C at the same time. Squeezing doubles the push, heating adds more again, and it lands on about 273 kPa. One rule handled both changes at once.</div></div>
+<div class="try">Try this: shrink the room to 5.0 litres and heat to 100 &deg;C at the same time. Squeezing doubles the push, heating adds more again, and it lands on about 273 kPa. One rule handled both changes at once.</div>
+<div class="ex-card" id="ex_combined"></div></div>
 </section>
 <section class="page" id="learn_ideal">
 <h2>The ideal gas law</h2>
@@ -247,7 +262,8 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <canvas id="ig_cv" class="lawcv"></canvas>
 <div class="demo-out">Balls in the room: <b id="ig_nn">16</b>. Push on the walls: <b id="ig_p">100</b> (a score, not a unit)</div>
 </div>
-<div class="try">Try this: drag the crowd up to 40 balls, room and speed both left alone. More balls means more hits on the walls every second, so the push score climbs on its own, no squeezing or heating needed. Pin the amount of gas still and this collapses into the combined law above, which is why you rarely calculate with it directly here.</div></div>
+<div class="try">Try this: drag the crowd up to 40 balls, room and speed both left alone. More balls means more hits on the walls every second, so the push score climbs on its own, no squeezing or heating needed. Pin the amount of gas still and this collapses into the combined law above, which is why you rarely calculate with it directly here.</div>
+<div class="ex-card" id="ex_ideal"></div></div>
 </section>
 <section class="page" id="learn_dalton">
 <h2>Dalton's law</h2>
@@ -258,11 +274,12 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Temperature</span><input type="range" id="da_t" min="5" max="60" value="40" step="1"></div>
 <canvas id="da_cv" class="lawcv"></canvas>
-<div style="display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--line);margin-top:10px"><div id="da_dbar" style="background:var(--teal);width:92.7%"></div><div id="da_wbar" style="background:var(--accent);width:7.3%"></div></div>
-<div class="demo-out">At <b id="da_tt">40</b> &deg;C: dry gas pushes <b id="da_d">93.9</b> kPa (blue balls), water pushes <b id="da_w">7.4</b> kPa (orange balls), together 101.3. Water's share: <b id="da_sh">7.3</b> percent</div>
+<div style="display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--line);margin-top:10px"><div id="da_dbar" style="background:#3B82F6;width:92.7%"></div><div id="da_wbar" style="background:#EC4899;width:7.3%"></div></div>
+<div class="demo-out">At <b id="da_tt">40</b> &deg;C: dry gas pushes <b id="da_d">93.9</b> kPa (blue balls), water pushes <b id="da_w">7.4</b> kPa (pink balls), together 101.3. Water's share: <b id="da_sh">7.3</b> percent</div>
 </div>
-<div class="try">Try this: slide up to 60 &deg;C and watch orange water balls join the crowd as their share climbs to nearly a fifth of the whole gas. That is why hot saturated gas needs a noticeably bigger pump than the dry figure suggests.</div>
-<p style="font-size:13.5px;color:var(--soft)">At work: this is exactly how the vapour and wet gas tab splits a saturated flow into dry gas and water.</p></div>
+<div class="try">Try this: slide up to 60 &deg;C and watch pink water balls join the crowd as their share climbs to nearly a fifth of the whole gas. That is why hot saturated gas needs a noticeably bigger pump than the dry figure suggests.</div>
+<p style="font-size:13.5px;color:var(--soft)">At work: this is exactly how the vapour and wet gas tab splits a saturated flow into dry gas and water.</p>
+<div class="ex-card" id="ex_dalton"></div></div>
 </section><section class="page" id="fc"><div class="pgh"><h2>Normal to Actual flow</h2><button class="q" onclick="hp('ab_fc')">?</button></div><div class="about" id="ab_fc"><div class="ar">Also called Standard to actual, or Nm3/h to m3/h. This is the calculator that turns the Normal cubes on a datasheet into real cubes.</div><div class="ar"><b>What it is</b>Gas is squishy. The same amount of it takes up more or less room depending on how warm it is and how much pressure it is under.</div><div class="ar"><b>Why it matters</b>A datasheet describes a gas flow at one agreed set of conditions, called Normal or Standard. A pump deals with the gas as it really is at the inlet, where it may be warmer or under vacuum and take up a different amount of room. A pump curve is drawn in the real amount of room, so you convert first or you size the wrong pump.</div><div class="ar"><b>Where you would use it</b>A customer asks for 1000 cubic metres an hour at the Normal reference, but the gas is at 40 degrees and under a little vacuum. Before you pick a pump you turn that into the real room it takes up, which might be 1300. You size on the 1300.</div><span class="law">Uses: Combined gas law</span></div><div class="card"><h3>Fill these in</h3><button class="exbtn" onclick="ex('fc')">Insert example</button><button class="clrbtn" onclick="clr('fc')">Clear</button><div class="fld"><div class="fh"><label>Reference temperature</label><button class="q" onclick="hp('h_fc_ref')">?</button></div><div class="help" id="h_fc_ref">The agreed conditions the datasheet figure is quoted at. Normal is 0 degrees, Standard is 15 degrees.</div><div class="ctrl"><select id="fc_ref" style="flex:1 1 100%"><option value="0">Normal = 0 &deg;C</option><option value="15">Standard = 15 &deg;C</option></select></div></div><div class="fld"><div class="fh"><label>Flow value</label><button class="q" onclick="hp('h_fc_flow')">?</button></div><div class="help" id="h_fc_flow">The Normal flow figure from the datasheet, usually Nm3/h.</div><div class="ctrl"><input type="number" id="fc_flow_n" placeholder="number"><select id="fc_flow_u" data-g="flowIn" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Gas pressure at the inlet</label><button class="q" onclick="hp('h_fc_p')">?</button></div><div class="help" id="h_fc_p">The pressure where the gas enters the pump. Pick what your reading is: Gauge (above air), Absolute (from full vacuum), or Vacuum (below air). Always type a plain positive number, the menu tells the tool which way it counts. The tool sorts out the rest using the air pressure you set.</div><div class="ctrl"><input type="number" id="fc_p_n" placeholder="number"><select id="fc_p_u" data-g="pressure" data-du="0"></select><select id="fc_p_r" data-ref="g"></select></div></div><div class="fld"><div class="fh"><label>Gas temperature at the inlet</label><button class="q" onclick="hp('h_fc_t')">?</button></div><div class="help" id="h_fc_t">How hot the gas is as it enters. Warmer gas takes more room.</div><div class="ctrl"><input type="number" id="fc_t_n" placeholder="number"><select id="fc_t_u" data-g="temp" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Air pressure where you are</label><button class="q" onclick="hp('h_fc_air')">?</button></div><div class="help" id="h_fc_air">The air pressure where you are. About 101 kilopascals at sea level, near 95 at 500 metres up, near 90 at 1000 metres. The tool uses it to switch between gauge and absolute.</div><div class="ctrl"><input type="number" id="fc_air_n" placeholder="number"><select id="fc_air_u" data-g="pressure" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Pressure lost in the inlet pipe</label><button class="q" onclick="hp('h_fc_loss')">?</button></div><div class="help" id="h_fc_loss">An allowance for pressure dropped before the pump. Leave blank for none.</div><div class="ctrl"><input type="number" id="fc_loss_n" placeholder="number"><select id="fc_loss_u" data-g="pressure" data-du="0"></select></div></div></div><div class="card"><h3>Answer</h3><div class="res"><div class="fh"><span class="res-lab" style="margin:0">Absolute inlet pressure (from full vacuum)</span></div><div class="ctrl"><span class="res-v" id="fc_pabs_v">&mdash;</span><select id="fc_pabs_u2" data-g="pressure" data-du="0"></select><select id="fc_pabs_r2" data-ref="a"></select></div></div><div class="res big"><div class="fh"><span class="res-lab" style="margin:0" id="fc_out_lab">Actual flow at the inlet (m3/h)</span><button class="q" onclick="hp('hy_fc_out')">?</button></div><div class="help" id="hy_fc_out">Actual flow (m3/h) is what a pump curve is drawn in, so it is the number you size on, not the datasheet's Normal figure. Switch the unit menu to Normal cubic metres per hour to see it back as the datasheet figure.</div><div class="ctrl"><span class="res-v" id="fc_out_v" data-g="flowN">&mdash;</span><select id="fc_out_u2" data-g="flowN" data-du="0"></select></div></div></div><div class="means" id="fc_m">Fill in the boxes and this explains your answer.</div><details><summary>Show the maths</summary><div class="maths"><div class="formula">Actual = Normal &times; (101.325 / P<sub>in</sub>) &times; (T<sub>in</sub> / T<sub>ref</sub>)<small>P<sub>in</sub> in kPa absolute, after pipe loss &middot; temperatures in Kelvin</small></div><div class="plug" id="mx_fc">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: combined gas law, DIN 1343 reference conditions, Busch technical manual.</p></div></details></section><section class="page" id="vac"><div class="pgh"><h2>Vacuum pump sizing</h2><button class="q" onclick="hp('ab_vac')">?</button></div><div class="about" id="ab_vac"><div class="ar"><b>What it is</b>Works out the real amount of gas a vacuum pump must move, from a flow figure on a datasheet.</div><div class="ar"><b>Why it matters</b>The deeper the vacuum, the more the gas swells, so the bigger the real flow the pump has to shift. Same idea as the flow converter, set up for a vacuum job, with room to allow for pressure lost in the inlet pipe.</div><div class="ar"><b>Where you would use it</b>A datasheet says move 1000 reference units at a 40 kilopascal vacuum. The real flow the pump sees is larger, and that larger number is what you size the pump on.</div><span class="law">Uses: Boyle's law and the combined gas law</span></div><div class="card"><h3>Fill these in</h3><button class="exbtn" onclick="ex('vac')">Insert example</button><button class="clrbtn" onclick="clr('vac')">Clear</button><div class="fld"><div class="fh"><label>Flow needed</label><button class="q" onclick="hp('h_vac_flow')">?</button></div><div class="help" id="h_vac_flow">The Normal flow (the datasheet's reference figure), usually Nm3/h.</div><div class="ctrl"><input type="number" id="vac_flow_n" placeholder="number"><select id="vac_flow_u" data-g="flowIn" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>How much vacuum</label><button class="q" onclick="hp('h_vac_vac')">?</button></div><div class="help" id="h_vac_vac">How far below the surrounding air you are pulling, typed as a plain positive number. Switch the menu if your reading is gauge or absolute instead.</div><div class="ctrl"><input type="number" id="vac_vac_n" placeholder="number"><select id="vac_vac_u" data-g="pressure" data-du="0"></select><select id="vac_vac_r" data-ref="v"></select></div></div><div class="fld"><div class="fh"><label>Pressure lost in the inlet pipe</label><button class="q" onclick="hp('h_vac_loss')">?</button></div><div class="help" id="h_vac_loss">An allowance for inlet pipe loss. Leave blank for none.</div><div class="ctrl"><input type="number" id="vac_loss_n" placeholder="number"><select id="vac_loss_u" data-g="pressure" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Gas temperature</label><button class="q" onclick="hp('h_vac_t')">?</button></div><div class="help" id="h_vac_t">How hot the gas is as it enters.</div><div class="ctrl"><input type="number" id="vac_t_n" placeholder="number"><select id="vac_t_u" data-g="temp" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Air pressure where you are</label><button class="q" onclick="hp('h_vac_air')">?</button></div><div class="help" id="h_vac_air">The air pressure where you are. About 101 kilopascals at sea level, near 95 at 500 metres up, near 90 at 1000 metres. The tool uses it to switch between gauge and absolute.</div><div class="ctrl"><input type="number" id="vac_air_n" placeholder="number"><select id="vac_air_u" data-g="pressure" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Reference temperature</label></div><div class="ctrl"><select id="vac_ref" style="flex:1 1 100%"><option value="0">Normal = 0 &deg;C</option><option value="15">Standard = 15 &deg;C</option></select></div></div></div><div class="card"><h3>Answer</h3><div class="res"><div class="fh"><span class="res-lab" style="margin:0">Absolute inlet pressure (from full vacuum)</span></div><div class="ctrl"><span class="res-v" id="vac_pabs_v">&mdash;</span><select id="vac_pabs_u2" data-g="pressure" data-du="0"></select><select id="vac_pabs_r2" data-ref="a"></select></div></div><div class="res big"><div class="fh"><span class="res-lab" style="margin:0">Actual flow the pump must move (m3/h)</span><button class="q" onclick="hp('hy_vac_out')">?</button></div><div class="help" id="hy_vac_out">The Actual flow (m3/h) the pump must move &mdash; under vacuum the gas swells, so this is usually bigger than the datasheet's Normal figure. Size the pump on this. Switch the unit menu to Normal cubic metres per hour to see it back as the datasheet figure.</div><div class="ctrl"><span class="res-v" id="vac_out_v" data-g="flowN">&mdash;</span><select id="vac_out_u2" data-g="flowN" data-du="0"></select></div></div><div class="fh" style="margin-top:14px"><span class="res-lab" style="margin:0">Your duty point, find it on the maker's curve</span><button class="q" onclick="hp('hy_vac_duty')">?</button></div><div class="help" id="hy_vac_duty">A vacuum pump curve plots flow up the side against absolute inlet pressure along the bottom. This is your point on those axes: pick a model whose curve passes above it.</div><svg id="vac_duty" viewBox="0 0 360 225" style="width:100%;height:auto;display:block;margin-top:4px"></svg></div><div class="means" id="vac_m">Fill in the boxes and this explains your answer.</div><details><summary>Show the maths</summary><div class="maths"><div class="formula">Actual = Normal &times; (101.325 / P<sub>in</sub>) &times; (T<sub>in</sub> / T<sub>ref</sub>)<small>P<sub>in</sub> = air &minus; vacuum &minus; pipe loss, kPa absolute &middot; temperatures in Kelvin</small></div><div class="plug" id="mx_vac">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: combined gas law, DIN 1343 reference conditions, Busch technical manual.</p></div></details></section><section class="page" id="cmp"><div class="pgh"><h2>Compressor sizing</h2><button class="q" onclick="hp('ab_cmp')">?</button></div><div class="about" id="ab_cmp"><div class="ar"><b>What it is</b>Gives the two numbers a compressor curve needs: how much gas each machine draws in, and how hard it has to squeeze it.</div><div class="ar"><b>Why it matters</b>A compressor curve is read by flow up the side and discharge pressure along the bottom. This works both out, including an extra allowance for carbon dioxide, which a liquid ring machine handles less of.</div><div class="ar"><b>Where you would use it</b>A job needs gas pushed from a slight vacuum up to a higher pressure. You work out the squeeze and the real inlet flow, then find a model on the curve that covers the point.</div><span class="law">Uses: Boyle's law and the combined gas law</span></div><div class="card"><h3>Fill these in</h3><button class="exbtn" onclick="ex('cmp')">Insert example</button><button class="clrbtn" onclick="clr('cmp')">Clear</button><div class="fld"><div class="fh"><label>Flow per machine</label><button class="q" onclick="hp('h_cmp_flow')">?</button></div><div class="help" id="h_cmp_flow">How much gas each machine handles, from the datasheet, usually Nm3/h.</div><div class="ctrl"><input type="number" id="cmp_flow_n" placeholder="number"><select id="cmp_flow_u" data-g="flowIn" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Number of machines</label><button class="q" onclick="hp('h_cmp_n')">?</button></div><div class="help" id="h_cmp_n">How many run at the same time. Used only to add up the total.</div><div class="ctrl"><input type="number" id="cmp_n_n" placeholder="number"><span class="fu">count</span></div></div><div class="fld"><div class="fh"><label>Inlet pressure</label><button class="q" onclick="hp('h_cmp_p')">?</button></div><div class="help" id="h_cmp_p">Pressure where the gas enters. Pick what your reading is: Gauge (above air), Absolute (from full vacuum), or Vacuum (below air). Always type a plain positive number, the menu tells the tool which way it counts. The tool sorts out the rest using the air pressure you set.</div><div class="ctrl"><input type="number" id="cmp_p_n" placeholder="number"><select id="cmp_p_u" data-g="pressure" data-du="0"></select><select id="cmp_p_r" data-ref="g"></select></div></div><div class="fld"><div class="fh"><label>Inlet temperature</label><button class="q" onclick="hp('h_cmp_t')">?</button></div><div class="help" id="h_cmp_t">How hot the gas is as it enters.</div><div class="ctrl"><input type="number" id="cmp_t_n" placeholder="number"><select id="cmp_t_u" data-g="temp" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Discharge pressure</label><button class="q" onclick="hp('h_cmp_dp')">?</button></div><div class="help" id="h_cmp_dp">The pressure the machine must push out against. Pick what your reading is: Gauge (above air), Absolute (from full vacuum), or Vacuum (below air). Always type a plain positive number, the menu tells the tool which way it counts. The tool sorts out the rest using the air pressure you set.</div><div class="ctrl"><input type="number" id="cmp_dp_n" placeholder="number"><select id="cmp_dp_u" data-g="pressure" data-du="0"></select><select id="cmp_dp_r" data-ref="g"></select></div></div><div class="fld"><div class="fh"><label>Air pressure where you are</label><button class="q" onclick="hp('h_cmp_air')">?</button></div><div class="help" id="h_cmp_air">The air pressure where you are. About 101 kilopascals at sea level, near 95 at 500 metres up, near 90 at 1000 metres. The tool uses it to switch between gauge and absolute.</div><div class="ctrl"><input type="number" id="cmp_air_n" placeholder="number"><select id="cmp_air_u" data-g="pressure" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Pressure lost in the inlet pipe</label><button class="q" onclick="hp('h_cmp_loss')">?</button></div><div class="help" id="h_cmp_loss">Usually leave blank.</div><div class="ctrl"><input type="number" id="cmp_loss_n" placeholder="number"><select id="cmp_loss_u" data-g="pressure" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Reference temperature</label></div><div class="ctrl"><select id="cmp_ref" style="flex:1 1 100%"><option value="0">Normal = 0 &deg;C</option><option value="15">Standard = 15 &deg;C</option></select></div></div><div class="fld"><div class="fh"><label>Carbon dioxide allowance</label><button class="q" onclick="hp('h_cmp_co')">?</button></div><div class="help" id="h_cmp_co">Set to about 1.15 only when the gas is carbon dioxide. Otherwise leave at 1.</div><div class="ctrl"><input type="number" id="cmp_co_n" placeholder="number"><span class="fu">multiplier</span></div></div></div><div class="card"><h3>Answer</h3><div class="res big"><div class="fh"><span class="res-lab" style="margin:0">How hard it squeezes (compression ratio)</span><button class="q" onclick="hp('hy_cmp_ratio')">?</button></div><div class="help" id="hy_cmp_ratio">How hard the machine squeezes the gas, the outlet pressure divided by the inlet pressure, both measured from a full vacuum. Why you care: a higher number means more power drawn, more heat in the discharge, and it pushes you toward a bigger machine or even a two stage one. It is the first thing that tells you whether a single machine can do the job at all. You use it to pick the right band on a compressor curve and to sanity check the motor size.</div><div class="ctrl"><span class="res-v" id="cmp_ratio">&mdash;</span><span class="fu">to 1</span></div></div><div class="res"><div class="fh"><span class="res-lab" style="margin:0">Absolute discharge pressure (from full vacuum)</span></div><div class="ctrl"><span class="res-v" id="cmp_dabs_v">&mdash;</span><select id="cmp_dabs_u2" data-g="pressure" data-du="0"></select><select id="cmp_dabs_r2" data-ref="a"></select></div></div><div class="res"><div class="fh"><span class="res-lab" style="margin:0">Actual flow per machine at the inlet (m3/h)</span><button class="q" onclick="hp('hy_cmp_act')">?</button></div><div class="help" id="hy_cmp_act">The Actual flow (the room the gas really takes up at the inlet), before the carbon dioxide allowance. Switch the unit menu to Normal cubic metres per hour to see it back as the datasheet figure.</div><div class="ctrl"><span class="res-v" id="cmp_act_v" data-g="flowN">&mdash;</span><select id="cmp_act_u2" data-g="flowN" data-du="0"></select></div></div><div class="res big"><div class="fh"><span class="res-lab" style="margin:0">Flow to read on the curve</span><button class="q" onclick="hp('hy_cmp_curve')">?</button></div><div class="help" id="hy_cmp_curve">The flow you find up the side of a compressor curve. Read across to the discharge pressure along the bottom, and whichever model line sits above that point can handle the duty. Switch the unit menu to Normal cubic metres per hour to see it as the datasheet figure.</div><div class="ctrl"><span class="res-v" id="cmp_curve_v" data-g="flowN">&mdash;</span><select id="cmp_curve_u2" data-g="flowN" data-du="0"></select></div></div><div class="res"><div class="fh"><span class="res-lab" style="margin:0">Total for all machines together</span></div><div class="ctrl"><span class="res-v" id="cmp_total_v" data-g="flowN">&mdash;</span><select id="cmp_total_u2" data-g="flowN" data-du="0"></select></div></div><div class="fh" style="margin-top:14px"><span class="res-lab" style="margin:0">Your duty point, find it on the maker's curve</span><button class="q" onclick="hp('hy_cmp_duty')">?</button></div><div class="help" id="hy_cmp_duty">A compressor curve plots flow up the side against discharge pressure along the bottom. This is your point on those axes: any model whose curve passes above it can do the job.</div><svg id="cmp_duty" viewBox="0 0 360 225" style="width:100%;height:auto;display:block;margin-top:4px"></svg></div><div class="means" id="cmp_m">Fill in the boxes and this explains your answer.</div><details><summary>Show the maths</summary><div class="maths"><div class="formula">Ratio = P<sub>out</sub> / P<sub>in</sub><small>both in kPa absolute</small></div><div class="plug" id="mx_cmp1">Your numbers appear here when the boxes are filled in.</div><div class="formula">Curve flow = Normal &times; (101.325 / P<sub>in</sub>) &times; (T<sub>in</sub> / T<sub>ref</sub>) &times; CO&#8322;<small>temperatures in Kelvin</small></div><div class="plug" id="mx_cmp2">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: combined gas law (DIN 1343, Busch technical manual); compression ratio per Giampaolo, Compressor Handbook.</p></div></details></section><section class="page" id="pc"><div class="pgh"><h2>Conveying sizing</h2><button class="q" onclick="hp('ab_pc')">?</button></div>
 <div class="about" id="ab_pc">
 <div class="ar">Moving powder or granules down a pipe on a stream of air. Answers the three quoting questions in one go: how much air, how hard to pull or push, and which machine family.</div>
@@ -780,33 +797,31 @@ var IB=mkBalls(16,600,150,5);
 function drawIntro(){
  var f=fitCanvas(document.getElementById("in_cv"));if(!f)return;
  var hot=gv("in_t");if(isNaN(hot))hot=4;var room=gv("in_v");if(isNaN(room))room=10;
- var W=f.W*room/10,sp=Math.sqrt(hot)*1.6;
+ var W=f.W*room/10,sp=Math.sqrt(hot)*1.9;
  stepBallsBox(IB,0,0,W,f.H,sp);
  var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
  ctx.fillStyle="#EAE6DA";ctx.fillRect(W,0,f.W-W,f.H);
- drawBalls(ctx,IB,"#1F6F8B");
+ drawBalls(ctx,IB,"#3B82F6");
  ctx.strokeStyle="#8a8577";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(W,1);ctx.lineTo(W,f.H-1);ctx.stroke();
 }
 
 var BY=mkBalls(14,600,170,5);
-function drawPiston(f,balls,W,flashKey){
+function drawPiston(f,balls,W,ratio,color){
  var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
  ctx.fillStyle="#DCD6C6";ctx.fillRect(W,0,f.W-W,f.H);
  ctx.strokeStyle="#B9B097";ctx.lineWidth=2;
  for(var x=W+7;x<f.W-3;x+=9){ctx.beginPath();ctx.moveTo(x,3);ctx.lineTo(x-12,f.H-3);ctx.stroke();}
- drawBalls(ctx,balls,"#1D5A78");
- var glow=Math.min(1,(balls[flashKey]||0)*5);
- ctx.strokeStyle="rgba(191,78,16,"+(0.35+glow*0.65).toFixed(2)+")";
- ctx.lineWidth=4+glow*4;
+ drawBalls(ctx,balls,color);
+ ctx.strokeStyle="rgba(191,78,16,"+(0.35+ratio*0.65).toFixed(2)+")";
+ ctx.lineWidth=4+ratio*4;
  ctx.beginPath();ctx.moveTo(W,1);ctx.lineTo(W,f.H-1);ctx.stroke();
 }
 function drawBoyle(){
  var f=fitCanvas(document.getElementById("by_cv"));if(!f)return;
  var v=gv("by_v");if(isNaN(v))v=7;
  var W=f.W*(v/10);
- var hits=stepBallsBox(BY,0,0,W,f.H,2.6);
- BY.flash=Math.max(0,(BY.flash||0)*0.88+hits*0.05);
- drawPiston(f,BY,W,"flash");
+ stepBallsBox(BY,0,0,W,f.H,3.0);
+ drawPiston(f,BY,W,Math.min(1,(10-v)/9),"#8B5CF6");
 }
 
 var CH=mkBalls(12,600,170,5);
@@ -814,26 +829,25 @@ function drawCharles(){
  var f=fitCanvas(document.getElementById("ch_cv"));if(!f)return;
  var c=gv("ch_t");if(isNaN(c))c=100;var tk=c+273.15;var vol=5*tk/273.15;
  var Hbox=f.H*Math.min(1,vol/10),top=f.H-Hbox;
- var sp=Math.sqrt(tk/273.15)*2.1;
+ var sp=Math.sqrt(tk/273.15)*2.5;
  stepBallsBox(CH,0,top,f.W,f.H,sp);
  var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
  ctx.fillStyle="#EDEAE0";ctx.fillRect(0,0,f.W,top);
  ctx.strokeStyle="#C7BFA9";ctx.setLineDash([3,3]);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,top);ctx.lineTo(f.W,top);ctx.stroke();ctx.setLineDash([]);
- drawBalls(ctx,CH,"#2E7D52");
+ drawBalls(ctx,CH,"#EC4899");
 }
 
 var GL=mkBalls(14,600,170,5);
 function drawGL(){
  var f=fitCanvas(document.getElementById("gl_cv"));if(!f)return;
  var g=gv("gl_t");if(isNaN(g))g=100;var tk2=g+273.15;var pr=100*tk2/273.15;
- var sp=Math.sqrt(tk2/273.15)*2.1;
- var hits=stepBallsBox(GL,0,0,f.W,f.H,sp);
- GL.flash=Math.max(0,(GL.flash||0)*0.85+hits*0.045);
+ var sp=Math.sqrt(tk2/273.15)*2.5;
+ stepBallsBox(GL,0,0,f.W,f.H,sp);
  var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
- drawBalls(ctx,GL,"#BF4E10");
- var glow=Math.min(1,GL.flash*5);
- ctx.strokeStyle="rgba(191,78,16,"+(0.4+glow*0.6).toFixed(2)+")";
- ctx.lineWidth=5+glow*4;
+ drawBalls(ctx,GL,"#3B82F6");
+ var ratio=Math.min(1,(pr-100)/100);
+ ctx.strokeStyle="rgba(191,78,16,"+(0.4+ratio*0.6).toFixed(2)+")";
+ ctx.lineWidth=5+ratio*4;
  ctx.strokeRect(2.5,2.5,f.W-5,f.H-5);
  ctx.fillStyle="#8a8577";
  var rv=[[8,8],[f.W-8,8],[8,f.H-8],[f.W-8,f.H-8]];
@@ -849,10 +863,10 @@ function drawCombined(){
  var f=fitCanvas(document.getElementById("cb_cv"));if(!f)return;
  var kv=gv("cb_v");if(isNaN(kv))kv=10;var kt=gv("cb_t");if(isNaN(kt))kt=0;var ktk=kt+273.15;
  var W=f.W*(kv/10);
- var sp=Math.sqrt(ktk/273.15)*2.4;
- var hits=stepBallsBox(CB,0,0,W,f.H,sp);
- CB.flash=Math.max(0,(CB.flash||0)*0.88+hits*0.05);
- drawPiston(f,CB,W,"flash");
+ var sp=Math.sqrt(ktk/273.15)*2.8;
+ stepBallsBox(CB,0,0,W,f.H,sp);
+ var ratio=Math.min(1,((10-kv)/9)*0.6+(kt/200)*0.4);
+ drawPiston(f,CB,W,ratio,"#EC4899");
 }
 
 var IG=mkBalls(16,600,170,5);
@@ -860,12 +874,11 @@ function drawIdeal(){
  var f=fitCanvas(document.getElementById("ig_cv"));if(!f)return;
  var n=gv("ig_n");if(isNaN(n))n=16;n=Math.round(n);
  if(IG.length!==n){var old=IG;IG=mkBalls(n,f.W,f.H,5);for(var i=0;i<Math.min(n,old.length);i++)IG[i]=old[i];}
- var hits=stepBallsBox(IG,0,0,f.W,f.H,2.4);
- IG.flash=Math.max(0,(IG.flash||0)*0.9+hits*0.035);
+ stepBallsBox(IG,0,0,f.W,f.H,2.8);
  var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
- drawBalls(ctx,IG,"#2E7D52");
- var glow=Math.min(1,IG.flash*4);
- ctx.strokeStyle="rgba(46,125,82,"+(0.3+glow*0.7).toFixed(2)+")";ctx.lineWidth=3+glow*3;ctx.strokeRect(2,2,f.W-4,f.H-4);
+ drawBalls(ctx,IG,"#EC4899");
+ var ratio=Math.min(1,(n-4)/36);
+ ctx.strokeStyle="rgba(236,72,153,"+(0.3+ratio*0.7).toFixed(2)+")";ctx.lineWidth=3+ratio*3;ctx.strokeRect(2,2,f.W-4,f.H-4);
 }
 
 var DA_D=mkBalls(12,600,170,5),DA_W=[];
@@ -875,11 +888,11 @@ function drawDalton(){
  var pwat=6.112*Math.exp(17.62*dt/(243.12+dt))/10;var sh=pwat/101.3*100;
  var wn=Math.max(1,Math.round(sh/100*34));
  if(DA_W.length!==wn){var old=DA_W;DA_W=mkBalls(wn,f.W,f.H,4.2);for(var i=0;i<Math.min(wn,old.length);i++)DA_W[i]=old[i];}
- stepBallsBox(DA_D,0,0,f.W,f.H,2.2);
- stepBallsBox(DA_W,0,0,f.W,f.H,2.6);
+ stepBallsBox(DA_D,0,0,f.W,f.H,2.6);
+ stepBallsBox(DA_W,0,0,f.W,f.H,3.0);
  var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
- drawBalls(ctx,DA_D,"#1D5A78");
- drawBalls(ctx,DA_W,"#BF4E10");
+ drawBalls(ctx,DA_D,"#3B82F6");
+ drawBalls(ctx,DA_W,"#EC4899");
 }
 
 function gasLoop(){
@@ -1059,4 +1072,136 @@ tsRender();
 document.addEventListener("input",recalc);
 document.addEventListener("change",recalc);
 recalc();
+
+// Slider stepper buttons: an easy tap-to-nudge alternative for anyone who finds dragging the dial fiddly.
+function nudgeRange(inp,dir,step,min,max){
+ var v=parseFloat(inp.value)+dir*step;
+ v=Math.max(min,Math.min(max,v));
+ v=Math.round(v/step)*step;
+ var dp=(String(step).split(".")[1]||"").length;
+ inp.value=v.toFixed(dp);
+ inp.dispatchEvent(new Event("input",{bubbles:true}));
+}
+function addSteppers(){
+ var rows=document.querySelectorAll(".demo-row");
+ for(var i=0;i<rows.length;i++){
+  var inp=rows[i].querySelector('input[type="range"]');
+  if(!inp||inp._stepped)continue;
+  inp._stepped=true;
+  var step=parseFloat(inp.step)||1,min=parseFloat(inp.min),max=parseFloat(inp.max);
+  var minus=document.createElement("button");
+  minus.type="button";minus.className="rngbtn";minus.textContent="−";minus.setAttribute("aria-label","Decrease");
+  minus.onclick=(function(inp,step,min,max){return function(){nudgeRange(inp,-1,step,min,max);};})(inp,step,min,max);
+  var plus=document.createElement("button");
+  plus.type="button";plus.className="rngbtn";plus.textContent="+";plus.setAttribute("aria-label","Increase");
+  plus.onclick=(function(inp,step,min,max){return function(){nudgeRange(inp,1,step,min,max);};})(inp,step,min,max);
+  inp.parentNode.insertBefore(minus,inp);
+  inp.parentNode.insertBefore(plus,inp.nextSibling);
+ }
+}
+addSteppers();
+
+// Worked examples: real numbers, checked by hand, each one names where it comes from.
+var EX_LAW={
+ boyle:[
+  {p:"OpenStax Chemistry 2e, Example 9.8: a gas sample occupies 15.0 mL at a pressure of 13.0 psi. What pressure is needed to compress it to 7.5 mL, same temperature?",
+   steps:"P₂ = P₁V₁ / V₂\n= (13.0 psi × 15.0 mL) / 7.5 mL\n= 195 / 7.5",
+   ans:"P₂ = 26 psi",
+   src:"OpenStax, <i>Chemistry 2e</i>, Section 9.2, Example 9.8 (openstax.org)"},
+  {p:"OpenStax Chemistry 2e, Example 9.8 “Check Your Learning”: a sample occupies 30.0 mL at 6.5 psi. What volume will it occupy compressed to 11.0 psi, same temperature?",
+   steps:"V₂ = P₁V₁ / P₂\n= (6.5 psi × 30.0 mL) / 11.0 psi\n= 195 / 11.0",
+   ans:"V₂ ≈ 17.7 mL",
+   src:"OpenStax, <i>Chemistry 2e</i>, Section 9.2, Example 9.8, “Check Your Learning”"},
+  {p:"A gas sample fills 2.0 L at atmospheric pressure (101.3 kPa absolute). A vacuum pump opens up 12.0 L of space for it, same temperature. What's the new absolute pressure?",
+   steps:"P₂ = P₁V₁ / V₂\n= (101.3 kPa × 2.0 L) / 12.0 L\n= 202.6 / 12.0",
+   ans:"P₂ ≈ 16.9 kPa absolute",
+   src:"Boyle's law, P₁V₁=P₂V₂ — the same relation this tool's vacuum pump sizing tab uses"}
+ ],
+ charles:[
+  {p:"OpenStax Chemistry 2e, Example 9.6: a sample of CO₂ occupies 0.300 L at 10 °C (283 K), constant pressure. What volume will it occupy at 30 °C (303 K)?",
+   steps:"V₂ = V₁ × T₂/T₁\n= 0.300 L × 303 K / 283 K",
+   ans:"V₂ ≈ 0.321 L",
+   src:"OpenStax, <i>Chemistry 2e</i>, Section 9.2, Example 9.6"},
+  {p:"OpenStax Chemistry 2e, Example 9.6 “Check Your Learning”: a sample of O₂ occupies 32.2 mL at 30 °C (303 K). What volume will it occupy cooled to –70 °C (203 K), same pressure?",
+   steps:"V₂ = V₁ × T₂/T₁\n= 32.2 mL × 203 K / 303 K",
+   ans:"V₂ ≈ 21.6 mL",
+   src:"OpenStax, <i>Chemistry 2e</i>, Section 9.2, Example 9.6, “Check Your Learning”"},
+  {p:"5.0 L of gas at the Normal reference this tool uses (0 °C / 273.15 K) is warmed at constant pressure to a 40 °C pump inlet (313.15 K). What's the new volume?",
+   steps:"V₂ = V₁ × T₂/T₁\n= 5.0 L × 313.15 K / 273.15 K",
+   ans:"V₂ ≈ 5.7 L",
+   src:"Charles's law, V₁/T₁=V₂/T₂, DIN 1343 Normal reference (0 °C) — same reference this tool's flow converter uses"}
+ ],
+ gl:[
+  {p:"OpenStax Chemistry 2e, Example 9.5: gas in a sealed can is at 24 °C (297 K) and 360 kPa. Left in a hot car it reaches 50 °C (323 K). What's the new pressure?",
+   steps:"P₂ = P₁ × T₂/T₁\n= 360 kPa × 323 K / 297 K\n≈ 391 kPa unrounded",
+   ans:"P₂ ≈ 390 kPa (2 sig. figs, matching the textbook)",
+   src:"OpenStax, <i>Chemistry 2e</i>, Section 9.2, Example 9.5"},
+  {p:"OpenStax Chemistry 2e, Example 9.5 “Check Your Learning”: N₂ gas at 27 °C (300 K) and 600 torr, sealed container, is cooled to –73 °C (200 K). What's the new pressure?",
+   steps:"P₂ = P₁ × T₂/T₁\n= 600 torr × 200 K / 300 K",
+   ans:"P₂ = 400 torr",
+   src:"OpenStax, <i>Chemistry 2e</i>, Section 9.2, Example 9.5, “Check Your Learning”"},
+  {p:"A sealed nitrogen-filled enclosure holds 105 kPa at 20 °C (293.15 K). Left in direct sun it reaches 60 °C (333.15 K). What's the new pressure?",
+   steps:"P₂ = P₁ × T₂/T₁\n= 105 kPa × 333.15 K / 293.15 K",
+   ans:"P₂ ≈ 119 kPa",
+   src:"Gay-Lussac's (Amontons's) law, P₁/T₁=P₂/T₂"}
+ ],
+ combined:[
+  {p:"OpenStax Chemistry 2e, Example 9.10: a scuba tank holds 13.2 L of air at 153 atm and 27 °C (300 K). At a depth where the surrounding pressure is 3.13 atm and the water is 37 °C (310 K), what volume does that air occupy once breathed?",
+   steps:"V₂ = P₁V₁T₂ / (T₁P₂)\n= (153 atm × 13.2 L × 310 K) / (300 K × 3.13 atm)",
+   ans:"V₂ ≈ 667 L",
+   src:"OpenStax, <i>Chemistry 2e</i>, Section 9.2, Example 9.10"},
+  {p:"OpenStax Chemistry 2e, Example 9.10 “Check Your Learning”: ammonia gas occupies 0.250 L at 27 °C (300 K) and 0.850 atm. What volume will it occupy at 0 °C (273 K) and 1.00 atm?",
+   steps:"V₂ = P₁V₁T₂ / (T₁P₂)\n= (0.850 atm × 0.250 L × 273 K) / (300 K × 1.00 atm)",
+   ans:"V₂ ≈ 0.193 L",
+   src:"OpenStax, <i>Chemistry 2e</i>, Section 9.2, Example 9.10, “Check Your Learning”"},
+  {p:"A datasheet quotes 1,000 Nm³/h at the DIN 1343 Normal reference (0 °C, 101.325 kPa). At the real pump inlet the gas is 40 °C and under a 20 kPa vacuum (81.3 kPa absolute). What's the Actual flow?",
+   steps:"Actual = Normal × (101.325/P_in) × (T_in/T_ref)\n= 1,000 × (101.325/81.3) × (313.15/273.15)",
+   ans:"Actual ≈ 1,430 m³/h",
+   src:"Combined gas law, DIN 1343 reference conditions — the exact formula this tool's Normal/Actual flow tab uses"}
+ ],
+ ideal:[
+  {p:"OpenStax Chemistry 2e, Example 9.9: 655 g of methane, CH₄, is at 25 °C (298 K) and 745 torr (0.980 atm). What volume does it occupy?",
+   steps:"n = 655 g ÷ 16.04 g/mol ≈ 40.8 mol\nV = nRT/P\n= (40.8 mol × 0.08206 L·atm/mol·K × 298 K) / 0.980 atm",
+   ans:"V ≈ 1.02 × 10³ L",
+   src:"OpenStax, <i>Chemistry 2e</i>, Section 9.2, Example 9.9"},
+  {p:"What volume does 1 mole of any ideal gas occupy at the DIN 1343 Normal reference this tool uses (0 °C, 101.325 kPa)?",
+   steps:"V = nRT/P\n= (1 mol × 8.314 J/mol·K × 273.15 K) / 101,325 Pa",
+   ans:"V ≈ 22.4 L — the textbook “molar volume at STP”",
+   src:"Ideal gas law, R = 8.314 J/(mol·K) (CODATA value), DIN 1343 Normal conditions"},
+  {p:"A 500 L vacuum chamber sits at 20 °C (293.15 K) and a rough vacuum of 10 kPa absolute. How many moles of gas are still inside?",
+   steps:"n = PV/RT\n= (10,000 Pa × 0.500 m³) / (8.314 J/mol·K × 293.15 K)",
+   ans:"n ≈ 2.05 mol",
+   src:"Ideal gas law, PV=nRT"}
+ ],
+ dalton:[
+  {p:"OpenStax Chemistry 2e, Example 9.14: a 10.0 L vessel holds 2.50×10⁻³ mol H₂, 1.00×10⁻³ mol He, and 3.00×10⁻⁴ mol Ne, all at 35 °C (308 K). Find each gas's share and the total pressure.",
+   steps:"Each gas: P = nRT/V\nP(H₂) ≈ 6.32×10⁻³ atm, P(He) ≈ 2.53×10⁻³ atm, P(Ne) ≈ 7.58×10⁻⁴ atm",
+   ans:"P_total ≈ 9.61×10⁻³ atm",
+   src:"OpenStax, <i>Chemistry 2e</i>, Section 9.3, Example 9.14"},
+  {p:"OpenStax Chemistry 2e, Example 9.15: an anaesthetic gas mix has 2.83 mol O₂ and 8.41 mol N₂O, total pressure 192 kPa. What's each gas's share?",
+   steps:"mole fraction O₂ = 2.83/(2.83+8.41) ≈ 0.252\nP(O₂) = 0.252 × 192 kPa — P(N₂O) = 0.748 × 192 kPa",
+   ans:"P(O₂) ≈ 48.4 kPa, P(N₂O) ≈ 144 kPa",
+   src:"OpenStax, <i>Chemistry 2e</i>, Section 9.3, Example 9.15"},
+  {p:"Saturated gas at 40 °C and standard atmospheric pressure (101.325 kPa) — this tool's Dalton's law toy above at its default setting. What's each gas's share?",
+   steps:"P_water = 6.112 × exp(17.62×40 / (243.12+40)) ÷ 10 ≈ 7.37 kPa\nP_dry = 101.325 − 7.37",
+   ans:"P_water ≈ 7.4 kPa, P_dry ≈ 93.9 kPa — exactly what the toy shows",
+   src:"Magnus–Tetens approximation for water's saturation vapour pressure, as used in this tool's toy above"}
+ ]
+};
+var EX_QUEUE={};
+function shuffle3(){var a=[0,1,2];for(var i=2;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t;}return a;}
+function renderExample(key){
+ var el=document.getElementById("ex_"+key);
+ if(!el)return;
+ if(!EX_QUEUE[key]||!EX_QUEUE[key].length)EX_QUEUE[key]=shuffle3();
+ var idx=EX_QUEUE[key].shift();
+ var ex=EX_LAW[key][idx];
+ el.innerHTML='<b>Worked example</b> <span style="color:var(--soft);font-weight:400">('+(idx+1)+' of 3)</span>'
+  +'<p style="margin:8px 0 0;font-size:14px">'+ex.p+'</p>'
+  +'<div class="exmath">'+ex.steps+'</div>'
+  +'<p style="margin:6px 0 0;font-size:14.5px"><b>Answer:</b> '+ex.ans+'</p>'
+  +'<div class="exsrc">Source: '+ex.src+'</div>'
+  +'<button type="button" class="exbtn2" onclick="renderExample(\''+key+'\')">Show another example</button>';
+}
+for(var exk in EX_LAW)renderExample(exk);
 </script></body></html>
