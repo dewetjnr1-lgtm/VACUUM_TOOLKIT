@@ -90,8 +90,6 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .demo-row input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:32px;height:32px;border-radius:50%;background:var(--accent);border:3px solid #fff;box-shadow:0 1px 5px rgba(23,30,35,.35);margin-top:-11px;}
 .demo-row input[type=range]::-moz-range-track{height:10px;border-radius:6px;background:var(--line);}
 .demo-row input[type=range]::-moz-range-thumb{width:32px;height:32px;border-radius:50%;background:var(--accent);border:3px solid #fff;box-shadow:0 1px 5px rgba(23,30,35,.35);}
-.rngbtn{flex:0 0 auto;width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:#fff;color:var(--accent);font-size:19px;font-weight:700;line-height:1;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:0;}
-.rngbtn:active{background:var(--accent-bg);transform:scale(.92);}
 .lawcv{width:100%;height:170px;display:block;background:var(--paper);border-radius:8px;border:1px solid var(--line);}
 .ex-card{background:var(--teal-bg);border:1px solid #B9CEDC;border-radius:10px;padding:13px;margin-top:12px;}
 .ex-card b{color:var(--teal);}
@@ -1071,34 +1069,6 @@ tsRender();
 document.addEventListener("input",recalc);
 document.addEventListener("change",recalc);
 recalc();
-
-// Slider stepper buttons: an easy tap-to-nudge alternative for anyone who finds dragging the dial fiddly.
-function nudgeRange(inp,dir,step,min,max){
- var v=parseFloat(inp.value)+dir*step;
- v=Math.max(min,Math.min(max,v));
- v=Math.round(v/step)*step;
- var dp=(String(step).split(".")[1]||"").length;
- inp.value=v.toFixed(dp);
- inp.dispatchEvent(new Event("input",{bubbles:true}));
-}
-function addSteppers(){
- var rows=document.querySelectorAll(".demo-row");
- for(var i=0;i<rows.length;i++){
-  var inp=rows[i].querySelector('input[type="range"]');
-  if(!inp||inp._stepped)continue;
-  inp._stepped=true;
-  var step=parseFloat(inp.step)||1,min=parseFloat(inp.min),max=parseFloat(inp.max);
-  var minus=document.createElement("button");
-  minus.type="button";minus.className="rngbtn";minus.textContent="−";minus.setAttribute("aria-label","Decrease");
-  minus.onclick=(function(inp,step,min,max){return function(){nudgeRange(inp,-1,step,min,max);};})(inp,step,min,max);
-  var plus=document.createElement("button");
-  plus.type="button";plus.className="rngbtn";plus.textContent="+";plus.setAttribute("aria-label","Increase");
-  plus.onclick=(function(inp,step,min,max){return function(){nudgeRange(inp,1,step,min,max);};})(inp,step,min,max);
-  inp.parentNode.insertBefore(minus,inp);
-  inp.parentNode.insertBefore(plus,inp.nextSibling);
- }
-}
-addSteppers();
 
 // Worked examples: real numbers, checked by hand, each one names where it comes from.
 var EX_LAW={
