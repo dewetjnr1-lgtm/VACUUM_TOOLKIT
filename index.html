@@ -108,8 +108,9 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .tsopt{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:10px;padding:11px 13px;margin:7px 0;font-size:14.5px;font-family:var(--sans);cursor:pointer;color:var(--ink);font-weight:600;}
 .tsopt:active{background:var(--teal-bg);}
 .math .formula{font-size:16px;}.formula,.plug{overflow-x:auto;}
+#bgbub{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;}
 </style></head>
-<body><header><div class="hrow"><button id="backbtn" onclick="goBack()">&#8249; Back</button><svg id="logo" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 12 7.8 8.4"/><circle cx="12" cy="12" r="1.3" fill="#fff" stroke="none"/><path d="M12 4.6v1.7M19.4 12h-1.7M4.6 12h1.7M17.2 6.8l-1.2 1.2" opacity=".65"/></svg><div><h1 id="hdr_t">Vacuum &amp; Compressor Toolkit</h1><p id="hdr_s">Learn it, fill it in, pick your units</p></div></div></header>
+<body><canvas id="bgbub" aria-hidden="true"></canvas><header><div class="hrow"><button id="backbtn" onclick="goBack()">&#8249; Back</button><svg id="logo" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 12 7.8 8.4"/><circle cx="12" cy="12" r="1.3" fill="#fff" stroke="none"/><path d="M12 4.6v1.7M19.4 12h-1.7M4.6 12h1.7M17.2 6.8l-1.2 1.2" opacity=".65"/></svg><div><h1 id="hdr_t">Vacuum &amp; Compressor Toolkit</h1><p id="hdr_s">Learn it, fill it in, pick your units</p></div></div></header>
 <main><section class="page active" id="home">
 <div class="pgh"><h2>Pick an area</h2><button class="q" onclick="hp('h_home')">?</button></div><div class="help" id="h_home">Three areas, each with its own tools inside. Every calculator starts empty: tap <b>Insert example</b> to watch one work, and the small <b>?</b> by any box if you are unsure. Tip: save this page to your phone's home screen and it works offline.</div>
 <button class="catrow c1" onclick="show('cat_learn')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="7.5" r="2.6"/><circle cx="17" cy="9.5" r="2.1"/><circle cx="11.5" cy="17" r="2.9"/><path d="M10 8.1l4.9 1M15.9 11.3l-2.9 3.4"/></svg></span><div><b>Play and learn</b><small>The gas laws with toys, a unit converter and reference tables</small></div><span class="chev">&#8250;</span></button>
@@ -1173,4 +1174,27 @@ function renderExample(key){
   +'<button type="button" class="exbtn2" onclick="renderExample(\''+key+'\')">Show another example</button>';
 }
 for(var exk in EX_LAW)renderExample(exk);
+
+// BACKGROUND BUBBLES
+(function(){
+ var cv=document.getElementById("bgbub");if(!cv||!cv.getContext)return;
+ var ctx=cv.getContext("2d"),BB=[],W=0,H=0;
+ var still=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+ function seed(){BB=[];var n=Math.max(100,Math.min(240,Math.round(W*H/3200)));
+  for(var i=0;i<n;i++){var big=Math.random()<0.07;
+   var r=big?3.5+Math.random()*5:0.7+Math.random()*2.4;
+   var sp=0.1+Math.random()*0.18,a=Math.random()*6.2832;
+   var g=120+Math.floor(Math.random()*80),o=(0.07+Math.random()*0.11).toFixed(3);
+   BB.push({x:r+Math.random()*Math.max(1,W-2*r),y:r+Math.random()*Math.max(1,H-2*r),r:r,dx:Math.cos(a)*sp,dy:Math.sin(a)*sp,c:"rgba("+g+","+g+","+g+","+o+")"});}}
+ function size(){var d=Math.min(window.devicePixelRatio||1,2);W=window.innerWidth;H=window.innerHeight;
+  cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);seed();if(still)paint();}
+ function paint(){ctx.clearRect(0,0,W,H);
+  for(var i=0;i<BB.length;i++){var b=BB[i];ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.2832);ctx.fillStyle=b.c;ctx.fill();}}
+ function step(){for(var i=0;i<BB.length;i++){var b=BB[i];b.x+=b.dx;b.y+=b.dy;
+  if(b.x<b.r){b.x=b.r;b.dx=-b.dx;}else if(b.x>W-b.r){b.x=W-b.r;b.dx=-b.dx;}
+  if(b.y<b.r){b.y=b.r;b.dy=-b.dy;}else if(b.y>H-b.r){b.y=H-b.r;b.dy=-b.dy;}}}
+ function loop(){step();paint();requestAnimationFrame(loop);}
+ window.addEventListener("resize",size);size();
+ if(!still)requestAnimationFrame(loop);
+})();
 </script></body></html>
