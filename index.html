@@ -1381,7 +1381,7 @@ for(var exk in EX_LAW)renderExample(exk);
 // BACKGROUND BUBBLES
 (function(){
  var cv=document.getElementById("bgbub");if(!cv||!cv.getContext)return;
- var ctx=cv.getContext("2d"),BB=[],W=0,H=0,MODE="free",MG=60;
+ var ctx=cv.getContext("2d"),BB=[],W=0,H=0,MODE="free",MG=60,RETURN=0;
  var still=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
  var HUES=[[29,90,120],[46,125,82],[191,78,16]];
  function seed(){BB=[];var n=1000;
@@ -1398,8 +1398,11 @@ for(var exk in EX_LAW)renderExample(exk);
  // On tool pages the bubbles are drawn to the left/right margins like a
  // magnet, hugging in tight to the border and settling to a slow drift
  // there; height stays free so they still drift up and down. Back on a
- // menu page the pull releases and they spread out at normal speed again.
- function step(){for(var i=0;i<BB.length;i++){var b=BB[i];b.x+=b.dx;b.y+=b.dy;
+ // menu page the pull releases: a short outward boost fans them back
+ // across the whole screen quickly, then they settle to normal drift.
+ function step(){var boost=RETURN>0?1+(RETURN/100)*4.5:1;if(RETURN>0)RETURN--;
+  for(var i=0;i<BB.length;i++){var b=BB[i];
+  b.x+=b.dx*(MODE==="free"?boost:1);b.y+=b.dy*(MODE==="free"?boost:1);
   if(MODE==="edge"){
    var inC=b.x>MG&&b.x<W-MG;
    if(inC){
@@ -1417,7 +1420,7 @@ for(var exk in EX_LAW)renderExample(exk);
   }else if(b.out){b.out=false;var s3=Math.sqrt(b.dx*b.dx+b.dy*b.dy);if(s3>0){b.dx=b.dx/s3*b.s0;b.dy=b.dy/s3*b.s0;}}
   if(b.x<b.r){b.x=b.r;b.dx=-b.dx;}else if(b.x>W-b.r){b.x=W-b.r;b.dx=-b.dx;}
   if(b.y<b.r){b.y=b.r;b.dy=-b.dy;}else if(b.y>H-b.r){b.y=H-b.r;b.dy=-b.dy;}}}
- window.bubMode=function(m){MODE=m;};
+ window.bubMode=function(m){if(m==="free"&&MODE==="edge")RETURN=100;MODE=m;};
  function loop(){step();paint();requestAnimationFrame(loop);}
  window.addEventListener("resize",size);size();
  if(!still)requestAnimationFrame(loop);
