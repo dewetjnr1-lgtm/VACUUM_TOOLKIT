@@ -422,6 +422,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="res"><div class="fh"><span class="res-lab" style="margin:0">Drive ratio</span></div><div class="ctrl"><span class="res-v" id="bp_ratio">&mdash;</span><span class="fu">to 1</span></div></div>
 <div class="res big"><div class="fh"><span class="res-lab" style="margin:0">Design pump speed</span><button class="q" onclick="hp('hy_bp_out')">?</button></div><div class="help" id="hy_bp_out">What the pump should be turning at with this motor and pulley pair, no belt slip. Compare it with the maker's curve or nameplate speed.</div><div class="ctrl"><span class="res-v" id="bp_prpm">&mdash;</span><span class="fu">rpm</span></div></div>
 <div class="res"><div class="fh"><span class="res-lab" style="margin:0">Belt speed</span></div><div class="ctrl"><span class="res-v" id="bp_belt_v" data-g="velocity">&mdash;</span><select id="bp_belt_u2" data-g="velocity" data-du="0"></select></div></div>
+<canvas id="bp_cv" class="lawcv" style="height:170px;margin-top:10px"></canvas>
 </div>
 <div class="means" id="bp_m">Fill in the boxes and this explains your answer.</div>
 <details><summary>Show the math</summary><div class="math"><div class="formula">N<sub>pump</sub> = N<sub>motor</sub> &times; D<sub>motor</sub> / D<sub>pump</sub><small>no belt slip assumed &middot; belt speed v = &pi; &times; D<sub>motor</sub> &times; N<sub>motor</sub></small></div><div class="plug" id="mx_bp">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: standard V-belt drive speed ratio, N &times; D = constant, per SKF and Gates belt drive design guides.</p></div></details>
@@ -1226,8 +1227,64 @@ function drawCav(){
  else msg="Water boils at "+fmtA(psat)+" kPa here — you are pulling to "+fmtA(pabs)+" kPa. <b style='color:var(--green)'>Safe, "+fmtA(margin)+" kPa of margin.</b>";
  M("cav_out",msg);
 }
+// Belt & pulley diagram: two pulleys sized to scale from the entered
+// diameters, joined by a belt, each spinning at its own true speed so the
+// small pulley visibly spins faster than the big one turns slowly.
+var BPA_M=0,BPA_P=0,BPDASH=0;
+function drawPulleyDisc(ctx,cx,cy,r,ang,color){
+ ctx.beginPath();ctx.arc(cx,cy,r,0,6.2832);ctx.fillStyle=color;ctx.fill();
+ ctx.beginPath();ctx.arc(cx,cy,r*0.24,0,6.2832);ctx.fillStyle="#fff";ctx.fill();
+ ctx.strokeStyle="rgba(255,255,255,0.75)";ctx.lineWidth=Math.max(1.5,r*0.09);
+ for(var i=0;i<3;i++){var a=ang+i*(6.2832/3);
+  ctx.beginPath();ctx.moveTo(cx+Math.cos(a)*r*0.24,cy+Math.sin(a)*r*0.24);
+  ctx.lineTo(cx+Math.cos(a)*r*0.86,cy+Math.sin(a)*r*0.86);ctx.stroke();}
+}
+function drawBP(){
+ var f=fitCanvas(document.getElementById("bp_cv"));if(!f)return;
+ var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
+ var nm=gv("bp_mrpm_n"),Dm=readUnit("bp_md","length"),Dp=readUnit("bp_pd","length");
+ if(!isFinite(nm)||!isFinite(Dm)||!isFinite(Dp)||nm<=0||Dm<=0||Dp<=0){
+  ctx.font="13px -apple-system,sans-serif";ctx.fillStyle="#8A959D";ctx.textAlign="center";
+  ctx.fillText("Fill in the boxes to see the drive",f.W/2,f.H/2);
+  return;
+ }
+ var np=nm*Dm/Dp;
+ var maxR=Math.min(f.H*0.42,f.W*0.17),minR=f.H*0.13;
+ var scale=maxR/Math.max(Dm,Dp);
+ var rM=Math.max(minR,Dm*scale),rP=Math.max(minR,Dp*scale);
+ var pad=Math.max(rM,rP)+f.W*0.08;
+ var cx1=pad,cx2=f.W-pad,cy=f.H*0.46;
+ var d=cx2-cx1;
+ if(d<rM+rP+8){cx1=f.W*0.26;cx2=f.W*0.74;d=cx2-cx1;}
+ var cosv=(rM-rP)/d;if(cosv>1)cosv=1;if(cosv<-1)cosv=-1;
+ var alpha=Math.acos(cosv);
+ var p1a={x:cx1+rM*Math.cos(alpha),y:cy+rM*Math.sin(alpha)};
+ var p2a={x:cx2+rP*Math.cos(alpha),y:cy+rP*Math.sin(alpha)};
+ var p1b={x:cx1+rM*Math.cos(-alpha),y:cy+rM*Math.sin(-alpha)};
+ var p2b={x:cx2+rP*Math.cos(-alpha),y:cy+rP*Math.sin(-alpha)};
+ // belt: the two outer tangent lines, with the solid pulleys drawn over the
+ // ends -- simpler and always geometrically correct, unlike wrapping arcs
+ BPDASH-=(nm/1450)*0.55+0.05;
+ ctx.lineCap="round";
+ [[p1a,p2a],[p1b,p2b]].forEach(function(seg){
+  ctx.beginPath();ctx.moveTo(seg[0].x,seg[0].y);ctx.lineTo(seg[1].x,seg[1].y);
+  ctx.strokeStyle="#43525B";ctx.lineWidth=5;ctx.stroke();
+  ctx.setLineDash([7,6]);ctx.lineDashOffset=BPDASH;
+  ctx.strokeStyle="rgba(255,255,255,0.9)";ctx.lineWidth=1.8;ctx.stroke();
+  ctx.setLineDash([]);
+ });
+ BPA_M+=nm*0.00007;BPA_P+=np*0.00007;
+ drawPulleyDisc(ctx,cx1,cy,rM,BPA_M,"#1D5A78");
+ drawPulleyDisc(ctx,cx2,cy,rP,BPA_P,"#2E7D52");
+ ctx.textAlign="center";ctx.font="700 11px -apple-system,sans-serif";
+ ctx.fillStyle="#1D5A78";ctx.fillText("Motor",cx1,cy+rM+16);
+ ctx.fillStyle="#2E7D52";ctx.fillText("Pump",cx2,cy+rP+16);
+ ctx.font="700 11px ui-monospace,monospace";ctx.fillStyle="#3d4f55";
+ ctx.fillText(fmtA(nm,0)+" rpm",cx1,cy-rM-8);
+ ctx.fillText(fmtA(np,0)+" rpm",cx2,cy-rP-8);
+}
 function gasLoop(){
- drawIntro();drawBoyle();drawCharles();drawGL();drawCombined();drawIdeal();drawDalton();drawLR();drawFan();drawHeatToy();drawCav();
+ drawIntro();drawBoyle();drawCharles();drawGL();drawCombined();drawIdeal();drawDalton();drawLR();drawFan();drawHeatToy();drawCav();drawBP();
  if(window.requestAnimationFrame)requestAnimationFrame(gasLoop);
 }
 if(window.requestAnimationFrame)requestAnimationFrame(gasLoop);
@@ -1588,9 +1645,9 @@ for(var exk in EX_LAW)renderExample(exk);
    var h=HUES[i%3],o=(0.20+Math.random()*0.24).toFixed(3);
    BB.push({x:r+Math.random()*Math.max(1,W-2*r),y:r+Math.random()*Math.max(1,H-2*r),r:r,dx:Math.cos(a)*sp,dy:Math.sin(a)*sp,s0:sp,out:false,c:"rgba("+h[0]+","+h[1]+","+h[2]+","+o+")"});}}
  function size(){var d=Math.min(window.devicePixelRatio||1,2);W=window.innerWidth;H=window.innerHeight;
-  MG=Math.max(23,W*0.07);
+  MG=Math.max(8,W*0.014);
   var hdr=document.querySelector("header");
-  MGT=Math.max(MG,(hdr?hdr.offsetHeight:70)+14);
+  MGT=Math.max(MG,(hdr?hdr.offsetHeight:70)+5);
   cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);seed();if(still)paint();}
  function paint(){ctx.clearRect(0,0,W,H);
   for(var i=0;i<BB.length;i++){var b=BB[i];ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.2832);ctx.fillStyle=b.c;ctx.fill();}}
