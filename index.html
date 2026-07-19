@@ -1391,13 +1391,14 @@ for(var exk in EX_LAW)renderExample(exk);
    var h=HUES[i%3],o=(0.075+Math.random()*0.105).toFixed(3);
    BB.push({x:r+Math.random()*Math.max(1,W-2*r),y:r+Math.random()*Math.max(1,H-2*r),r:r,dx:Math.cos(a)*sp,dy:Math.sin(a)*sp,s0:sp,out:false,c:"rgba("+h[0]+","+h[1]+","+h[2]+","+o+")"});}}
  function size(){var d=Math.min(window.devicePixelRatio||1,2);W=window.innerWidth;H=window.innerHeight;
-  MG=Math.max(46,W*0.14);
+  MG=Math.max(23,W*0.07);
   cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);seed();if(still)paint();}
  function paint(){ctx.clearRect(0,0,W,H);
   for(var i=0;i<BB.length;i++){var b=BB[i];ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.2832);ctx.fillStyle=b.c;ctx.fill();}}
  // On tool pages the bubbles are drawn to the left/right margins like a
- // magnet, clearing the middle column for reading; height stays free so
- // they still drift up and down. On menu pages they roam everywhere.
+ // magnet, hugging in tight to the border and settling to a slow drift
+ // there; height stays free so they still drift up and down. Back on a
+ // menu page the pull releases and they spread out at normal speed again.
  function step(){for(var i=0;i<BB.length;i++){var b=BB[i];b.x+=b.dx;b.y+=b.dy;
   if(MODE==="edge"){
    var inC=b.x>MG&&b.x<W-MG;
@@ -1406,14 +1407,14 @@ for(var exk in EX_LAW)renderExample(exk);
      if(dl<dr){b.x=MG;b.dx=-Math.abs(b.dx);}
      else{b.x=W-MG;b.dx=Math.abs(b.dx);}
     }else{var l2=b.x,r2=W-b.x;
-     if(l2<r2)b.dx-=0.014;else b.dx+=0.014;
-     var s1=Math.sqrt(b.dx*b.dx+b.dy*b.dy);if(s1>1){b.dx/=s1;b.dy/=s1;}
+     if(l2<r2)b.dx-=0.007;else b.dx+=0.007;
+     var s1=Math.sqrt(b.dx*b.dx+b.dy*b.dy);if(s1>0.45){b.dx=b.dx/s1*0.45;b.dy=b.dy/s1*0.45;}
     }
    }else{b.out=true;
     var s2=Math.sqrt(b.dx*b.dx+b.dy*b.dy);
-    if(s2>b.s0*1.5){b.dx*=0.985;b.dy*=0.985;}
+    if(s2>b.s0*0.7){b.dx*=0.965;b.dy*=0.965;}
    }
-  }else if(b.out)b.out=false;
+  }else if(b.out){b.out=false;var s3=Math.sqrt(b.dx*b.dx+b.dy*b.dy);if(s3>0){b.dx=b.dx/s3*b.s0;b.dy=b.dy/s3*b.s0;}}
   if(b.x<b.r){b.x=b.r;b.dx=-b.dx;}else if(b.x>W-b.r){b.x=W-b.r;b.dx=-b.dx;}
   if(b.y<b.r){b.y=b.r;b.dy=-b.dy;}else if(b.y>H-b.r){b.y=H-b.r;b.dy=-b.dy;}}}
  window.bubMode=function(m){MODE=m;};
