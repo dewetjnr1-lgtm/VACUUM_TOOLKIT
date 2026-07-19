@@ -144,6 +144,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <button class="bub c2" onclick="show('vac')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15.5a8 8 0 0 1 16 0"/><path d="M12 15.5 7.7 11.2"/><circle cx="12" cy="15.5" r="1.4"/><path d="M12 7.7v1.5M17.5 10l-1 1M6.5 10l1 1" opacity=".65"/></svg></span><span>Vacuum pump sizing</span></button>
 <button class="bub c2" onclick="show('cmp')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="1.4"/><path d="M12.6 10.6c.3-2.6 1.5-4.3 3.4-5.5M13.2 12.9c2.4 1.1 3.7 2.7 4.2 5M10.3 12.4c-2.3 1.2-4.4 1.3-6.6.4"/></svg></span><span>Compressor sizing</span></button>
 <button class="bub c2" onclick="show('dt')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7.2 4.2a1.8 1.8 0 0 1 3.6 0v8.4a4.2 4.2 0 1 1-3.6 0Z"/><circle cx="9" cy="16.4" r="1.7" fill="currentColor" stroke="none"/><path d="M9 14.2V8.5"/><path d="M17 11.5v-6M14.8 7.7 17 5.5l2.2 2.2"/></svg></span><span>Discharge temperature</span></button>
+<button class="bub c2" onclick="show('af')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M12 10c.5-3 1.6-5 3.5-6.2C14.6 6 14 7.8 13.4 10.6M14 12c2.8 1 4.6 2.4 5.2 4.5C16.8 15.4 15 14.6 13.4 13.4M10 13c-2.3 1.9-4.4 2.7-6.6 2.2C5.7 13.5 7.5 12.6 10.3 12.4"/></svg></span><span>Speed change effect</span></button>
 <button class="bub c2" onclick="show('pc')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18M3 15h18"/><circle cx="7.5" cy="12.2" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="11.2" r="1" fill="currentColor" stroke="none"/><circle cx="16" cy="12.8" r="1" fill="currentColor" stroke="none"/></svg></span><span>Conveying sizing</span></button><button class="bub c2" onclick="show('cw')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 19.5H8v-4.5h4.5v-4.5H17V6h3.5"/><circle cx="5.5" cy="16.5" r=".9" fill="currentColor" stroke="none"/><circle cx="10" cy="12" r=".9" fill="currentColor" stroke="none"/><circle cx="14.5" cy="7.8" r=".9" fill="currentColor" stroke="none"/></svg></span><span>Conveying step-by-step</span></button>
 <button class="bub c2" onclick="show('mp')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3.5" width="6" height="5" rx="1.2"/><rect x="3.5" y="15.5" width="6" height="5" rx="1.2"/><rect x="14.5" y="15.5" width="6" height="5" rx="1.2"/><path d="M12 8.5v3M12 11.5H6.5v4M12 11.5h5.5v4"/></svg></span><span>Which machine</span></button>
 <button class="bub c2" onclick="show('vap')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.3c3.1 3.9 5.1 6.8 5.1 9.2a5.1 5.1 0 0 1-10.2 0c0-2.4 2-5.3 5.1-9.2Z"/><path d="M9.6 14a2.6 2.6 0 0 0 2.6 2.6"/></svg></span><span>Vapour &amp; wet gas</span></button>
@@ -437,6 +438,9 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="card"><h3>Pipe wall roughness</h3><table><tr><th>Material</th><th>mm</th></tr><tr><td>Stainless steel</td><td>0.015</td></tr><tr><td>Steel</td><td>0.045</td></tr><tr><td>Galvanised</td><td>0.15</td></tr><tr><td>Plastic, smooth</td><td>0.0015</td></tr></table></div>
 <div class="card"><h3>Pipe inside width (Schedule 40)</h3><table><tr><th>Size</th><th>Inside mm</th></tr><tr><td>Half inch</td><td>15.8</td></tr><tr><td>One inch</td><td>26.6</td></tr><tr><td>Two inch</td><td>52.5</td></tr><tr><td>Three inch</td><td>77.9</td></tr><tr><td>Four inch</td><td>102.3</td></tr><tr><td>Six inch</td><td>154.1</td></tr></table></div>
 <div class="card"><h3>Loss numbers for bends and valves</h3><table><tr><th>Fitting</th><th>Number</th></tr><tr><td>Elbow, standard</td><td>0.75</td></tr><tr><td>Elbow, long</td><td>0.45</td></tr><tr><td>Tee, straight through</td><td>0.4</td></tr><tr><td>Tee, off the branch</td><td>1.0</td></tr><tr><td>Gate valve, open</td><td>0.15</td></tr><tr><td>Globe valve, open</td><td>10.0</td></tr></table></div>
+<div class="card"><h3>Liquid ring pump: running limits</h3><table><tr><th>Check</th><th>Shut down if</th></tr><tr><td>Casing temperature</td><td>14 &deg;C or more above the seal water</td></tr><tr><td>Bearing housing</td><td>17 &deg;C or more above the casing</td></tr><tr><td>Noise or vibration</td><td>Suddenly rough: stop, find the cause</td></tr><tr><td>Packing drip</td><td>Aim 45 to 60 drops a minute, no hotter</td></tr></table><p style="font-size:12px;color:var(--soft);margin:6px 2px 0">A liquid ring pump normally runs a little above its seal water. A sharp rise means too little or too warm water, carryover, or running dry.</p></div>
+<div class="card"><h3>Seal water: quick rules</h3><table><tr><th>Point</th><th>Guide</th></tr><tr><td>Supply pressure</td><td>At least 0.7 bar at the pump</td></tr><tr><td>Each control valve upstream</td><td>Add 0.7 to 1.0 bar</td></tr><tr><td>Low-pressure alarm</td><td>About 0.35 bar</td></tr><tr><td>Temperature</td><td>Coolest available; cooler = deeper vacuum</td></tr><tr><td>Flow order</td><td>Water on before the motor, always</td></tr><tr><td>Too much flow</td><td>Wastes power and erodes the pump</td></tr></table></div>
+<div class="card"><h3>Routine maintenance</h3><table><tr><th>When</th><th>Do</th></tr><tr><td>Every 6 months</td><td>Lubricate pump and motor bearings; oil or grease the coupling; clean the seal water strainer</td></tr><tr><td>Every 12 months</td><td>Inspect bearings; replace the stuffing box packing; check any mechanical seals for leaks and cool running</td></tr><tr><td>First 3 to 4 weeks</td><td>Clean and then remove the temporary inlet screen once the line is clear</td></tr><tr><td>V-belts</td><td>Check tension in the first 24 to 48 hours, then periodically; typical life around 24,000 hours</td></tr></table><p style="font-size:12px;color:var(--soft);margin:6px 2px 0">A guide only. Follow the maker's manual and your own conditions; dirty or hot duty needs shorter intervals.</p></div>
 </section><section class="page" id="lr">
 <h2>Inside a liquid ring pump</h2>
 <p class="sub">Watch the water ring do the pumping.</p>
@@ -470,6 +474,28 @@ td:first-child{text-align:left;font-family:var(--sans);}
 </div>
 <div class="means" id="dt_m">Fill in the boxes and this explains your answer.</div>
 <details><summary>Show the math</summary><div class="math"><div class="formula">T<sub>out</sub> = T<sub>in</sub> &times; r<sup>(k&minus;1)/k</sup><small>temperatures in Kelvin &middot; r = discharge / inlet pressure, both absolute</small></div><div class="plug" id="mx_dt">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: adiabatic (isentropic) compression temperature rise, per Giampaolo, Compressor Handbook.</p></div></details>
+</section><section class="page" id="af"><div class="pgh"><h2>Speed change effect</h2><button class="q" onclick="hp('ab_af')">?</button></div>
+<div class="about" id="ab_af">
+<div class="ar"><b>What it is</b>What happens to flow, pressure and power when you run a blower or pump faster or slower.</div>
+<div class="ar"><b>Why it matters</b>Speed is a strong lever. Flow follows speed straight, but pressure follows the square and power follows the cube, so a small speed rise can push the motor well past its limit, and a small speed drop saves a surprising amount of power. Change a pulley (see the Belt &amp; pulley tab) or a drive setting and this shows what it does to the duty.</div>
+<div class="ar"><b>Where you would use it</b>A blower makes 1000 m3/h at 1450 rpm and you are thinking of speeding it to 1750. This shows the new flow, the new pressure, and the new power the motor must give.</div>
+<span class="law">Uses: The fan (affinity) laws</span></div>
+<div class="card"><h3>Fill these in</h3><button class="exbtn" onclick="ex('af')">Insert example</button><button class="clrbtn" onclick="clr('af')">Clear</button>
+<div class="fld"><div class="fh"><label>Speed now</label><button class="q" onclick="hp('h_af_n1')">?</button></div><div class="help" id="h_af_n1">The speed you have today, in rpm. It can be pump rpm or motor rpm, as long as the new speed below is the same kind.</div><div class="ctrl"><input type="number" id="af_n1_n" placeholder="number"><span class="fu">rpm</span></div></div>
+<div class="fld"><div class="fh"><label>New speed</label><button class="q" onclick="hp('h_af_n2')">?</button></div><div class="help" id="h_af_n2">The speed you are moving to, in rpm.</div><div class="ctrl"><input type="number" id="af_n2_n" placeholder="number"><span class="fu">rpm</span></div></div>
+<div class="fld"><div class="fh"><label>Flow now</label><button class="q" onclick="hp('h_af_q')">?</button></div><div class="help" id="h_af_q">The flow at the speed you have now. Any flow unit is fine, the answer comes back in the same one.</div><div class="ctrl"><input type="number" id="af_q_n" placeholder="number"><select id="af_q_u" data-g="flow" data-du="0"></select></div></div>
+<div class="fld"><div class="fh"><label>Pressure now</label><button class="q" onclick="hp('h_af_p')">?</button></div><div class="help" id="h_af_p">The vacuum or the boost the machine makes now. Optional. Type a plain number; the answer comes back in the same unit.</div><div class="ctrl"><input type="number" id="af_p_n" placeholder="optional"><select id="af_p_u" data-g="pressure" data-du="1"></select></div></div>
+<div class="fld"><div class="fh"><label>Power now</label><button class="q" onclick="hp('h_af_kw')">?</button></div><div class="help" id="h_af_kw">The motor power the machine draws now, in kilowatts. Optional.</div><div class="ctrl"><input type="number" id="af_kw_n" placeholder="optional"><span class="fu">kilowatts</span></div></div>
+</div>
+<div class="card"><h3>Answer</h3>
+<div class="res"><div class="fh"><span class="res-lab" style="margin:0">Speed change</span></div><div class="ctrl"><span class="res-v" id="af_ratio">&mdash;</span><span class="fu">times</span></div></div>
+<div class="res big"><div class="fh"><span class="res-lab" style="margin:0">New flow</span><button class="q" onclick="hp('hy_af_q')">?</button></div><div class="help" id="hy_af_q">Flow follows speed one for one: 20 percent faster is 20 percent more flow.</div><div class="ctrl"><span class="res-v" id="af_q2_v" data-g="flow">&mdash;</span><select id="af_q2_u2" data-g="flow" data-du="0"></select></div></div>
+<div class="res big"><div class="fh"><span class="res-lab" style="margin:0">New pressure</span><button class="q" onclick="hp('hy_af_p')">?</button></div><div class="help" id="hy_af_p">Pressure follows the square of the speed, so it climbs faster than the flow.</div><div class="ctrl"><span class="res-v" id="af_p2_v" data-g="pressure">&mdash;</span><select id="af_p2_u2" data-g="pressure" data-du="1"></select></div></div>
+<div class="res big"><div class="fh"><span class="res-lab" style="margin:0">New power</span><button class="q" onclick="hp('hy_af_kw')">?</button></div><div class="help" id="hy_af_kw">Power follows the cube of the speed, so it climbs fastest of all. This is the number that catches people out: a little more speed can overload the motor.</div><div class="ctrl"><span class="res-v" id="af_kw2_v" data-g="power">&mdash;</span><select id="af_kw2_u2" data-g="power" data-du="0"></select></div></div>
+</div>
+<div class="means" id="af_m">Fill in the boxes and this explains your answer.</div>
+<details><summary>Show the math</summary><div class="math"><div class="formula">Q&#8322; = Q&#8321; &times; (N&#8322;/N&#8321;)&nbsp;&middot;&nbsp;P&#8322; = P&#8321; &times; (N&#8322;/N&#8321;)&sup2;&nbsp;&middot;&nbsp;W&#8322; = W&#8321; &times; (N&#8322;/N&#8321;)&sup3;<small>flow with speed, pressure with speed squared, power with speed cubed</small></div><div class="plug" id="mx_af">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: the fan (affinity) laws, National Energy Management Institute air-flow formulas. A rule of thumb for a fixed machine: real gains taper off near a machine's limits.</p></div></details>
+<div class="note warn">A good guide for modest speed changes on the same machine. Big changes, or anything near the machine's limit, need the maker's curve to confirm.</div>
 </section><section class="page" id="ck"><div class="pgh"><h2>Commissioning checklist</h2><button class="q" onclick="hp('ab_ck')">?</button></div>
 <div class="about" id="ab_ck">
 <div class="ar"><b>What it is</b>The walk-round for starting a liquid ring vacuum pump: before power, then the seal water, then the first run. Tap each item as you clear it.</div>
@@ -847,6 +873,13 @@ function recalc(){
   if(isFinite(meas)&&isFinite(np)&&np>0){var pct=meas/np*100;
    msg+="The measured "+b(meas)+" rpm is "+b(pct)+"% of that"+(pct<95?", running noticeably slow. <b>Suspect slipping or worn belts, or a pulley swapped for the wrong size; measure again after tightening.</b>":pct>105?", a little fast for the pulleys fitted: check the pulley sizes match the drawing.":", close enough to call it running to design.")+" ";}
   M("bp_m",msg||"Fill in the boxes and this explains your answer.");})();
+ // SPEED CHANGE (FAN LAWS)
+ (function(){var n1=gv("af_n1_n"),n2=gv("af_n2_n"),q=readUnit("af_q","flow"),p=readMag("af_p"),kw=gv("af_kw_n");
+  var rat=n2/n1,q2=q*rat,p2=p*rat*rat,kw2=kw*rat*rat*rat;
+  var bad=isFinite(rat)&&(n1<=0||n2<=0);if(bad){rat=NaN;q2=NaN;p2=NaN;kw2=NaN;}
+  showN("af_ratio",rat);showU("af_q2",q2,"flow");showU("af_p2",p2,"pressure");showU("af_kw2",kw2,"power");
+  PLG("mx_af",isFinite(q2),"Flow: <b>"+fmtA(q2)+"</b> = "+fmtA(q)+" &times; "+fmtA(rat)+(isFinite(p2)?"<br>Pressure: <b>"+fmtA(p2*10)+" mbar</b> = "+fmtA(p*10)+" &times; "+fmtA(rat)+"&sup2;":"")+(isFinite(kw2)?"<br>Power: <b>"+fmtA(kw2)+" kW</b> = "+fmtA(kw)+" &times; "+fmtA(rat)+"&sup3;":""));
+  M("af_m",bad?"Both speeds must be positive numbers. Check the speed boxes.":isFinite(q2)?("Running "+b(rat)+" times the speed takes the flow to about "+b(q2)+" in the same unit"+(isFinite(p2)?", the pressure to about "+b(p2*10)+" millibar (it climbs with the square)":"")+(isFinite(kw2)?", and the power to about "+b(kw2)+" kilowatts (it climbs with the cube)":"")+"."+(isFinite(kw2)&&kw2>kw*1.05?" <b>Check the motor can give the new power before you speed it up.</b>":"")):"Fill in the boxes and this explains your answer.");})();
  // DISCHARGE TEMPERATURE
  (function(){var B=airOf("dt_air");var t=readUnit("dt_t","temp"),p1=readPress("dt_p1",B),p2=readPress("dt_p2",B),k=+gs("dt_k")||1.4;
   var r=p2/p1,T1=t+273.15,T2=T1*Math.pow(r,(k-1)/k),out=T2-273.15,rise=T2-T1;
@@ -1110,15 +1143,16 @@ var EX={
  ps:{ps_q_n:300,ps_v_n:60},
  cw:{cw_m_n:12100,cw_mu_n:1.54,cw_dk_n:45,cw_dm_n:509,cw_l_n:184,cw_e_n:7,cw_t_n:1,cw_fv_n:0,cw_sv_n:0,cw_sd_n:0,cw_o_n:0},
  dt:{dt_t_n:30,dt_p1_n:20,dt_p1_r:"v",dt_p2_n:0,dt_p2_r:"g",dt_air_n:101.3},
- bp:{bp_mrpm_n:1450,bp_md_n:90,bp_pd_n:280,bp_meas_n:410}
+ bp:{bp_mrpm_n:1450,bp_md_n:90,bp_pd_n:280,bp_meas_n:410},
+ af:{af_n1_n:1450,af_n2_n:1750,af_q_n:1000,af_p_n:400,af_kw_n:15}
 };
 function ex(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(e)e.value=m[k];}recalc();}
 function clr(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(!e)continue;if(e.tagName==="SELECT"){var d=e.getAttribute("data-ref");if(d)e.value=d;}else e.value="";}recalc();}
 function hp(id){var e=document.getElementById(id);if(e)e.classList.toggle("open");}
 window.ex=ex;window.clr=clr;window.hp=hp;window.show=show;
 
-var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the gas laws",learn_intro:"What a gas really is",learn_boyle:"Boyle's law",learn_charles:"Charles's law",learn_gl:"Gay-Lussac's law",learn_combined:"The combined gas law",learn_ideal:"The ideal gas law",learn_dalton:"Dalton's law",fc:"Normal / Actual flow",vac:"Vacuum pump sizing",cmp:"Compressor sizing",pc:"Conveying sizing",mp:"Which machine",vap:"Vapour & wet gas",pd:"Pump-down time",lk:"Leak check",pl:"Pipe loss",pw:"Power & motor current",cv:"Unit converter",ref:"Reference tables",orf:"Orifice sizing",hl:"Heat load, water",mw:"Cooling tower make-up",cw:"Conveying step-by-step",cat_learn:"Play and learn",cat_size:"Size it",cat_site:"On-site checks",ts:"Find the fault",ps:"Pre-separator sizing",lr:"Inside a liquid ring pump",dt:"Discharge temperature",ck:"Commissioning checklist",bp:"Belt & pulley speed"};
-var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site"};
+var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the gas laws",learn_intro:"What a gas really is",learn_boyle:"Boyle's law",learn_charles:"Charles's law",learn_gl:"Gay-Lussac's law",learn_combined:"The combined gas law",learn_ideal:"The ideal gas law",learn_dalton:"Dalton's law",fc:"Normal / Actual flow",vac:"Vacuum pump sizing",cmp:"Compressor sizing",pc:"Conveying sizing",mp:"Which machine",vap:"Vapour & wet gas",pd:"Pump-down time",lk:"Leak check",pl:"Pipe loss",pw:"Power & motor current",cv:"Unit converter",ref:"Reference tables",orf:"Orifice sizing",hl:"Heat load, water",mw:"Cooling tower make-up",cw:"Conveying step-by-step",cat_learn:"Play and learn",cat_size:"Size it",cat_site:"On-site checks",ts:"Find the fault",ps:"Pre-separator sizing",lr:"Inside a liquid ring pump",dt:"Discharge temperature",ck:"Commissioning checklist",bp:"Belt & pulley speed",af:"Speed change effect"};
+var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size"};
 var CUR="home";
 function goBack(){show(PARENT[CUR]||"home");}
 var MENUS={home:1,cat_learn:1,cat_size:1,cat_site:1,learn:1};
@@ -1183,7 +1217,7 @@ var TS={
  r_gag:{r:"Gagged with water",why:"Too much seal water or heavy carryover makes the pump compress liquid, and power climbs sharply.",fix:["Fit or check the orifice in the seal water line, at roughly 0.7 bar upstream.","Stop the carryover: separator, drains, low points.","Check the shroud relief valves."]},
  r_motor:{r:"Motor problem",why:"Unbalanced phase currents point at the motor or supply, not the pump.",fix:["Check voltage on all three phases.","Check heaters, fuses and connections.","Call the motor vendor with the readings."]},
  r_rub:{r:"Scale or debris rubbing inside",why:"Closed-up clearances add friction, and friction is power.",fix:["Scope the internals for scale or debris.","Soak with an inhibited descaler, soak the whole rotor, then flush well.","Fix the water hardness or carryover that built the scale."]},
- r_packing:{r:"Packing or seal leakage",why:"Packing must drip: 10 to 20 drops a minute keeps it cool. Choked-down packing hardens, overheats and scores the shaft.",fix:["Adjust to 10 to 20 drops per minute, no tighter.","Repack if old; inspect the shaft for scoring first, a scored shaft eats new packing.","On mechanical seals, check the faces for coating or abrasion from dirty water."]},
+ r_packing:{r:"Packing or seal leakage",why:"Packing must drip to stay cool and lubricated: aim for about 45 to 60 drops a minute from each gland. Choked-down packing hardens, overheats and scores the shaft.",fix:["Run for ten minutes first, then tighten the gland nuts evenly, a quarter turn at a time.","Repeat every ten minutes until the drip settles to about 45 to 60 drops a minute with no overheating, then stop.","Repack if old; inspect the shaft for scoring first, a scored shaft eats new packing.","On mechanical seals, check the faces for coating or abrasion from dirty water."]},
  r_gasket:{r:"Body gasket leak",why:"Usually loose bolts or a tired gasket.",fix:["Torque the head and body bolts to the manual figures.","Replace damaged gaskets.","If it keeps returning, check for erosion or corrosion of the sealing faces."]},
  r_plug:{r:"Leak at a plug",why:"Plugs loosen, and erosion or corrosion can eat the seat around them.",fix:["Tighten or re-seal the plug.","Inspect the seat for erosion or corrosion damage.","If the seat is eaten away, plan a repair."]},
  r_casting:{r:"Worn through the casting",why:"Erosion, corrosion or a hard object has eaten through the metal itself.",fix:["Note the exact spot, hole size and leak rate.","Scope the internals to find which damage type did it, then see the damage branch of this guide.","Repair at the earliest opportunity and fix the root cause, or it will simply happen again."]},
@@ -1212,33 +1246,51 @@ function tsGo(id){TSTK.push(id);tsRender();}
 function tsBack(){if(TSTK.length>1)TSTK.pop();tsRender();}
 function tsReset(){TSTK=["start"];tsRender();}
 
-// COMMISSIONING CHECKLIST: content mirrors the troubleshooter's rules
-// (0.7 bar orifice, 0.35 bar alarm, drain to centreline, 10-20 drops packing).
+// COMMISSIONING CHECKLIST: drawn from a standard liquid ring pump
+// installation and commissioning procedure (0.7 bar seal supply, 45-60 drops
+// packing, drain to centreline, casing 14C / bearing 17C temperature limits).
 // Ticks persist in localStorage so the list survives closing the app.
 var CK=[
+ {t:"Set in place",items:[
+  "Base sits on a level, rigid foundation, bolted down and grouted where needed",
+  "Coupling or belt drive aligned, then guards fitted back on",
+  "Piping connected with no strain pulling on the pump flanges",
+  "Flexible connection fitted at the inlet on larger or vibration-mounted pumps",
+  "Shipping plug protectors removed from pump, separator, receiver and cooler",
+  "Rust-preventative flushed out: seal water run through the drains until it runs clear"]},
  {t:"Before power",items:[
-  "Power locked out; pump turns freely by hand",
-  "Rotation direction checked by bumping the motor: matches the arrow on the casing",
-  "Coupling or belts aligned and tensioned, guards back on",
-  "Pump drains to shaft centreline when stopped, so it never starts flooded",
+  "All power to the motor locked out so it cannot start by accident",
+  "Every drain plug refitted after flushing",
+  "Pump primed by hand with seal liquid until it flows from the overflow",
+  "Inlet screen and clean-out fitted, inlet clear of tools and debris",
   "Inlet line slopes to the pump with no low pockets that collect liquid",
-  "Inlet screen or strainer fitted and clean",
-  "Flanges, gaskets and drain plugs tight"]},
+  "Strainer fitted in the seal water line, clean",
+  "Hold-down and foundation bolts tight; earth (ground) connection made",
+  "Bearing oiler sight glasses topped to the line (oil-lubricated models)",
+  "Pump turns freely by hand in the arrow direction; never force a bound shaft with power",
+  "Seal water on, then bump the motor: shaft turns the way the arrow shows"]},
  {t:"Seal water",items:[
   "Seal water line connected, with the orifice or restrictor fitted",
-  "About 0.7 bar supply pressure at the orifice",
-  "Water is cool: the deeper the vacuum, the cooler it must be",
+  "At least 0.7 bar supply pressure at the pump connection (add more for control valves upstream)",
+  "Coolest water available used: the deeper the vacuum, the cooler it must be",
+  "Flow correctly regulated: too much wastes power and erodes the pump",
+  "Seal water always starts before the motor, even just to check rotation",
   "Low seal-water-pressure alarm or interlock proven, at about 0.35 bar",
   "Separator drain or drop-leg falls clean to the seal pit, no pockets"]},
  {t:"First run",items:[
   "Started with seal water flowing; no rattling (cavitation) or groaning (flooding)",
+  "If the pump will not settle, shut down at once and find the cause",
+  "Casing temperature steady, and less than 14 degrees above the seal water",
+  "Bearing housings watched for 30 minutes: less than 17 degrees above the casing",
   "Vacuum at the pump inlet compared with the process gauge: no big gap",
+  "Discharge clear: no back pressure robbing capacity",
+  "Pump running at its rated rpm (tacho on the shaft), not just the nameplate test speed",
   "Amps on all three phases checked against the nameplate",
-  "Seal water in and out temperatures recorded",
-  "Packing dripping 10 to 20 drops a minute (that is correct, not a leak)",
-  "Readings filed: vacuum, amps, rpm, water flow and temperatures"]}
+  "After 10 minutes, glands nipped a quarter turn every 10 minutes until 45 to 60 drops a minute, no hotter",
+  "Temporary inlet screen removed after 3 to 4 weeks, once the line is clean",
+  "Readings filed: vacuum, amps, rpm, seal water flow and in/out temperatures"]}
 ];
-var CKST=[];try{CKST=JSON.parse(localStorage.getItem("vt_ck")||"[]")||[];}catch(err){CKST=[];}
+var CKST=[];try{CKST=JSON.parse(localStorage.getItem("vt_ck2")||"[]")||[];}catch(err){CKST=[];}
 function ckRender(){var box=document.getElementById("ck_box");if(!box)return;
  var h="",idx=0,n=0,done=0,i,j;
  for(i=0;i<CK.length;i++){var s=CK[i],sd=0,rows="";
@@ -1251,8 +1303,8 @@ function ckRender(){var box=document.getElementById("ck_box");if(!box)return;
  var f=document.getElementById("ck_fill");if(f)f.style.width=(n?done/n*100:0)+"%";
  var p=document.getElementById("ck_pct");if(p)p.textContent=(done===n&&n)?("All "+n+" done. Ready to hand over."):(done+" of "+n+" done");
 }
-function ckGo(i){CKST[i]=!CKST[i];try{localStorage.setItem("vt_ck",JSON.stringify(CKST));}catch(err){}ckRender();}
-function ckReset(){CKST=[];try{localStorage.removeItem("vt_ck");}catch(err){}ckRender();}
+function ckGo(i){CKST[i]=!CKST[i];try{localStorage.setItem("vt_ck2",JSON.stringify(CKST));}catch(err){}ckRender();}
+function ckReset(){CKST=[];try{localStorage.removeItem("vt_ck2");}catch(err){}ckRender();}
 window.ckGo=ckGo;window.ckReset=ckReset;
 ckRender();
 
