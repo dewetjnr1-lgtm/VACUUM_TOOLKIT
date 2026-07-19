@@ -969,30 +969,40 @@ function fitCanvas(cv){
  return {ctx:ctx,W:w,H:h};
 }
 var TPAL=[[29,90,120],[46,125,82],[191,78,16]]; // teal, green, orange -- same family as the background bubbles
-function mkBalls(n,W,H,r,hue){var a=[];for(var i=0;i<n;i++){var rr=r*(0.78+Math.random()*0.66);a.push({x:rr+Math.random()*Math.max(1,W-2*rr),y:rr+Math.random()*Math.max(1,H-2*rr),a:Math.random()*6.2832,r:rr,h:hue!=null?TPAL[hue]:TPAL[i%3]});}return a;}
+// Toy particles are built and moved just like the drifting background bubbles:
+// mixed teal/green/orange, a big spread of sizes (many small, a few large),
+// each with its own drift direction and its own speed, drawn as one soft
+// low-opacity disc. `speed` in stepBallsBox is a global multiplier so the
+// gas-law toys can still tie particle speed to temperature while every ball
+// keeps its own pace, which is what makes the swarm look random.
+function mkBalls(n,W,H,r,hue){var a=[];for(var i=0;i<n;i++){
+  var big=Math.random()<0.16;
+  var rr=big?(r*0.95+Math.random()*r*1.25):(r*0.32+Math.random()*r*0.62);
+  var ang=Math.random()*6.2832,sf=0.55+Math.random()*0.85;
+  a.push({x:rr+Math.random()*Math.max(1,W-2*rr),y:rr+Math.random()*Math.max(1,H-2*rr),
+   r:rr,dx:Math.cos(ang)*sf,dy:Math.sin(ang)*sf,o:0.30+Math.random()*0.24,
+   h:hue!=null?TPAL[hue]:TPAL[i%3]});}
+ return a;}
 function stepBallsBox(balls,x0,y0,x1,y1,speed){
  var hits=0;
  for(var i=0;i<balls.length;i++){var b=balls[i];
-  b.x+=Math.cos(b.a)*speed;b.y+=Math.sin(b.a)*speed;
-  if(b.x<x0+b.r){b.x=x0+b.r;b.a=Math.PI-b.a;hits++;}
-  else if(b.x>x1-b.r){b.x=x1-b.r;b.a=Math.PI-b.a;hits++;}
-  if(b.y<y0+b.r){b.y=y0+b.r;b.a=-b.a;hits++;}
-  else if(b.y>y1-b.r){b.y=y1-b.r;b.a=-b.a;hits++;}
+  b.x+=b.dx*speed;b.y+=b.dy*speed;
+  if(b.x<x0+b.r){b.x=x0+b.r;b.dx=-b.dx;hits++;}
+  else if(b.x>x1-b.r){b.x=x1-b.r;b.dx=-b.dx;hits++;}
+  if(b.y<y0+b.r){b.y=y0+b.r;b.dy=-b.dy;hits++;}
+  else if(b.y>y1-b.r){b.y=y1-b.r;b.dy=-b.dy;hits++;}
  }
  return hits;
 }
-// Soft two-layer discs in the background-bubble palette: a faint halo plus a
-// gentle core, so the toy particles read as the same family as the drifting
-// background bubbles rather than flat solid dots.
 function drawBalls(ctx,balls,hue){
  var i,b,h;
  for(i=0;i<balls.length;i++){b=balls[i];h=hue!=null?TPAL[hue]:b.h;
-  ctx.beginPath();ctx.arc(b.x,b.y,b.r*1.75,0,6.2832);ctx.fillStyle="rgba("+h[0]+","+h[1]+","+h[2]+",0.16)";ctx.fill();
-  ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.2832);ctx.fillStyle="rgba("+h[0]+","+h[1]+","+h[2]+",0.82)";ctx.fill();
+  ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.2832);
+  ctx.fillStyle="rgba("+h[0]+","+h[1]+","+h[2]+","+b.o.toFixed(3)+")";ctx.fill();
  }
 }
 
-var IB=mkBalls(16,600,150,5);
+var IB=mkBalls(26,600,150,5);
 function drawIntro(){
  var f=fitCanvas(document.getElementById("in_cv"));if(!f)return;
  var hot=gv("in_t");if(isNaN(hot))hot=4;var room=gv("in_v");if(isNaN(room))room=10;
@@ -1004,7 +1014,7 @@ function drawIntro(){
  ctx.strokeStyle="#8a8577";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(W,1);ctx.lineTo(W,f.H-1);ctx.stroke();
 }
 
-var BY=mkBalls(14,600,170,5);
+var BY=mkBalls(22,600,170,5);
 function drawPiston(f,balls,W,ratio){
  var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
  ctx.fillStyle="#DCD6C6";ctx.fillRect(W,0,f.W-W,f.H);
@@ -1023,7 +1033,7 @@ function drawBoyle(){
  drawPiston(f,BY,W,Math.min(1,(10-v)/9));
 }
 
-var CH=mkBalls(12,600,170,5);
+var CH=mkBalls(20,600,170,5);
 function drawCharles(){
  var f=fitCanvas(document.getElementById("ch_cv"));if(!f)return;
  var c=gv("ch_t");if(isNaN(c))c=100;var tk=c+273.15;var vol=5*tk/273.15;
@@ -1036,7 +1046,7 @@ function drawCharles(){
  drawBalls(ctx,CH);
 }
 
-var GL=mkBalls(14,600,170,5);
+var GL=mkBalls(22,600,170,5);
 function drawGL(){
  var f=fitCanvas(document.getElementById("gl_cv"));if(!f)return;
  var g=gv("gl_t");if(isNaN(g))g=100;var tk2=g+273.15;var pr=100*tk2/273.15;
@@ -1057,7 +1067,7 @@ function drawGL(){
  ctx.strokeStyle="#BF4E10";ctx.lineWidth=2;ctx.beginPath();ctx.moveTo(gx,gy);ctx.lineTo(gx+Math.cos(ang)*gr*0.75,gy+Math.sin(ang)*gr*0.75);ctx.stroke();
 }
 
-var CB=mkBalls(14,600,170,5);
+var CB=mkBalls(22,600,170,5);
 function drawCombined(){
  var f=fitCanvas(document.getElementById("cb_cv"));if(!f)return;
  var kv=gv("cb_v");if(isNaN(kv))kv=10;var kt=gv("cb_t");if(isNaN(kt))kt=0;var ktk=kt+273.15;
@@ -1080,7 +1090,7 @@ function drawIdeal(){
  ctx.strokeStyle="rgba(236,72,153,"+(0.3+ratio*0.7).toFixed(2)+")";ctx.lineWidth=3+ratio*3;ctx.strokeRect(2,2,f.W-4,f.H-4);
 }
 
-var DA_D=mkBalls(12,600,170,5),DA_W=[];
+var DA_D=mkBalls(18,600,170,5),DA_W=[];
 function drawDalton(){
  var f=fitCanvas(document.getElementById("da_cv"));if(!f)return;
  var dt=gv("da_t");if(isNaN(dt))dt=40;
@@ -1179,13 +1189,12 @@ function drawHeatToy(){
   ctx.strokeStyle="rgba(191,78,16,"+(0.25+dt/15*0.5).toFixed(2)+")";ctx.lineWidth=2;
   var wob=Math.sin(FANA*3+j)*3;
   ctx.beginPath();ctx.moveTo(hx,py+ph/2+4);ctx.quadraticCurveTo(hx+6+wob,py+ph/2+12,hx,py+ph/2+20);ctx.stroke();}
- if(!HB){HB=[];for(var i=0;i<22;i++)HB.push({x:Math.random()*f.W,y:py+(Math.random()-0.5)*(ph-8),r:2.5+Math.random()*2});}
- var sp=0.5+q*0.35;
- for(var i2=0;i2<HB.length;i2++){var b=HB[i2];b.x+=sp;if(b.x>f.W+4){b.x=-4;b.y=py+(Math.random()-0.5)*(ph-8);}
+ if(!HB){HB=[];for(var i=0;i<34;i++){var big=Math.random()<0.16;var rr0=big?4+Math.random()*4:1.6+Math.random()*2.4;
+   HB.push({x:Math.random()*f.W,y:py+(Math.random()-0.5)*(ph-8),r:rr0,sf:0.7+Math.random()*0.7,o:0.32+Math.random()*0.24});}}
+ for(var i2=0;i2<HB.length;i2++){var b=HB[i2];b.x+=(0.4+q*0.3)*b.sf;if(b.x>f.W+b.r){b.x=-b.r;b.y=py+(Math.random()-0.5)*(ph-8);}
   var frac=b.x/f.W;if(frac<0)frac=0;if(frac>1)frac=1;var warm=frac*Math.min(1,dt/15);
   var rr=Math.round(29+(191-29)*warm),gg=Math.round(90+(78-90)*warm),bb=Math.round(120+(16-120)*warm);
-  ctx.beginPath();ctx.arc(b.x,b.y,b.r*1.7,0,6.2832);ctx.fillStyle="rgba("+rr+","+gg+","+bb+",0.16)";ctx.fill();
-  ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.2832);ctx.fillStyle="rgba("+rr+","+gg+","+bb+",0.85)";ctx.fill();}
+  ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.2832);ctx.fillStyle="rgba("+rr+","+gg+","+bb+","+b.o.toFixed(3)+")";ctx.fill();}
  ctx.fillStyle="#3d4f55";ctx.font="700 10.5px -apple-system,sans-serif";
  ctx.textAlign="left";ctx.fillText("cool in",4,py-ph/2-5);
  ctx.textAlign="right";ctx.fillText("warm out",f.W-4,py-ph/2-5);
