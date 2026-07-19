@@ -107,6 +107,16 @@ td:first-child{text-align:left;font-family:var(--sans);}
 
 .tsopt{display:block;width:100%;text-align:left;background:rgba(255,255,255,.65);border:1px solid rgba(211,218,224,.8);border-radius:10px;padding:11px 13px;margin:7px 0;font-size:14.5px;font-family:var(--sans);cursor:pointer;color:var(--ink);font-weight:600;}
 .tsopt:active{background:var(--teal-bg);}
+.ckbar{height:10px;border-radius:6px;background:rgba(29,90,120,.15);overflow:hidden;margin:2px 0 0;}
+.ckbar div{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--green));border-radius:6px;transition:width .25s;}
+.ckpct{font-size:12.5px;color:var(--soft);margin:5px 0 8px;font-weight:600;}
+.ckh{font-size:14px;color:var(--teal);text-transform:uppercase;letter-spacing:.06em;font-weight:700;margin:16px 2px 6px;display:flex;justify-content:space-between;align-items:baseline;}
+.ckh span:last-child{color:var(--soft);text-transform:none;letter-spacing:0;font-weight:600;font-size:12.5px;}
+.ckitem{display:flex;align-items:flex-start;gap:11px;width:100%;text-align:left;background:rgba(255,255,255,.65);border:1px solid rgba(211,218,224,.8);border-radius:10px;padding:11px 12px;margin:7px 0;font-size:14.5px;font-family:var(--sans);cursor:pointer;color:var(--ink);line-height:1.4;}
+.ckitem .box{flex:0 0 auto;width:24px;height:24px;border-radius:50%;border:2px solid var(--teal);margin-top:1px;display:flex;align-items:center;justify-content:center;color:#fff;font-size:14px;font-weight:800;background:rgba(255,255,255,.6);transition:background .15s,border-color .15s;}
+.ckitem.done{opacity:.6;}
+.ckitem.done .box{background:var(--green);border-color:var(--green);}
+.ckitem.done .txt{text-decoration:line-through;text-decoration-color:rgba(23,30,35,.4);}
 .math .formula{font-size:16px;}.formula,.plug{overflow-x:auto;}
 #bgbub{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;}
 </style></head>
@@ -122,6 +132,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <p class="sub">Tap a tool to open it.</p>
 <div class="bubs">
 <button class="bub c1" onclick="show('learn')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="7.5" r="2.6"/><circle cx="17" cy="9.5" r="2.1"/><circle cx="11.5" cy="17" r="2.9"/><path d="M10 8.1l4.9 1M15.9 11.3l-2.9 3.4"/></svg></span><span>Learn the gas laws</span></button>
+<button class="bub c1" onclick="show('lr')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="10.2" r="2.1"/><path d="M12 10.2V4.6M12 10.2l-5 3.4M12 10.2l5 3.4"/><path d="M5.3 16.2c2.1 1.6 4.3 2.4 6.7 2.4s4.6-.8 6.7-2.4" opacity=".65"/></svg></span><span>Inside a liquid ring pump</span></button>
 <button class="bub c1" onclick="show('cv')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13M14 4.5 17.5 8 14 11.5M20 16H7M10 12.5 6.5 16l3.5 3.5"/></svg></span><span>Unit converter</span></button>
 <button class="bub c1" onclick="show('ref')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16M10.5 10v9"/></svg></span><span>Reference tables</span></button>
 </div>
@@ -132,6 +143,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <button class="bub c2" onclick="show('fc')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 9.5 13.5 6M3.5 14.5 13.5 18M3.5 9.5v5M13.5 6v12"/><path d="M16.5 12h4.5M18.8 9.8 21 12l-2.2 2.2"/></svg></span><span>Normal / Actual flow</span></button>
 <button class="bub c2" onclick="show('vac')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15.5a8 8 0 0 1 16 0"/><path d="M12 15.5 7.7 11.2"/><circle cx="12" cy="15.5" r="1.4"/><path d="M12 7.7v1.5M17.5 10l-1 1M6.5 10l1 1" opacity=".65"/></svg></span><span>Vacuum pump sizing</span></button>
 <button class="bub c2" onclick="show('cmp')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.2"/><circle cx="12" cy="12" r="1.4"/><path d="M12.6 10.6c.3-2.6 1.5-4.3 3.4-5.5M13.2 12.9c2.4 1.1 3.7 2.7 4.2 5M10.3 12.4c-2.3 1.2-4.4 1.3-6.6.4"/></svg></span><span>Compressor sizing</span></button>
+<button class="bub c2" onclick="show('dt')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M7.2 4.2a1.8 1.8 0 0 1 3.6 0v8.4a4.2 4.2 0 1 1-3.6 0Z"/><circle cx="9" cy="16.4" r="1.7" fill="currentColor" stroke="none"/><path d="M9 14.2V8.5"/><path d="M17 11.5v-6M14.8 7.7 17 5.5l2.2 2.2"/></svg></span><span>Discharge temperature</span></button>
 <button class="bub c2" onclick="show('pc')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9h18M3 15h18"/><circle cx="7.5" cy="12.2" r="1" fill="currentColor" stroke="none"/><circle cx="12" cy="11.2" r="1" fill="currentColor" stroke="none"/><circle cx="16" cy="12.8" r="1" fill="currentColor" stroke="none"/></svg></span><span>Conveying sizing</span></button><button class="bub c2" onclick="show('cw')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3.5 19.5H8v-4.5h4.5v-4.5H17V6h3.5"/><circle cx="5.5" cy="16.5" r=".9" fill="currentColor" stroke="none"/><circle cx="10" cy="12" r=".9" fill="currentColor" stroke="none"/><circle cx="14.5" cy="7.8" r=".9" fill="currentColor" stroke="none"/></svg></span><span>Conveying step-by-step</span></button>
 <button class="bub c2" onclick="show('mp')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="3.5" width="6" height="5" rx="1.2"/><rect x="3.5" y="15.5" width="6" height="5" rx="1.2"/><rect x="14.5" y="15.5" width="6" height="5" rx="1.2"/><path d="M12 8.5v3M12 11.5H6.5v4M12 11.5h5.5v4"/></svg></span><span>Which machine</span></button>
 <button class="bub c2" onclick="show('vap')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.3c3.1 3.9 5.1 6.8 5.1 9.2a5.1 5.1 0 0 1-10.2 0c0-2.4 2-5.3 5.1-9.2Z"/><path d="M9.6 14a2.6 2.6 0 0 0 2.6 2.6"/></svg></span><span>Vapour &amp; wet gas</span></button>
@@ -149,6 +161,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <button class="bub c3" onclick="show('pl')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5h18M3 15.5h18"/><path d="M5.5 10.4 18.5 13.6" stroke-dasharray="2.6 2.4"/></svg></span><span>Pipe loss</span></button>
 <button class="bub c3" onclick="show('pw')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="7.5" width="13" height="10" rx="2"/><path d="M16.5 10h2.2l1.8 1.8v3.7h-4"/><path d="M10.8 9.3 8.6 12.7h2.8l-2.2 3.4"/></svg></span><span>Power &amp; motor current</span></button>
 <button class="bub c3" onclick="show('ts')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.2 21 19.5H3Z"/><path d="M12 10.2v4M12 16.8v.4"/></svg></span><span>Find the fault</span></button>
+<button class="bub c3" onclick="show('ck')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="5" width="15" height="15.5" rx="2"/><path d="M9 5V3.5h6V5"/><path d="M8 10.5h.5M11 10.5h5M8 14h.5M11 14h5M8 17.5h.5M11 17.5h5"/></svg></span><span>Commissioning checklist</span></button>
 </div>
 </section><section class="page" id="learn">
 <h2>Learn the gas laws</h2>
@@ -404,6 +417,48 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="card"><h3>Pipe wall roughness</h3><table><tr><th>Material</th><th>mm</th></tr><tr><td>Stainless steel</td><td>0.015</td></tr><tr><td>Steel</td><td>0.045</td></tr><tr><td>Galvanised</td><td>0.15</td></tr><tr><td>Plastic, smooth</td><td>0.0015</td></tr></table></div>
 <div class="card"><h3>Pipe inside width (Schedule 40)</h3><table><tr><th>Size</th><th>Inside mm</th></tr><tr><td>Half inch</td><td>15.8</td></tr><tr><td>One inch</td><td>26.6</td></tr><tr><td>Two inch</td><td>52.5</td></tr><tr><td>Three inch</td><td>77.9</td></tr><tr><td>Four inch</td><td>102.3</td></tr><tr><td>Six inch</td><td>154.1</td></tr></table></div>
 <div class="card"><h3>Loss numbers for bends and valves</h3><table><tr><th>Fitting</th><th>Number</th></tr><tr><td>Elbow, standard</td><td>0.75</td></tr><tr><td>Elbow, long</td><td>0.45</td></tr><tr><td>Tee, straight through</td><td>0.4</td></tr><tr><td>Tee, off the branch</td><td>1.0</td></tr><tr><td>Gate valve, open</td><td>0.15</td></tr><tr><td>Globe valve, open</td><td>10.0</td></tr></table></div>
+</section><section class="page" id="lr">
+<h2>Inside a liquid ring pump</h2>
+<p class="sub">Watch the water ring do the pumping.</p>
+<div class="card">
+<p style="font-size:14.5px">A bladed wheel spins inside a round casing, mounted off centre. Water gets slung out to the wall and forms a spinning ring, and because the wheel sits off centre, the pockets of gas trapped between the blades and the water grow on one side and shrink on the other. Growing pockets suck gas in. Shrinking pockets squeeze it out. The water is the piston, and it never wears out.</p>
+<div class="demo">
+<div class="demo-row"><span style="flex:0 0 130px">Speed</span><input type="range" id="lr_s" min="0" max="3" value="1.2" step="0.05"></div>
+<canvas id="lr_cv" class="lawcv" style="height:250px"></canvas>
+<div class="demo-out"><b style="color:var(--green)">Green port</b>: pockets growing, gas pulled in. <b style="color:var(--accent)">Orange port</b>: pockets pinched shut, gas pushed out, with the blade tips dipping back into the ring to seal each pocket.</div>
+</div>
+<div class="try">Try this: slow the slider right down and follow one pocket of blue gas all the way round. It fills out on the green side, gets pinched smaller and smaller as it comes past the top, and empties out on the orange side. That single lap is the whole pump.</div>
+<p style="font-size:13.5px;color:var(--soft)">At work: the ring happily swallows the vapour, dirt and flammable gas that kills dry machines, which is why the Which machine tab reaches for a liquid ring whenever the gas is nasty. The price is the seal water system, and most of the Find-the-fault tree is really about keeping that water right.</p>
+</div>
+</section><section class="page" id="dt"><div class="pgh"><h2>Discharge temperature</h2><button class="q" onclick="hp('ab_dt')">?</button></div>
+<div class="about" id="ab_dt">
+<div class="ar"><b>What it is</b>How hot the gas comes out after being squeezed, if nothing carries the heat away.</div>
+<div class="ar"><b>Why it matters</b>Squeezing a gas warms it, and the harder the squeeze the hotter it leaves. A dry machine runs close to this figure, so it decides whether the job needs an aftercooler, and whether the downstream pipe, hoses and filters can take the heat. A liquid ring machine runs far cooler, because the ring soaks the heat up as it compresses.</div>
+<div class="ar"><b>Where you would use it</b>A blower is quoted at half a bar of boost. This tells you roughly how hot the delivery air arrives, before the customer finds out from a melted filter sock.</div>
+<span class="law">Uses: Adiabatic compression</span></div>
+<div class="card"><h3>Fill these in</h3><button class="exbtn" onclick="ex('dt')">Insert example</button><button class="clrbtn" onclick="clr('dt')">Clear</button>
+<div class="fld"><div class="fh"><label>Gas temperature at the inlet</label><button class="q" onclick="hp('h_dt_t')">?</button></div><div class="help" id="h_dt_t">How hot the gas is as it enters the machine.</div><div class="ctrl"><input type="number" id="dt_t_n" placeholder="number"><select id="dt_t_u" data-g="temp" data-du="0"></select></div></div>
+<div class="fld"><div class="fh"><label>Inlet pressure</label><button class="q" onclick="hp('h_dt_p1')">?</button></div><div class="help" id="h_dt_p1">Where the gas enters. Pick what your reading is: Gauge (above air), Absolute (from full vacuum), or Vacuum (below air). Always type a plain positive number, the menu tells the tool which way it counts. The tool sorts out the rest using the air pressure you set.</div><div class="ctrl"><input type="number" id="dt_p1_n" placeholder="number"><select id="dt_p1_u" data-g="pressure" data-du="0"></select><select id="dt_p1_r" data-ref="g"></select></div></div>
+<div class="fld"><div class="fh"><label>Discharge pressure</label><button class="q" onclick="hp('h_dt_p2')">?</button></div><div class="help" id="h_dt_p2">Where it pushes out to, on the same choices as above.</div><div class="ctrl"><input type="number" id="dt_p2_n" placeholder="number"><select id="dt_p2_u" data-g="pressure" data-du="0"></select><select id="dt_p2_r" data-ref="g"></select></div></div>
+<div class="fld"><div class="fh"><label>Air pressure where you are</label><button class="q" onclick="hp('h_dt_air')">?</button></div><div class="help" id="h_dt_air">The air pressure where you are. About 101 kilopascals at sea level, near 95 at 500 metres up, near 90 at 1000 metres. The tool uses it to switch between gauge and absolute.</div><div class="ctrl"><input type="number" id="dt_air_n" placeholder="number"><select id="dt_air_u" data-g="pressure" data-du="0"></select></div></div>
+<div class="fld"><div class="fh"><label>Gas</label><button class="q" onclick="hp('h_dt_k')">?</button></div><div class="help" id="h_dt_k">Each gas warms a different amount for the same squeeze, set by its heat capacity ratio k. Air and nitrogen are 1.40; carbon dioxide warms less at 1.29.</div><div class="ctrl"><select id="dt_k" style="flex:1 1 100%"><option value="1.40">Air or nitrogen (k = 1.40)</option><option value="1.29">Carbon dioxide (k = 1.29)</option><option value="1.31">Methane (k = 1.31)</option><option value="1.33">Water vapour (k = 1.33)</option><option value="1.66">Helium or argon (k = 1.66)</option></select></div></div>
+</div>
+<div class="card"><h3>Answer</h3>
+<div class="res"><div class="fh"><span class="res-lab" style="margin:0">Compression ratio</span></div><div class="ctrl"><span class="res-v" id="dt_ratio">&mdash;</span><span class="fu">to 1</span></div></div>
+<div class="res big"><div class="fh"><span class="res-lab" style="margin:0">Discharge temperature, no cooling</span><button class="q" onclick="hp('hy_dt_out')">?</button></div><div class="help" id="hy_dt_out">The worst case, with none of the heat carried away. A dry blower or claw lands near this; real machines with cooling land below it; a liquid ring far below it.</div><div class="ctrl"><span class="res-v" id="dt_out_v" data-g="temp">&mdash;</span><select id="dt_out_u2" data-g="temp" data-du="0"></select></div></div>
+<div class="res"><div class="fh"><span class="res-lab" style="margin:0">Temperature rise</span></div><div class="ctrl"><span class="res-v" id="dt_rise">&mdash;</span><span class="fu">degrees Celsius hotter</span></div></div>
+</div>
+<div class="means" id="dt_m">Fill in the boxes and this explains your answer.</div>
+<details><summary>Show the math</summary><div class="math"><div class="formula">T<sub>out</sub> = T<sub>in</sub> &times; r<sup>(k&minus;1)/k</sup><small>temperatures in Kelvin &middot; r = discharge / inlet pressure, both absolute</small></div><div class="plug" id="mx_dt">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: adiabatic (isentropic) compression temperature rise, per Giampaolo, Compressor Handbook.</p></div></details>
+</section><section class="page" id="ck"><div class="pgh"><h2>Commissioning checklist</h2><button class="q" onclick="hp('ab_ck')">?</button></div>
+<div class="about" id="ab_ck">
+<div class="ar"><b>What it is</b>The walk-round for starting a liquid ring vacuum pump: before power, then the seal water, then the first run. Tap each item as you clear it.</div>
+<div class="ar"><b>Why it matters</b>Nearly every early failure in the Find-the-fault tree &mdash; flooding, running dry, wrong rotation, cavitation &mdash; would have been caught by one of these checks before it cost a rotor.</div>
+<div class="ar">Ticks are saved on this phone, so the list survives closing the app. Reset it for the next machine.</div>
+<span class="law">Based on: Nash and SIHI installation and troubleshooting guidance</span></div>
+<div class="ckbar"><div id="ck_fill"></div></div><div class="ckpct" id="ck_pct"></div>
+<div id="ck_box"></div>
+<button class="clrbtn" onclick="ckReset()" style="margin:6px 0 0;margin-left:0">Reset the list</button>
 </section></main><script>"use strict";
 var G={
  pressure:[["kilopascals (kPa)",1],["millibar (mbar)",0.1],["torr (mmHg)",0.1333224],["inches of mercury (inHg)",3.386389]],
@@ -738,6 +793,13 @@ function recalc(){
    M("mp_m","Fill in the boxes and this explains your answer. It needs the job type, a working pressure and a flow.");
   }
  })();
+ // DISCHARGE TEMPERATURE
+ (function(){var B=airOf("dt_air");var t=readUnit("dt_t","temp"),p1=readPress("dt_p1",B),p2=readPress("dt_p2",B),k=+gs("dt_k")||1.4;
+  var r=p2/p1,T1=t+273.15,T2=T1*Math.pow(r,(k-1)/k),out=T2-273.15,rise=T2-T1;
+  var bad=isFinite(r)&&(p1<=0||r<1);if(bad){r=NaN;out=NaN;rise=NaN;}
+  showN("dt_ratio",r);showU("dt_out",out,"temp");showN("dt_rise",rise);
+  PLG("mx_dt",isFinite(out),"<b>"+fmtA(T2)+" K ("+fmtA(out)+" &deg;C)</b> = "+fmtA(T1)+" &times; "+fmtA(r)+"<sup>("+k+" &minus; 1) / "+k+"</sup>");
+  M("dt_m",bad?"The discharge pressure must be higher than the inlet pressure, both measured from a full vacuum. Check the two pressures and their gauge, absolute or vacuum settings.":isFinite(out)?("Squeezed "+b(r)+" times tighter, the gas leaves at about "+b(out)+" degrees Celsius, "+b(rise)+" degrees hotter than it went in, if nothing carries the heat away. A dry blower or claw runs near this figure; a liquid ring machine runs far cooler because the ring soaks up the heat as it squeezes."+(out>140?" <b>That is hot enough to need an aftercooler or a two stage machine. Flag it on the quote.</b>":"")):"Fill in the boxes and this explains your answer.");})();
  // DEMOS
  demos();
 }
@@ -892,8 +954,48 @@ function drawDalton(){
  drawBalls(ctx,DA_W,"#EC4899");
 }
 
+// Liquid ring pump cross-section: eccentric rotor, water ring against the casing,
+// gas pockets (blue dots) growing on the suction side and pinched shut at discharge.
+var LRA=0;
+function drawLR(){
+ var f=fitCanvas(document.getElementById("lr_cv"));if(!f)return;
+ var sp=gv("lr_s");if(isNaN(sp))sp=1.2;
+ LRA+=sp*0.02;
+ var cx=f.W/2,cy=f.H/2,R=Math.min(f.W,f.H)/2-8;
+ var e=R*0.25,rh=R*0.30,rb=R*0.71,Ri=R*0.48,ry=cy-e;
+ var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
+ // casing interior filled with water, gas space (circle about the casing centre) on top
+ ctx.beginPath();ctx.arc(cx,cy,R,0,6.2832);ctx.fillStyle="#BFD9E4";ctx.fill();
+ ctx.beginPath();ctx.arc(cx,cy,Ri,0,6.2832);ctx.fillStyle="#F6F3EA";ctx.fill();
+ // gas pockets: dots between hub and the ring surface, crowding as the pocket shrinks
+ var NB=10,i,a,am,tl,L,d,k2;
+ for(i=0;i<NB;i++){
+  am=LRA+(i+0.5)*6.2832/NB;
+  tl=e*Math.sin(am)+Math.sqrt(Ri*Ri-e*e*Math.cos(am)*Math.cos(am));
+  L=Math.min(tl,rb)-rh-4;
+  if(L>7){ctx.fillStyle="#3B82F6";
+   for(k2=0;k2<3;k2++){d=rh+4+(0.22+k2*0.28)*L;
+    ctx.beginPath();ctx.arc(cx+Math.cos(am)*d,ry+Math.sin(am)*d,3.1,0,6.2832);ctx.fill();}}
+ }
+ // blades and hub
+ ctx.strokeStyle="#5B6770";ctx.lineWidth=3;ctx.lineCap="round";
+ for(i=0;i<NB;i++){a=LRA+i*6.2832/NB;
+  ctx.beginPath();ctx.moveTo(cx+Math.cos(a)*rh,ry+Math.sin(a)*rh);ctx.lineTo(cx+Math.cos(a)*rb,ry+Math.sin(a)*rb);ctx.stroke();}
+ ctx.beginPath();ctx.arc(cx,ry,rh,0,6.2832);ctx.fillStyle="#43525B";ctx.fill();
+ // translucent ring water over the blade tips, then the casing wall
+ ctx.beginPath();ctx.arc(cx,cy,R,0,6.2832);ctx.arc(cx,cy,Ri,0,6.2832,true);ctx.fillStyle="rgba(60,130,165,.55)";ctx.fill();
+ ctx.beginPath();ctx.arc(cx,cy,R,0,6.2832);ctx.strokeStyle="#43525B";ctx.lineWidth=4;ctx.stroke();
+ // ports beside the hub: suction where pockets grow, discharge where they shrink
+ ctx.lineWidth=6;ctx.lineCap="butt";
+ ctx.strokeStyle="#2E7D52";ctx.beginPath();ctx.arc(cx,ry,rh+8,-0.85,0.85);ctx.stroke();
+ ctx.strokeStyle="#BF4E10";ctx.beginPath();ctx.arc(cx,ry,rh+8,2.29,3.99);ctx.stroke();
+ ctx.font="700 11px "+"-apple-system,sans-serif";
+ ctx.fillStyle="#2E7D52";ctx.textAlign="center";ctx.fillText("gas in",cx+rh+8,ry-rh-2);
+ ctx.fillStyle="#BF4E10";ctx.fillText("gas out",cx-rh-8,ry-rh-2);
+ ctx.fillStyle="#3d4f55";ctx.fillText("water ring",cx,cy+(Ri+R)/2+4);
+}
 function gasLoop(){
- drawIntro();drawBoyle();drawCharles();drawGL();drawCombined();drawIdeal();drawDalton();
+ drawIntro();drawBoyle();drawCharles();drawGL();drawCombined();drawIdeal();drawDalton();drawLR();
  if(window.requestAnimationFrame)requestAnimationFrame(gasLoop);
 }
 if(window.requestAnimationFrame)requestAnimationFrame(gasLoop);
@@ -952,15 +1054,16 @@ var EX={
  hl:{hl_q_n:175,hl_t1_n:35,hl_t2_n:40.4},
  mw:{mw_q_n:18000,mw_q_u:"4",mw_t1_n:95,mw_t1_u:"1",mw_t2_n:85,mw_t2_u:"1",mw_cy_n:4,mw_f_n:0.85,mw_dr_n:0.2,mw_ev_u2:"4",mw_dl_u2:"4",mw_bd_u2:"4",mw_mk_u2:"4"},
  ps:{ps_q_n:300,ps_v_n:60},
- cw:{cw_m_n:12100,cw_mu_n:1.54,cw_dk_n:45,cw_dm_n:509,cw_l_n:184,cw_e_n:7,cw_t_n:1,cw_fv_n:0,cw_sv_n:0,cw_sd_n:0,cw_o_n:0}
+ cw:{cw_m_n:12100,cw_mu_n:1.54,cw_dk_n:45,cw_dm_n:509,cw_l_n:184,cw_e_n:7,cw_t_n:1,cw_fv_n:0,cw_sv_n:0,cw_sd_n:0,cw_o_n:0},
+ dt:{dt_t_n:30,dt_p1_n:20,dt_p1_r:"v",dt_p2_n:0,dt_p2_r:"g",dt_air_n:101.3}
 };
 function ex(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(e)e.value=m[k];}recalc();}
 function clr(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(!e)continue;if(e.tagName==="SELECT"){var d=e.getAttribute("data-ref");if(d)e.value=d;}else e.value="";}recalc();}
 function hp(id){var e=document.getElementById(id);if(e)e.classList.toggle("open");}
 window.ex=ex;window.clr=clr;window.hp=hp;window.show=show;
 
-var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the gas laws",learn_intro:"What a gas really is",learn_boyle:"Boyle's law",learn_charles:"Charles's law",learn_gl:"Gay-Lussac's law",learn_combined:"The combined gas law",learn_ideal:"The ideal gas law",learn_dalton:"Dalton's law",fc:"Normal / Actual flow",vac:"Vacuum pump sizing",cmp:"Compressor sizing",pc:"Conveying sizing",mp:"Which machine",vap:"Vapour & wet gas",pd:"Pump-down time",lk:"Leak check",pl:"Pipe loss",pw:"Power & motor current",cv:"Unit converter",ref:"Reference tables",orf:"Orifice sizing",hl:"Heat load, water",mw:"Cooling tower make-up",cw:"Conveying step-by-step",cat_learn:"Play and learn",cat_size:"Size it",cat_site:"On-site checks",ts:"Find the fault",ps:"Pre-separator sizing"};
-var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size"};
+var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the gas laws",learn_intro:"What a gas really is",learn_boyle:"Boyle's law",learn_charles:"Charles's law",learn_gl:"Gay-Lussac's law",learn_combined:"The combined gas law",learn_ideal:"The ideal gas law",learn_dalton:"Dalton's law",fc:"Normal / Actual flow",vac:"Vacuum pump sizing",cmp:"Compressor sizing",pc:"Conveying sizing",mp:"Which machine",vap:"Vapour & wet gas",pd:"Pump-down time",lk:"Leak check",pl:"Pipe loss",pw:"Power & motor current",cv:"Unit converter",ref:"Reference tables",orf:"Orifice sizing",hl:"Heat load, water",mw:"Cooling tower make-up",cw:"Conveying step-by-step",cat_learn:"Play and learn",cat_size:"Size it",cat_site:"On-site checks",ts:"Find the fault",ps:"Pre-separator sizing",lr:"Inside a liquid ring pump",dt:"Discharge temperature",ck:"Commissioning checklist"};
+var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site"};
 var CUR="home";
 function goBack(){show(PARENT[CUR]||"home");}
 function show(id){
@@ -1051,6 +1154,50 @@ function tsRender(){var n=TS[TSTK[TSTK.length-1]];var e=document.getElementById(
 function tsGo(id){TSTK.push(id);tsRender();}
 function tsBack(){if(TSTK.length>1)TSTK.pop();tsRender();}
 function tsReset(){TSTK=["start"];tsRender();}
+
+// COMMISSIONING CHECKLIST: content mirrors the troubleshooter's rules
+// (0.7 bar orifice, 0.35 bar alarm, drain to centreline, 10-20 drops packing).
+// Ticks persist in localStorage so the list survives closing the app.
+var CK=[
+ {t:"Before power",items:[
+  "Power locked out; pump turns freely by hand",
+  "Rotation direction checked by bumping the motor: matches the arrow on the casing",
+  "Coupling or belts aligned and tensioned, guards back on",
+  "Pump drains to shaft centreline when stopped, so it never starts flooded",
+  "Inlet line slopes to the pump with no low pockets that collect liquid",
+  "Inlet screen or strainer fitted and clean",
+  "Flanges, gaskets and drain plugs tight"]},
+ {t:"Seal water",items:[
+  "Seal water line connected, with the orifice or restrictor fitted",
+  "About 0.7 bar supply pressure at the orifice",
+  "Water is cool: the deeper the vacuum, the cooler it must be",
+  "Low seal-water-pressure alarm or interlock proven, at about 0.35 bar",
+  "Separator drain or drop-leg falls clean to the seal pit, no pockets"]},
+ {t:"First run",items:[
+  "Started with seal water flowing; no rattling (cavitation) or groaning (flooding)",
+  "Vacuum at the pump inlet compared with the process gauge: no big gap",
+  "Amps on all three phases checked against the nameplate",
+  "Seal water in and out temperatures recorded",
+  "Packing dripping 10 to 20 drops a minute (that is correct, not a leak)",
+  "Readings filed: vacuum, amps, rpm, water flow and temperatures"]}
+];
+var CKST=[];try{CKST=JSON.parse(localStorage.getItem("vt_ck")||"[]")||[];}catch(err){CKST=[];}
+function ckRender(){var box=document.getElementById("ck_box");if(!box)return;
+ var h="",idx=0,n=0,done=0,i,j;
+ for(i=0;i<CK.length;i++){var s=CK[i],sd=0,rows="";
+  for(j=0;j<s.items.length;j++){var on=!!CKST[idx];if(on){done++;sd++;}
+   rows+='<button class="ckitem'+(on?" done":"")+'" onclick="ckGo('+idx+')"><span class="box">'+(on?"&#10003;":"")+'</span><span class="txt">'+s.items[j]+'</span></button>';
+   idx++;n++;}
+  h+='<div class="ckh"><span>'+s.t+'</span><span>'+sd+' of '+s.items.length+'</span></div>'+rows;
+ }
+ box.innerHTML=h;
+ var f=document.getElementById("ck_fill");if(f)f.style.width=(n?done/n*100:0)+"%";
+ var p=document.getElementById("ck_pct");if(p)p.textContent=(done===n&&n)?("All "+n+" done. Ready to hand over."):(done+" of "+n+" done");
+}
+function ckGo(i){CKST[i]=!CKST[i];try{localStorage.setItem("vt_ck",JSON.stringify(CKST));}catch(err){}ckRender();}
+function ckReset(){CKST=[];try{localStorage.removeItem("vt_ck");}catch(err){}ckRender();}
+window.ckGo=ckGo;window.ckReset=ckReset;
+ckRender();
 
 // populate selects
 [].forEach.call(document.querySelectorAll("select[data-g]"),function(s){
