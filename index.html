@@ -1381,7 +1381,7 @@ for(var exk in EX_LAW)renderExample(exk);
 // BACKGROUND BUBBLES
 (function(){
  var cv=document.getElementById("bgbub");if(!cv||!cv.getContext)return;
- var ctx=cv.getContext("2d"),BB=[],W=0,H=0,MODE="free",MG=60,RETURN=0;
+ var ctx=cv.getContext("2d"),BB=[],W=0,H=0,MODE="free",MG=60,MGT=60,RETURN=0;
  var still=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
  var HUES=[[29,90,120],[46,125,82],[191,78,16]];
  function seed(){BB=[];var n=1000;
@@ -1392,26 +1392,33 @@ for(var exk in EX_LAW)renderExample(exk);
    BB.push({x:r+Math.random()*Math.max(1,W-2*r),y:r+Math.random()*Math.max(1,H-2*r),r:r,dx:Math.cos(a)*sp,dy:Math.sin(a)*sp,s0:sp,out:false,c:"rgba("+h[0]+","+h[1]+","+h[2]+","+o+")"});}}
  function size(){var d=Math.min(window.devicePixelRatio||1,2);W=window.innerWidth;H=window.innerHeight;
   MG=Math.max(23,W*0.07);
+  var hdr=document.querySelector("header");
+  MGT=Math.max(MG,(hdr?hdr.offsetHeight:70)+14);
   cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);seed();if(still)paint();}
  function paint(){ctx.clearRect(0,0,W,H);
   for(var i=0;i<BB.length;i++){var b=BB[i];ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.2832);ctx.fillStyle=b.c;ctx.fill();}}
- // On tool pages the bubbles are drawn to the left/right margins like a
- // magnet, hugging in tight to the border and settling to a slow drift
- // there; height stays free so they still drift up and down. Back on a
- // menu page the pull releases: a short outward boost fans them back
- // across the whole screen quickly, then they settle to normal drift.
+ // On tool pages the bubbles are drawn to whichever screen border is
+ // nearest -- left, right, top or bottom -- like a magnet, hugging in
+ // tight and settling to a slow drift along that edge. Back on a menu
+ // page the pull releases: a short outward boost fans them back out from
+ // every angle, then they settle to normal drift.
  function step(){var boost=RETURN>0?1+(RETURN/100)*4.5:1;if(RETURN>0)RETURN--;
   for(var i=0;i<BB.length;i++){var b=BB[i];
   b.x+=b.dx*(MODE==="free"?boost:1);b.y+=b.dy*(MODE==="free"?boost:1);
   if(MODE==="edge"){
-   var inC=b.x>MG&&b.x<W-MG;
+   var inC=b.x>MG&&b.x<W-MG&&b.y>MGT&&b.y<H-MG;
    if(inC){
-    if(b.out){var dl=b.x-MG,dr=W-MG-b.x;
-     if(dl<dr){b.x=MG;b.dx=-Math.abs(b.dx);}
-     else{b.x=W-MG;b.dx=Math.abs(b.dx);}
-    }else{var l2=b.x,r2=W-b.x;
-     if(l2<r2)b.dx-=0.007;else b.dx+=0.007;
-     var cap=Math.max(0.3,b.s0*3.2);if(b.dx>cap)b.dx=cap;else if(b.dx<-cap)b.dx=-cap;
+    var dl=b.x-MG,dr=(W-MG)-b.x,dt=b.y-MGT,db=(H-MG)-b.y,mn=Math.min(dl,dr,dt,db);
+    if(b.out){
+     if(mn===dl){b.x=MG;b.dx=-Math.abs(b.dx);}
+     else if(mn===dr){b.x=W-MG;b.dx=Math.abs(b.dx);}
+     else if(mn===dt){b.y=MGT;b.dy=-Math.abs(b.dy);}
+     else{b.y=H-MG;b.dy=Math.abs(b.dy);}
+    }else{var cap=Math.max(0.3,b.s0*3.2);
+     if(mn===dl){b.dx-=0.007;if(b.dx<-cap)b.dx=-cap;}
+     else if(mn===dr){b.dx+=0.007;if(b.dx>cap)b.dx=cap;}
+     else if(mn===dt){b.dy-=0.007;if(b.dy<-cap)b.dy=-cap;}
+     else{b.dy+=0.007;if(b.dy>cap)b.dy=cap;}
     }
    }else{b.out=true;
     var s2=Math.sqrt(b.dx*b.dx+b.dy*b.dy);
