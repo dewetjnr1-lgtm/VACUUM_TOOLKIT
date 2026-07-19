@@ -1388,7 +1388,7 @@ for(var exk in EX_LAW)renderExample(exk);
   for(var i=0;i<n;i++){var big=Math.random()<0.07;
    var r=big?3.5+Math.random()*5:0.7+Math.random()*2.4;
    var sp=0.05+Math.random()*0.09,a=Math.random()*6.2832;
-   var h=HUES[i%3],o=(0.075+Math.random()*0.105).toFixed(3);
+   var h=HUES[i%3],o=(0.20+Math.random()*0.24).toFixed(3);
    BB.push({x:r+Math.random()*Math.max(1,W-2*r),y:r+Math.random()*Math.max(1,H-2*r),r:r,dx:Math.cos(a)*sp,dy:Math.sin(a)*sp,s0:sp,out:false,c:"rgba("+h[0]+","+h[1]+","+h[2]+","+o+")"});}}
  function size(){var d=Math.min(window.devicePixelRatio||1,2);W=window.innerWidth;H=window.innerHeight;
   MG=Math.max(23,W*0.07);
