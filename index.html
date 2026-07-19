@@ -133,6 +133,9 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="bubs">
 <button class="bub c1" onclick="show('learn')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="7.5" r="2.6"/><circle cx="17" cy="9.5" r="2.1"/><circle cx="11.5" cy="17" r="2.9"/><path d="M10 8.1l4.9 1M15.9 11.3l-2.9 3.4"/></svg></span><span>Learn the gas laws</span></button>
 <button class="bub c1" onclick="show('lr')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="10.2" r="2.1"/><path d="M12 10.2V4.6M12 10.2l-5 3.4M12 10.2l5 3.4"/><path d="M5.3 16.2c2.1 1.6 4.3 2.4 6.7 2.4s4.6-.8 6.7-2.4" opacity=".65"/></svg></span><span>Inside a liquid ring pump</span></button>
+<button class="bub c1" onclick="show('learn_fan')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M12 10c.5-3 1.6-5 3.5-6.2C14.6 6 14 7.8 13.4 10.6M14 12c2.8 1 4.6 2.4 5.2 4.5C16.8 15.4 15 14.6 13.4 13.4M10 13c-2.3 1.9-4.4 2.7-6.6 2.2C5.7 13.5 7.5 12.6 10.3 12.4"/></svg></span><span>Speed and the fan laws</span></button>
+<button class="bub c1" onclick="show('learn_heat')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.2 4.2a1.8 1.8 0 0 1 3.6 0v8.4a4.2 4.2 0 1 1-3.6 0Z"/><circle cx="12" cy="16.4" r="1.7" fill="currentColor" stroke="none"/><path d="M12 14.2V9.5"/></svg></span><span>How heat load works</span></button>
+<button class="bub c1" onclick="show('learn_cav')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="13" r="3.2"/><circle cx="16" cy="9" r="2.2"/><circle cx="16.5" cy="15.5" r="1.6"/></svg></span><span>Why seal water stays cool</span></button>
 <button class="bub c1" onclick="show('cv')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h13M14 4.5 17.5 8 14 11.5M20 16H7M10 12.5 6.5 16l3.5 3.5"/></svg></span><span>Unit converter</span></button>
 <button class="bub c1" onclick="show('ref')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M4 10h16M10.5 10v9"/></svg></span><span>Reference tables</span></button>
 </div>
@@ -287,10 +290,10 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Temperature</span><input type="range" id="da_t" min="5" max="60" value="40" step="1"></div>
 <canvas id="da_cv" class="lawcv"></canvas>
-<div style="display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--line);margin-top:10px"><div id="da_dbar" style="background:#3B82F6;width:92.7%"></div><div id="da_wbar" style="background:#EC4899;width:7.3%"></div></div>
-<div class="demo-out">At <b id="da_tt">40</b> &deg;C: dry gas pushes <b id="da_d">93.9</b> kPa (blue balls), water pushes <b id="da_w">7.4</b> kPa (pink balls), together 101.3. Water's share: <b id="da_sh">7.3</b> percent</div>
+<div style="display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--line);margin-top:10px"><div id="da_dbar" style="background:#1D5A78;width:92.7%"></div><div id="da_wbar" style="background:#BF4E10;width:7.3%"></div></div>
+<div class="demo-out">At <b id="da_tt">40</b> &deg;C: dry gas pushes <b id="da_d">93.9</b> kPa (teal balls), water pushes <b id="da_w">7.4</b> kPa (orange balls), together 101.3. Water's share: <b id="da_sh">7.3</b> percent</div>
 </div>
-<div class="try">Try this: slide up to 60 &deg;C and watch pink water balls join the crowd as their share climbs to nearly a fifth of the whole gas. That is why hot saturated gas needs a noticeably bigger pump than the dry figure suggests.</div>
+<div class="try">Try this: slide up to 60 &deg;C and watch orange water balls join the crowd as their share climbs to nearly a fifth of the whole gas. That is why hot saturated gas needs a noticeably bigger pump than the dry figure suggests.</div>
 <p style="font-size:13.5px;color:var(--soft)">At work: this is exactly how the vapour and wet gas tab splits a saturated flow into dry gas and water.</p>
 <div class="ex-card" id="ex_dalton"></div></div>
 </section><section class="page" id="fc"><div class="pgh"><h2>Normal / Actual flow</h2><button class="q" onclick="hp('ab_fc')">?</button></div><div class="about" id="ab_fc"><div class="ar">Also called Standard to actual, or Nm3/h to m3/h. This is the calculator that turns the Normal cubes on a datasheet into real cubes.</div><div class="ar"><b>What it is</b>Gas is squishy. The same amount of it takes up more or less room depending on how warm it is and how much pressure it is under.</div><div class="ar"><b>Why it matters</b>A datasheet describes a gas flow at one agreed set of conditions, called Normal or Standard. A pump deals with the gas as it really is at the inlet, where it may be warmer or under vacuum and take up a different amount of room. A pump curve is drawn in the real amount of room, so you convert first or you size the wrong pump.</div><div class="ar"><b>Where you would use it</b>A customer asks for 1000 cubic metres an hour at the Normal reference, but the gas is at 40 degrees and under a little vacuum. Before you pick a pump you turn that into the real room it takes up, which might be 1300. You size on the 1300.</div><span class="law">Uses: Combined gas law</span></div><div class="card"><h3>Fill these in</h3><button class="exbtn" onclick="ex('fc')">Insert example</button><button class="clrbtn" onclick="clr('fc')">Clear</button><div class="fld"><div class="fh"><label>Reference temperature</label><button class="q" onclick="hp('h_fc_ref')">?</button></div><div class="help" id="h_fc_ref">The agreed conditions the datasheet figure is quoted at. Normal is 0 degrees, Standard is 15 degrees.</div><div class="ctrl"><select id="fc_ref" style="flex:1 1 100%"><option value="0">Normal = 0 &deg;C</option><option value="15">Standard = 15 &deg;C</option></select></div></div><div class="fld"><div class="fh"><label>Flow value</label><button class="q" onclick="hp('h_fc_flow')">?</button></div><div class="help" id="h_fc_flow">The Normal flow figure from the datasheet, usually Nm3/h.</div><div class="ctrl"><input type="number" id="fc_flow_n" placeholder="number"><select id="fc_flow_u" data-g="flowIn" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Gas pressure at the inlet</label><button class="q" onclick="hp('h_fc_p')">?</button></div><div class="help" id="h_fc_p">The pressure where the gas enters the pump. Pick what your reading is: Gauge (above air), Absolute (from full vacuum), or Vacuum (below air). Always type a plain positive number, the menu tells the tool which way it counts. The tool sorts out the rest using the air pressure you set.</div><div class="ctrl"><input type="number" id="fc_p_n" placeholder="number"><select id="fc_p_u" data-g="pressure" data-du="0"></select><select id="fc_p_r" data-ref="g"></select></div></div><div class="fld"><div class="fh"><label>Gas temperature at the inlet</label><button class="q" onclick="hp('h_fc_t')">?</button></div><div class="help" id="h_fc_t">How hot the gas is as it enters. Warmer gas takes more room.</div><div class="ctrl"><input type="number" id="fc_t_n" placeholder="number"><select id="fc_t_u" data-g="temp" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Air pressure where you are</label><button class="q" onclick="hp('h_fc_air')">?</button></div><div class="help" id="h_fc_air">The air pressure where you are. About 101 kilopascals at sea level, near 95 at 500 metres up, near 90 at 1000 metres. The tool uses it to switch between gauge and absolute.</div><div class="ctrl"><input type="number" id="fc_air_n" placeholder="number"><select id="fc_air_u" data-g="pressure" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Pressure lost in the inlet pipe</label><button class="q" onclick="hp('h_fc_loss')">?</button></div><div class="help" id="h_fc_loss">An allowance for pressure dropped before the pump. Leave blank for none.</div><div class="ctrl"><input type="number" id="fc_loss_n" placeholder="number"><select id="fc_loss_u" data-g="pressure" data-du="0"></select></div></div></div><div class="card"><h3>Answer</h3><div class="res"><div class="fh"><span class="res-lab" style="margin:0">Absolute inlet pressure (from full vacuum)</span></div><div class="ctrl"><span class="res-v" id="fc_pabs_v">&mdash;</span><select id="fc_pabs_u2" data-g="pressure" data-du="0"></select><select id="fc_pabs_r2" data-ref="a"></select></div></div><div class="res big"><div class="fh"><span class="res-lab" style="margin:0" id="fc_out_lab">Actual flow at the inlet (m3/h)</span><button class="q" onclick="hp('hy_fc_out')">?</button></div><div class="help" id="hy_fc_out">Actual flow (m3/h) is what a pump curve is drawn in, so it is the number you size on, not the datasheet's Normal figure. Switch the unit menu to Normal cubic metres per hour to see it back as the datasheet figure.</div><div class="ctrl"><span class="res-v" id="fc_out_v" data-g="flowN">&mdash;</span><select id="fc_out_u2" data-g="flowN" data-du="0"></select></div></div></div><div class="means" id="fc_m">Fill in the boxes and this explains your answer.</div><details><summary>Show the math</summary><div class="math"><div class="formula">Actual = Normal &times; (101.325 / P<sub>in</sub>) &times; (T<sub>in</sub> / T<sub>ref</sub>)<small>P<sub>in</sub> in kPa absolute, after pipe loss &middot; temperatures in Kelvin</small></div><div class="plug" id="mx_fc">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: combined gas law, DIN 1343 reference conditions, Busch technical manual.</p></div></details></section><section class="page" id="vac"><div class="pgh"><h2>Vacuum pump sizing</h2><button class="q" onclick="hp('ab_vac')">?</button></div><div class="about" id="ab_vac"><div class="ar"><b>What it is</b>Works out the real amount of gas a vacuum pump must move, from a flow figure on a datasheet.</div><div class="ar"><b>Why it matters</b>The deeper the vacuum, the more the gas swells, so the bigger the real flow the pump has to shift. Same idea as the flow converter, set up for a vacuum job, with room to allow for pressure lost in the inlet pipe.</div><div class="ar"><b>Where you would use it</b>A datasheet says move 1000 reference units at a 40 kilopascal vacuum. The real flow the pump sees is larger, and that larger number is what you size the pump on.</div><span class="law">Uses: Boyle's law and the combined gas law</span></div><div class="card"><h3>Fill these in</h3><button class="exbtn" onclick="ex('vac')">Insert example</button><button class="clrbtn" onclick="clr('vac')">Clear</button><div class="fld"><div class="fh"><label>Flow needed</label><button class="q" onclick="hp('h_vac_flow')">?</button></div><div class="help" id="h_vac_flow">The Normal flow (the datasheet's reference figure), usually Nm3/h.</div><div class="ctrl"><input type="number" id="vac_flow_n" placeholder="number"><select id="vac_flow_u" data-g="flowIn" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Vacuum level</label><button class="q" onclick="hp('h_vac_vac')">?</button></div><div class="help" id="h_vac_vac">How far below the surrounding air you are pulling, typed as a plain positive number. Switch the menu if your reading is gauge or absolute instead.</div><div class="ctrl"><input type="number" id="vac_vac_n" placeholder="number"><select id="vac_vac_u" data-g="pressure" data-du="0"></select><select id="vac_vac_r" data-ref="v"></select></div></div><div class="fld"><div class="fh"><label>Pressure lost in the inlet pipe</label><button class="q" onclick="hp('h_vac_loss')">?</button></div><div class="help" id="h_vac_loss">An allowance for inlet pipe loss. Leave blank for none.</div><div class="ctrl"><input type="number" id="vac_loss_n" placeholder="number"><select id="vac_loss_u" data-g="pressure" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Gas temperature</label><button class="q" onclick="hp('h_vac_t')">?</button></div><div class="help" id="h_vac_t">How hot the gas is as it enters.</div><div class="ctrl"><input type="number" id="vac_t_n" placeholder="number"><select id="vac_t_u" data-g="temp" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Air pressure where you are</label><button class="q" onclick="hp('h_vac_air')">?</button></div><div class="help" id="h_vac_air">The air pressure where you are. About 101 kilopascals at sea level, near 95 at 500 metres up, near 90 at 1000 metres. The tool uses it to switch between gauge and absolute.</div><div class="ctrl"><input type="number" id="vac_air_n" placeholder="number"><select id="vac_air_u" data-g="pressure" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Reference temperature</label></div><div class="ctrl"><select id="vac_ref" style="flex:1 1 100%"><option value="0">Normal = 0 &deg;C</option><option value="15">Standard = 15 &deg;C</option></select></div></div></div><div class="card"><h3>Answer</h3><div class="res"><div class="fh"><span class="res-lab" style="margin:0">Absolute inlet pressure (from full vacuum)</span></div><div class="ctrl"><span class="res-v" id="vac_pabs_v">&mdash;</span><select id="vac_pabs_u2" data-g="pressure" data-du="0"></select><select id="vac_pabs_r2" data-ref="a"></select></div></div><div class="res big"><div class="fh"><span class="res-lab" style="margin:0">Actual flow the pump must move (m3/h)</span><button class="q" onclick="hp('hy_vac_out')">?</button></div><div class="help" id="hy_vac_out">The Actual flow (m3/h) the pump must move &mdash; under vacuum the gas swells, so this is usually bigger than the datasheet's Normal figure. Size the pump on this. Switch the unit menu to Normal cubic metres per hour to see it back as the datasheet figure.</div><div class="ctrl"><span class="res-v" id="vac_out_v" data-g="flowN">&mdash;</span><select id="vac_out_u2" data-g="flowN" data-du="0"></select></div></div><div class="fh" style="margin-top:14px"><span class="res-lab" style="margin:0">Your duty point, find it on the maker's curve</span><button class="q" onclick="hp('hy_vac_duty')">?</button></div><div class="help" id="hy_vac_duty">A vacuum pump curve plots flow up the side against absolute inlet pressure along the bottom. This is your point on those axes: pick a model whose curve passes above it.</div><svg id="vac_duty" viewBox="0 0 360 225" style="width:100%;height:auto;display:block;margin-top:4px"></svg></div><div class="means" id="vac_m">Fill in the boxes and this explains your answer.</div><details><summary>Show the math</summary><div class="math"><div class="formula">Actual = Normal &times; (101.325 / P<sub>in</sub>) &times; (T<sub>in</sub> / T<sub>ref</sub>)<small>P<sub>in</sub> = air &minus; vacuum &minus; pipe loss, kPa absolute &middot; temperatures in Kelvin</small></div><div class="plug" id="mx_vac">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: combined gas law, DIN 1343 reference conditions, Busch technical manual.</p></div></details></section><section class="page" id="cmp"><div class="pgh"><h2>Compressor sizing</h2><button class="q" onclick="hp('ab_cmp')">?</button></div><div class="about" id="ab_cmp"><div class="ar"><b>What it is</b>Gives the two numbers a compressor curve needs: how much gas each machine draws in, and how hard it has to squeeze it.</div><div class="ar"><b>Why it matters</b>A compressor curve is read by flow up the side and discharge pressure along the bottom. This works both out, including an extra allowance for carbon dioxide, which a liquid ring machine handles less of.</div><div class="ar"><b>Where you would use it</b>A job needs gas pushed from a slight vacuum up to a higher pressure. You work out the squeeze and the real inlet flow, then find a model on the curve that covers the point.</div><span class="law">Uses: Boyle's law and the combined gas law</span></div><div class="card"><h3>Fill these in</h3><button class="exbtn" onclick="ex('cmp')">Insert example</button><button class="clrbtn" onclick="clr('cmp')">Clear</button><div class="fld"><div class="fh"><label>Flow per machine</label><button class="q" onclick="hp('h_cmp_flow')">?</button></div><div class="help" id="h_cmp_flow">How much gas each machine handles, from the datasheet, usually Nm3/h.</div><div class="ctrl"><input type="number" id="cmp_flow_n" placeholder="number"><select id="cmp_flow_u" data-g="flowIn" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Number of machines</label><button class="q" onclick="hp('h_cmp_n')">?</button></div><div class="help" id="h_cmp_n">How many run at the same time. Used only to add up the total.</div><div class="ctrl"><input type="number" id="cmp_n_n" placeholder="number"><span class="fu">count</span></div></div><div class="fld"><div class="fh"><label>Inlet pressure</label><button class="q" onclick="hp('h_cmp_p')">?</button></div><div class="help" id="h_cmp_p">Pressure where the gas enters. Pick what your reading is: Gauge (above air), Absolute (from full vacuum), or Vacuum (below air). Always type a plain positive number, the menu tells the tool which way it counts. The tool sorts out the rest using the air pressure you set.</div><div class="ctrl"><input type="number" id="cmp_p_n" placeholder="number"><select id="cmp_p_u" data-g="pressure" data-du="0"></select><select id="cmp_p_r" data-ref="g"></select></div></div><div class="fld"><div class="fh"><label>Inlet temperature</label><button class="q" onclick="hp('h_cmp_t')">?</button></div><div class="help" id="h_cmp_t">How hot the gas is as it enters.</div><div class="ctrl"><input type="number" id="cmp_t_n" placeholder="number"><select id="cmp_t_u" data-g="temp" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Discharge pressure</label><button class="q" onclick="hp('h_cmp_dp')">?</button></div><div class="help" id="h_cmp_dp">The pressure the machine must push out against. Pick what your reading is: Gauge (above air), Absolute (from full vacuum), or Vacuum (below air). Always type a plain positive number, the menu tells the tool which way it counts. The tool sorts out the rest using the air pressure you set.</div><div class="ctrl"><input type="number" id="cmp_dp_n" placeholder="number"><select id="cmp_dp_u" data-g="pressure" data-du="0"></select><select id="cmp_dp_r" data-ref="g"></select></div></div><div class="fld"><div class="fh"><label>Air pressure where you are</label><button class="q" onclick="hp('h_cmp_air')">?</button></div><div class="help" id="h_cmp_air">The air pressure where you are. About 101 kilopascals at sea level, near 95 at 500 metres up, near 90 at 1000 metres. The tool uses it to switch between gauge and absolute.</div><div class="ctrl"><input type="number" id="cmp_air_n" placeholder="number"><select id="cmp_air_u" data-g="pressure" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Pressure lost in the inlet pipe</label><button class="q" onclick="hp('h_cmp_loss')">?</button></div><div class="help" id="h_cmp_loss">Usually leave blank.</div><div class="ctrl"><input type="number" id="cmp_loss_n" placeholder="number"><select id="cmp_loss_u" data-g="pressure" data-du="0"></select></div></div><div class="fld"><div class="fh"><label>Reference temperature</label></div><div class="ctrl"><select id="cmp_ref" style="flex:1 1 100%"><option value="0">Normal = 0 &deg;C</option><option value="15">Standard = 15 &deg;C</option></select></div></div><div class="fld"><div class="fh"><label>Carbon dioxide allowance</label><button class="q" onclick="hp('h_cmp_co')">?</button></div><div class="help" id="h_cmp_co">Set to about 1.15 only when the gas is carbon dioxide. Otherwise leave at 1.</div><div class="ctrl"><input type="number" id="cmp_co_n" placeholder="number"><span class="fu">multiplier</span></div></div></div><div class="card"><h3>Answer</h3><div class="res big"><div class="fh"><span class="res-lab" style="margin:0">Compression ratio</span><button class="q" onclick="hp('hy_cmp_ratio')">?</button></div><div class="help" id="hy_cmp_ratio">How hard the machine squeezes the gas, the outlet pressure divided by the inlet pressure, both measured from a full vacuum. Why you care: a higher number means more power drawn, more heat in the discharge, and it pushes you toward a bigger machine or even a two stage one. It is the first thing that tells you whether a single machine can do the job at all. You use it to pick the right band on a compressor curve and to sanity check the motor size.</div><div class="ctrl"><span class="res-v" id="cmp_ratio">&mdash;</span><span class="fu">to 1</span></div></div><div class="res"><div class="fh"><span class="res-lab" style="margin:0">Absolute discharge pressure (from full vacuum)</span></div><div class="ctrl"><span class="res-v" id="cmp_dabs_v">&mdash;</span><select id="cmp_dabs_u2" data-g="pressure" data-du="0"></select><select id="cmp_dabs_r2" data-ref="a"></select></div></div><div class="res"><div class="fh"><span class="res-lab" style="margin:0">Actual flow per machine at the inlet (m3/h)</span><button class="q" onclick="hp('hy_cmp_act')">?</button></div><div class="help" id="hy_cmp_act">The Actual flow (the room the gas really takes up at the inlet), before the carbon dioxide allowance. Switch the unit menu to Normal cubic metres per hour to see it back as the datasheet figure.</div><div class="ctrl"><span class="res-v" id="cmp_act_v" data-g="flowN">&mdash;</span><select id="cmp_act_u2" data-g="flowN" data-du="0"></select></div></div><div class="res big"><div class="fh"><span class="res-lab" style="margin:0">Flow to read on the curve</span><button class="q" onclick="hp('hy_cmp_curve')">?</button></div><div class="help" id="hy_cmp_curve">The flow you find up the side of a compressor curve. Read across to the discharge pressure along the bottom, and whichever model line sits above that point can handle the duty. Switch the unit menu to Normal cubic metres per hour to see it as the datasheet figure.</div><div class="ctrl"><span class="res-v" id="cmp_curve_v" data-g="flowN">&mdash;</span><select id="cmp_curve_u2" data-g="flowN" data-du="0"></select></div></div><div class="res"><div class="fh"><span class="res-lab" style="margin:0">Total for all machines together</span></div><div class="ctrl"><span class="res-v" id="cmp_total_v" data-g="flowN">&mdash;</span><select id="cmp_total_u2" data-g="flowN" data-du="0"></select></div></div><div class="fh" style="margin-top:14px"><span class="res-lab" style="margin:0">Your duty point, find it on the maker's curve</span><button class="q" onclick="hp('hy_cmp_duty')">?</button></div><div class="help" id="hy_cmp_duty">A compressor curve plots flow up the side against discharge pressure along the bottom. This is your point on those axes: any model whose curve passes above it can do the job.</div><svg id="cmp_duty" viewBox="0 0 360 225" style="width:100%;height:auto;display:block;margin-top:4px"></svg></div><div class="means" id="cmp_m">Fill in the boxes and this explains your answer.</div><details><summary>Show the math</summary><div class="math"><div class="formula">Ratio = P<sub>out</sub> / P<sub>in</sub><small>both in kPa absolute</small></div><div class="plug" id="mx_cmp1">Your numbers appear here when the boxes are filled in.</div><div class="formula">Curve flow = Normal &times; (101.325 / P<sub>in</sub>) &times; (T<sub>in</sub> / T<sub>ref</sub>) &times; CO&#8322;<small>temperatures in Kelvin</small></div><div class="plug" id="mx_cmp2">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: combined gas law (DIN 1343, Busch technical manual); compression ratio per Giampaolo, Compressor Handbook.</p></div></details></section><section class="page" id="pc"><div class="pgh"><h2>Conveying sizing</h2><button class="q" onclick="hp('ab_pc')">?</button></div>
@@ -451,8 +454,51 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <canvas id="lr_cv" class="lawcv" style="height:250px"></canvas>
 <div class="demo-out"><b style="color:var(--green)">Green port</b>: pockets growing, gas pulled in. <b style="color:var(--accent)">Orange port</b>: pockets pinched shut, gas pushed out, with the blade tips dipping back into the ring to seal each pocket.</div>
 </div>
-<div class="try">Try this: slow the slider right down and follow one pocket of blue gas all the way round. It fills out on the green side, gets pinched smaller and smaller as it comes past the top, and empties out on the orange side. That single lap is the whole pump.</div>
+<div class="try">Try this: slow the slider right down and follow one pocket of teal gas all the way round. It fills out on the green side, gets pinched smaller and smaller as it comes past the top, and empties out on the orange side. That single lap is the whole pump.</div>
 <p style="font-size:13.5px;color:var(--soft)">At work: the ring happily swallows the vapour, dirt and flammable gas that kills dry machines, which is why the Which machine tab reaches for a liquid ring whenever the gas is nasty. The price is the seal water system, and most of the Find-the-fault tree is really about keeping that water right.</p>
+</div>
+</section><section class="page" id="learn_fan">
+<h2>Speed and the fan laws</h2>
+<p class="sub">Why a small speed change is a big deal.</p>
+<div class="card">
+<p style="font-size:14.5px">Spin a blower or pump faster and three things go up, but not by the same amount. This is the picture behind the <b>Speed change effect</b> calculator. Drag the speed and watch the three bars race apart:</p>
+<div class="demo">
+<div class="demo-row"><span style="flex:0 0 130px">Speed</span><input type="range" id="fan_s" min="50" max="150" value="100" step="1"></div>
+<canvas id="fan_cv" class="lawcv" style="height:210px"></canvas>
+<div class="demo-out">At <b id="fan_pct">100</b>% of the old speed: flow <b id="fan_q" style="color:#1D5A78">1.00&times;</b>, pressure <b id="fan_p" style="color:#2E7D52">1.00&times;</b>, power <b id="fan_w" style="color:#BF4E10">1.00&times;</b></div>
+</div>
+<div class="try">Try this: nudge the speed to 120%. Flow just follows along at 1.2 times, but pressure jumps to 1.44 and the power the motor must give leaps to 1.73. That is why a small speed rise can trip a motor, and a small speed drop saves a surprising amount of energy.</div>
+<div class="means" style="border-left-color:var(--teal)"><b style="color:var(--teal)">The rule:</b> flow follows speed, pressure follows speed <b>squared</b>, power follows speed <b>cubed</b>. Same idea whether you change a pulley, a gearbox or a variable-speed drive.</div>
+<p style="font-size:13.5px;color:var(--soft)">Put real numbers to it in the <b>Speed change effect</b> tab under Size it, and change a pulley pair in the <b>Belt &amp; pulley speed</b> tab.</p>
+</div>
+</section><section class="page" id="learn_heat">
+<h2>How heat load works</h2>
+<p class="sub">Water carrying heat away.</p>
+<div class="card">
+<p style="font-size:14.5px">A liquid ring pump makes heat, and the seal water carries it off. How much heat a water stream can carry comes down to two things: how much water flows, and how many degrees it warms up. Watch the water pick up heat as it passes:</p>
+<div class="demo">
+<div class="demo-row"><span style="flex:0 0 130px">Water flow</span><input type="range" id="heat_q" min="1" max="10" value="5" step="0.5"></div>
+<div class="demo-row"><span style="flex:0 0 130px">Warm-up</span><input type="range" id="heat_dt" min="1" max="15" value="5" step="0.5"></div>
+<canvas id="heat_cv" class="lawcv" style="height:180px"></canvas>
+<div class="demo-out">Water in cool, out warm by <b id="heat_dtv">5</b> &deg;C. Heat carried away: <b id="heat_kw" style="color:var(--accent)">—</b></div>
+</div>
+<div class="try">Try this: double the flow, then instead double the warm-up. Either one doubles the heat carried. That is the whole rule: heat = flow &times; how much it warms (&times; water's heat capacity).</div>
+<div class="means" style="border-left-color:var(--teal)"><b style="color:var(--teal)">The rule:</b> Heat (kW) = litres per second &times; 4.19 &times; degrees of warm-up. Cool water, or more of it, carries more heat.</div>
+<p style="font-size:13.5px;color:var(--soft)">Put real numbers to it in the <b>Heat load, water</b> tab under Size it.</p>
+</div>
+</section><section class="page" id="learn_cav">
+<h2>Why seal water must stay cool</h2>
+<p class="sub">Cavitation, and how to dodge it.</p>
+<div class="card">
+<p style="font-size:14.5px">Pull a hard enough vacuum and water starts to boil at room temperature. In a liquid ring pump those boiling bubbles collapse violently against the metal, sounding like marbles and slowly chewing the blades away. Warmer water boils more easily, so it cavitates sooner. Drag both sliders and watch:</p>
+<div class="demo">
+<div class="demo-row"><span style="flex:0 0 130px">Vacuum depth</span><input type="range" id="cav_v" min="0" max="98" value="60" step="1"></div>
+<div class="demo-row"><span style="flex:0 0 130px">Water temp</span><input type="range" id="cav_t" min="10" max="80" value="30" step="1"></div>
+<canvas id="cav_cv" class="lawcv" style="height:190px"></canvas>
+<div class="demo-out" id="cav_out">—</div>
+</div>
+<div class="try">Try this: set a deep vacuum, then slide the water temperature up. At some point the water starts to boil and the marbles rattle. Now cool the water back down and it settles. That is why the fix for cavitation is nearly always colder seal water.</div>
+<p style="font-size:13.5px;color:var(--soft)">At work: this is the noise the Find-the-fault tree calls cavitation, and why the pump-down and pre-separator tabs warn about seal water temperature.</p>
 </div>
 </section><section class="page" id="dt"><div class="pgh"><h2>Discharge temperature</h2><button class="q" onclick="hp('ab_dt')">?</button></div>
 <div class="about" id="ab_dt">
@@ -476,7 +522,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <details><summary>Show the math</summary><div class="math"><div class="formula">T<sub>out</sub> = T<sub>in</sub> &times; r<sup>(k&minus;1)/k</sup><small>temperatures in Kelvin &middot; r = discharge / inlet pressure, both absolute</small></div><div class="plug" id="mx_dt">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: adiabatic (isentropic) compression temperature rise, per Giampaolo, Compressor Handbook.</p></div></details>
 </section><section class="page" id="af"><div class="pgh"><h2>Speed change effect</h2><button class="q" onclick="hp('ab_af')">?</button></div>
 <div class="about" id="ab_af">
-<div class="ar"><b>What it is</b>What happens to flow, pressure and power when you run a blower or pump faster or slower.</div>
+<div class="ar"><b>What it is</b>What happens to flow, pressure and power when you run a blower or pump faster or slower. New to it? The <b>Speed and the fan laws</b> toy under Play and learn shows it moving.</div>
 <div class="ar"><b>Why it matters</b>Speed is a strong lever. Flow follows speed straight, but pressure follows the square and power follows the cube, so a small speed rise can push the motor well past its limit, and a small speed drop saves a surprising amount of power. Change a pulley (see the Belt &amp; pulley tab) or a drive setting and this shows what it does to the duty.</div>
 <div class="ar"><b>Where you would use it</b>A blower makes 1000 m3/h at 1450 rpm and you are thinking of speeding it to 1750. This shows the new flow, the new pressure, and the new power the motor must give.</div>
 <span class="law">Uses: The fan (affinity) laws</span></div>
@@ -922,7 +968,8 @@ function fitCanvas(cv){
  ctx.setTransform(dpr,0,0,dpr,0,0);
  return {ctx:ctx,W:w,H:h};
 }
-function mkBalls(n,W,H,r){var a=[];for(var i=0;i<n;i++)a.push({x:r+Math.random()*Math.max(1,W-2*r),y:r+Math.random()*Math.max(1,H-2*r),a:Math.random()*6.2832,r:r});return a;}
+var TPAL=[[29,90,120],[46,125,82],[191,78,16]]; // teal, green, orange -- same family as the background bubbles
+function mkBalls(n,W,H,r,hue){var a=[];for(var i=0;i<n;i++){var rr=r*(0.78+Math.random()*0.66);a.push({x:rr+Math.random()*Math.max(1,W-2*rr),y:rr+Math.random()*Math.max(1,H-2*rr),a:Math.random()*6.2832,r:rr,h:hue!=null?TPAL[hue]:TPAL[i%3]});}return a;}
 function stepBallsBox(balls,x0,y0,x1,y1,speed){
  var hits=0;
  for(var i=0;i<balls.length;i++){var b=balls[i];
@@ -934,9 +981,15 @@ function stepBallsBox(balls,x0,y0,x1,y1,speed){
  }
  return hits;
 }
-function drawBalls(ctx,balls,color){
- ctx.fillStyle=color;
- for(var i=0;i<balls.length;i++){ctx.beginPath();ctx.arc(balls[i].x,balls[i].y,balls[i].r,0,6.2832);ctx.fill();}
+// Soft two-layer discs in the background-bubble palette: a faint halo plus a
+// gentle core, so the toy particles read as the same family as the drifting
+// background bubbles rather than flat solid dots.
+function drawBalls(ctx,balls,hue){
+ var i,b,h;
+ for(i=0;i<balls.length;i++){b=balls[i];h=hue!=null?TPAL[hue]:b.h;
+  ctx.beginPath();ctx.arc(b.x,b.y,b.r*1.75,0,6.2832);ctx.fillStyle="rgba("+h[0]+","+h[1]+","+h[2]+",0.16)";ctx.fill();
+  ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.2832);ctx.fillStyle="rgba("+h[0]+","+h[1]+","+h[2]+",0.82)";ctx.fill();
+ }
 }
 
 var IB=mkBalls(16,600,150,5);
@@ -947,17 +1000,17 @@ function drawIntro(){
  stepBallsBox(IB,0,0,W,f.H,sp);
  var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
  ctx.fillStyle="#EAE6DA";ctx.fillRect(W,0,f.W-W,f.H);
- drawBalls(ctx,IB,"#3B82F6");
+ drawBalls(ctx,IB);
  ctx.strokeStyle="#8a8577";ctx.lineWidth=3;ctx.beginPath();ctx.moveTo(W,1);ctx.lineTo(W,f.H-1);ctx.stroke();
 }
 
 var BY=mkBalls(14,600,170,5);
-function drawPiston(f,balls,W,ratio,color){
+function drawPiston(f,balls,W,ratio){
  var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
  ctx.fillStyle="#DCD6C6";ctx.fillRect(W,0,f.W-W,f.H);
  ctx.strokeStyle="#B9B097";ctx.lineWidth=2;
  for(var x=W+7;x<f.W-3;x+=9){ctx.beginPath();ctx.moveTo(x,3);ctx.lineTo(x-12,f.H-3);ctx.stroke();}
- drawBalls(ctx,balls,color);
+ drawBalls(ctx,balls);
  ctx.strokeStyle="rgba(191,78,16,"+(0.35+ratio*0.65).toFixed(2)+")";
  ctx.lineWidth=4+ratio*4;
  ctx.beginPath();ctx.moveTo(W,1);ctx.lineTo(W,f.H-1);ctx.stroke();
@@ -967,7 +1020,7 @@ function drawBoyle(){
  var v=gv("by_v");if(isNaN(v))v=7;
  var W=f.W*(v/10);
  stepBallsBox(BY,0,0,W,f.H,3.0);
- drawPiston(f,BY,W,Math.min(1,(10-v)/9),"#8B5CF6");
+ drawPiston(f,BY,W,Math.min(1,(10-v)/9));
 }
 
 var CH=mkBalls(12,600,170,5);
@@ -980,7 +1033,7 @@ function drawCharles(){
  var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
  ctx.fillStyle="#EDEAE0";ctx.fillRect(0,0,f.W,top);
  ctx.strokeStyle="#C7BFA9";ctx.setLineDash([3,3]);ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(0,top);ctx.lineTo(f.W,top);ctx.stroke();ctx.setLineDash([]);
- drawBalls(ctx,CH,"#EC4899");
+ drawBalls(ctx,CH);
 }
 
 var GL=mkBalls(14,600,170,5);
@@ -990,7 +1043,7 @@ function drawGL(){
  var sp=Math.sqrt(tk2/273.15)*2.5;
  stepBallsBox(GL,0,0,f.W,f.H,sp);
  var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
- drawBalls(ctx,GL,"#3B82F6");
+ drawBalls(ctx,GL);
  var ratio=Math.min(1,(pr-100)/100);
  ctx.strokeStyle="rgba(191,78,16,"+(0.4+ratio*0.6).toFixed(2)+")";
  ctx.lineWidth=5+ratio*4;
@@ -1012,7 +1065,7 @@ function drawCombined(){
  var sp=Math.sqrt(ktk/273.15)*2.8;
  stepBallsBox(CB,0,0,W,f.H,sp);
  var ratio=Math.min(1,((10-kv)/9)*0.6+(kt/200)*0.4);
- drawPiston(f,CB,W,ratio,"#EC4899");
+ drawPiston(f,CB,W,ratio);
 }
 
 var IG=mkBalls(16,600,170,5);
@@ -1022,7 +1075,7 @@ function drawIdeal(){
  if(IG.length!==n){var old=IG;IG=mkBalls(n,f.W,f.H,5);for(var i=0;i<Math.min(n,old.length);i++)IG[i]=old[i];}
  stepBallsBox(IG,0,0,f.W,f.H,2.8);
  var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
- drawBalls(ctx,IG,"#EC4899");
+ drawBalls(ctx,IG);
  var ratio=Math.min(1,(n-4)/36);
  ctx.strokeStyle="rgba(236,72,153,"+(0.3+ratio*0.7).toFixed(2)+")";ctx.lineWidth=3+ratio*3;ctx.strokeRect(2,2,f.W-4,f.H-4);
 }
@@ -1037,8 +1090,8 @@ function drawDalton(){
  stepBallsBox(DA_D,0,0,f.W,f.H,2.6);
  stepBallsBox(DA_W,0,0,f.W,f.H,3.0);
  var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
- drawBalls(ctx,DA_D,"#3B82F6");
- drawBalls(ctx,DA_W,"#EC4899");
+ drawBalls(ctx,DA_D,0);
+ drawBalls(ctx,DA_W,2);
 }
 
 // Liquid ring pump cross-section: eccentric rotor, water ring against the casing,
@@ -1060,7 +1113,7 @@ function drawLR(){
   am=LRA+(i+0.5)*6.2832/NB;
   tl=e*Math.sin(am)+Math.sqrt(Ri*Ri-e*e*Math.cos(am)*Math.cos(am));
   L=Math.min(tl,rb)-rh-4;
-  if(L>7){ctx.fillStyle="#3B82F6";
+  if(L>7){ctx.fillStyle="rgba(29,90,120,0.82)";
    for(k2=0;k2<3;k2++){d=rh+4+(0.22+k2*0.28)*L;
     ctx.beginPath();ctx.arc(cx+Math.cos(am)*d,ry+Math.sin(am)*d,3.1,0,6.2832);ctx.fill();}}
  }
@@ -1081,8 +1134,91 @@ function drawLR(){
  ctx.fillStyle="#BF4E10";ctx.fillText("gas out",cx-rh-8,ry-rh-2);
  ctx.fillStyle="#3d4f55";ctx.fillText("water ring",cx,cy+(Ri+R)/2+4);
 }
+// Fan laws toy: a spinning fan and three bars (flow, pressure, power) that
+// grow as speed^1, speed^2, speed^3.
+var FANA=0;
+function drawFan(){
+ var f=fitCanvas(document.getElementById("fan_cv"));if(!f)return;
+ var val=gv("fan_s");if(isNaN(val))val=100;var r=val/100;
+ var q=r,p=r*r,w=r*r*r;
+ setT("fan_pct",val.toFixed(0));setT("fan_q",q.toFixed(2)+"×");setT("fan_p",p.toFixed(2)+"×");setT("fan_w",w.toFixed(2)+"×");
+ FANA+=0.02+r*0.10;
+ var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
+ // fan on the left
+ var fx=f.W*0.22,fy=f.H*0.5,fr=Math.min(f.W*0.17,f.H*0.36);
+ ctx.save();ctx.translate(fx,fy);ctx.rotate(FANA);
+ ctx.fillStyle="rgba(29,90,120,0.82)";
+ for(var bl=0;bl<4;bl++){ctx.rotate(Math.PI/2);ctx.beginPath();ctx.moveTo(0,0);ctx.quadraticCurveTo(fr*0.55,-fr*0.5,fr,0);ctx.quadraticCurveTo(fr*0.55,fr*0.18,0,0);ctx.fill();}
+ ctx.restore();
+ ctx.beginPath();ctx.arc(fx,fy,fr*0.16,0,6.2832);ctx.fillStyle="#43525B";ctx.fill();
+ // three bars on the right
+ var labs=["Flow","Pressure","Power"],vals=[q,p,w],cols=["#1D5A78","#2E7D52","#BF4E10"];
+ var x0=f.W*0.45,bw=(f.W*0.5)/3-8,maxH=f.H*0.66,base=f.H*0.82,vmax=3.5;
+ for(var i=0;i<3;i++){var bx=x0+i*(bw+8),bh=Math.min(1,vals[i]/vmax)*maxH;
+  ctx.fillStyle=cols[i];ctx.fillRect(bx,base-bh,bw,bh);
+  ctx.fillStyle="#3d4f55";ctx.font="700 10.5px -apple-system,sans-serif";ctx.textAlign="center";
+  ctx.fillText(labs[i],bx+bw/2,base+13);
+  ctx.fillStyle=cols[i];ctx.font="700 11.5px ui-monospace,monospace";ctx.fillText(vals[i].toFixed(2)+"×",bx+bw/2,base-bh-5);}
+}
+// Heat load toy: water balls flow through a pipe, warming from teal (cool) to
+// orange (warm); the readout is the heat carried, flow x 4.19 x warm-up.
+var HB=null;
+function drawHeatToy(){
+ var f=fitCanvas(document.getElementById("heat_cv"));if(!f)return;
+ var q=gv("heat_q");if(isNaN(q))q=5;var dt=gv("heat_dt");if(isNaN(dt))dt=5;
+ setT("heat_dtv",dt.toFixed(0));setT("heat_kw",fmtA(q*4.186*dt)+" kW");
+ var ctx=f.ctx,py=f.H*0.5,ph=f.H*0.34;
+ ctx.clearRect(0,0,f.W,f.H);
+ // pipe
+ ctx.fillStyle="#EDEAE0";ctx.fillRect(0,py-ph/2,f.W,ph);
+ ctx.strokeStyle="#C7BFA9";ctx.lineWidth=2;ctx.strokeRect(0,py-ph/2,f.W,ph);
+ // heat source band under the pipe
+ ctx.fillStyle="#BF4E10";ctx.font="700 10px -apple-system,sans-serif";ctx.textAlign="center";
+ var nh=Math.round(3+dt/2);
+ for(var j=0;j<nh;j++){var hx=(j+0.5)/nh*f.W;
+  ctx.strokeStyle="rgba(191,78,16,"+(0.25+dt/15*0.5).toFixed(2)+")";ctx.lineWidth=2;
+  var wob=Math.sin(FANA*3+j)*3;
+  ctx.beginPath();ctx.moveTo(hx,py+ph/2+4);ctx.quadraticCurveTo(hx+6+wob,py+ph/2+12,hx,py+ph/2+20);ctx.stroke();}
+ if(!HB){HB=[];for(var i=0;i<22;i++)HB.push({x:Math.random()*f.W,y:py+(Math.random()-0.5)*(ph-8),r:2.5+Math.random()*2});}
+ var sp=0.5+q*0.35;
+ for(var i2=0;i2<HB.length;i2++){var b=HB[i2];b.x+=sp;if(b.x>f.W+4){b.x=-4;b.y=py+(Math.random()-0.5)*(ph-8);}
+  var frac=b.x/f.W;if(frac<0)frac=0;if(frac>1)frac=1;var warm=frac*Math.min(1,dt/15);
+  var rr=Math.round(29+(191-29)*warm),gg=Math.round(90+(78-90)*warm),bb=Math.round(120+(16-120)*warm);
+  ctx.beginPath();ctx.arc(b.x,b.y,b.r*1.7,0,6.2832);ctx.fillStyle="rgba("+rr+","+gg+","+bb+",0.16)";ctx.fill();
+  ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.2832);ctx.fillStyle="rgba("+rr+","+gg+","+bb+",0.85)";ctx.fill();}
+ ctx.fillStyle="#3d4f55";ctx.font="700 10.5px -apple-system,sans-serif";
+ ctx.textAlign="left";ctx.fillText("cool in",4,py-ph/2-5);
+ ctx.textAlign="right";ctx.fillText("warm out",f.W-4,py-ph/2-5);
+}
+// Cavitation toy: if the vacuum pulls the absolute pressure below the water's
+// boiling pressure at its temperature, bubbles form and collapse.
+var CVB=[];
+function drawCav(){
+ var f=fitCanvas(document.getElementById("cav_cv"));if(!f)return;
+ var v=gv("cav_v");if(isNaN(v))v=60;var t=gv("cav_t");if(isNaN(t))t=30;
+ var pabs=101.3-v,psat=6.112*Math.exp(17.62*t/(243.12+t))/10;
+ var cavitating=pabs<=psat,margin=pabs-psat;
+ var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
+ // water body
+ ctx.fillStyle=cavitating?"rgba(60,130,165,.42)":"rgba(60,130,165,.55)";ctx.fillRect(0,0,f.W,f.H);
+ // intensity of boiling grows the further below psat
+ var intensity=cavitating?Math.min(1,(psat-pabs)/psat+0.15):0;
+ var want=Math.round(intensity*26);
+ while(CVB.length<want)CVB.push({x:Math.random()*f.W,y:f.H*0.5+Math.random()*f.H*0.5,r:1+Math.random()*3,life:0,pop:false});
+ if(CVB.length>want&&Math.random()<0.3)CVB.pop();
+ for(var i=0;i<CVB.length;i++){var b=CVB[i];b.y-=0.5+intensity*1.5;b.life+=0.03;
+  if(b.y<f.H*0.22||b.life>1){ // collapse near the top
+   ctx.beginPath();ctx.arc(b.x,b.y,b.r*2.2,0,6.2832);ctx.strokeStyle="rgba(191,78,16,0.6)";ctx.lineWidth=1.5;ctx.stroke();
+   b.x=Math.random()*f.W;b.y=f.H*0.55+Math.random()*f.H*0.45;b.r=1+Math.random()*3;b.life=0;continue;}
+  ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.2832);ctx.fillStyle="rgba(255,255,255,0.7)";ctx.fill();}
+ // readout
+ var msg;
+ if(cavitating)msg="Water boils at "+fmtA(psat)+" kPa here — you are pulling to "+fmtA(pabs)+" kPa. <b style='color:var(--warn)'>Cavitating: marbles rattling, blades wearing.</b> Cool the water or ease the vacuum.";
+ else msg="Water boils at "+fmtA(psat)+" kPa here — you are pulling to "+fmtA(pabs)+" kPa. <b style='color:var(--green)'>Safe, "+fmtA(margin)+" kPa of margin.</b>";
+ M("cav_out",msg);
+}
 function gasLoop(){
- drawIntro();drawBoyle();drawCharles();drawGL();drawCombined();drawIdeal();drawDalton();drawLR();
+ drawIntro();drawBoyle();drawCharles();drawGL();drawCombined();drawIdeal();drawDalton();drawLR();drawFan();drawHeatToy();drawCav();
  if(window.requestAnimationFrame)requestAnimationFrame(gasLoop);
 }
 if(window.requestAnimationFrame)requestAnimationFrame(gasLoop);
@@ -1151,8 +1287,8 @@ function clr(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(
 function hp(id){var e=document.getElementById(id);if(e)e.classList.toggle("open");}
 window.ex=ex;window.clr=clr;window.hp=hp;window.show=show;
 
-var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the gas laws",learn_intro:"What a gas really is",learn_boyle:"Boyle's law",learn_charles:"Charles's law",learn_gl:"Gay-Lussac's law",learn_combined:"The combined gas law",learn_ideal:"The ideal gas law",learn_dalton:"Dalton's law",fc:"Normal / Actual flow",vac:"Vacuum pump sizing",cmp:"Compressor sizing",pc:"Conveying sizing",mp:"Which machine",vap:"Vapour & wet gas",pd:"Pump-down time",lk:"Leak check",pl:"Pipe loss",pw:"Power & motor current",cv:"Unit converter",ref:"Reference tables",orf:"Orifice sizing",hl:"Heat load, water",mw:"Cooling tower make-up",cw:"Conveying step-by-step",cat_learn:"Play and learn",cat_size:"Size it",cat_site:"On-site checks",ts:"Find the fault",ps:"Pre-separator sizing",lr:"Inside a liquid ring pump",dt:"Discharge temperature",ck:"Commissioning checklist",bp:"Belt & pulley speed",af:"Speed change effect"};
-var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size"};
+var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the gas laws",learn_intro:"What a gas really is",learn_boyle:"Boyle's law",learn_charles:"Charles's law",learn_gl:"Gay-Lussac's law",learn_combined:"The combined gas law",learn_ideal:"The ideal gas law",learn_dalton:"Dalton's law",fc:"Normal / Actual flow",vac:"Vacuum pump sizing",cmp:"Compressor sizing",pc:"Conveying sizing",mp:"Which machine",vap:"Vapour & wet gas",pd:"Pump-down time",lk:"Leak check",pl:"Pipe loss",pw:"Power & motor current",cv:"Unit converter",ref:"Reference tables",orf:"Orifice sizing",hl:"Heat load, water",mw:"Cooling tower make-up",cw:"Conveying step-by-step",cat_learn:"Play and learn",cat_size:"Size it",cat_site:"On-site checks",ts:"Find the fault",ps:"Pre-separator sizing",lr:"Inside a liquid ring pump",dt:"Discharge temperature",ck:"Commissioning checklist",bp:"Belt & pulley speed",af:"Speed change effect",learn_fan:"Speed and the fan laws",learn_heat:"How heat load works",learn_cav:"Why seal water stays cool"};
+var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn"};
 var CUR="home";
 function goBack(){show(PARENT[CUR]||"home");}
 var MENUS={home:1,cat_learn:1,cat_size:1,cat_site:1,learn:1};
