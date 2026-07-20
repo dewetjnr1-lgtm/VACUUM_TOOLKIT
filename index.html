@@ -131,6 +131,20 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .mgf .ctrl{margin-top:0;flex-wrap:nowrap;}
 .mgf .ctrl input[type=number]{flex:1 1 auto;min-width:0;}
 .mgf .ctrl .fu{flex:0 0 auto;}
+.print-sheet{display:none;}
+.print-sheet h1{font-size:18px;text-align:center;margin:0 0 2px;}
+.print-sheet .psub{text-align:center;font-size:12px;margin:0 0 14px;}
+.print-sheet table{width:100%;border-collapse:collapse;margin:0 0 12px;font-size:11.5px;}
+.print-sheet th,.print-sheet td{border:1px solid #000;padding:4px 6px;text-align:left;vertical-align:top;font-family:Arial,Helvetica,sans-serif;font-weight:400;color:#000;}
+.print-sheet th{background:#e8e8e8;font-size:11px;text-transform:uppercase;letter-spacing:.02em;}
+.print-sheet td.lab{font-weight:700;background:#f4f4f4;width:26%;}
+.print-sheet .psec{font-size:12.5px;font-weight:800;margin:14px 0 4px;text-transform:uppercase;letter-spacing:.03em;}
+.print-sheet .pgen{border:1px solid #000;padding:8px;min-height:50px;white-space:pre-wrap;font-size:11.5px;margin-bottom:12px;}
+@media print{
+ body>canvas,body>header,body>main{display:none !important;}
+ .print-sheet{display:block !important;font-family:Arial,Helvetica,sans-serif;color:#000;padding:0 6px;}
+ body{background:#fff;}
+}
 </style></head>
 <body><canvas id="bgbub" aria-hidden="true"></canvas><header><div class="hrow"><button id="backbtn" onclick="goBack()">&#8249; Back</button><svg id="logo" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 12 7.8 8.4"/><circle cx="12" cy="12" r="1.3" fill="#fff" stroke="none"/><path d="M12 4.6v1.7M19.4 12h-1.7M4.6 12h1.7M17.2 6.8l-1.2 1.2" opacity=".65"/></svg><div><h1 id="hdr_t">Vacuum &amp; Compressor Toolkit</h1><p id="hdr_s">Learn it, fill it in, pick your units</p></div></div></header>
 <main><section class="page active" id="home">
@@ -571,20 +585,20 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="ar"><b>What it is</b>A digital copy of the field service pump test sheet (VCF-36 Rev 00), for recording a liquid ring vacuum pump’s readings on a site visit.</div>
 <div class="ar"><b>Why it matters</b>Every test point, temperature and vibration reading lands in one place, in the same layout the workshop already uses, so it is easy to read back and file.</div>
 <div class="ar"><b>Where you would use it</b>On a service call, working down the machine one test point at a time: seal water, temperatures, vibration, then the general mechanical checks.</div>
-<div class="ar">What you type is saved on this phone as you go, so the sheet survives closing the app. Use Clear this sheet to start fresh for the next pump.</div>
+<div class="ar">What you type is saved on this phone as you go, so the sheet survives closing the app. Use Clear this sheet to start fresh for the next pump. Export PDF opens your device's print screen with a clean, filled-in copy of the sheet — choose Save as PDF (or Share) there to keep or send it.</div>
 <span class="law">Based on: Field Service Pump Test Sheet, VCF-36 Rev 00</span></div>
-<div class="card"><h3>Job &amp; pump details</h3><button class="clrbtn" onclick="fsClear()" style="margin-left:0">Clear this sheet</button>
+<div class="card"><h3>Job &amp; pump details</h3><button class="exbtn" onclick="fsExportPDF()">Export PDF</button><button class="clrbtn" onclick="fsClear()">Clear this sheet</button>
 <div class="fld"><div class="fh"><label>Company</label></div><div class="ctrl"><input type="text" id="fs_company"></div></div>
 <div class="fld"><div class="fh"><label>Contact</label></div><div class="ctrl"><input type="text" id="fs_contact"></div></div>
 <div class="fld"><div class="fh"><label>Address</label></div><div class="ctrl"><textarea id="fs_address" rows="2"></textarea></div></div>
 <div class="fld"><div class="fh"><label>Tel</label></div><div class="ctrl"><input type="text" id="fs_tel"></div></div>
 <div class="fld"><div class="fh"><label>Fax</label></div><div class="ctrl"><input type="text" id="fs_fax"></div></div>
-<div class="fld"><div class="fh"><label>FS No</label></div><div class="ctrl"><input type="text" id="fs_fsno"></div></div>
+<div class="fld"><div class="fh"><label>Field service number</label></div><div class="ctrl"><input type="text" id="fs_fsno"></div></div>
 <div class="fld"><div class="fh"><label>Pump type</label></div><div class="ctrl"><input type="text" id="fs_pumptype"></div></div>
 <div class="fld"><div class="fh"><label>Material</label></div><div class="ctrl"><input type="text" id="fs_material"></div></div>
 <div class="fld"><div class="fh"><label>Test No</label></div><div class="ctrl"><input type="text" id="fs_testno"></div></div>
 <div class="fld"><div class="fh"><label>Company ID</label></div><div class="ctrl"><input type="text" id="fs_companyid"></div></div>
-<div class="fld"><div class="fh"><label>VCS ID</label></div><div class="ctrl"><input type="text" id="fs_vcsid"></div></div>
+<div class="fld"><div class="fh"><label>My company ref</label></div><div class="ctrl"><input type="text" id="fs_vcsid"></div></div>
 <div class="fld"><div class="fh"><label>Last test date</label></div><div class="ctrl"><input type="date" id="fs_lasttest"></div></div>
 <div class="fld"><div class="fh"><label>No. of orifice plates used</label></div><div class="ctrl"><input type="number" id="fs_orifplates" placeholder="number"></div></div>
 <div class="fld"><div class="fh"><label>Orifice diameter</label></div><div class="ctrl"><input type="number" id="fs_orifdia_n" placeholder="number"><select id="fs_orifdia_u" data-g="length" data-du="0"></select></div></div>
@@ -684,7 +698,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="fld"><div class="fh"><label>Date</label></div><div class="ctrl"><input type="date" id="fs_date"></div></div>
 <div class="fld"><div class="fh"><label>Tested by</label></div><div class="ctrl"><input type="text" id="fs_testedby"></div></div>
 </div>
-<button class="clrbtn" onclick="fsClear()" style="margin:6px 0 0;margin-left:0">Clear this sheet</button>
+<button class="exbtn" onclick="fsExportPDF()" style="margin:6px 0 0">Export PDF</button><button class="clrbtn" onclick="fsClear()" style="margin:6px 0 0">Clear this sheet</button>
 </section><section class="page" id="pt"><div class="pgh"><h2>Production test vs factory curve</h2><button class="q" onclick="hp('ab_pt')">?</button></div>
 <div class="about" id="ab_pt">
 <div class="ar"><b>What it is</b>Turns the 6 test points on the Field service pump test sheet into a flow-vs-vacuum curve, and compares it against 6 points you type in from the pump’s factory performance curve.</div>
@@ -739,7 +753,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 </div>
 <div class="means" id="pt_m">Fill in the Field service pump test sheet’s test points and the factory curve points above, and this explains your answer.</div>
 <details><summary>Show the math</summary><div class="math"><div class="formula">m&#775; = C &times; A &times; P<sub>1</sub> &times; &radic;[ 2k / (R T (k&minus;1)) &times; (r<sup>2/k</sup> &minus; r<sup>(k+1)/k</sup>) ]<small>subsonic; r = P<sub>2</sub>/P<sub>1</sub>. Choked instead when r &le; 0.528, using the critical-flow form of the same equation.</small></div><div class="plug" id="mx_pt1">Your numbers appear here when the boxes are filled in.</div><div class="formula">Shortfall % = (Q<sub>factory</sub> &minus; Q<sub>test</sub>) / Q<sub>factory</sub> &times; 100<small>Q<sub>factory</sub> read off the factory curve by straight-line interpolation at the test point’s vacuum</small></div><div class="plug" id="mx_pt2">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: compressible flow through a square-edged orifice, per Crane TP-410 and ASME MFC-3M (the same physics used for critical-flow test nozzles). Discharge coefficients per Cameron Hydraulic Data. Air taken as k = 1.4, R = 287 J/(kg&middot;K).</p></div></details>
-</section></main><script>"use strict";
+</section></main><div id="fs_print" class="print-sheet"></div><script>"use strict";
 var G={
  pressure:[["kilopascals (kPa)",1],["millibar (mbar)",0.1],["torr (mmHg)",0.1333224],["inches of mercury (inHg)",3.386389],["bar",100]],
  flow:[["cubic metres per hour",1],["cubic feet per minute",1.69901],["litres per second",3.6],["litres per minute",0.06],["US gallons per minute",0.2271247]],
@@ -1652,6 +1666,58 @@ function fsSave(){var o={};for(var i=0;i<FS_FIELDS.length;i++){var e=document.ge
 function fsLoad(){var o={};try{o=JSON.parse(localStorage.getItem(FS_KEY)||"{}")||{};}catch(err){o={};}for(var i=0;i<FS_FIELDS.length;i++){var e=document.getElementById(FS_FIELDS[i]);if(e&&o[FS_FIELDS[i]]!==undefined)e.value=o[FS_FIELDS[i]];}}
 function fsClear(){if(!confirm("Clear every field on this test sheet?"))return;for(var i=0;i<FS_FIELDS.length;i++){var e=document.getElementById(FS_FIELDS[i]);if(e)e.value="";}try{localStorage.removeItem(FS_KEY);}catch(err){}}
 window.fsClear=fsClear;
+
+// Field service pump test sheet: build a print/PDF-friendly copy and hand off to the browser's print dialog.
+function pEsc(s){return String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");}
+function fv(id){var e=document.getElementById(id);return e&&e.value!==""?pEsc(e.value):"";}
+function fSelText(id){var e=document.getElementById(id);if(!e||e.selectedIndex<0)return "";return pEsc(e.options[e.selectedIndex].textContent);}
+function fNum(id,unit){var v=fv(id);return v===""?"":v+(unit?" "+unit:"");}
+function fUnitVal(nId,uId){var n=fv(nId);return n===""?"":n+" "+fSelText(uId);}
+function fPress(base){var n=fv(base+"_n");if(n==="")return "";var u=fSelText(base+"_u");var e=document.getElementById(base+"_r");var r=e?e.value:"";var rl=r==="a"?"abs":r==="g"?"gauge":"vacuum";return n+" "+u+" ("+rl+")";}
+function fDate(id){var e=document.getElementById(id);var v=e?e.value:"";if(!v)return "";var p=v.split("-");return p.length===3?(p[2]+"/"+p[1]+"/"+p[0]):v;}
+function dash(s){return s===""?"—":s;}
+function fsBuildPrint(){
+ var h='<h1>FIELD SERVICE PUMP TEST SHEET</h1><div class="psub">VCF-36 Rev 00</div>';
+ h+='<table><tr><td class="lab">Company</td><td>'+dash(fv("fs_company"))+'</td><td class="lab">Pump type</td><td>'+dash(fv("fs_pumptype"))+'</td></tr>';
+ h+='<tr><td class="lab">Contact</td><td>'+dash(fv("fs_contact"))+'</td><td class="lab">Material</td><td>'+dash(fv("fs_material"))+'</td></tr>';
+ h+='<tr><td class="lab">Address</td><td>'+dash(fv("fs_address")).replace(/\n/g,"<br>")+'</td><td class="lab">Test No</td><td>'+dash(fv("fs_testno"))+'</td></tr>';
+ h+='<tr><td class="lab">Tel</td><td>'+dash(fv("fs_tel"))+'</td><td class="lab">Company ID</td><td>'+dash(fv("fs_companyid"))+'</td></tr>';
+ h+='<tr><td class="lab">Fax</td><td>'+dash(fv("fs_fax"))+'</td><td class="lab">My company ref</td><td>'+dash(fv("fs_vcsid"))+'</td></tr>';
+ h+='<tr><td class="lab">Field service number</td><td>'+dash(fv("fs_fsno"))+'</td><td class="lab">Last test date</td><td>'+dash(fDate("fs_lasttest"))+'</td></tr>';
+ h+='<tr><td class="lab">No. of orifice plates used</td><td>'+dash(fv("fs_orifplates"))+'</td><td class="lab">Orifice diameter</td><td>'+dash(fUnitVal("fs_orifdia_n","fs_orifdia_u"))+'</td></tr>';
+ h+='<tr><td class="lab">Position</td><td colspan="3">'+dash(fv("fs_position"))+'</td></tr></table>';
+
+ h+='<table><tr><th>Test point</th><th>Vacuum</th><th>Orifice qty</th><th>Seal water temp</th><th>Seal water qty</th><th>Amps</th><th>Volts</th></tr>';
+ for(var n=1;n<=6;n++){
+  h+='<tr><td>'+n+'</td><td>'+dash(fPress("fs_tp"+n+"_vac"))+'</td><td>'+dash(fv("fs_tp"+n+"_orif"))+'</td><td>'+dash(fNum("fs_tp"+n+"_swt","°C"))+'</td><td>'+dash(fNum("fs_tp"+n+"_swq","l/min"))+'</td><td>'+dash(fNum("fs_tp"+n+"_amps","A"))+'</td><td>'+dash(fNum("fs_tp"+n+"_volts","V"))+'</td></tr>';
+ }
+ h+='</table>';
+
+ h+='<table><tr><td class="lab">Air pressure</td><td>'+dash(fUnitVal("fs_airpress_n","fs_airpress_u"))+'</td><td class="lab">Air temp</td><td>'+dash(fNum("fs_airtemp","°C"))+'</td></tr>';
+ h+='<tr><td class="lab">Gas temp</td><td>'+dash(fNum("fs_gastemp","°C"))+'</td><td class="lab">Bearing temp, D/E / I/E</td><td>'+dash(fNum("fs_btde","°C"))+' / '+dash(fNum("fs_btie","°C"))+'</td></tr></table>';
+
+ h+='<table><tr><th></th><th>H</th><th>V</th><th>A</th></tr>';
+ h+='<tr><td class="lab">Vibration D/E (mm/s)</td><td>'+dash(fv("fs_vde_h"))+'</td><td>'+dash(fv("fs_vde_v"))+'</td><td>'+dash(fv("fs_vde_a"))+'</td></tr>';
+ h+='<tr><td class="lab">Vibration I/E (mm/s)</td><td>'+dash(fv("fs_vie_h"))+'</td><td>'+dash(fv("fs_vie_v"))+'</td><td>'+dash(fv("fs_vie_a"))+'</td></tr></table>';
+
+ h+='<table><tr><td class="lab">Pump pulley</td><td>'+dash(fv("fs_pumppulley"))+'</td><td class="lab">Slinger condition</td><td>'+dash(fv("fs_slinger"))+'</td></tr>';
+ h+='<tr><td class="lab">Motor pulley</td><td>'+dash(fv("fs_motorpulley"))+'</td><td class="lab">Flow meters</td><td>'+dash(fv("fs_flowmeters"))+'</td></tr>';
+ h+='<tr><td class="lab">Belts</td><td>'+dash(fv("fs_belts"))+'</td><td class="lab">Water condition</td><td>'+dash(fv("fs_watercond"))+'</td></tr>';
+ h+='<tr><td class="lab">Pump speed</td><td>'+dash(fNum("fs_pumpspeed","rpm"))+'</td><td class="lab">Spray nozzles</td><td>'+dash(fv("fs_spraynozzles"))+'</td></tr>';
+ h+='<tr><td class="lab">Motor volts</td><td>'+dash(fNum("fs_motorvolts","V"))+'</td><td class="lab">Flow control valves</td><td>'+dash(fv("fs_flowvalves"))+'</td></tr>';
+ h+='<tr><td class="lab">Motor speed</td><td>'+dash(fNum("fs_motorspeed","rpm"))+'</td><td class="lab">Motor kW</td><td>'+dash(fNum("fs_motorkw","kW"))+'</td></tr></table>';
+
+ h+='<div class="psec">General</div><div class="pgen">'+(fv("fs_general")?fv("fs_general").replace(/\n/g,"<br>"):"—")+'</div>';
+ h+='<table><tr><td class="lab">Date</td><td>'+dash(fDate("fs_date"))+'</td><td class="lab">Tested by</td><td>'+dash(fv("fs_testedby"))+'</td></tr></table>';
+ return h;
+}
+function fsExportPDF(){
+ var el=document.getElementById("fs_print");
+ if(!el)return;
+ el.innerHTML=fsBuildPrint();
+ window.print();
+}
+window.fsExportPDF=fsExportPDF;
 
 // Production test vs factory curve: the discharge coefficient and the manually typed factory curve points.
 var PT_KEY="vt_pt1";
