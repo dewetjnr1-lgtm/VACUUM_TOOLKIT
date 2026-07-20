@@ -267,4 +267,44 @@ no JavaScript errors.
 | Pipe loss | ✓ verified |
 | Power & motor current | ✓ verified |
 | Unit converter & reference tables | ✓ verified |
-| Orifice plate testing | not in the app — dropped by owner decision (3.1) |
+| Production test orifice flow (`pt`) | ✓ physics verified — test-standard caveat (7) |
+
+---
+
+## 7. Addendum (2026-07-20) — Production test orifice flow calculator
+
+Section 3.1 above noted that a "capacity-test orifice" calculator, if added, should be
+checked against ASME PTC 9 or ISO 21360. That calculator has since been built (the
+Production test vs factory curve page, `pt`): it works out actual flow at each field
+test point from orifice qty, orifice diameter, vacuum, air pressure and air temp, using
+the standard compressible-flow equation for a gas orifice (subsonic and choked forms).
+
+**Verified this pass:**
+- Re-derived the subsonic and choked-flow equations from isentropic flow theory by
+  hand. Confirmed the two forms agree at the choked/subsonic transition (r = P₂/P₁ =
+  critical ratio) to within floating-point rounding — a wrong exponent anywhere in
+  either branch would have broken this continuity.
+- The choked-flow constant the code implies for air (k = 1.4), C\* = √k·(2/(k+1))^((k+1)/(2(k-1))),
+  computes to 0.6847, matching the widely published value for air's critical flow
+  function (Crane TP-410 and standard gas-dynamics references).
+- Two worked examples — one choked case (700 kPa abs → atmosphere through a 10 mm
+  orifice) and one subsonic case (200 → 180 kPa abs) — hand-calculated, then checked
+  against both a freshly-written independent implementation and the actual deployed
+  `orificeFlow()` function. All three agree to the precision shown (236.7 m³/h and
+  23.49 m³/h respectively).
+- Edge cases checked: zero orifices open → 0 flow (a valid blank-off reading, not a
+  missing-data gap); vacuum reading exceeding local air pressure, or discharge
+  pressure ≥ upstream pressure → `NaN` with a warning, not a wrong number, per the
+  app's house style.
+
+**Not verified — open question:** the physics (compressible flow through a sharp,
+square, or rounded-edge orifice) is correct gas dynamics, but this pass did not check
+it against ASME PTC 9 or ISO 21360, the standards named in 3.1 for a pump capacity
+*test* specifically. Those standards may specify a different or tabulated discharge
+coefficient for a calibrated test orifice, a humidity or Reynolds-number correction, or
+other test-acceptance conventions not present here — this implementation borrows its
+discharge-coefficient options (0.61 / 0.82 / 0.98) from the app's existing liquid
+orifice sizing calculator, not from a compressible-flow-specific table. I do not have
+access to either standard to check further. Anyone comparing this tool's output against
+a factory acceptance certificate that cites PTC 9 or ISO 21360 should expect the
+discharge coefficient, in particular, to be the first thing worth reconciling.
