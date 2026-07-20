@@ -2368,11 +2368,23 @@ for(var exk in EX_LAW)renderExample(exk);
    var sp=0.05+Math.random()*0.09,a=Math.random()*6.2832;
    var h=HUES[i%3],o=(0.20+Math.random()*0.24).toFixed(3);
    BB.push({x:r+Math.random()*Math.max(1,W-2*r),y:r+Math.random()*Math.max(1,H-2*r),r:r,dx:Math.cos(a)*sp,dy:Math.sin(a)*sp,s0:sp,out:false,c:"rgba("+h[0]+","+h[1]+","+h[2]+","+o+")"});}}
- function size(){var d=Math.min(window.devicePixelRatio||1,2);W=window.innerWidth;H=window.innerHeight;
+ function size(){var d=Math.min(window.devicePixelRatio||1,2);var firstRun=W===0&&H===0;
+  W=window.innerWidth;H=window.innerHeight;
   MG=Math.max(8,W*0.014);
   var hdr=document.querySelector("header");
   MGT=Math.max(MG,(hdr?hdr.offsetHeight:70)+5);
-  cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);seed();if(still)paint();}
+  cv.width=Math.round(W*d);cv.height=Math.round(H*d);ctx.setTransform(d,0,0,d,0,0);
+  // A phone's on-screen keyboard opening or closing (e.g. tapping a number
+  // box) fires a resize too, shrinking the visible height. Re-seeding on
+  // every one of those used to scatter every bubble fresh into the smaller
+  // box, and the edge-hug pull would then yank a whole cluster of them
+  // toward the same margin line at once -- a visible streak. Only seed
+  // fresh on first load; after that, just clamp the bubbles already in
+  // flight into the new bounds and let them drift there normally.
+  if(firstRun)seed();else{for(var i=0;i<BB.length;i++){var b=BB[i];
+   if(b.x<b.r)b.x=b.r;else if(b.x>W-b.r)b.x=W-b.r;
+   if(b.y<b.r)b.y=b.r;else if(b.y>H-b.r)b.y=H-b.r;}}
+  if(still)paint();}
  function paint(){ctx.clearRect(0,0,W,H);
   for(var i=0;i<BB.length;i++){var b=BB[i];ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.2832);ctx.fillStyle=b.c;ctx.fill();}}
  // On tool pages the bubbles are drawn to whichever screen border is
