@@ -96,6 +96,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .ex-card .exmath{font-family:var(--mono);font-size:13.5px;background:#fff;border-radius:8px;padding:9px 10px;margin:8px 0;white-space:pre-wrap;}
 .ex-card .exsrc{font-size:11.5px;color:var(--soft);margin-top:8px;}
 .exbtn2{background:none;border:1px solid var(--teal);color:var(--teal);border-radius:20px;padding:5px 12px;font-size:12.5px;font-weight:700;cursor:pointer;margin-top:8px;}
+.animtog{display:block;margin:8px auto 0;}
 .demo-out{font-size:14px;margin-top:10px;}.demo-out b{font-family:var(--mono);color:var(--accent);}
 .glos{font-size:14.5px;margin:10px 0;}.glos b{color:var(--hdr);}
 .formula{background:rgba(255,255,255,.55);border:1px solid rgba(211,218,224,.7);border-radius:10px;padding:12px 10px;text-align:center;font-family:var(--mono);font-size:19px;font-weight:700;color:var(--hdr);margin:10px 0 8px;}
@@ -229,7 +230,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">How hot (ball speed)</span><input type="range" id="in_t" min="1" max="10" value="4" step="0.1"></div>
 <div class="demo-row"><span style="flex:0 0 130px">Size of the room</span><input type="range" id="in_v" min="3" max="10" value="10" step="0.1"></div>
-<canvas id="in_cv" class="lawcv"></canvas>
+<canvas id="in_cv" class="lawcv"></canvas><button class="exbtn2 animtog" id="in_cv_tog" onclick="toggleAnim('intro')">&#9208; Pause</button>
 <div class="demo-out">Push on the walls: <b id="in_p">40</b> (a score, not a unit)</div>
 </div>
 <div class="try">Try this: speed the balls up, or squeeze the room smaller. Either way they hammer the walls more, and the push score climbs. Every law below is just this toy with one thing pinned still.</div></div>
@@ -242,7 +243,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="formula">P<sub>1</sub> &times; V<sub>1</sub> = P<sub>2</sub> &times; V<sub>2</sub><small>push before &times; room before = push after &times; room after. The answer never changes.</small></div>
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Room for the gas</span><input type="range" id="by_v" min="1" max="10" value="7" step="0.1"></div>
-<canvas id="by_cv" class="lawcv"></canvas>
+<canvas id="by_cv" class="lawcv"></canvas><button class="exbtn2 animtog" id="by_cv_tog" onclick="toggleAnim('boyle')">&#9208; Pause</button>
 <div class="demo-out">Started: <b>100</b> kPa of push in <b>10</b> litres of room. Now: <b id="by_vv">7.0</b> litres, <b id="by_pp">143</b> kPa</div>
 <div class="plug" id="by_plug">100 &times; 10 = 143 &times; 7.0 = 1,000 always</div>
 </div>
@@ -259,7 +260,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="kelv"><b>Why Kelvin?</b> Zero degrees Celsius is not zero heat, the balls are still flying. Kelvin counts from truly stone cold, minus 273 degrees Celsius, where the balls stop. Just add 273 to Celsius. Only in Kelvin does doubling the number mean truly doubling the heat, which is why the formula insists on it.</div>
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Temperature</span><input type="range" id="ch_t" min="0" max="273" value="100" step="1"></div>
-<canvas id="ch_cv" class="lawcv"></canvas>
+<canvas id="ch_cv" class="lawcv"></canvas><button class="exbtn2 animtog" id="ch_cv_tog" onclick="toggleAnim('charles')">&#9208; Pause</button>
 <div class="demo-out">Started: <b>5.0</b> litres at <b>0</b> &deg;C (273 K). Now: <b id="ch_tt">100</b> &deg;C (<b id="ch_tk">373</b> K), room <b id="ch_vv">6.8</b> litres</div>
 <div class="plug" id="ch_plug">5.0 / 273 = 6.8 / 373 = 0.018 always</div>
 </div>
@@ -275,7 +276,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="formula">P<sub>1</sub> / T<sub>1</sub> = P<sub>2</sub> / T<sub>2</sub><small>push divided by temperature stays the same. Temperature in Kelvin again.</small></div>
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Temperature</span><input type="range" id="gl_t" min="0" max="273" value="100" step="1"></div>
-<canvas id="gl_cv" class="lawcv"></canvas>
+<canvas id="gl_cv" class="lawcv"></canvas><button class="exbtn2 animtog" id="gl_cv_tog" onclick="toggleAnim('gl')">&#9208; Pause</button>
 <div class="demo-out">Started: <b>100</b> kPa at <b>0</b> &deg;C (273 K). Now: <b id="gl_tt">100</b> &deg;C (<b id="gl_tk">373</b> K), push <b id="gl_pp">137</b> kPa</div>
 <div class="plug" id="gl_plug">100 / 273 = 137 / 373 = 0.37 always</div>
 </div>
@@ -292,7 +293,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Room for the gas</span><input type="range" id="cb_v" min="1" max="10" value="10" step="0.1"></div>
 <div class="demo-row"><span style="flex:0 0 130px">Temperature</span><input type="range" id="cb_t" min="0" max="200" value="0" step="1"></div>
-<canvas id="cb_cv" class="lawcv"></canvas>
+<canvas id="cb_cv" class="lawcv"></canvas><button class="exbtn2 animtog" id="cb_cv_tog" onclick="toggleAnim('combined')">&#9208; Pause</button>
 <div class="demo-out">Started: <b>100</b> kPa, <b>10</b> litres, <b>0</b> &deg;C. Now: room <b id="cb_vv">10.0</b> L, temperature <b id="cb_tt">0</b> &deg;C, push <b id="cb_pp">100</b> kPa</div>
 <div class="plug" id="cb_plug">100 &times; 10 / 273 = 100 &times; 10.0 / 273 = 3.66 always</div>
 </div>
@@ -312,7 +313,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <p class="glos"><b>T</b> the temperature, in Kelvin</p>
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Size of the crowd (n)</span><input type="range" id="ig_n" min="4" max="40" value="16" step="1"></div>
-<canvas id="ig_cv" class="lawcv"></canvas>
+<canvas id="ig_cv" class="lawcv"></canvas><button class="exbtn2 animtog" id="ig_cv_tog" onclick="toggleAnim('ideal')">&#9208; Pause</button>
 <div class="demo-out">Balls in the room: <b id="ig_nn">16</b>. Push on the walls: <b id="ig_p">100</b> (a score, not a unit)</div>
 </div>
 <div class="try">Try this: drag the crowd up to 40 balls, room and speed both left alone. More balls means more hits on the walls every second, so the push score climbs on its own, no squeezing or heating needed. Pin the amount of gas still and this collapses into the combined law above, which is why you rarely calculate with it directly here.</div>
@@ -326,7 +327,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="formula">P<sub>total</sub> = P<sub>dry</sub> + P<sub>water</sub><small>each gas pushes its own share, and the shares add up to the total</small></div>
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Temperature</span><input type="range" id="da_t" min="5" max="60" value="40" step="1"></div>
-<canvas id="da_cv" class="lawcv"></canvas>
+<canvas id="da_cv" class="lawcv"></canvas><button class="exbtn2 animtog" id="da_cv_tog" onclick="toggleAnim('dalton')">&#9208; Pause</button>
 <div style="display:flex;height:34px;border-radius:8px;overflow:hidden;border:1px solid var(--line);margin-top:10px"><div id="da_dbar" style="background:#1D5A78;width:92.7%"></div><div id="da_wbar" style="background:#BF4E10;width:7.3%"></div></div>
 <div class="demo-out">At <b id="da_tt">40</b> &deg;C: dry gas pushes <b id="da_d">93.9</b> kPa (teal balls), water pushes <b id="da_w">7.4</b> kPa (orange balls), together 101.3. Water's share: <b id="da_sh">7.3</b> percent</div>
 </div>
@@ -459,7 +460,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="res"><div class="fh"><span class="res-lab" style="margin:0">Drive ratio</span></div><div class="ctrl"><span class="res-v" id="bp_ratio">&mdash;</span><span class="fu">to 1</span></div></div>
 <div class="res big"><div class="fh"><span class="res-lab" style="margin:0">Design pump speed</span><button class="q" onclick="hp('hy_bp_out')">?</button></div><div class="help" id="hy_bp_out">What the pump should be turning at with this motor and pulley pair, no belt slip. Compare it with the maker's curve or nameplate speed.</div><div class="ctrl"><span class="res-v" id="bp_prpm">&mdash;</span><span class="fu">rpm</span></div></div>
 <div class="res"><div class="fh"><span class="res-lab" style="margin:0">Belt speed</span></div><div class="ctrl"><span class="res-v" id="bp_belt_v" data-g="velocity">&mdash;</span><select id="bp_belt_u2" data-g="velocity" data-du="0"></select></div></div>
-<canvas id="bp_cv" class="lawcv" style="height:170px;margin-top:10px"></canvas>
+<canvas id="bp_cv" class="lawcv" style="height:170px;margin-top:10px"></canvas><button class="exbtn2 animtog" id="bp_cv_tog" onclick="toggleAnim('bp')">&#9208; Pause</button>
 </div>
 <div class="means" id="bp_m">Fill in the boxes and this explains your answer.</div>
 <details><summary>Show the math</summary><div class="math"><div class="formula">N<sub>pump</sub> = N<sub>motor</sub> &times; D<sub>motor</sub> / D<sub>pump</sub><small>no belt slip assumed &middot; belt speed v = &pi; &times; D<sub>motor</sub> &times; N<sub>motor</sub></small></div><div class="plug" id="mx_bp">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: standard V-belt drive speed ratio, N &times; D = constant, per SKF and Gates belt drive design guides.</p></div></details>
@@ -489,7 +490,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <p style="font-size:14.5px">A bladed wheel spins inside a round casing, mounted off centre. Water gets slung out to the wall and forms a spinning ring, and because the wheel sits off centre, the pockets of gas trapped between the blades and the water grow on one side and shrink on the other. Growing pockets suck gas in. Shrinking pockets squeeze it out. The water is the piston, and it never wears out.</p>
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Speed</span><input type="range" id="lr_s" min="0" max="3" value="1.2" step="0.05"></div>
-<canvas id="lr_cv" class="lawcv" style="height:250px"></canvas>
+<canvas id="lr_cv" class="lawcv" style="height:250px"></canvas><button class="exbtn2 animtog" id="lr_cv_tog" onclick="toggleAnim('lr')">&#9208; Pause</button>
 <div class="demo-out"><b style="color:var(--green)">Green port</b>: pockets growing, gas pulled in. <b style="color:var(--accent)">Orange port</b>: pockets pinched shut, gas pushed out, with the blade tips dipping back into the ring to seal each pocket.</div>
 </div>
 <div class="try">Try this: slow the slider right down and follow one pocket of teal gas all the way round. It fills out on the green side, gets pinched smaller and smaller as it comes past the top, and empties out on the orange side. That single lap is the whole pump.</div>
@@ -502,7 +503,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <p style="font-size:14.5px">Spin a blower or pump faster and three things go up, but not by the same amount. This is the picture behind the <b>Speed change effect</b> calculator. Drag the speed and watch the three bars race apart:</p>
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Speed</span><input type="range" id="fan_s" min="50" max="150" value="100" step="1"></div>
-<canvas id="fan_cv" class="lawcv" style="height:210px"></canvas>
+<canvas id="fan_cv" class="lawcv" style="height:210px"></canvas><button class="exbtn2 animtog" id="fan_cv_tog" onclick="toggleAnim('fan')">&#9208; Pause</button>
 <div class="demo-out">At <b id="fan_pct">100</b>% of the old speed: flow <b id="fan_q" style="color:#1D5A78">1.00&times;</b>, pressure <b id="fan_p" style="color:#2E7D52">1.00&times;</b>, power <b id="fan_w" style="color:#BF4E10">1.00&times;</b></div>
 </div>
 <div class="try">Try this: nudge the speed to 120%. Flow just follows along at 1.2 times, but pressure jumps to 1.44 and the power the motor must give leaps to 1.73. That is why a small speed rise can trip a motor, and a small speed drop saves a surprising amount of energy.</div>
@@ -517,7 +518,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Water flow</span><input type="range" id="heat_q" min="1" max="10" value="5" step="0.5"></div>
 <div class="demo-row"><span style="flex:0 0 130px">Warm-up</span><input type="range" id="heat_dt" min="1" max="15" value="5" step="0.5"></div>
-<canvas id="heat_cv" class="lawcv" style="height:180px"></canvas>
+<canvas id="heat_cv" class="lawcv" style="height:180px"></canvas><button class="exbtn2 animtog" id="heat_cv_tog" onclick="toggleAnim('heat')">&#9208; Pause</button>
 <div class="demo-out">Water in cool, out warm by <b id="heat_dtv">5</b> &deg;C. Heat carried away: <b id="heat_kw" style="color:var(--accent)">—</b></div>
 </div>
 <div class="try">Try this: double the flow, then instead double the warm-up. Either one doubles the heat carried. That is the whole rule: heat = flow &times; how much it warms (&times; water's heat capacity).</div>
@@ -532,7 +533,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Vacuum depth</span><input type="range" id="cav_v" min="0" max="98" value="60" step="1"></div>
 <div class="demo-row"><span style="flex:0 0 130px">Water temp</span><input type="range" id="cav_t" min="10" max="80" value="30" step="1"></div>
-<canvas id="cav_cv" class="lawcv" style="height:190px"></canvas>
+<canvas id="cav_cv" class="lawcv" style="height:190px"></canvas><button class="exbtn2 animtog" id="cav_cv_tog" onclick="toggleAnim('cav')">&#9208; Pause</button>
 <div class="demo-out" id="cav_out">—</div>
 </div>
 <div class="try">Try this: set a deep vacuum, then slide the water temperature up. At some point the water starts to boil and the marbles rattle. Now cool the water back down and it settles. That is why the fix for cavitation is nearly always colder seal water.</div>
@@ -1652,8 +1653,27 @@ function drawBP(){
  ctx.fillText(fmtA(nm,0)+" rpm",cx1,cy-rM-8);
  ctx.fillText(fmtA(np,0)+" rpm",cx2,cy-rP-8);
 }
+var ANIM_PAUSED={intro:false,boyle:false,charles:false,gl:false,combined:false,ideal:false,dalton:false,lr:false,fan:false,heat:false,cav:false,bp:false};
+var ANIM_BTN={intro:"in_cv_tog",boyle:"by_cv_tog",charles:"ch_cv_tog",gl:"gl_cv_tog",combined:"cb_cv_tog",ideal:"ig_cv_tog",dalton:"da_cv_tog",lr:"lr_cv_tog",fan:"fan_cv_tog",heat:"heat_cv_tog",cav:"cav_cv_tog",bp:"bp_cv_tog"};
+function toggleAnim(key){
+ ANIM_PAUSED[key]=!ANIM_PAUSED[key];
+ var b=document.getElementById(ANIM_BTN[key]);
+ if(b)b.innerHTML=ANIM_PAUSED[key]?"&#9654; Play":"&#9208; Pause";
+}
+window.toggleAnim=toggleAnim;
 function gasLoop(){
- drawIntro();drawBoyle();drawCharles();drawGL();drawCombined();drawIdeal();drawDalton();drawLR();drawFan();drawHeatToy();drawCav();drawBP();
+ if(!ANIM_PAUSED.intro)drawIntro();
+ if(!ANIM_PAUSED.boyle)drawBoyle();
+ if(!ANIM_PAUSED.charles)drawCharles();
+ if(!ANIM_PAUSED.gl)drawGL();
+ if(!ANIM_PAUSED.combined)drawCombined();
+ if(!ANIM_PAUSED.ideal)drawIdeal();
+ if(!ANIM_PAUSED.dalton)drawDalton();
+ if(!ANIM_PAUSED.lr)drawLR();
+ if(!ANIM_PAUSED.fan)drawFan();
+ if(!ANIM_PAUSED.heat)drawHeatToy();
+ if(!ANIM_PAUSED.cav)drawCav();
+ if(!ANIM_PAUSED.bp)drawBP();
  if(window.requestAnimationFrame)requestAnimationFrame(gasLoop);
 }
 if(window.requestAnimationFrame)requestAnimationFrame(gasLoop);
