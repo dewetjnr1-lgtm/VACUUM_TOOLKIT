@@ -180,6 +180,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <button class="bub c3" onclick="show('bp')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="16.5" r="3.3"/><circle cx="17.5" cy="7.5" r="2.4"/><path d="M9.2 15 15.3 9.3" stroke-dasharray="2.4 2.2"/></svg></span><span>Belt &amp; pulley speed</span></button>
 <button class="bub c3" onclick="show('ck')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="5" width="15" height="15.5" rx="2"/><path d="M9 5V3.5h6V5"/><path d="M8 10.5h.5M11 10.5h5M8 14h.5M11 14h5M8 17.5h.5M11 17.5h5"/></svg></span><span>Commissioning checklist</span></button>
 <button class="bub c3" onclick="show('fs')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="3.5" width="15" height="17" rx="2"/><path d="M8 8h8M8 11.3h8M8 14.6h5"/><path d="M8 17.9h3.5"/></svg></span><span>Field service pump test sheet</span></button>
+<button class="bub c3" onclick="show('pt')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V5.5M4 20h16"/><path d="M4 16.5 9 11l3.5 3 6-7"/></svg></span><span>Production test vs factory curve</span></button>
 </div>
 </section><section class="page" id="learn">
 <h2>Learn the gas laws</h2>
@@ -591,54 +592,54 @@ td:first-child{text-align:left;font-family:var(--sans);}
 </div>
 <div class="card"><h3>Test points</h3>
 <div class="tp-num">Test point 1</div>
+<div class="fld" style="padding-top:0"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="fs_tp1_vac_n" placeholder="number"><select id="fs_tp1_vac_u" data-g="pressure" data-du="4"></select><select id="fs_tp1_vac_r" data-ref="v"></select></div></div>
 <div class="mgrid">
 <div class="mgf"><span class="mlab">Orifice qty</span><div class="ctrl"><input type="number" id="fs_tp1_orif" placeholder="number"></div></div>
-<div class="mgf"><span class="mlab">Vacuum</span><div class="ctrl"><input type="number" id="fs_tp1_vac" placeholder="number"><span class="fu">bar</span></div></div>
 <div class="mgf"><span class="mlab">Seal water temp</span><div class="ctrl"><input type="number" id="fs_tp1_swt" placeholder="number"><span class="fu">&deg;C</span></div></div>
 <div class="mgf"><span class="mlab">Seal water qty</span><div class="ctrl"><input type="number" id="fs_tp1_swq" placeholder="number"><span class="fu">l/min</span></div></div>
 <div class="mgf"><span class="mlab">Amps</span><div class="ctrl"><input type="number" id="fs_tp1_amps" placeholder="number"><span class="fu">A</span></div></div>
 <div class="mgf"><span class="mlab">Volts</span><div class="ctrl"><input type="number" id="fs_tp1_volts" placeholder="number"><span class="fu">V</span></div></div>
 </div>
 <div class="tp-num">Test point 2</div>
+<div class="fld" style="padding-top:0"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="fs_tp2_vac_n" placeholder="number"><select id="fs_tp2_vac_u" data-g="pressure" data-du="4"></select><select id="fs_tp2_vac_r" data-ref="v"></select></div></div>
 <div class="mgrid">
 <div class="mgf"><span class="mlab">Orifice qty</span><div class="ctrl"><input type="number" id="fs_tp2_orif" placeholder="number"></div></div>
-<div class="mgf"><span class="mlab">Vacuum</span><div class="ctrl"><input type="number" id="fs_tp2_vac" placeholder="number"><span class="fu">bar</span></div></div>
 <div class="mgf"><span class="mlab">Seal water temp</span><div class="ctrl"><input type="number" id="fs_tp2_swt" placeholder="number"><span class="fu">&deg;C</span></div></div>
 <div class="mgf"><span class="mlab">Seal water qty</span><div class="ctrl"><input type="number" id="fs_tp2_swq" placeholder="number"><span class="fu">l/min</span></div></div>
 <div class="mgf"><span class="mlab">Amps</span><div class="ctrl"><input type="number" id="fs_tp2_amps" placeholder="number"><span class="fu">A</span></div></div>
 <div class="mgf"><span class="mlab">Volts</span><div class="ctrl"><input type="number" id="fs_tp2_volts" placeholder="number"><span class="fu">V</span></div></div>
 </div>
 <div class="tp-num">Test point 3</div>
+<div class="fld" style="padding-top:0"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="fs_tp3_vac_n" placeholder="number"><select id="fs_tp3_vac_u" data-g="pressure" data-du="4"></select><select id="fs_tp3_vac_r" data-ref="v"></select></div></div>
 <div class="mgrid">
 <div class="mgf"><span class="mlab">Orifice qty</span><div class="ctrl"><input type="number" id="fs_tp3_orif" placeholder="number"></div></div>
-<div class="mgf"><span class="mlab">Vacuum</span><div class="ctrl"><input type="number" id="fs_tp3_vac" placeholder="number"><span class="fu">bar</span></div></div>
 <div class="mgf"><span class="mlab">Seal water temp</span><div class="ctrl"><input type="number" id="fs_tp3_swt" placeholder="number"><span class="fu">&deg;C</span></div></div>
 <div class="mgf"><span class="mlab">Seal water qty</span><div class="ctrl"><input type="number" id="fs_tp3_swq" placeholder="number"><span class="fu">l/min</span></div></div>
 <div class="mgf"><span class="mlab">Amps</span><div class="ctrl"><input type="number" id="fs_tp3_amps" placeholder="number"><span class="fu">A</span></div></div>
 <div class="mgf"><span class="mlab">Volts</span><div class="ctrl"><input type="number" id="fs_tp3_volts" placeholder="number"><span class="fu">V</span></div></div>
 </div>
 <div class="tp-num">Test point 4</div>
+<div class="fld" style="padding-top:0"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="fs_tp4_vac_n" placeholder="number"><select id="fs_tp4_vac_u" data-g="pressure" data-du="4"></select><select id="fs_tp4_vac_r" data-ref="v"></select></div></div>
 <div class="mgrid">
 <div class="mgf"><span class="mlab">Orifice qty</span><div class="ctrl"><input type="number" id="fs_tp4_orif" placeholder="number"></div></div>
-<div class="mgf"><span class="mlab">Vacuum</span><div class="ctrl"><input type="number" id="fs_tp4_vac" placeholder="number"><span class="fu">bar</span></div></div>
 <div class="mgf"><span class="mlab">Seal water temp</span><div class="ctrl"><input type="number" id="fs_tp4_swt" placeholder="number"><span class="fu">&deg;C</span></div></div>
 <div class="mgf"><span class="mlab">Seal water qty</span><div class="ctrl"><input type="number" id="fs_tp4_swq" placeholder="number"><span class="fu">l/min</span></div></div>
 <div class="mgf"><span class="mlab">Amps</span><div class="ctrl"><input type="number" id="fs_tp4_amps" placeholder="number"><span class="fu">A</span></div></div>
 <div class="mgf"><span class="mlab">Volts</span><div class="ctrl"><input type="number" id="fs_tp4_volts" placeholder="number"><span class="fu">V</span></div></div>
 </div>
 <div class="tp-num">Test point 5</div>
+<div class="fld" style="padding-top:0"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="fs_tp5_vac_n" placeholder="number"><select id="fs_tp5_vac_u" data-g="pressure" data-du="4"></select><select id="fs_tp5_vac_r" data-ref="v"></select></div></div>
 <div class="mgrid">
 <div class="mgf"><span class="mlab">Orifice qty</span><div class="ctrl"><input type="number" id="fs_tp5_orif" placeholder="number"></div></div>
-<div class="mgf"><span class="mlab">Vacuum</span><div class="ctrl"><input type="number" id="fs_tp5_vac" placeholder="number"><span class="fu">bar</span></div></div>
 <div class="mgf"><span class="mlab">Seal water temp</span><div class="ctrl"><input type="number" id="fs_tp5_swt" placeholder="number"><span class="fu">&deg;C</span></div></div>
 <div class="mgf"><span class="mlab">Seal water qty</span><div class="ctrl"><input type="number" id="fs_tp5_swq" placeholder="number"><span class="fu">l/min</span></div></div>
 <div class="mgf"><span class="mlab">Amps</span><div class="ctrl"><input type="number" id="fs_tp5_amps" placeholder="number"><span class="fu">A</span></div></div>
 <div class="mgf"><span class="mlab">Volts</span><div class="ctrl"><input type="number" id="fs_tp5_volts" placeholder="number"><span class="fu">V</span></div></div>
 </div>
 <div class="tp-num">Test point 6</div>
+<div class="fld" style="padding-top:0"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="fs_tp6_vac_n" placeholder="number"><select id="fs_tp6_vac_u" data-g="pressure" data-du="4"></select><select id="fs_tp6_vac_r" data-ref="v"></select></div></div>
 <div class="mgrid">
 <div class="mgf"><span class="mlab">Orifice qty</span><div class="ctrl"><input type="number" id="fs_tp6_orif" placeholder="number"></div></div>
-<div class="mgf"><span class="mlab">Vacuum</span><div class="ctrl"><input type="number" id="fs_tp6_vac" placeholder="number"><span class="fu">bar</span></div></div>
 <div class="mgf"><span class="mlab">Seal water temp</span><div class="ctrl"><input type="number" id="fs_tp6_swt" placeholder="number"><span class="fu">&deg;C</span></div></div>
 <div class="mgf"><span class="mlab">Seal water qty</span><div class="ctrl"><input type="number" id="fs_tp6_swq" placeholder="number"><span class="fu">l/min</span></div></div>
 <div class="mgf"><span class="mlab">Amps</span><div class="ctrl"><input type="number" id="fs_tp6_amps" placeholder="number"><span class="fu">A</span></div></div>
@@ -646,6 +647,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 </div>
 </div>
 <div class="card"><h3>Temperatures &amp; vibration</h3>
+<div class="fld"><div class="fh"><label>Air pressure where you are</label><button class="q" onclick="hp('h_fs_air')">?</button></div><div class="help" id="h_fs_air">The air pressure where you are. About 101 kilopascals at sea level, near 95 at 500 metres up, near 90 at 1000 metres. Used to work out flow from the test points on the Production test page.</div><div class="ctrl"><input type="number" id="fs_airpress_n" placeholder="number"><select id="fs_airpress_u" data-g="pressure" data-du="0"></select></div></div>
 <div class="fld"><div class="fh"><label>Air temp</label></div><div class="ctrl"><input type="number" id="fs_airtemp" placeholder="number"><span class="fu">&deg;C</span></div></div>
 <div class="fld"><div class="fh"><label>Gas temp</label></div><div class="ctrl"><input type="number" id="fs_gastemp" placeholder="number"><span class="fu">&deg;C</span></div></div>
 <div class="tp-num">Bearing temp</div><div class="mgrid">
@@ -683,9 +685,63 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="fld"><div class="fh"><label>Tested by</label></div><div class="ctrl"><input type="text" id="fs_testedby"></div></div>
 </div>
 <button class="clrbtn" onclick="fsClear()" style="margin:6px 0 0;margin-left:0">Clear this sheet</button>
+</section><section class="page" id="pt"><div class="pgh"><h2>Production test vs factory curve</h2><button class="q" onclick="hp('ab_pt')">?</button></div>
+<div class="about" id="ab_pt">
+<div class="ar"><b>What it is</b>Turns the 6 test points on the Field service pump test sheet into a flow-vs-vacuum curve, and compares it against 6 points you type in from the pump’s factory performance curve.</div>
+<div class="ar"><b>Why it matters</b>A pump’s capacity falls off with wear, blade erosion or scale long before it fails outright. Plotting a fresh site test against the original factory curve turns that into a number you can put in a report.</div>
+<div class="ar"><b>How the test flow is worked out</b>Each test point throttles the pump with a bank of identical orifices open to atmosphere. Fewer orifices open, or a deeper vacuum, means less air gets in. The flow at each point is calculated from how many orifices were open, their diameter, the vacuum reached, and the local air pressure and temperature, using the standard compressible flow equation for a gas orifice — the same maths used to size a critical-flow test nozzle.</div>
+<div class="ar">Fill in the Field service pump test sheet first — this page reads its test points automatically. It will not overwrite anything on that sheet.</div>
+<span class="law">Uses: Compressible flow through a gas orifice</span></div>
+<div class="card"><h3>Test orifice discharge coefficient</h3><div class="fld"><div class="fh"><label>Orifice edge type</label><button class="q" onclick="hp('h_pt_cd')">?</button></div><div class="help" id="h_pt_cd">The shape of the test orifices’ edge sets how cleanly air passes through, the discharge coefficient C. Most factory test rigs use sharp-edged plates.</div><div class="ctrl"><select id="pt_cd" style="flex:1 1 100%"><option value="0.61" selected>Sharp edged (C = 0.61)</option><option value="0.82">Square edged, full bore (C = 0.82)</option><option value="0.98">Well rounded / ISA nozzle (C = 0.98)</option></select></div></div></div>
+<div class="card"><h3>Test points, from the sheet</h3>
+<div class="tblwrap" style="overflow-x:auto"><table><tr><th>Point</th><th>Flow, actual</th><th>Vacuum</th></tr>
+<tr><td>1</td><td id="pt_tf1">&mdash;</td><td id="pt_tv1">&mdash;</td></tr>
+<tr><td>2</td><td id="pt_tf2">&mdash;</td><td id="pt_tv2">&mdash;</td></tr>
+<tr><td>3</td><td id="pt_tf3">&mdash;</td><td id="pt_tv3">&mdash;</td></tr>
+<tr><td>4</td><td id="pt_tf4">&mdash;</td><td id="pt_tv4">&mdash;</td></tr>
+<tr><td>5</td><td id="pt_tf5">&mdash;</td><td id="pt_tv5">&mdash;</td></tr>
+<tr><td>6</td><td id="pt_tf6">&mdash;</td><td id="pt_tv6">&mdash;</td></tr>
+</table></div>
+<p style="font-size:12px;color:var(--soft);margin:8px 2px 0">Flow in m&sup3;/h actual, vacuum in bar below local air pressure. Computed from the orifice qty, orifice diameter, air pressure, air temp and vacuum reading on the Field service pump test sheet.</p>
+</div>
+<div class="card"><h3>Factory performance curve</h3><button class="exbtn" onclick="ex('pt')">Insert example</button><button class="clrbtn" onclick="ptClear()">Clear</button>
+<div class="tp-num">Point 1</div>
+<div class="fld" style="padding-top:0"><div class="fh"><label>Flow</label></div><div class="ctrl"><input type="number" id="pt_p1_q_n" placeholder="number"><select id="pt_p1_q_u" data-g="flow" data-du="0"></select></div></div>
+<div class="fld"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="pt_p1_v_n" placeholder="number"><select id="pt_p1_v_u" data-g="pressure" data-du="4"></select><select id="pt_p1_v_r" data-ref="v"></select></div></div>
+<div class="tp-num">Point 2</div>
+<div class="fld" style="padding-top:0"><div class="fh"><label>Flow</label></div><div class="ctrl"><input type="number" id="pt_p2_q_n" placeholder="number"><select id="pt_p2_q_u" data-g="flow" data-du="0"></select></div></div>
+<div class="fld"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="pt_p2_v_n" placeholder="number"><select id="pt_p2_v_u" data-g="pressure" data-du="4"></select><select id="pt_p2_v_r" data-ref="v"></select></div></div>
+<div class="tp-num">Point 3</div>
+<div class="fld" style="padding-top:0"><div class="fh"><label>Flow</label></div><div class="ctrl"><input type="number" id="pt_p3_q_n" placeholder="number"><select id="pt_p3_q_u" data-g="flow" data-du="0"></select></div></div>
+<div class="fld"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="pt_p3_v_n" placeholder="number"><select id="pt_p3_v_u" data-g="pressure" data-du="4"></select><select id="pt_p3_v_r" data-ref="v"></select></div></div>
+<div class="tp-num">Point 4</div>
+<div class="fld" style="padding-top:0"><div class="fh"><label>Flow</label></div><div class="ctrl"><input type="number" id="pt_p4_q_n" placeholder="number"><select id="pt_p4_q_u" data-g="flow" data-du="0"></select></div></div>
+<div class="fld"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="pt_p4_v_n" placeholder="number"><select id="pt_p4_v_u" data-g="pressure" data-du="4"></select><select id="pt_p4_v_r" data-ref="v"></select></div></div>
+<div class="tp-num">Point 5</div>
+<div class="fld" style="padding-top:0"><div class="fh"><label>Flow</label></div><div class="ctrl"><input type="number" id="pt_p5_q_n" placeholder="number"><select id="pt_p5_q_u" data-g="flow" data-du="0"></select></div></div>
+<div class="fld"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="pt_p5_v_n" placeholder="number"><select id="pt_p5_v_u" data-g="pressure" data-du="4"></select><select id="pt_p5_v_r" data-ref="v"></select></div></div>
+<div class="tp-num">Point 6</div>
+<div class="fld" style="padding-top:0"><div class="fh"><label>Flow</label></div><div class="ctrl"><input type="number" id="pt_p6_q_n" placeholder="number"><select id="pt_p6_q_u" data-g="flow" data-du="0"></select></div></div>
+<div class="fld"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="pt_p6_v_n" placeholder="number"><select id="pt_p6_v_u" data-g="pressure" data-du="4"></select><select id="pt_p6_v_r" data-ref="v"></select></div></div>
+</div>
+<div class="card"><h3>Comparison</h3>
+<svg id="pt_chart" viewBox="0 0 360 225" style="width:100%;height:auto;display:block;margin-top:4px"></svg>
+<div class="ex-card" style="margin-top:10px;padding:9px 13px"><span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--teal)"><span style="width:22px;height:3px;background:var(--teal);display:inline-block;border-radius:2px"></span>Factory curve</span><span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--accent);margin-left:16px"><span style="width:22px;height:3px;background:var(--accent);display:inline-block;border-radius:2px"></span>Test curve</span></div>
+<div class="tblwrap" style="overflow-x:auto;margin-top:10px"><table><tr><th>Test vacuum</th><th>Test flow</th><th>Factory flow, same vacuum</th><th>Shortfall</th></tr>
+<tr><td id="pt_c1_v">&mdash;</td><td id="pt_c1_tf">&mdash;</td><td id="pt_c1_ff">&mdash;</td><td id="pt_c1_pct">&mdash;</td></tr>
+<tr><td id="pt_c2_v">&mdash;</td><td id="pt_c2_tf">&mdash;</td><td id="pt_c2_ff">&mdash;</td><td id="pt_c2_pct">&mdash;</td></tr>
+<tr><td id="pt_c3_v">&mdash;</td><td id="pt_c3_tf">&mdash;</td><td id="pt_c3_ff">&mdash;</td><td id="pt_c3_pct">&mdash;</td></tr>
+<tr><td id="pt_c4_v">&mdash;</td><td id="pt_c4_tf">&mdash;</td><td id="pt_c4_ff">&mdash;</td><td id="pt_c4_pct">&mdash;</td></tr>
+<tr><td id="pt_c5_v">&mdash;</td><td id="pt_c5_tf">&mdash;</td><td id="pt_c5_ff">&mdash;</td><td id="pt_c5_pct">&mdash;</td></tr>
+<tr><td id="pt_c6_v">&mdash;</td><td id="pt_c6_tf">&mdash;</td><td id="pt_c6_ff">&mdash;</td><td id="pt_c6_pct">&mdash;</td></tr>
+</table></div>
+<div class="res big"><div class="fh"><span class="res-lab" style="margin:0">Average flow shortfall vs the factory curve</span><button class="q" onclick="hp('hy_pt_avg')">?</button></div><div class="help" id="hy_pt_avg">The average, over the test points that fall inside the factory curve’s vacuum range, of how much flow the pump is short of the factory figure at the same vacuum. A rough read on how much capacity the pump has lost since it was new.</div><div class="ctrl"><span class="res-v" id="pt_avg">&mdash;</span><span class="fu">%</span></div></div>
+</div>
+<div class="means" id="pt_m">Fill in the Field service pump test sheet’s test points and the factory curve points above, and this explains your answer.</div>
+<details><summary>Show the math</summary><div class="math"><div class="formula">m&#775; = C &times; A &times; P<sub>1</sub> &times; &radic;[ 2k / (R T (k&minus;1)) &times; (r<sup>2/k</sup> &minus; r<sup>(k+1)/k</sup>) ]<small>subsonic; r = P<sub>2</sub>/P<sub>1</sub>. Choked instead when r &le; 0.528, using the critical-flow form of the same equation.</small></div><div class="plug" id="mx_pt1">Your numbers appear here when the boxes are filled in.</div><div class="formula">Shortfall % = (Q<sub>factory</sub> &minus; Q<sub>test</sub>) / Q<sub>factory</sub> &times; 100<small>Q<sub>factory</sub> read off the factory curve by straight-line interpolation at the test point’s vacuum</small></div><div class="plug" id="mx_pt2">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: compressible flow through a square-edged orifice, per Crane TP-410 and ASME MFC-3M (the same physics used for critical-flow test nozzles). Discharge coefficients per Cameron Hydraulic Data. Air taken as k = 1.4, R = 287 J/(kg&middot;K).</p></div></details>
 </section></main><script>"use strict";
 var G={
- pressure:[["kilopascals (kPa)",1],["millibar (mbar)",0.1],["torr (mmHg)",0.1333224],["inches of mercury (inHg)",3.386389]],
+ pressure:[["kilopascals (kPa)",1],["millibar (mbar)",0.1],["torr (mmHg)",0.1333224],["inches of mercury (inHg)",3.386389],["bar",100]],
  flow:[["cubic metres per hour",1],["cubic feet per minute",1.69901],["litres per second",3.6],["litres per minute",0.06],["US gallons per minute",0.2271247]],
  flowIn:[["Normal cubic metres per hour (Nm3/h)",1],["Standard cubic feet per minute (SCFM)",1.69901]],
  flowN:[["cubic metres per hour",1],["cubic feet per minute",1.69901],["litres per second",3.6],["litres per minute",0.06],["Normal cubic metres per hour (Nm3/h)",0]],
@@ -763,6 +819,42 @@ function drawFall(id,P1,P2,tmin){var el=document.getElementById(id);if(!el)retur
  s+='<text x="'+(L+pw/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="10.5" fill="#4C5860">Minutes</text>';
  s+='<text transform="rotate(-90)" x="'+(-(T+ph/2))+'" y="11" text-anchor="middle" font-size="10.5" fill="#4C5860">Absolute pressure (kPa)</text>';
  el.innerHTML=s;}
+function drawCompare(id,testPts,facPts,xlab,ylab){var el=document.getElementById(id);if(!el)return;
+ var all=testPts.concat(facPts);
+ if(all.length<2){el.innerHTML='<text x="180" y="116" text-anchor="middle" font-size="13" fill="#8A959D">Fill in test points and factory points to draw the curves</text>';return;}
+ var W=360,H=225,L=52,R=14,T=12,B=40,pw=W-L-R,ph=H-T-B;
+ var xmax=0,ymax=0,i;
+ for(i=0;i<all.length;i++){if(all[i].x>xmax)xmax=all[i].x;if(all[i].y>ymax)ymax=all[i].y;}
+ var xm=niceCeil(xmax*1.15||1),ym=niceCeil(ymax*1.15||1),s="",gx,gy,tv;
+ for(i=0;i<=4;i++){gx=L+pw*i/4;gy=T+ph*i/4;
+  s+='<line x1="'+gx+'" y1="'+T+'" x2="'+gx+'" y2="'+(T+ph)+'" stroke="#D3DAE0"/>';
+  s+='<line x1="'+L+'" y1="'+gy+'" x2="'+(L+pw)+'" y2="'+gy+'" stroke="#D3DAE0"/>';
+  tv=xm*i/4;s+='<text x="'+gx+'" y="'+(T+ph+14)+'" text-anchor="middle" font-size="10" fill="#4C5860">'+fmtA(tv,tv<10&&tv%1?1:0)+'</text>';
+  tv=ym*i/4;s+='<text x="'+(L-6)+'" y="'+(T+ph*(1-i/4)+3.5)+'" text-anchor="end" font-size="10" fill="#4C5860">'+fmtA(tv,tv<10&&tv%1?1:0)+'</text>';}
+ s+='<line x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(T+ph)+'" stroke="#4C5860" stroke-width="1.2"/><line x1="'+L+'" y1="'+(T+ph)+'" x2="'+(L+pw)+'" y2="'+(T+ph)+'" stroke="#4C5860" stroke-width="1.2"/>';
+ function drawSeries(pts,color){if(!pts.length)return "";var sorted=pts.slice().sort(function(a,b2){return a.x-b2.x;});var d="",px,py,out="",j;
+  for(j=0;j<sorted.length;j++){px=L+pw*sorted[j].x/xm;py=T+ph*(1-sorted[j].y/ym);d+=(j?"L":"M")+px.toFixed(1)+" "+py.toFixed(1);}
+  if(sorted.length>1)out+='<path d="'+d+'" fill="none" stroke="'+color+'" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>';
+  for(j=0;j<sorted.length;j++){px=L+pw*sorted[j].x/xm;py=T+ph*(1-sorted[j].y/ym);out+='<circle cx="'+px.toFixed(1)+'" cy="'+py.toFixed(1)+'" r="4" fill="'+color+'" stroke="#fff" stroke-width="1.5"/>';}
+  return out;}
+ s+=drawSeries(facPts,"#1D5A78");
+ s+=drawSeries(testPts,"#BF4E10");
+ s+='<text x="'+(L+pw/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="10.5" fill="#4C5860">'+xlab+'</text>';
+ s+='<text transform="rotate(-90)" x="'+(-(T+ph/2))+'" y="11" text-anchor="middle" font-size="10.5" fill="#4C5860">'+ylab+'</text>';
+ el.innerHTML=s;}
+function orificeFlow(nOrif,dMM,P1kPa,P2kPa,T1C,Cd){
+ if(!isFinite(nOrif)||nOrif<0||!isFinite(P1kPa)||!isFinite(T1C)||!isFinite(dMM)||P1kPa<=0)return NaN;
+ if(nOrif===0)return 0;
+ if(!isFinite(P2kPa)||P2kPa<=0||P2kPa>=P1kPa)return NaN;
+ var k=1.4,R=287,T1K=T1C+273.15;
+ var A=Math.PI/4*Math.pow(dMM/1000,2);
+ var P1=P1kPa*1000,P2=P2kPa*1000,r=P2/P1;
+ var rc=Math.pow(2/(k+1),k/(k-1));
+ var mdotEach=r<=rc?Cd*A*P1*Math.sqrt(k/(R*T1K)*Math.pow(2/(k+1),(k+1)/(k-1))):Cd*A*P1*Math.sqrt(2*k/(R*T1K*(k-1))*(Math.pow(r,2/k)-Math.pow(r,(k+1)/k)));
+ var mdotTotal=mdotEach*nOrif;
+ var rho2=P2/(R*T1K);
+ return mdotTotal/rho2*3600;
+}
 function b(x){return "<b>"+fmtA(x)+"</b>";}
 function M(id,html){var e=document.getElementById(id);if(e)e.innerHTML=html;}
 
@@ -1067,6 +1159,61 @@ function recalc(){
   M("dt_m",bad?"The discharge pressure must be higher than the inlet pressure, both measured from a full vacuum. Check the two pressures and their gauge, absolute or vacuum settings.":isFinite(out)?("Squeezed "+b(r)+" times tighter, the gas leaves at about "+b(out)+" degrees Celsius, "+b(rise)+" degrees hotter than it went in, if nothing carries the heat away. A dry blower or claw runs near this figure; a liquid ring machine runs far cooler because the ring soaks up the heat as it squeezes."+(out>140?" <b>That is hot enough to need an aftercooler or a two stage machine. Flag it on the quote.</b>":"")):"Fill in the boxes and this explains your answer.");})();
  // FIELD SERVICE TEST SHEET
  fsSave();
+ // PRODUCTION TEST vs FACTORY CURVE
+ (function(){
+  var B=airOf("fs_airpress"),T1=gv("fs_airtemp"),dMM=readUnit("fs_orifdia","length"),Cd=+gs("pt_cd")||0.61;
+  var testPts=[],n;
+  for(n=1;n<=6;n++){
+   var nOrif=gv("fs_tp"+n+"_orif"),P2=readPress("fs_tp"+n+"_vac",B);
+   var Q=orificeFlow(nOrif,dMM,B,P2,T1,Cd),vBar=(isFinite(B)&&isFinite(P2))?(B-P2)/100:NaN;
+   setT("pt_tf"+n,isFinite(Q)?fmtA(Q):"—");
+   setT("pt_tv"+n,isFinite(vBar)?fmtA(vBar)+" bar":"—");
+   testPts.push({x:Q,y:vBar,n:n});
+  }
+  var facPts=[];
+  for(n=1;n<=6;n++){
+   var Qf=readUnit("pt_p"+n+"_q","flow"),P2f=readPress("pt_p"+n+"_v",B);
+   var vBarF=(isFinite(B)&&isFinite(P2f))?(B-P2f)/100:NaN;
+   if(isFinite(Qf)&&isFinite(vBarF))facPts.push({x:Qf,y:vBarF});
+  }
+  var facSorted=facPts.slice().sort(function(a,b2){return a.y-b2.y;});
+  function interpAtV(v){
+   if(facSorted.length<2||!isFinite(v))return NaN;
+   if(v<facSorted[0].y||v>facSorted[facSorted.length-1].y)return NaN;
+   for(var k2=0;k2<facSorted.length-1;k2++){
+    if(v>=facSorted[k2].y&&v<=facSorted[k2+1].y){
+     var span=facSorted[k2+1].y-facSorted[k2].y;
+     var t=span?(v-facSorted[k2].y)/span:0;
+     return facSorted[k2].x+t*(facSorted[k2+1].x-facSorted[k2].x);
+    }
+   }
+   return NaN;
+  }
+  var pcts=[];
+  for(n=1;n<=6;n++){
+   var tp=testPts[n-1];
+   var ff=isFinite(tp.y)?interpAtV(tp.y):NaN;
+   var pct=(isFinite(ff)&&ff>0&&isFinite(tp.x))?(ff-tp.x)/ff*100:NaN;
+   setT("pt_c"+n+"_v",isFinite(tp.y)?fmtA(tp.y)+" bar":"—");
+   setT("pt_c"+n+"_tf",isFinite(tp.x)?fmtA(tp.x):"—");
+   setT("pt_c"+n+"_ff",isFinite(ff)?fmtA(ff):"—");
+   setT("pt_c"+n+"_pct",isFinite(pct)?fmtA(pct)+"%":"—");
+   if(isFinite(pct))pcts.push(pct);
+  }
+  var avg=pcts.length?pcts.reduce(function(a,c){return a+c;},0)/pcts.length:NaN;
+  showN("pt_avg",avg);
+  var validTest=testPts.filter(function(p){return isFinite(p.x)&&isFinite(p.y);});
+  drawCompare("pt_chart",validTest,facPts,"Flow, actual (m3/h)","Vacuum (bar)");
+  PLG("mx_pt1",validTest.length>0,"Example, test point "+(validTest[0]?validTest[0].n:1)+": <b>"+(validTest[0]?fmtA(validTest[0].x):"—")+" m&sup3;/h</b> at "+(validTest[0]?fmtA(validTest[0].y):"—")+" bar vacuum");
+  PLG("mx_pt2",pcts.length>0,"Average: <b>"+fmtA(avg)+"%</b> over "+pcts.length+" of 6 test points inside the factory curve's range");
+  var msg;
+  if(validTest.length===0)msg="Fill in the orifice qty, orifice diameter, air pressure, air temp and vacuum on the Field service pump test sheet's test points first.";
+  else if(facPts.length<2)msg="Add at least two points from the factory performance curve above to compare against.";
+  else if(!pcts.length)msg="None of the test points' vacuum readings fall inside the factory curve's vacuum range, so there is nothing to compare directly. Add factory points that bracket the test vacuum.";
+  else msg="Across "+pcts.length+" test point"+(pcts.length===1?"":"s")+" that fall inside the factory curve's range, the pump is delivering about "+b(avg)+"% less flow than new, at the same vacuum."+(avg>15?" <b>That is a meaningful drop — worth flagging on the report.</b>":avg<0?" It is actually out-performing the factory curve at these points, so check the factory points were entered correctly.":" That is a modest, expected amount of wear.");
+  M("pt_m",msg);
+ })();
+ ptSave();
  // DEMOS
  demos();
 }
@@ -1479,7 +1626,8 @@ var EX={
  cw:{cw_m_n:12100,cw_mu_n:1.54,cw_dk_n:45,cw_dm_n:509,cw_l_n:184,cw_e_n:7,cw_t_n:1,cw_fv_n:0,cw_sv_n:0,cw_sd_n:0,cw_o_n:0},
  dt:{dt_t_n:30,dt_p1_n:20,dt_p1_r:"v",dt_p2_n:0,dt_p2_r:"g",dt_air_n:101.3},
  bp:{bp_mrpm_n:1450,bp_md_n:90,bp_pd_n:280,bp_meas_n:410},
- af:{af_n1_n:1450,af_n2_n:1750,af_q_n:1000,af_p_n:400,af_kw_n:15}
+ af:{af_n1_n:1450,af_n2_n:1750,af_q_n:1000,af_p_n:400,af_kw_n:15},
+ pt:{pt_cd:"0.61",pt_p1_q_n:900,pt_p1_v_n:0.15,pt_p2_q_n:750,pt_p2_v_n:0.30,pt_p3_q_n:550,pt_p3_v_n:0.50,pt_p4_q_n:380,pt_p4_v_n:0.65,pt_p5_q_n:180,pt_p5_v_n:0.80,pt_p6_q_n:40,pt_p6_v_n:0.92}
 };
 function ex(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(e)e.value=m[k];}recalc();}
 function clr(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(!e)continue;if(e.tagName==="SELECT"){var d=e.getAttribute("data-ref");if(d)e.value=d;}else e.value="";}recalc();}
@@ -1489,13 +1637,13 @@ window.ex=ex;window.clr=clr;window.hp=hp;window.show=show;
 // Field service pump test sheet: plain record fields, saved to this phone as you type.
 var FS_KEY="vt_fs1";
 var FS_FIELDS=["fs_company","fs_contact","fs_address","fs_tel","fs_fax","fs_fsno","fs_pumptype","fs_material","fs_testno","fs_companyid","fs_vcsid","fs_lasttest","fs_orifplates","fs_orifdia_n","fs_orifdia_u","fs_position",
-"fs_tp1_orif","fs_tp1_vac","fs_tp1_swt","fs_tp1_swq","fs_tp1_amps","fs_tp1_volts",
-"fs_tp2_orif","fs_tp2_vac","fs_tp2_swt","fs_tp2_swq","fs_tp2_amps","fs_tp2_volts",
-"fs_tp3_orif","fs_tp3_vac","fs_tp3_swt","fs_tp3_swq","fs_tp3_amps","fs_tp3_volts",
-"fs_tp4_orif","fs_tp4_vac","fs_tp4_swt","fs_tp4_swq","fs_tp4_amps","fs_tp4_volts",
-"fs_tp5_orif","fs_tp5_vac","fs_tp5_swt","fs_tp5_swq","fs_tp5_amps","fs_tp5_volts",
-"fs_tp6_orif","fs_tp6_vac","fs_tp6_swt","fs_tp6_swq","fs_tp6_amps","fs_tp6_volts",
-"fs_airtemp","fs_gastemp","fs_btde","fs_btie",
+"fs_tp1_orif","fs_tp1_vac_n","fs_tp1_vac_u","fs_tp1_vac_r","fs_tp1_swt","fs_tp1_swq","fs_tp1_amps","fs_tp1_volts",
+"fs_tp2_orif","fs_tp2_vac_n","fs_tp2_vac_u","fs_tp2_vac_r","fs_tp2_swt","fs_tp2_swq","fs_tp2_amps","fs_tp2_volts",
+"fs_tp3_orif","fs_tp3_vac_n","fs_tp3_vac_u","fs_tp3_vac_r","fs_tp3_swt","fs_tp3_swq","fs_tp3_amps","fs_tp3_volts",
+"fs_tp4_orif","fs_tp4_vac_n","fs_tp4_vac_u","fs_tp4_vac_r","fs_tp4_swt","fs_tp4_swq","fs_tp4_amps","fs_tp4_volts",
+"fs_tp5_orif","fs_tp5_vac_n","fs_tp5_vac_u","fs_tp5_vac_r","fs_tp5_swt","fs_tp5_swq","fs_tp5_amps","fs_tp5_volts",
+"fs_tp6_orif","fs_tp6_vac_n","fs_tp6_vac_u","fs_tp6_vac_r","fs_tp6_swt","fs_tp6_swq","fs_tp6_amps","fs_tp6_volts",
+"fs_airpress_n","fs_airpress_u","fs_airtemp","fs_gastemp","fs_btde","fs_btie",
 "fs_vde_h","fs_vde_v","fs_vde_a","fs_vie_h","fs_vie_v","fs_vie_a",
 "fs_pumppulley","fs_motorpulley","fs_belts","fs_pumpspeed","fs_motorvolts","fs_motorspeed","fs_motorkw",
 "fs_slinger","fs_flowmeters","fs_watercond","fs_spraynozzles","fs_flowvalves",
@@ -1505,8 +1653,17 @@ function fsLoad(){var o={};try{o=JSON.parse(localStorage.getItem(FS_KEY)||"{}")|
 function fsClear(){if(!confirm("Clear every field on this test sheet?"))return;for(var i=0;i<FS_FIELDS.length;i++){var e=document.getElementById(FS_FIELDS[i]);if(e)e.value="";}try{localStorage.removeItem(FS_KEY);}catch(err){}}
 window.fsClear=fsClear;
 
-var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the gas laws",learn_intro:"What a gas really is",learn_boyle:"Boyle's law",learn_charles:"Charles's law",learn_gl:"Gay-Lussac's law",learn_combined:"The combined gas law",learn_ideal:"The ideal gas law",learn_dalton:"Dalton's law",fc:"Normal / Actual flow",vac:"Vacuum pump sizing",cmp:"Compressor sizing",pc:"Conveying sizing",mp:"Which machine",vap:"Vapour & wet gas",pd:"Pump-down time",lk:"Leak check",pl:"Pipe loss",pw:"Power & motor current",cv:"Unit converter",ref:"Reference tables",orf:"Orifice sizing",hl:"Heat load, water",mw:"Cooling tower make-up",cw:"Conveying step-by-step",cat_learn:"Play and learn",cat_size:"Size it",cat_site:"On-site checks",ts:"Find the fault",ps:"Pre-separator sizing",lr:"Inside a liquid ring pump",dt:"Discharge temperature",ck:"Commissioning checklist",bp:"Belt & pulley speed",af:"Speed change effect",learn_fan:"Speed and the fan laws",learn_heat:"How heat load works",learn_cav:"Why seal water stays cool",fs:"Field service pump test sheet"};
-var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",fs:"cat_site"};
+// Production test vs factory curve: the discharge coefficient and the manually typed factory curve points.
+var PT_KEY="vt_pt1";
+var PT_FIELDS=["pt_cd"];
+(function(){for(var n=1;n<=6;n++)PT_FIELDS.push("pt_p"+n+"_q_n","pt_p"+n+"_q_u","pt_p"+n+"_v_n","pt_p"+n+"_v_u","pt_p"+n+"_v_r");})();
+function ptSave(){var o={};for(var i=0;i<PT_FIELDS.length;i++){var e=document.getElementById(PT_FIELDS[i]);if(e)o[PT_FIELDS[i]]=e.value;}try{localStorage.setItem(PT_KEY,JSON.stringify(o));}catch(err){}}
+function ptLoad(){var o={};try{o=JSON.parse(localStorage.getItem(PT_KEY)||"{}")||{};}catch(err){o={};}for(var i=0;i<PT_FIELDS.length;i++){var e=document.getElementById(PT_FIELDS[i]);if(e&&o[PT_FIELDS[i]]!==undefined)e.value=o[PT_FIELDS[i]];}}
+function ptClear(){if(!confirm("Clear the factory curve points?"))return;for(var i=1;i<PT_FIELDS.length;i++){var e=document.getElementById(PT_FIELDS[i]);if(e)e.value="";}try{localStorage.removeItem(PT_KEY);}catch(err){}recalc();}
+window.ptClear=ptClear;
+
+var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the gas laws",learn_intro:"What a gas really is",learn_boyle:"Boyle's law",learn_charles:"Charles's law",learn_gl:"Gay-Lussac's law",learn_combined:"The combined gas law",learn_ideal:"The ideal gas law",learn_dalton:"Dalton's law",fc:"Normal / Actual flow",vac:"Vacuum pump sizing",cmp:"Compressor sizing",pc:"Conveying sizing",mp:"Which machine",vap:"Vapour & wet gas",pd:"Pump-down time",lk:"Leak check",pl:"Pipe loss",pw:"Power & motor current",cv:"Unit converter",ref:"Reference tables",orf:"Orifice sizing",hl:"Heat load, water",mw:"Cooling tower make-up",cw:"Conveying step-by-step",cat_learn:"Play and learn",cat_size:"Size it",cat_site:"On-site checks",ts:"Find the fault",ps:"Pre-separator sizing",lr:"Inside a liquid ring pump",dt:"Discharge temperature",ck:"Commissioning checklist",bp:"Belt & pulley speed",af:"Speed change effect",learn_fan:"Speed and the fan laws",learn_heat:"How heat load works",learn_cav:"Why seal water stays cool",fs:"Field service pump test sheet",pt:"Production test vs factory curve"};
+var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",fs:"cat_site",pt:"cat_site"};
 var CUR="home";
 function goBack(){show(PARENT[CUR]||"home");}
 var MENUS={home:1,cat_learn:1,cat_size:1,cat_site:1,learn:1};
@@ -1677,6 +1834,7 @@ ckRender();
 
 tsRender();
 fsLoad();
+ptLoad();
 document.addEventListener("input",recalc);
 document.addEventListener("change",recalc);
 recalc();
