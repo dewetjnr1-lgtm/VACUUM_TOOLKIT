@@ -660,7 +660,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <button class="clrbtn" onclick="ckReset()" style="margin:6px 0 0;margin-left:0">Reset the list</button>
 </section><section class="page" id="pt"><div class="pgh"><h2>Production Test vs Factory Curve</h2><button class="q" onclick="hp('ab_pt')">?</button></div>
 <div class="about" id="ab_pt">
-<div class="ar"><b>What it is</b>Turns the test readings on the Liquid Ring Pump Field Test Sheet into a flow-vs-vacuum curve, and compares it against up to 6 points you type in from the pump’s factory performance curve.</div>
+<div class="ar"><b>What it is</b>Turns the test readings on the Liquid Ring Pump Field Test Sheet into a flow-vs-vacuum curve, and compares it against as many points as you need from the pump’s factory performance curve — add or remove points to match the OEM curve.</div>
 <div class="ar"><b>Why it matters</b>A pump’s capacity falls off with wear, blade erosion or scale long before it fails outright. Plotting a fresh site test against the original factory curve turns that into a number you can put in a report.</div>
 <div class="ar"><b>How the test flow is worked out</b>Each row of the field test sheet is one test point: the CFM you measured, and the vacuum at the idle and drive ends. This page turns that CFM reading into actual flow and pairs it with the vacuum reading — averaging the idle and drive end where both are filled in, and resolving it against the sheet's barometer reading — so it can be plotted against the factory curve at the same vacuum.</div>
 <div class="ar">Fill in the Liquid Ring Pump Field Test Sheet first — this page reads its test readings automatically. It will not overwrite anything on that sheet.</div>
@@ -670,31 +670,16 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="tblwrap" style="overflow-x:auto"><table><thead><tr><th>Point</th><th>Flow, actual</th><th>Vacuum</th></tr></thead><tbody id="pt_tp_rows"></tbody></table></div>
 <p style="font-size:12px;color:var(--soft);margin:8px 2px 0">Flow in m&sup3;/h actual, converted from the CFM tested reading. Vacuum in bar below local air pressure, from the idle/drive end readings and the barometer on the Liquid Ring Pump Field Test Sheet.</p>
 </div>
-<div class="card"><h3>Factory performance curve</h3><button class="exbtn" onclick="ex('pt')">Insert example</button><button class="clrbtn" onclick="ptClear()">Clear</button>
-<div class="tp-num">Point 1</div>
-<div class="fld" style="padding-top:0"><div class="fh"><label>Flow</label></div><div class="ctrl"><input type="number" id="pt_p1_q_n" placeholder="number"><select id="pt_p1_q_u" data-g="flow" data-du="0"></select></div></div>
-<div class="fld"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="pt_p1_v_n" placeholder="number"><select id="pt_p1_v_u" data-g="pressure" data-du="4"></select><select id="pt_p1_v_r" data-ref="v"></select></div></div>
-<div class="tp-num">Point 2</div>
-<div class="fld" style="padding-top:0"><div class="fh"><label>Flow</label></div><div class="ctrl"><input type="number" id="pt_p2_q_n" placeholder="number"><select id="pt_p2_q_u" data-g="flow" data-du="0"></select></div></div>
-<div class="fld"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="pt_p2_v_n" placeholder="number"><select id="pt_p2_v_u" data-g="pressure" data-du="4"></select><select id="pt_p2_v_r" data-ref="v"></select></div></div>
-<div class="tp-num">Point 3</div>
-<div class="fld" style="padding-top:0"><div class="fh"><label>Flow</label></div><div class="ctrl"><input type="number" id="pt_p3_q_n" placeholder="number"><select id="pt_p3_q_u" data-g="flow" data-du="0"></select></div></div>
-<div class="fld"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="pt_p3_v_n" placeholder="number"><select id="pt_p3_v_u" data-g="pressure" data-du="4"></select><select id="pt_p3_v_r" data-ref="v"></select></div></div>
-<div class="tp-num">Point 4</div>
-<div class="fld" style="padding-top:0"><div class="fh"><label>Flow</label></div><div class="ctrl"><input type="number" id="pt_p4_q_n" placeholder="number"><select id="pt_p4_q_u" data-g="flow" data-du="0"></select></div></div>
-<div class="fld"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="pt_p4_v_n" placeholder="number"><select id="pt_p4_v_u" data-g="pressure" data-du="4"></select><select id="pt_p4_v_r" data-ref="v"></select></div></div>
-<div class="tp-num">Point 5</div>
-<div class="fld" style="padding-top:0"><div class="fh"><label>Flow</label></div><div class="ctrl"><input type="number" id="pt_p5_q_n" placeholder="number"><select id="pt_p5_q_u" data-g="flow" data-du="0"></select></div></div>
-<div class="fld"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="pt_p5_v_n" placeholder="number"><select id="pt_p5_v_u" data-g="pressure" data-du="4"></select><select id="pt_p5_v_r" data-ref="v"></select></div></div>
-<div class="tp-num">Point 6</div>
-<div class="fld" style="padding-top:0"><div class="fh"><label>Flow</label></div><div class="ctrl"><input type="number" id="pt_p6_q_n" placeholder="number"><select id="pt_p6_q_u" data-g="flow" data-du="0"></select></div></div>
-<div class="fld"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="pt_p6_v_n" placeholder="number"><select id="pt_p6_v_u" data-g="pressure" data-du="4"></select><select id="pt_p6_v_r" data-ref="v"></select></div></div>
+<div class="card"><h3>Factory performance curve</h3><button class="exbtn" onclick="ptInsertExample()">Insert example</button><button class="clrbtn" onclick="ptClear()">Clear</button>
+<div id="pt_fc_blocks"></div>
+<button class="clrbtn" onclick="ptFcAdd()" style="margin-left:0">Add point</button><button class="clrbtn" onclick="ptFcRemove()">Remove last point</button>
 </div>
 <div class="card"><h3>Comparison</h3>
 <svg id="pt_chart" viewBox="0 0 360 225" style="width:100%;height:auto;display:block;margin-top:4px"></svg>
 <div class="ex-card" style="margin-top:10px;padding:9px 13px"><span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--teal)"><span style="width:22px;height:3px;background:var(--teal);display:inline-block;border-radius:2px"></span>Factory curve</span><span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px;font-weight:700;color:var(--accent);margin-left:16px"><span style="width:22px;height:3px;background:var(--accent);display:inline-block;border-radius:2px"></span>Test curve</span></div>
 <div class="tblwrap" style="overflow-x:auto;margin-top:10px"><table><thead><tr><th>Test vacuum</th><th>Test flow</th><th>Factory flow, same vacuum</th><th>Shortfall</th></tr></thead><tbody id="pt_cmp_rows"></tbody></table></div>
 <div class="res big"><div class="fh"><span class="res-lab" style="margin:0">Average flow shortfall vs the factory curve</span><button class="q" onclick="hp('hy_pt_avg')">?</button></div><div class="help" id="hy_pt_avg">The average, over the test points that fall inside the factory curve’s vacuum range, of how much flow the pump is short of the factory figure at the same vacuum. A rough read on how much capacity the pump has lost since it was new.</div><div class="ctrl"><span class="res-v" id="pt_avg">&mdash;</span><span class="fu">%</span></div></div>
+<button class="exbtn" onclick="ptExportPDF()" style="margin:10px 0 0">Export PDF</button>
 </div>
 <div class="means" id="pt_m">Fill in the Liquid Ring Pump Field Test Sheet’s test readings and the factory curve points above, and this explains your answer.</div>
 <details><summary>Show the math</summary><div class="math"><div class="formula">Q (m&sup3;/h) = CFM tested &times; 1.69901<small>flow read straight off the field test sheet, converted from cubic feet per minute to cubic metres per hour</small></div><div class="formula">Vacuum (bar) = (Barometer &minus; average of idle/drive end absolute pressure) / 100</div><div class="plug" id="mx_pt1">Your numbers appear here when the boxes are filled in.</div><div class="formula">Shortfall % = (Q<sub>factory</sub> &minus; Q<sub>test</sub>) / Q<sub>factory</sub> &times; 100<small>Q<sub>factory</sub> read off the factory curve by straight-line interpolation at the test point’s vacuum</small></div><div class="plug" id="mx_pt2">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: shortfall against factory curve by straight-line interpolation, same method as a factory acceptance test comparison. 1 CFM = 1.69901 m&sup3;/h exactly.</p></div></details>
@@ -724,7 +709,8 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="fld"><div class="fh"><label>Performed by</label></div><div class="ctrl"><input type="text" id="lft_by"></div></div>
 </div>
 <div class="card"><h3>Test readings</h3>
-<div class="dtbl-wrap"><table class="dtbl"><thead><tr><th>No.</th><th>Vacuum<br>Idle end<br>(mBarA)</th><th>Vacuum<br>Drive end<br>(mBarA)</th><th>Total CFM<br>tested</th><th>CFM<br>new pump</th><th>% CFM<br>of new</th><th>Amps<br>tested</th></tr></thead><tbody id="lft_rows"></tbody></table></div>
+<div class="fld"><div class="fh"><label>Vacuum readings, in</label><button class="q" onclick="hp('h_lft_vu')">?</button></div><div class="help" id="h_lft_vu">The idle end and drive end vacuum readings below are absolute pressure. Pick whatever unit your gauge reads in — the whole column switches with it.</div><div class="ctrl"><select id="lft_vacunit" data-g="pressure" data-du="1"></select></div></div>
+<div class="dtbl-wrap"><table class="dtbl"><thead><tr><th>No.</th><th id="lft_th_ie">Vacuum<br>Idle end</th><th id="lft_th_de">Vacuum<br>Drive end</th><th>Total CFM<br>tested</th><th>CFM<br>new pump</th><th>% CFM<br>of new</th><th>Amps<br>tested</th></tr></thead><tbody id="lft_rows"></tbody></table></div>
 <button class="clrbtn" onclick="lftAddRow()" style="margin-left:0">Add row</button>
 </div>
 <div class="card"><h3>Bearing temperature &amp; observations</h3>
@@ -754,7 +740,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 </div>
 </div>
 <button class="exbtn" onclick="lftExportPDF()" style="margin:6px 0 0">Export PDF</button><button class="clrbtn" onclick="lftClear()" style="margin:6px 0 0">Clear this sheet</button>
-</section></main><div id="lft_print" class="print-sheet"></div><script>"use strict";
+</section></main><div id="lft_print" class="print-sheet"></div><div id="pt_print" class="print-sheet"></div><script>"use strict";
 var G={
  pressure:[["kilopascals (kPa)",1],["millibar (mbar)",0.1],["torr (mmHg)",0.1333224],["inches of mercury (inHg)",3.386389],["bar",100]],
  flow:[["cubic metres per hour",1],["cubic feet per minute",1.69901],["litres per second",3.6],["litres per minute",0.06],["US gallons per minute",0.2271247]],
@@ -1251,6 +1237,10 @@ function recalc(){
   M("dt_m",bad?"The discharge pressure must be higher than the inlet pressure, both measured from a full vacuum. Check the two pressures and their gauge, absolute or vacuum settings.":isFinite(out)?("Squeezed "+b(r)+" times tighter, the gas leaves at about "+b(out)+" degrees Celsius, "+b(rise)+" degrees hotter than it went in, if nothing carries the heat away. A dry blower or claw runs near this figure; a liquid ring machine runs far cooler because the ring soaks up the heat as it squeezes."+(out>140?" <b>That is hot enough to need an aftercooler or a two stage machine. Flag it on the quote.</b>":"")):"Fill in the boxes and this explains your answer.");})();
  // LIQUID RING PUMP FIELD TEST SHEET
  (function(){
+  var vu=+gs("lft_vacunit")||0,vuLabel=(G.pressure[vu][0].match(/\(([^)]+)\)/)||[0,G.pressure[vu][0]])[1];
+  var ieEl=document.getElementById("lft_th_ie"),deEl=document.getElementById("lft_th_de");
+  if(ieEl)ieEl.innerHTML="Vacuum<br>Idle end<br>("+vuLabel+")";
+  if(deEl)deEl.innerHTML="Vacuum<br>Drive end<br>("+vuLabel+")";
   for(var n=1;n<=LFT_ROWCOUNT;n++){
    var tested=gv("lft_r"+n+"_cfm_tested"),newp=gv("lft_r"+n+"_cfm_new");
    var pct=(isFinite(tested)&&isFinite(newp)&&newp>0)?(tested/newp*100):NaN;
@@ -1260,13 +1250,13 @@ function recalc(){
  })();
  // PRODUCTION TEST vs FACTORY CURVE
  (function(){
-  var B=airOf("lft_barometer"),n;
+  var B=airOf("lft_barometer"),vFac=G.pressure[+gs("lft_vacunit")||0][1],n;
   var testPts=[],tpRows="";
   for(n=1;n<=LFT_ROWCOUNT;n++){
    var vIE=gv("lft_r"+n+"_vac_ie"),vDE=gv("lft_r"+n+"_vac_de"),vSum=0,vCnt=0;
    if(isFinite(vIE)){vSum+=vIE;vCnt++;}
    if(isFinite(vDE)){vSum+=vDE;vCnt++;}
-   var P2=vCnt?(vSum/vCnt)*0.1:NaN;
+   var P2=vCnt?(vSum/vCnt)*vFac:NaN;
    var vBar=(isFinite(B)&&isFinite(P2))?(B-P2)/100:NaN;
    var cfm=gv("lft_r"+n+"_cfm_tested"),Q=isFinite(cfm)?cfm*1.69901:NaN;
    tpRows+="<tr><td>"+n+"</td><td>"+(isFinite(Q)?fmtA(Q):"—")+"</td><td>"+(isFinite(vBar)?fmtA(vBar)+" bar":"—")+"</td></tr>";
@@ -1275,7 +1265,7 @@ function recalc(){
   var tpEl=document.getElementById("pt_tp_rows");
   if(tpEl)tpEl.innerHTML=tpRows||'<tr><td colspan="3">Add rows on the Liquid Ring Pump Field Test Sheet first.</td></tr>';
   var facPts=[];
-  for(n=1;n<=6;n++){
+  for(n=1;n<=PT_FC_COUNT;n++){
    var Qf=readUnit("pt_p"+n+"_q","flow"),P2f=readPress("pt_p"+n+"_v",B);
    var vBarF=(isFinite(B)&&isFinite(P2f))?(B-P2f)/100:NaN;
    if(isFinite(Qf)&&isFinite(vBarF))facPts.push({x:Qf,y:vBarF});
@@ -1767,18 +1757,101 @@ function fUnitVal(nId,uId){var n=fv(nId);return n===""?"":n+" "+fSelText(uId);}
 function fDate(id){var e=document.getElementById(id);var v=e?e.value:"";if(!v)return "";var p=v.split("-");return p.length===3?(p[2]+"/"+p[1]+"/"+p[0]):v;}
 function dash(s){return s===""?"—":s;}
 
-// Production test vs factory curve: the manually typed factory curve points.
-var PT_KEY="vt_pt1";
-var PT_FIELDS=[];
-(function(){for(var n=1;n<=6;n++)PT_FIELDS.push("pt_p"+n+"_q_n","pt_p"+n+"_q_u","pt_p"+n+"_v_n","pt_p"+n+"_v_u","pt_p"+n+"_v_r");})();
-function ptSave(){var o={};for(var i=0;i<PT_FIELDS.length;i++){var e=document.getElementById(PT_FIELDS[i]);if(e)o[PT_FIELDS[i]]=e.value;}try{localStorage.setItem(PT_KEY,JSON.stringify(o));}catch(err){}}
-function ptLoad(){var o={};try{o=JSON.parse(localStorage.getItem(PT_KEY)||"{}")||{};}catch(err){o={};}for(var i=0;i<PT_FIELDS.length;i++){var e=document.getElementById(PT_FIELDS[i]);if(e&&o[PT_FIELDS[i]]!==undefined)e.value=o[PT_FIELDS[i]];}}
-function ptClear(){if(!confirm("Clear the factory curve points?"))return;for(var i=0;i<PT_FIELDS.length;i++){var e=document.getElementById(PT_FIELDS[i]);if(e)e.value="";}try{localStorage.removeItem(PT_KEY);}catch(err){}recalc();}
-window.ptClear=ptClear;
+// Production test vs factory curve: growable factory curve points, saved to this phone.
+function populateSelects(root){
+ [].forEach.call(root.querySelectorAll("select[data-g]"),function(s){
+  var g=s.getAttribute("data-g"),du=+(s.getAttribute("data-du")||0),list=G[g],h="";
+  for(var i=0;i<list.length;i++)h+='<option value="'+i+'"'+(i===du?" selected":"")+'>'+list[i][0]+"</option>";
+  s.innerHTML=h;
+ });
+ [].forEach.call(root.querySelectorAll("select[data-ref]"),function(s){
+  var def=s.getAttribute("data-ref"),h="";
+  for(var i=0;i<REF.length;i++)h+='<option value="'+REF[i][1]+'"'+(REF[i][1]===def?" selected":"")+'>'+REF[i][0]+"</option>";
+  s.innerHTML=h;
+  if(/_r$/.test(s.id)){var inp=document.getElementById(s.id.replace(/_r$/,"_n"));if(inp)inp.min="0";}
+ });
+}
+var PT_KEY="vt_pt1",PT_FC_RC_KEY="vt_pt_fcrc",PT_FC_COUNT=0;
+function ptFcBlockHTML(n){
+ return '<div id="pt_fc_point'+n+'"><div class="tp-num">Point '+n+'</div>'+
+  '<div class="fld" style="padding-top:0"><div class="fh"><label>Flow</label></div><div class="ctrl"><input type="number" id="pt_p'+n+'_q_n" placeholder="number"><select id="pt_p'+n+'_q_u" data-g="flow" data-du="0"></select></div></div>'+
+  '<div class="fld"><div class="fh"><label>Vacuum</label></div><div class="ctrl"><input type="number" id="pt_p'+n+'_v_n" placeholder="number"><select id="pt_p'+n+'_v_u" data-g="pressure" data-du="4"></select><select id="pt_p'+n+'_v_r" data-ref="v"></select></div></div></div>';
+}
+function ptFcAdd(save){
+ PT_FC_COUNT++;
+ var wrap=document.createElement("div");
+ wrap.innerHTML=ptFcBlockHTML(PT_FC_COUNT);
+ populateSelects(wrap);
+ var container=document.getElementById("pt_fc_blocks");
+ if(container)container.appendChild(wrap.firstChild);
+ if(save!==false){try{localStorage.setItem(PT_FC_RC_KEY,String(PT_FC_COUNT));}catch(err){}recalc();}
+}
+function ptFcRemove(){
+ if(PT_FC_COUNT<=1)return;
+ var el=document.getElementById("pt_fc_point"+PT_FC_COUNT);
+ if(el)el.remove();
+ PT_FC_COUNT--;
+ try{localStorage.setItem(PT_FC_RC_KEY,String(PT_FC_COUNT));}catch(err){}
+ recalc();
+}
+function ptFcLoad(){
+ var rc=6;
+ try{rc=+localStorage.getItem(PT_FC_RC_KEY)||6;}catch(err){rc=6;}
+ if(rc<1)rc=6;
+ PT_FC_COUNT=0;
+ for(var i=0;i<rc;i++)ptFcAdd(false);
+}
+function ptFieldIds(){
+ var ids=[];
+ for(var n=1;n<=PT_FC_COUNT;n++)ids.push("pt_p"+n+"_q_n","pt_p"+n+"_q_u","pt_p"+n+"_v_n","pt_p"+n+"_v_u","pt_p"+n+"_v_r");
+ return ids;
+}
+function ptSave(){var ids=ptFieldIds(),o={};for(var i=0;i<ids.length;i++){var e=document.getElementById(ids[i]);if(e)o[ids[i]]=e.value;}try{localStorage.setItem(PT_KEY,JSON.stringify(o));}catch(err){}}
+function ptLoad(){var ids=ptFieldIds(),o={};try{o=JSON.parse(localStorage.getItem(PT_KEY)||"{}")||{};}catch(err){o={};}for(var i=0;i<ids.length;i++){var e=document.getElementById(ids[i]);if(e&&o[ids[i]]!==undefined)e.value=o[ids[i]];}}
+function ptClear(){if(!confirm("Clear the factory curve points?"))return;var ids=ptFieldIds();for(var i=0;i<ids.length;i++){var e=document.getElementById(ids[i]);if(e)e.value="";}try{localStorage.removeItem(PT_KEY);}catch(err){}recalc();}
+function ptInsertExample(){while(PT_FC_COUNT<6)ptFcAdd(false);ex("pt");}
+window.ptClear=ptClear;window.ptFcAdd=ptFcAdd;window.ptFcRemove=ptFcRemove;window.ptInsertExample=ptInsertExample;
+function ptBuildPrint(){
+ var h='<h1>PRODUCTION TEST vs FACTORY PERFORMANCE CURVE</h1>';
+ h+='<table><tr><td class="lab">Company / process plant</td><td>'+dash(fv("lft_company"))+'</td><td class="lab">Pump equip No.</td><td>'+dash(fv("lft_equipno"))+'</td></tr>';
+ h+='<tr><td class="lab">Pump model &amp; size</td><td>'+dash(fv("lft_model"))+'</td><td class="lab">Pump serial No.</td><td>'+dash(fv("lft_serial"))+'</td></tr>';
+ h+='<tr><td class="lab">Date of test</td><td>'+dash(fDate("lft_date"))+'</td><td class="lab">Performed by</td><td>'+dash(fv("lft_by"))+'</td></tr></table>';
+
+ h+='<div class="psec">Test points, from the field test sheet</div>';
+ h+='<table><tr><th>Point</th><th>Flow, actual (m&sup3;/h)</th><th>Vacuum (bar)</th></tr>';
+ var tpEl=document.getElementById("pt_tp_rows");
+ h+=(tpEl?tpEl.innerHTML:'')+'</table>';
+
+ h+='<div class="psec">Factory performance curve</div>';
+ h+='<table><tr><th>Point</th><th>Flow</th><th>Vacuum</th></tr>';
+ for(var n=1;n<=PT_FC_COUNT;n++){
+  h+='<tr><td>'+n+'</td><td>'+dash(fUnitVal("pt_p"+n+"_q_n","pt_p"+n+"_q_u"))+'</td><td>'+dash(fUnitVal("pt_p"+n+"_v_n","pt_p"+n+"_v_u"))+'</td></tr>';
+ }
+ h+='</table>';
+
+ h+='<div class="psec">Test curve vs factory curve</div>';
+ var chartEl=document.getElementById("pt_chart");
+ if(chartEl)h+='<div style="max-width:400px;margin:0 auto 8px">'+chartEl.outerHTML+'</div>';
+
+ h+='<table><tr><th>Test vacuum</th><th>Test flow</th><th>Factory flow, same vacuum</th><th>Shortfall</th></tr>';
+ var cmpEl=document.getElementById("pt_cmp_rows");
+ h+=(cmpEl?cmpEl.innerHTML:'')+'</table>';
+
+ var avgEl=document.getElementById("pt_avg");
+ h+='<table><tr><td class="lab">Average flow shortfall vs the factory curve</td><td>'+dash(avgEl?pEsc(avgEl.textContent):"")+(avgEl&&avgEl.textContent!=="—"?"%":"")+'</td></tr></table>';
+ return h;
+}
+function ptExportPDF(){
+ var el=document.getElementById("pt_print");
+ if(!el)return;
+ el.innerHTML=ptBuildPrint();
+ window.print();
+}
+window.ptExportPDF=ptExportPDF;
 
 // Liquid ring pump field test sheet: growable rows, saved to this phone.
 var LFT_KEY="vt_lft1",LFT_RC_KEY="vt_lft_rc";
-var LFT_HEADER=["lft_company","lft_equipno","lft_model","lft_serial","lft_speed","lft_sealtemp","lft_ambtemp","lft_motorspeed","lft_motorpower","lft_motoramps","lft_orifdia_n","lft_orifdia_u","lft_barometer_n","lft_barometer_u","lft_date","lft_by","lft_bt_de","lft_bt_nde","lft_obs","lft_wq_temp","lft_wq_cond","lft_wq_ds","lft_wq_sal","lft_wq_ph","lft_v_de_ax","lft_v_de_h","lft_v_de_v","lft_v_nde_ax","lft_v_nde_h","lft_v_nde_v"];
+var LFT_HEADER=["lft_company","lft_equipno","lft_model","lft_serial","lft_speed","lft_sealtemp","lft_ambtemp","lft_motorspeed","lft_motorpower","lft_motoramps","lft_orifdia_n","lft_orifdia_u","lft_barometer_n","lft_barometer_u","lft_vacunit","lft_date","lft_by","lft_bt_de","lft_bt_nde","lft_obs","lft_wq_temp","lft_wq_cond","lft_wq_ds","lft_wq_sal","lft_wq_ph","lft_v_de_ax","lft_v_de_h","lft_v_de_v","lft_v_nde_ax","lft_v_nde_h","lft_v_nde_v"];
 var LFT_ROWCOUNT=0;
 function lftRowHTML(n){
  return '<tr id="lft_row'+n+'"><td>'+n+'</td>'+
@@ -2024,19 +2097,10 @@ window.ckGo=ckGo;window.ckReset=ckReset;
 ckRender();
 
 // populate selects
-[].forEach.call(document.querySelectorAll("select[data-g]"),function(s){
- var g=s.getAttribute("data-g"),du=+(s.getAttribute("data-du")||0),list=G[g],h="";
- for(var i=0;i<list.length;i++)h+='<option value="'+i+'"'+(i===du?" selected":"")+'>'+list[i][0]+"</option>";
- s.innerHTML=h;
-});
-[].forEach.call(document.querySelectorAll("select[data-ref]"),function(s){
- var def=s.getAttribute("data-ref"),h="";
- for(var i=0;i<REF.length;i++)h+='<option value="'+REF[i][1]+'"'+(REF[i][1]===def?" selected":"")+'>'+REF[i][0]+"</option>";
- s.innerHTML=h;
- if(/_r$/.test(s.id)){var inp=document.getElementById(s.id.replace(/_r$/,"_n"));if(inp)inp.min="0";}
-});
+populateSelects(document);
 
 tsRender();
+ptFcLoad();
 ptLoad();
 lftLoad();
 document.addEventListener("input",recalc);
