@@ -481,15 +481,51 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <p class="glos"><b>Normal or Standard flow (Nm3/h):</b> a fixed set of conditions used to describe an amount of gas so it can be compared, no matter the real conditions. Usually zero degrees and normal air pressure.</p>
 <p class="glos"><b>Actual flow (m3/h):</b> the room the gas truly takes up at the inlet, warm or under vacuum.</p>
 <p class="glos"><b>Compression ratio:</b> how many times tighter the gas is squeezed, outlet pressure divided by inlet pressure.</p></div></div>
-<div class="card"><h3>Water vapour limit by temperature</h3><table><tr><th>Temperature C</th><th>Limit kPa</th></tr><tr><td>0</td><td>0.611</td></tr><tr><td>10</td><td>1.228</td></tr><tr><td>20</td><td>2.339</td></tr><tr><td>30</td><td>4.246</td></tr><tr><td>40</td><td>7.384</td></tr><tr><td>50</td><td>12.349</td></tr></table></div>
-<div class="card"><h3>Water weight and thickness</h3><table><tr><th>Temp C</th><th>Weight kg/m3</th><th>Thickness Pa.s</th></tr><tr><td>10</td><td>999.7</td><td>0.001307</td></tr><tr><td>20</td><td>998.2</td><td>0.001002</td></tr><tr><td>30</td><td>995.6</td><td>0.000798</td></tr><tr><td>40</td><td>992.2</td><td>0.000653</td></tr><tr><td>50</td><td>988.0</td><td>0.000547</td></tr></table></div>
-<div class="card"><h3>Air pressure by height</h3><table><tr><th>Height m</th><th>Air kPa</th></tr><tr><td>0</td><td>101.3</td></tr><tr><td>200</td><td>98.9</td></tr><tr><td>500</td><td>95.5</td></tr><tr><td>1000</td><td>89.9</td></tr></table></div>
-<div class="card"><h3>Gas weights</h3><table><tr><th>Gas</th><th>g/mol</th></tr><tr><td>Air</td><td>28.97</td></tr><tr><td>Carbon dioxide</td><td>44.01</td></tr><tr><td>Water vapour</td><td>18.02</td></tr><tr><td>Nitrogen</td><td>28.01</td></tr><tr><td>Oxygen</td><td>32.00</td></tr></table></div>
-<div class="card"><h3>Pipe wall roughness</h3><table><tr><th>Material</th><th>mm</th></tr><tr><td>Stainless steel</td><td>0.015</td></tr><tr><td>Steel</td><td>0.045</td></tr><tr><td>Galvanised</td><td>0.15</td></tr><tr><td>Plastic, smooth</td><td>0.0015</td></tr></table></div>
-<div class="card"><h3>Pipe inside width (Schedule 40)</h3><table><tr><th>Size</th><th>Inside mm</th></tr><tr><td>Half inch</td><td>15.8</td></tr><tr><td>One inch</td><td>26.6</td></tr><tr><td>Two inch</td><td>52.5</td></tr><tr><td>Three inch</td><td>77.9</td></tr><tr><td>Four inch</td><td>102.3</td></tr><tr><td>Six inch</td><td>154.1</td></tr></table></div>
-<div class="card"><h3>Loss numbers for bends and valves</h3><table><tr><th>Fitting</th><th>Number</th></tr><tr><td>Elbow, standard</td><td>0.75</td></tr><tr><td>Elbow, long</td><td>0.45</td></tr><tr><td>Tee, straight through</td><td>0.4</td></tr><tr><td>Tee, off the branch</td><td>1.0</td></tr><tr><td>Gate valve, open</td><td>0.15</td></tr><tr><td>Globe valve, open</td><td>10.0</td></tr></table></div>
-<div class="card"><h3>Liquid ring pump: running limits</h3><table><tr><th>Check</th><th>Shut down if</th></tr><tr><td>Casing temperature</td><td>14 &deg;C or more above the seal water</td></tr><tr><td>Bearing housing</td><td>17 &deg;C or more above the casing</td></tr><tr><td>Noise or vibration</td><td>Suddenly rough: stop, find the cause</td></tr><tr><td>Packing drip</td><td>Aim 45 to 60 drops a minute, no hotter</td></tr></table><p style="font-size:12px;color:var(--soft);margin:6px 2px 0">A liquid ring pump normally runs a little above its seal water. A sharp rise means too little or too warm water, carryover, or running dry.</p></div>
-<div class="card"><h3>Seal water: quick rules</h3><table><tr><th>Point</th><th>Guide</th></tr><tr><td>Supply pressure</td><td>At least 0.7 bar at the pump</td></tr><tr><td>Each control valve upstream</td><td>Add 0.7 to 1.0 bar</td></tr><tr><td>Low-pressure alarm</td><td>About 0.35 bar</td></tr><tr><td>Temperature</td><td>Coolest available; cooler = deeper vacuum</td></tr><tr><td>Flow order</td><td>Water on before the motor, always</td></tr><tr><td>Too much flow</td><td>Wastes power and erodes the pump</td></tr></table></div>
+<div class="card"><h3>Water vapour limit by temperature</h3>
+<p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">The most water vapour air can hold before it starts condensing back to liquid. Warmer air holds far more &mdash; this is why hot, damp gas needs a bigger pump than the dry number alone suggests.</p>
+<div class="demo">
+<div class="demo-row"><span style="flex:0 0 100px">Temperature</span><input type="range" id="ref_vap_t" min="0" max="60" value="25" step="1"></div>
+<svg id="ref_vap_cv" viewBox="0 0 360 225" style="width:100%;height:auto;display:block;margin-top:4px"></svg>
+<div class="demo-out">At <b id="ref_vap_tt">25</b> &deg;C, air can hold up to <b id="ref_vap_p" style="color:var(--accent)">3.17</b> kPa of water vapour before it starts to condense.</div>
+</div>
+<details><summary>Show the table</summary><table><tr><th>Temperature C</th><th>Limit kPa</th></tr><tr><td>0</td><td>0.611</td></tr><tr><td>10</td><td>1.228</td></tr><tr><td>20</td><td>2.339</td></tr><tr><td>30</td><td>4.246</td></tr><tr><td>40</td><td>7.384</td></tr><tr><td>50</td><td>12.349</td></tr></table></details>
+<p style="font-size:12px;color:var(--soft);margin:8px 2px 0">Used by the <b>Vapour &amp; Wet Gas</b> calculator, and the same curve as Dalton's Law's toy on the Learn pages.</p>
+</div>
+<div class="card"><h3>Water weight and thickness</h3>
+<p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">Water barely changes weight as it warms, but it thins out a lot &mdash; almost half as thick at 50&deg;C as it was at 10&deg;C. That is why warm seal water flows more freely through the same orifice.</p>
+<div class="demo">
+<div class="demo-row"><span style="flex:0 0 100px">Temperature</span><input type="range" id="ref_wat_t" min="10" max="50" value="25" step="1"></div>
+<svg id="ref_wat_cv" viewBox="0 0 360 225" style="width:100%;height:auto;display:block;margin-top:4px"></svg>
+<div class="demo-out">At <b id="ref_wat_tt">25</b> &deg;C: weight <b id="ref_wat_dens" style="color:var(--teal)">997.0</b> kg/m&sup3;, thickness <b id="ref_wat_visc" style="color:var(--accent)">0.890</b> mPa&middot;s</div>
+</div>
+<details><summary>Show the table</summary><table><tr><th>Temp C</th><th>Weight kg/m3</th><th>Thickness Pa.s</th></tr><tr><td>10</td><td>999.7</td><td>0.001307</td></tr><tr><td>20</td><td>998.2</td><td>0.001002</td></tr><tr><td>30</td><td>995.6</td><td>0.000798</td></tr><tr><td>40</td><td>992.2</td><td>0.000653</td></tr><tr><td>50</td><td>988.0</td><td>0.000547</td></tr></table></details>
+<p style="font-size:12px;color:var(--soft);margin:8px 2px 0">Feeds the <b>Orifice Sizing</b> calculator's liquid weight box, and the <b>Pipe Loss</b> calculator for water lines.</p>
+</div>
+<div class="card"><h3>Air pressure by height</h3>
+<p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">The air around you gets thinner, and pushes less, the higher up you go. Every calculator's "Air pressure where you are" box uses a number off this curve.</p>
+<div class="demo">
+<div class="demo-row"><span style="flex:0 0 100px">Height</span><input type="range" id="ref_alt_h" min="0" max="3000" value="500" step="50"></div>
+<svg id="ref_alt_cv" viewBox="0 0 360 225" style="width:100%;height:auto;display:block;margin-top:4px"></svg>
+<div class="demo-out">At <b id="ref_alt_hh">500</b> m above sea level, the air pushes at about <b id="ref_alt_p" style="color:var(--accent)">95.5</b> kPa.</div>
+</div>
+<details><summary>Show the table</summary><table><tr><th>Height m</th><th>Air kPa</th></tr><tr><td>0</td><td>101.3</td></tr><tr><td>200</td><td>98.9</td></tr><tr><td>500</td><td>95.5</td></tr><tr><td>1000</td><td>89.9</td></tr></table></details>
+</div>
+<div class="card"><h3>Gas weights</h3>
+<p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">How much a mole of each gas weighs. Heavier gas is denser at the same conditions, which changes how a leak behaves and how hard a machine works to move it.</p>
+<table><tr><th>Gas</th><th>g/mol</th></tr><tr><td>Air</td><td>28.97</td></tr><tr><td>Carbon dioxide</td><td>44.01</td></tr><tr><td>Water vapour</td><td>18.02</td></tr><tr><td>Nitrogen</td><td>28.01</td></tr><tr><td>Oxygen</td><td>32.00</td></tr></table></div>
+<div class="card"><h3>Pipe wall roughness</h3>
+<p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">A rougher pipe wall drags more on the gas moving past it. Feeds the friction factor in the <b>Pipe Loss</b> calculator &mdash; pick the row that matches your pipe.</p>
+<table><tr><th>Material</th><th>mm</th></tr><tr><td>Stainless steel</td><td>0.015</td></tr><tr><td>Steel</td><td>0.045</td></tr><tr><td>Galvanised</td><td>0.15</td></tr><tr><td>Plastic, smooth</td><td>0.0015</td></tr></table></div>
+<div class="card"><h3>Pipe inside width (Schedule 40)</h3>
+<p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">The real bore of a pipe is smaller than its nominal size once you allow for wall thickness. Use these, not the nominal size, in the <b>Pipe Loss</b> calculator.</p>
+<table><tr><th>Size</th><th>Inside mm</th></tr><tr><td>Half inch</td><td>15.8</td></tr><tr><td>One inch</td><td>26.6</td></tr><tr><td>Two inch</td><td>52.5</td></tr><tr><td>Three inch</td><td>77.9</td></tr><tr><td>Four inch</td><td>102.3</td></tr><tr><td>Six inch</td><td>154.1</td></tr></table></div>
+<div class="card"><h3>Loss numbers for bends and valves</h3>
+<p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">Every bend or valve in a line adds drag on top of the straight pipe. The <b>Pipe Loss</b> calculator turns each one into an equivalent length of extra straight pipe using these numbers.</p>
+<table><tr><th>Fitting</th><th>Number</th></tr><tr><td>Elbow, standard</td><td>0.75</td></tr><tr><td>Elbow, long</td><td>0.45</td></tr><tr><td>Tee, straight through</td><td>0.4</td></tr><tr><td>Tee, off the branch</td><td>1.0</td></tr><tr><td>Gate valve, open</td><td>0.15</td></tr><tr><td>Globe valve, open</td><td>10.0</td></tr></table></div>
+<div class="card"><h3>Liquid ring pump: running limits</h3><table><tr><th>Check</th><th>Shut down if</th></tr><tr><td>Casing temperature</td><td>14 &deg;C or more above the seal water</td></tr><tr><td>Bearing housing</td><td>17 &deg;C or more above the casing</td></tr><tr><td>Noise or vibration</td><td>Suddenly rough: stop, find the cause</td></tr><tr><td>Packing drip</td><td>Aim 45 to 60 drops a minute, no hotter</td></tr></table><p style="font-size:12px;color:var(--soft);margin:6px 2px 0">A liquid ring pump normally runs a little above its seal water. A sharp rise means too little or too warm water, carryover, or running dry. See where casing and bearings sit on the pump in <b>Inside a Liquid Ring Pump</b>.</p></div>
+<div class="card"><h3>Seal water: quick rules</h3>
+<p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">Most liquid ring pump faults trace back to one of these. If something's off on site, start with the <b>Find the Fault</b> troubleshooter.</p>
+<table><tr><th>Point</th><th>Guide</th></tr><tr><td>Supply pressure</td><td>At least 0.7 bar at the pump</td></tr><tr><td>Each control valve upstream</td><td>Add 0.7 to 1.0 bar</td></tr><tr><td>Low-pressure alarm</td><td>About 0.35 bar</td></tr><tr><td>Temperature</td><td>Coolest available; cooler = deeper vacuum</td></tr><tr><td>Flow order</td><td>Water on before the motor, always</td></tr><tr><td>Too much flow</td><td>Wastes power and erodes the pump</td></tr></table></div>
 <div class="card"><h3>Routine maintenance</h3><table><tr><th>When</th><th>Do</th></tr><tr><td>Every 6 months</td><td>Lubricate pump and motor bearings; oil or grease the coupling; clean the seal water strainer</td></tr><tr><td>Every 12 months</td><td>Inspect bearings; replace the stuffing box packing; check any mechanical seals for leaks and cool running</td></tr><tr><td>First 3 to 4 weeks</td><td>Clean and then remove the temporary inlet screen once the line is clear</td></tr><tr><td>V-belts</td><td>Check tension in the first 24 to 48 hours, then periodically; typical life around 24,000 hours</td></tr></table><p style="font-size:12px;color:var(--soft);margin:6px 2px 0">A guide only. Follow the maker's manual and your own conditions; dirty or hot duty needs shorter intervals.</p></div>
 </section><section class="page" id="lr">
 <h2>Inside a Liquid Ring Pump</h2>
@@ -947,6 +983,60 @@ function orificeFlow(nOrif,dMM,P1kPa,P2kPa,T1C,Cd){
  var rho2=P2/(R*T1K);
  return mdotTotal/rho2*3600;
 }
+function drawCurve(id,pts,mkX,mkY,xlab,ylab){var el=document.getElementById(id);if(!el)return;
+ if(!pts.length||!isFinite(mkX)||!isFinite(mkY)){el.innerHTML='<text x="180" y="116" text-anchor="middle" font-size="13" fill="#8A959D">Move the slider to see the curve</text>';return;}
+ var W=360,H=225,L=52,R=14,T=12,B=40,pw=W-L-R,ph=H-T-B;
+ var i,ymax=0;for(i=0;i<pts.length;i++)if(pts[i][1]>ymax)ymax=pts[i][1];
+ var xm=niceCeil(pts[pts.length-1][0]*1.02||1),ym=niceCeil(Math.max(ymax,mkY)*1.15||1),s="",gx,gy,tv;
+ for(i=0;i<=4;i++){gx=L+pw*i/4;gy=T+ph*i/4;
+  s+='<line x1="'+gx+'" y1="'+T+'" x2="'+gx+'" y2="'+(T+ph)+'" stroke="#D3DAE0"/>';
+  s+='<line x1="'+L+'" y1="'+gy+'" x2="'+(L+pw)+'" y2="'+gy+'" stroke="#D3DAE0"/>';
+  tv=xm*i/4;s+='<text x="'+gx+'" y="'+(T+ph+14)+'" text-anchor="middle" font-size="10" fill="#4C5860">'+fmtA(tv,tv<10&&tv%1?1:0)+'</text>';
+  tv=ym*i/4;s+='<text x="'+(L-6)+'" y="'+(T+ph*(1-i/4)+3.5)+'" text-anchor="end" font-size="10" fill="#4C5860">'+fmtA(tv,tv<10?2:0)+'</text>';}
+ s+='<line x1="'+L+'" y1="'+T+'" x2="'+L+'" y2="'+(T+ph)+'" stroke="#4C5860" stroke-width="1.2"/><line x1="'+L+'" y1="'+(T+ph)+'" x2="'+(L+pw)+'" y2="'+(T+ph)+'" stroke="#4C5860" stroke-width="1.2"/>';
+ var d="",px,py;
+ for(i=0;i<pts.length;i++){px=L+pw*pts[i][0]/xm;py=T+ph*(1-pts[i][1]/ym);d+=(i?"L":"M")+px.toFixed(1)+" "+py.toFixed(1);}
+ s+='<path d="'+d+'" fill="none" stroke="#1D5A78" stroke-width="2.5" stroke-linecap="round"/>';
+ var mx=L+pw*mkX/xm,my=T+ph*(1-mkY/ym);
+ s+='<line x1="'+mx+'" y1="'+my+'" x2="'+mx+'" y2="'+(T+ph)+'" stroke="#BF4E10" stroke-width="1.4" stroke-dasharray="4 4"/>';
+ s+='<line x1="'+L+'" y1="'+my+'" x2="'+mx+'" y2="'+my+'" stroke="#BF4E10" stroke-width="1.4" stroke-dasharray="4 4"/>';
+ s+='<circle cx="'+mx+'" cy="'+my+'" r="6.5" fill="#BF4E10" stroke="#fff" stroke-width="2"/>';
+ s+='<text x="'+(L+pw/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="10.5" fill="#4C5860">'+xlab+'</text>';
+ s+='<text transform="rotate(-90)" x="'+(-(T+ph/2))+'" y="11" text-anchor="middle" font-size="10.5" fill="#4C5860">'+ylab+'</text>';
+ el.innerHTML=s;}
+function refVapCurve(){
+ var t=gv("ref_vap_t");if(isNaN(t))t=25;
+ var pts=[],tt;for(tt=0;tt<=60;tt+=2)pts.push([tt,6.112*Math.exp(17.62*tt/(243.12+tt))/10]);
+ var mkY=6.112*Math.exp(17.62*t/(243.12+t))/10;
+ drawCurve("ref_vap_cv",pts,t,mkY,"Temperature (°C)","Water vapour limit (kPa)");
+ setT("ref_vap_tt",fmtA(t,0));setT("ref_vap_p",fmtA(mkY));
+}
+function refAltCurve(){
+ var h=gv("ref_alt_h");if(isNaN(h))h=500;
+ var pts=[],hh;for(hh=0;hh<=3000;hh+=100)pts.push([hh,101.325*Math.pow(1-2.25577e-5*hh,5.25588)]);
+ var mkY=101.325*Math.pow(1-2.25577e-5*h,5.25588);
+ drawCurve("ref_alt_cv",pts,h,mkY,"Height above sea level (m)","Air pressure (kPa)");
+ setT("ref_alt_hh",fmtA(h,0));setT("ref_alt_p",fmtA(mkY));
+}
+function refWatCurve(){
+ var t=gv("ref_wat_t");if(isNaN(t))t=25;
+ var tbl=[[10,999.7,0.001307],[20,998.2,0.001002],[30,995.6,0.000798],[40,992.2,0.000653],[50,988.0,0.000547]];
+ function interp(tv,idx){
+  if(tv<=tbl[0][0])return tbl[0][idx];
+  if(tv>=tbl[tbl.length-1][0])return tbl[tbl.length-1][idx];
+  for(var i=0;i<tbl.length-1;i++){
+   if(tv>=tbl[i][0]&&tv<=tbl[i+1][0]){
+    var f=(tv-tbl[i][0])/(tbl[i+1][0]-tbl[i][0]);
+    return tbl[i][idx]+f*(tbl[i+1][idx]-tbl[i][idx]);
+   }
+  }
+  return NaN;
+ }
+ var pts=[],tt;for(tt=10;tt<=50;tt+=1)pts.push([tt,interp(tt,2)*1000]);
+ var visc=interp(t,2)*1000,dens=interp(t,1);
+ drawCurve("ref_wat_cv",pts,t,visc,"Water temperature (°C)","Thickness (mPa·s)");
+ setT("ref_wat_tt",fmtA(t,0));setT("ref_wat_visc",fmtA(visc,3));setT("ref_wat_dens",fmtA(dens,1));
+}
 function b(x){return "<b>"+fmtA(x)+"</b>";}
 function M(id,html){var e=document.getElementById(id);if(e)e.innerHTML=html;}
 
@@ -1315,6 +1405,8 @@ function recalc(){
   }
   lftSave();
  })();
+ // REFERENCE TABLE CURVES
+ refVapCurve();refAltCurve();refWatCurve();
  // DEMOS
  demos();
 }
