@@ -119,6 +119,18 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .ckitem.done .txt{text-decoration:line-through;text-decoration-color:rgba(23,30,35,.4);}
 .math .formula{font-size:16px;}.formula,.plug{overflow-x:auto;}
 #bgbub{position:fixed;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;}
+.ctrl input[type=text],.ctrl input[type=date]{flex:1 1 160px;min-width:120px;font-family:var(--sans);font-size:15px;padding:10px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.65);color:var(--ink);}
+.ctrl input[type=text]:focus,.ctrl input[type=date]:focus{outline:2px solid var(--teal);border-color:var(--teal);}
+.ctrl textarea{flex:1 1 100%;font-family:var(--sans);font-size:15px;padding:10px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.65);color:var(--ink);resize:vertical;min-height:70px;}
+.ctrl textarea:focus{outline:2px solid var(--teal);border-color:var(--teal);}
+.tp-num{font-size:13px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.05em;margin:16px 0 4px;}
+.tp-num:first-child{margin-top:0;}
+.mgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:2px 12px;margin-top:6px;}
+.mgf{display:flex;flex-direction:column;min-width:0;}
+.mgf .mlab{font-size:11.5px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.02em;margin-bottom:3px;}
+.mgf .ctrl{margin-top:0;flex-wrap:nowrap;}
+.mgf .ctrl input[type=number]{flex:1 1 auto;min-width:0;}
+.mgf .ctrl .fu{flex:0 0 auto;}
 </style></head>
 <body><canvas id="bgbub" aria-hidden="true"></canvas><header><div class="hrow"><button id="backbtn" onclick="goBack()">&#8249; Back</button><svg id="logo" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 12 7.8 8.4"/><circle cx="12" cy="12" r="1.3" fill="#fff" stroke="none"/><path d="M12 4.6v1.7M19.4 12h-1.7M4.6 12h1.7M17.2 6.8l-1.2 1.2" opacity=".65"/></svg><div><h1 id="hdr_t">Vacuum &amp; Compressor Toolkit</h1><p id="hdr_s">Learn it, fill it in, pick your units</p></div></div></header>
 <main><section class="page active" id="home">
@@ -167,6 +179,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <button class="bub c3" onclick="show('ts')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.2 21 19.5H3Z"/><path d="M12 10.2v4M12 16.8v.4"/></svg></span><span>Find the fault</span></button>
 <button class="bub c3" onclick="show('bp')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="6.5" cy="16.5" r="3.3"/><circle cx="17.5" cy="7.5" r="2.4"/><path d="M9.2 15 15.3 9.3" stroke-dasharray="2.4 2.2"/></svg></span><span>Belt &amp; pulley speed</span></button>
 <button class="bub c3" onclick="show('ck')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="5" width="15" height="15.5" rx="2"/><path d="M9 5V3.5h6V5"/><path d="M8 10.5h.5M11 10.5h5M8 14h.5M11 14h5M8 17.5h.5M11 17.5h5"/></svg></span><span>Commissioning checklist</span></button>
+<button class="bub c3" onclick="show('fs')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="3.5" width="15" height="17" rx="2"/><path d="M8 8h8M8 11.3h8M8 14.6h5"/><path d="M8 17.9h3.5"/></svg></span><span>Field service pump test sheet</span></button>
 </div>
 </section><section class="page" id="learn">
 <h2>Learn the gas laws</h2>
@@ -552,6 +565,124 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="ckbar"><div id="ck_fill"></div></div><div class="ckpct" id="ck_pct"></div>
 <div id="ck_box"></div>
 <button class="clrbtn" onclick="ckReset()" style="margin:6px 0 0;margin-left:0">Reset the list</button>
+</section><section class="page" id="fs"><div class="pgh"><h2>Field service pump test sheet</h2><button class="q" onclick="hp('ab_fs')">?</button></div>
+<div class="about" id="ab_fs">
+<div class="ar"><b>What it is</b>A digital copy of the field service pump test sheet (VCF-36 Rev 00), for recording a liquid ring vacuum pump’s readings on a site visit.</div>
+<div class="ar"><b>Why it matters</b>Every test point, temperature and vibration reading lands in one place, in the same layout the workshop already uses, so it is easy to read back and file.</div>
+<div class="ar"><b>Where you would use it</b>On a service call, working down the machine one test point at a time: seal water, temperatures, vibration, then the general mechanical checks.</div>
+<div class="ar">What you type is saved on this phone as you go, so the sheet survives closing the app. Use Clear this sheet to start fresh for the next pump.</div>
+<span class="law">Based on: Field Service Pump Test Sheet, VCF-36 Rev 00</span></div>
+<div class="card"><h3>Job &amp; pump details</h3><button class="clrbtn" onclick="fsClear()" style="margin-left:0">Clear this sheet</button>
+<div class="fld"><div class="fh"><label>Company</label></div><div class="ctrl"><input type="text" id="fs_company"></div></div>
+<div class="fld"><div class="fh"><label>Contact</label></div><div class="ctrl"><input type="text" id="fs_contact"></div></div>
+<div class="fld"><div class="fh"><label>Address</label></div><div class="ctrl"><textarea id="fs_address" rows="2"></textarea></div></div>
+<div class="fld"><div class="fh"><label>Tel</label></div><div class="ctrl"><input type="text" id="fs_tel"></div></div>
+<div class="fld"><div class="fh"><label>Fax</label></div><div class="ctrl"><input type="text" id="fs_fax"></div></div>
+<div class="fld"><div class="fh"><label>FS No</label></div><div class="ctrl"><input type="text" id="fs_fsno"></div></div>
+<div class="fld"><div class="fh"><label>Pump type</label></div><div class="ctrl"><input type="text" id="fs_pumptype"></div></div>
+<div class="fld"><div class="fh"><label>Material</label></div><div class="ctrl"><input type="text" id="fs_material"></div></div>
+<div class="fld"><div class="fh"><label>Test No</label></div><div class="ctrl"><input type="text" id="fs_testno"></div></div>
+<div class="fld"><div class="fh"><label>Company ID</label></div><div class="ctrl"><input type="text" id="fs_companyid"></div></div>
+<div class="fld"><div class="fh"><label>VCS ID</label></div><div class="ctrl"><input type="text" id="fs_vcsid"></div></div>
+<div class="fld"><div class="fh"><label>Last test date</label></div><div class="ctrl"><input type="date" id="fs_lasttest"></div></div>
+<div class="fld"><div class="fh"><label>No. of orifice plates used</label></div><div class="ctrl"><input type="number" id="fs_orifplates" placeholder="number"></div></div>
+<div class="fld"><div class="fh"><label>Orifice diameter</label></div><div class="ctrl"><input type="number" id="fs_orifdia_n" placeholder="number"><select id="fs_orifdia_u" data-g="length" data-du="0"></select></div></div>
+<div class="fld"><div class="fh"><label>Position</label></div><div class="ctrl"><input type="text" id="fs_position"></div></div>
+</div>
+<div class="card"><h3>Test points</h3>
+<div class="tp-num">Test point 1</div>
+<div class="mgrid">
+<div class="mgf"><span class="mlab">Orifice qty</span><div class="ctrl"><input type="number" id="fs_tp1_orif" placeholder="number"></div></div>
+<div class="mgf"><span class="mlab">Vacuum</span><div class="ctrl"><input type="number" id="fs_tp1_vac" placeholder="number"><span class="fu">bar</span></div></div>
+<div class="mgf"><span class="mlab">Seal water temp</span><div class="ctrl"><input type="number" id="fs_tp1_swt" placeholder="number"><span class="fu">&deg;C</span></div></div>
+<div class="mgf"><span class="mlab">Seal water qty</span><div class="ctrl"><input type="number" id="fs_tp1_swq" placeholder="number"><span class="fu">l/min</span></div></div>
+<div class="mgf"><span class="mlab">Amps</span><div class="ctrl"><input type="number" id="fs_tp1_amps" placeholder="number"><span class="fu">A</span></div></div>
+<div class="mgf"><span class="mlab">Volts</span><div class="ctrl"><input type="number" id="fs_tp1_volts" placeholder="number"><span class="fu">V</span></div></div>
+</div>
+<div class="tp-num">Test point 2</div>
+<div class="mgrid">
+<div class="mgf"><span class="mlab">Orifice qty</span><div class="ctrl"><input type="number" id="fs_tp2_orif" placeholder="number"></div></div>
+<div class="mgf"><span class="mlab">Vacuum</span><div class="ctrl"><input type="number" id="fs_tp2_vac" placeholder="number"><span class="fu">bar</span></div></div>
+<div class="mgf"><span class="mlab">Seal water temp</span><div class="ctrl"><input type="number" id="fs_tp2_swt" placeholder="number"><span class="fu">&deg;C</span></div></div>
+<div class="mgf"><span class="mlab">Seal water qty</span><div class="ctrl"><input type="number" id="fs_tp2_swq" placeholder="number"><span class="fu">l/min</span></div></div>
+<div class="mgf"><span class="mlab">Amps</span><div class="ctrl"><input type="number" id="fs_tp2_amps" placeholder="number"><span class="fu">A</span></div></div>
+<div class="mgf"><span class="mlab">Volts</span><div class="ctrl"><input type="number" id="fs_tp2_volts" placeholder="number"><span class="fu">V</span></div></div>
+</div>
+<div class="tp-num">Test point 3</div>
+<div class="mgrid">
+<div class="mgf"><span class="mlab">Orifice qty</span><div class="ctrl"><input type="number" id="fs_tp3_orif" placeholder="number"></div></div>
+<div class="mgf"><span class="mlab">Vacuum</span><div class="ctrl"><input type="number" id="fs_tp3_vac" placeholder="number"><span class="fu">bar</span></div></div>
+<div class="mgf"><span class="mlab">Seal water temp</span><div class="ctrl"><input type="number" id="fs_tp3_swt" placeholder="number"><span class="fu">&deg;C</span></div></div>
+<div class="mgf"><span class="mlab">Seal water qty</span><div class="ctrl"><input type="number" id="fs_tp3_swq" placeholder="number"><span class="fu">l/min</span></div></div>
+<div class="mgf"><span class="mlab">Amps</span><div class="ctrl"><input type="number" id="fs_tp3_amps" placeholder="number"><span class="fu">A</span></div></div>
+<div class="mgf"><span class="mlab">Volts</span><div class="ctrl"><input type="number" id="fs_tp3_volts" placeholder="number"><span class="fu">V</span></div></div>
+</div>
+<div class="tp-num">Test point 4</div>
+<div class="mgrid">
+<div class="mgf"><span class="mlab">Orifice qty</span><div class="ctrl"><input type="number" id="fs_tp4_orif" placeholder="number"></div></div>
+<div class="mgf"><span class="mlab">Vacuum</span><div class="ctrl"><input type="number" id="fs_tp4_vac" placeholder="number"><span class="fu">bar</span></div></div>
+<div class="mgf"><span class="mlab">Seal water temp</span><div class="ctrl"><input type="number" id="fs_tp4_swt" placeholder="number"><span class="fu">&deg;C</span></div></div>
+<div class="mgf"><span class="mlab">Seal water qty</span><div class="ctrl"><input type="number" id="fs_tp4_swq" placeholder="number"><span class="fu">l/min</span></div></div>
+<div class="mgf"><span class="mlab">Amps</span><div class="ctrl"><input type="number" id="fs_tp4_amps" placeholder="number"><span class="fu">A</span></div></div>
+<div class="mgf"><span class="mlab">Volts</span><div class="ctrl"><input type="number" id="fs_tp4_volts" placeholder="number"><span class="fu">V</span></div></div>
+</div>
+<div class="tp-num">Test point 5</div>
+<div class="mgrid">
+<div class="mgf"><span class="mlab">Orifice qty</span><div class="ctrl"><input type="number" id="fs_tp5_orif" placeholder="number"></div></div>
+<div class="mgf"><span class="mlab">Vacuum</span><div class="ctrl"><input type="number" id="fs_tp5_vac" placeholder="number"><span class="fu">bar</span></div></div>
+<div class="mgf"><span class="mlab">Seal water temp</span><div class="ctrl"><input type="number" id="fs_tp5_swt" placeholder="number"><span class="fu">&deg;C</span></div></div>
+<div class="mgf"><span class="mlab">Seal water qty</span><div class="ctrl"><input type="number" id="fs_tp5_swq" placeholder="number"><span class="fu">l/min</span></div></div>
+<div class="mgf"><span class="mlab">Amps</span><div class="ctrl"><input type="number" id="fs_tp5_amps" placeholder="number"><span class="fu">A</span></div></div>
+<div class="mgf"><span class="mlab">Volts</span><div class="ctrl"><input type="number" id="fs_tp5_volts" placeholder="number"><span class="fu">V</span></div></div>
+</div>
+<div class="tp-num">Test point 6</div>
+<div class="mgrid">
+<div class="mgf"><span class="mlab">Orifice qty</span><div class="ctrl"><input type="number" id="fs_tp6_orif" placeholder="number"></div></div>
+<div class="mgf"><span class="mlab">Vacuum</span><div class="ctrl"><input type="number" id="fs_tp6_vac" placeholder="number"><span class="fu">bar</span></div></div>
+<div class="mgf"><span class="mlab">Seal water temp</span><div class="ctrl"><input type="number" id="fs_tp6_swt" placeholder="number"><span class="fu">&deg;C</span></div></div>
+<div class="mgf"><span class="mlab">Seal water qty</span><div class="ctrl"><input type="number" id="fs_tp6_swq" placeholder="number"><span class="fu">l/min</span></div></div>
+<div class="mgf"><span class="mlab">Amps</span><div class="ctrl"><input type="number" id="fs_tp6_amps" placeholder="number"><span class="fu">A</span></div></div>
+<div class="mgf"><span class="mlab">Volts</span><div class="ctrl"><input type="number" id="fs_tp6_volts" placeholder="number"><span class="fu">V</span></div></div>
+</div>
+</div>
+<div class="card"><h3>Temperatures &amp; vibration</h3>
+<div class="fld"><div class="fh"><label>Air temp</label></div><div class="ctrl"><input type="number" id="fs_airtemp" placeholder="number"><span class="fu">&deg;C</span></div></div>
+<div class="fld"><div class="fh"><label>Gas temp</label></div><div class="ctrl"><input type="number" id="fs_gastemp" placeholder="number"><span class="fu">&deg;C</span></div></div>
+<div class="tp-num">Bearing temp</div><div class="mgrid">
+<div class="mgf"><span class="mlab">D/E</span><div class="ctrl"><input type="number" id="fs_btde" placeholder="number"><span class="fu">&deg;C</span></div></div>
+<div class="mgf"><span class="mlab">I/E</span><div class="ctrl"><input type="number" id="fs_btie" placeholder="number"><span class="fu">&deg;C</span></div></div>
+</div>
+<div class="tp-num">Vibration, D/E (mm/s)</div><div class="mgrid">
+<div class="mgf"><span class="mlab">H</span><div class="ctrl"><input type="number" id="fs_vde_h" placeholder="number"><span class="fu">mm/s</span></div></div>
+<div class="mgf"><span class="mlab">V</span><div class="ctrl"><input type="number" id="fs_vde_v" placeholder="number"><span class="fu">mm/s</span></div></div>
+<div class="mgf"><span class="mlab">A</span><div class="ctrl"><input type="number" id="fs_vde_a" placeholder="number"><span class="fu">mm/s</span></div></div>
+</div>
+<div class="tp-num">Vibration, I/E (mm/s)</div><div class="mgrid">
+<div class="mgf"><span class="mlab">H</span><div class="ctrl"><input type="number" id="fs_vie_h" placeholder="number"><span class="fu">mm/s</span></div></div>
+<div class="mgf"><span class="mlab">V</span><div class="ctrl"><input type="number" id="fs_vie_v" placeholder="number"><span class="fu">mm/s</span></div></div>
+<div class="mgf"><span class="mlab">A</span><div class="ctrl"><input type="number" id="fs_vie_a" placeholder="number"><span class="fu">mm/s</span></div></div>
+</div>
+</div>
+<div class="card"><h3>Mechanical condition</h3>
+<div class="fld"><div class="fh"><label>Pump pulley</label></div><div class="ctrl"><input type="text" id="fs_pumppulley"></div></div>
+<div class="fld"><div class="fh"><label>Motor pulley</label></div><div class="ctrl"><input type="text" id="fs_motorpulley"></div></div>
+<div class="fld"><div class="fh"><label>Belts</label></div><div class="ctrl"><input type="text" id="fs_belts"></div></div>
+<div class="fld"><div class="fh"><label>Pump speed</label></div><div class="ctrl"><input type="number" id="fs_pumpspeed" placeholder="number"><span class="fu">rpm</span></div></div>
+<div class="fld"><div class="fh"><label>Motor volts</label></div><div class="ctrl"><input type="number" id="fs_motorvolts" placeholder="number"><span class="fu">V</span></div></div>
+<div class="fld"><div class="fh"><label>Motor speed</label></div><div class="ctrl"><input type="number" id="fs_motorspeed" placeholder="number"><span class="fu">rpm</span></div></div>
+<div class="fld"><div class="fh"><label>Motor kW</label></div><div class="ctrl"><input type="number" id="fs_motorkw" placeholder="number"><span class="fu">kW</span></div></div>
+<div class="fld"><div class="fh"><label>Slinger condition</label></div><div class="ctrl"><input type="text" id="fs_slinger"></div></div>
+<div class="fld"><div class="fh"><label>Flow meters</label></div><div class="ctrl"><input type="text" id="fs_flowmeters"></div></div>
+<div class="fld"><div class="fh"><label>Water condition</label></div><div class="ctrl"><input type="text" id="fs_watercond"></div></div>
+<div class="fld"><div class="fh"><label>Spray nozzles</label></div><div class="ctrl"><input type="text" id="fs_spraynozzles"></div></div>
+<div class="fld"><div class="fh"><label>Flow control valves</label></div><div class="ctrl"><input type="text" id="fs_flowvalves"></div></div>
+</div>
+<div class="card"><h3>General &amp; sign-off</h3>
+<div class="fld"><div class="fh"><label>General</label></div><div class="ctrl"><textarea id="fs_general" rows="4"></textarea></div></div>
+<div class="fld"><div class="fh"><label>Date</label></div><div class="ctrl"><input type="date" id="fs_date"></div></div>
+<div class="fld"><div class="fh"><label>Tested by</label></div><div class="ctrl"><input type="text" id="fs_testedby"></div></div>
+</div>
+<button class="clrbtn" onclick="fsClear()" style="margin:6px 0 0;margin-left:0">Clear this sheet</button>
 </section></main><script>"use strict";
 var G={
  pressure:[["kilopascals (kPa)",1],["millibar (mbar)",0.1],["torr (mmHg)",0.1333224],["inches of mercury (inHg)",3.386389]],
@@ -934,6 +1065,8 @@ function recalc(){
   showN("dt_ratio",r);showU("dt_out",out,"temp");showN("dt_rise",rise);
   PLG("mx_dt",isFinite(out),"<b>"+fmtA(T2)+" K ("+fmtA(out)+" &deg;C)</b> = "+fmtA(T1)+" &times; "+fmtA(r)+"<sup>("+k+" &minus; 1) / "+k+"</sup>");
   M("dt_m",bad?"The discharge pressure must be higher than the inlet pressure, both measured from a full vacuum. Check the two pressures and their gauge, absolute or vacuum settings.":isFinite(out)?("Squeezed "+b(r)+" times tighter, the gas leaves at about "+b(out)+" degrees Celsius, "+b(rise)+" degrees hotter than it went in, if nothing carries the heat away. A dry blower or claw runs near this figure; a liquid ring machine runs far cooler because the ring soaks up the heat as it squeezes."+(out>140?" <b>That is hot enough to need an aftercooler or a two stage machine. Flag it on the quote.</b>":"")):"Fill in the boxes and this explains your answer.");})();
+ // FIELD SERVICE TEST SHEET
+ fsSave();
  // DEMOS
  demos();
 }
@@ -1353,8 +1486,27 @@ function clr(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(
 function hp(id){var e=document.getElementById(id);if(e)e.classList.toggle("open");}
 window.ex=ex;window.clr=clr;window.hp=hp;window.show=show;
 
-var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the gas laws",learn_intro:"What a gas really is",learn_boyle:"Boyle's law",learn_charles:"Charles's law",learn_gl:"Gay-Lussac's law",learn_combined:"The combined gas law",learn_ideal:"The ideal gas law",learn_dalton:"Dalton's law",fc:"Normal / Actual flow",vac:"Vacuum pump sizing",cmp:"Compressor sizing",pc:"Conveying sizing",mp:"Which machine",vap:"Vapour & wet gas",pd:"Pump-down time",lk:"Leak check",pl:"Pipe loss",pw:"Power & motor current",cv:"Unit converter",ref:"Reference tables",orf:"Orifice sizing",hl:"Heat load, water",mw:"Cooling tower make-up",cw:"Conveying step-by-step",cat_learn:"Play and learn",cat_size:"Size it",cat_site:"On-site checks",ts:"Find the fault",ps:"Pre-separator sizing",lr:"Inside a liquid ring pump",dt:"Discharge temperature",ck:"Commissioning checklist",bp:"Belt & pulley speed",af:"Speed change effect",learn_fan:"Speed and the fan laws",learn_heat:"How heat load works",learn_cav:"Why seal water stays cool"};
-var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn"};
+// Field service pump test sheet: plain record fields, saved to this phone as you type.
+var FS_KEY="vt_fs1";
+var FS_FIELDS=["fs_company","fs_contact","fs_address","fs_tel","fs_fax","fs_fsno","fs_pumptype","fs_material","fs_testno","fs_companyid","fs_vcsid","fs_lasttest","fs_orifplates","fs_orifdia_n","fs_orifdia_u","fs_position",
+"fs_tp1_orif","fs_tp1_vac","fs_tp1_swt","fs_tp1_swq","fs_tp1_amps","fs_tp1_volts",
+"fs_tp2_orif","fs_tp2_vac","fs_tp2_swt","fs_tp2_swq","fs_tp2_amps","fs_tp2_volts",
+"fs_tp3_orif","fs_tp3_vac","fs_tp3_swt","fs_tp3_swq","fs_tp3_amps","fs_tp3_volts",
+"fs_tp4_orif","fs_tp4_vac","fs_tp4_swt","fs_tp4_swq","fs_tp4_amps","fs_tp4_volts",
+"fs_tp5_orif","fs_tp5_vac","fs_tp5_swt","fs_tp5_swq","fs_tp5_amps","fs_tp5_volts",
+"fs_tp6_orif","fs_tp6_vac","fs_tp6_swt","fs_tp6_swq","fs_tp6_amps","fs_tp6_volts",
+"fs_airtemp","fs_gastemp","fs_btde","fs_btie",
+"fs_vde_h","fs_vde_v","fs_vde_a","fs_vie_h","fs_vie_v","fs_vie_a",
+"fs_pumppulley","fs_motorpulley","fs_belts","fs_pumpspeed","fs_motorvolts","fs_motorspeed","fs_motorkw",
+"fs_slinger","fs_flowmeters","fs_watercond","fs_spraynozzles","fs_flowvalves",
+"fs_general","fs_date","fs_testedby"];
+function fsSave(){var o={};for(var i=0;i<FS_FIELDS.length;i++){var e=document.getElementById(FS_FIELDS[i]);if(e)o[FS_FIELDS[i]]=e.value;}try{localStorage.setItem(FS_KEY,JSON.stringify(o));}catch(err){}}
+function fsLoad(){var o={};try{o=JSON.parse(localStorage.getItem(FS_KEY)||"{}")||{};}catch(err){o={};}for(var i=0;i<FS_FIELDS.length;i++){var e=document.getElementById(FS_FIELDS[i]);if(e&&o[FS_FIELDS[i]]!==undefined)e.value=o[FS_FIELDS[i]];}}
+function fsClear(){if(!confirm("Clear every field on this test sheet?"))return;for(var i=0;i<FS_FIELDS.length;i++){var e=document.getElementById(FS_FIELDS[i]);if(e)e.value="";}try{localStorage.removeItem(FS_KEY);}catch(err){}}
+window.fsClear=fsClear;
+
+var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the gas laws",learn_intro:"What a gas really is",learn_boyle:"Boyle's law",learn_charles:"Charles's law",learn_gl:"Gay-Lussac's law",learn_combined:"The combined gas law",learn_ideal:"The ideal gas law",learn_dalton:"Dalton's law",fc:"Normal / Actual flow",vac:"Vacuum pump sizing",cmp:"Compressor sizing",pc:"Conveying sizing",mp:"Which machine",vap:"Vapour & wet gas",pd:"Pump-down time",lk:"Leak check",pl:"Pipe loss",pw:"Power & motor current",cv:"Unit converter",ref:"Reference tables",orf:"Orifice sizing",hl:"Heat load, water",mw:"Cooling tower make-up",cw:"Conveying step-by-step",cat_learn:"Play and learn",cat_size:"Size it",cat_site:"On-site checks",ts:"Find the fault",ps:"Pre-separator sizing",lr:"Inside a liquid ring pump",dt:"Discharge temperature",ck:"Commissioning checklist",bp:"Belt & pulley speed",af:"Speed change effect",learn_fan:"Speed and the fan laws",learn_heat:"How heat load works",learn_cav:"Why seal water stays cool",fs:"Field service pump test sheet"};
+var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",fs:"cat_site"};
 var CUR="home";
 function goBack(){show(PARENT[CUR]||"home");}
 var MENUS={home:1,cat_learn:1,cat_size:1,cat_site:1,learn:1};
@@ -1524,6 +1676,7 @@ ckRender();
 });
 
 tsRender();
+fsLoad();
 document.addEventListener("input",recalc);
 document.addEventListener("change",recalc);
 recalc();
