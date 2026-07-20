@@ -221,9 +221,9 @@ td:first-child{text-align:left;font-family:var(--sans);}
 </section>
 <section class="page" id="learn_intro">
 <h2>What a gas really is</h2>
-<p class="sub">The one picture that unlocks every rule below.</p>
 <div class="card">
-<p style="font-size:14.5px">A gas is a huge crowd of tiny balls, far too small to see, flying around and bouncing off the walls. That one picture unlocks everything below. Three words to learn:</p>
+<div class="kelv"><b>The true definition:</b> The kinetic theory of gases states that a gas is a huge number of tiny particles in constant, random motion, colliding with each other and with the walls of their container. Pressure, temperature and volume are simply the measurable, large-scale result of all those countless tiny collisions.</div>
+<p style="font-size:14.5px"><b>In plain English:</b> A gas is a huge crowd of tiny balls, far too small to see, flying around and bouncing off the walls. Three words to learn:</p>
 <p class="glos"><b>Pressure</b> is the drumming of the balls on the walls. More hits, or harder hits, means more push.</p>
 <p class="glos"><b>Temperature</b> is how fast the balls fly. Hot means fast, cold means slow.</p>
 <p class="glos"><b>Volume</b> is the size of the room they bounce in.</p>
@@ -239,7 +239,8 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <h2>Boyle's law</h2>
 <p class="sub">Squeeze it, the push rises.</p>
 <div class="card">
-<p style="font-size:14.5px">Keep the balls at the same speed but shrink their room. They cross it quicker, so they hit the walls more often. Half the room, double the push. A bike pump with your thumb over the end is exactly this. The rule:</p>
+<div class="kelv"><b>The true definition:</b> Boyle's Law states that, for a fixed amount of gas held at a constant temperature, pressure and volume are inversely proportional: as volume decreases, pressure increases by the same factor, so P&#8321;V&#8321; = P&#8322;V&#8322;. First described by Robert Boyle in 1662.</div>
+<p style="font-size:14.5px"><b>In plain English:</b> Keep the balls at the same speed but shrink their room. They cross it quicker, so they hit the walls more often. Half the room, double the push. A bike pump with your thumb over the end is exactly this. The rule:</p>
 <div class="formula">P<sub>1</sub> &times; V<sub>1</sub> = P<sub>2</sub> &times; V<sub>2</sub><small>push before &times; room before = push after &times; room after. The answer never changes.</small></div>
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Room for the gas</span><input type="range" id="by_v" min="1" max="10" value="7" step="0.1"></div>
@@ -255,7 +256,8 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <h2>Charles's law</h2>
 <p class="sub">Heat it, it grows.</p>
 <div class="card">
-<p style="font-size:14.5px">Speed the balls up but let the room stretch, like a balloon. Faster balls need more space to keep the same push, so the gas grows. A balloon left in a hot car puffs up. The rule:</p>
+<div class="kelv"><b>The true definition:</b> Charles's Law states that, for a fixed amount of gas held at constant pressure, volume is directly proportional to absolute (Kelvin) temperature: as temperature rises, volume rises by the same factor, so V&#8321;/T&#8321; = V&#8322;/T&#8322;. First described by Jacques Charles around 1787.</div>
+<p style="font-size:14.5px"><b>In plain English:</b> Speed the balls up but let the room stretch, like a balloon. Faster balls need more space to keep the same push, so the gas grows. A balloon left in a hot car puffs up. The rule:</p>
 <div class="formula">V<sub>1</sub> / T<sub>1</sub> = V<sub>2</sub> / T<sub>2</sub><small>room divided by temperature stays the same. Temperature must be in Kelvin.</small></div>
 <div class="kelv"><b>Why Kelvin?</b> Zero degrees Celsius is not zero heat, the balls are still flying. Kelvin counts from truly stone cold, minus 273 degrees Celsius, where the balls stop. Just add 273 to Celsius. Only in Kelvin does doubling the number mean truly doubling the heat, which is why the formula insists on it.</div>
 <div class="demo">
@@ -272,7 +274,8 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <h2>Gay-Lussac's law</h2>
 <p class="sub">Heat a sealed gas, the push rises.</p>
 <div class="card">
-<p style="font-size:14.5px">Now weld the room shut so it cannot grow, and speed the balls up. They hit the walls faster and harder, so the push climbs instead. This is why an aerosol can warns you not to heat it. The rule:</p>
+<div class="kelv"><b>The true definition:</b> Gay-Lussac's Law states that, for a fixed amount of gas held at constant volume, pressure is directly proportional to absolute temperature: as temperature rises, pressure rises by the same factor, so P&#8321;/T&#8321; = P&#8322;/T&#8322;. Published by Joseph Louis Gay-Lussac in 1802.</div>
+<p style="font-size:14.5px"><b>In plain English:</b> Now weld the room shut so it cannot grow, and speed the balls up. They hit the walls faster and harder, so the push climbs instead. This is why an aerosol can warns you not to heat it. The rule:</p>
 <div class="formula">P<sub>1</sub> / T<sub>1</sub> = P<sub>2</sub> / T<sub>2</sub><small>push divided by temperature stays the same. Temperature in Kelvin again.</small></div>
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Temperature</span><input type="range" id="gl_t" min="0" max="273" value="100" step="1"></div>
@@ -288,7 +291,8 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <h2>The combined gas law</h2>
 <p class="sub">All three at once.</p>
 <div class="card">
-<p style="font-size:14.5px">Real jobs change room and temperature at the same time, so Boyle, Charles and Gay-Lussac get rolled into one rule. This is the exact rule the flow converter, vacuum and compressor tabs use to turn a datasheet's reference flow into the real flow at the inlet. The rule:</p>
+<div class="kelv"><b>The true definition:</b> The Combined Gas Law merges Boyle's, Charles's and Gay-Lussac's laws into one relationship: for a fixed amount of gas, pressure times volume divided by absolute temperature stays constant, P&#8321;V&#8321;/T&#8321; = P&#8322;V&#8322;/T&#8322;, whichever of the three properties changes.</div>
+<p style="font-size:14.5px"><b>In plain English:</b> Real jobs change room and temperature at the same time, so Boyle, Charles and Gay-Lussac get rolled into one rule. This is the exact rule the flow converter, vacuum and compressor tabs use to turn a datasheet's reference flow into the real flow at the inlet. The rule:</p>
 <div class="formula">P<sub>1</sub> V<sub>1</sub> / T<sub>1</sub> = P<sub>2</sub> V<sub>2</sub> / T<sub>2</sub><small>push &times; room, divided by temperature, stays the same. Kelvin as always.</small></div>
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Room for the gas</span><input type="range" id="cb_v" min="1" max="10" value="10" step="0.1"></div>
@@ -304,7 +308,8 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <h2>The ideal gas law</h2>
 <p class="sub">The full picture.</p>
 <div class="card">
-<p style="font-size:14.5px">The parent of everything above. It adds the one thing the others left out: how much gas is actually in the room, the size of the crowd. The rule:</p>
+<div class="kelv"><b>The true definition:</b> The Ideal Gas Law is the equation of state for a hypothetical "ideal" gas, relating pressure, volume, the amount of gas and temperature in one equation: PV = nRT. It is the parent law that Boyle's, Charles's and Gay-Lussac's laws all fall out of once the amount of gas is held fixed.</div>
+<p style="font-size:14.5px"><b>In plain English:</b> The parent of everything above. It adds the one thing the others left out: how much gas is actually in the room, the size of the crowd. The rule:</p>
 <div class="formula">P V = n R T<small>push &times; room = amount of gas &times; a fixed number &times; temperature</small></div>
 <p class="glos"><b>P</b> the push (pressure)</p>
 <p class="glos"><b>V</b> the room (volume)</p>
@@ -323,7 +328,8 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <h2>Dalton's law</h2>
 <p class="sub">Shares of a damp gas.</p>
 <div class="card">
-<p style="font-size:14.5px">Mix two gases in one room, say air balls and water balls, and each crowd does its own drumming on the walls as if the other were not there. The total push is simply the two pushes added up. And here is the useful bit: warmer water pushes harder, so hot damp gas carries a bigger share of water. The rule:</p>
+<div class="kelv"><b>The true definition:</b> Dalton's Law of Partial Pressures states that the total pressure of a mixture of gases that do not react with each other equals the sum of the pressures each gas would exert on its own, in the same space, at the same temperature: P<sub>total</sub> = P&#8321; + P&#8322; + &hellip;. Described by John Dalton in 1801.</div>
+<p style="font-size:14.5px"><b>In plain English:</b> Mix two gases in one room, say air balls and water balls, and each crowd does its own drumming on the walls as if the other were not there. The total push is simply the two pushes added up. And here is the useful bit: warmer water pushes harder, so hot damp gas carries a bigger share of water. The rule:</p>
 <div class="formula">P<sub>total</sub> = P<sub>dry</sub> + P<sub>water</sub><small>each gas pushes its own share, and the shares add up to the total</small></div>
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Temperature</span><input type="range" id="da_t" min="5" max="60" value="40" step="1"></div>
@@ -500,7 +506,8 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <h2>Speed and the fan laws</h2>
 <p class="sub">Why a small speed change is a big deal.</p>
 <div class="card">
-<p style="font-size:14.5px">Spin a blower or pump faster and three things go up, but not by the same amount. This is the picture behind the <b>Speed change effect</b> calculator. Drag the speed and watch the three bars race apart:</p>
+<div class="kelv"><b>The true definition:</b> The Fan Laws (also called the Affinity Laws) state that, for a given fan, blower or pump running in a fixed system, flow varies directly with speed, pressure (or head) varies with the square of speed, and absorbed power varies with the cube of speed.</div>
+<p style="font-size:14.5px"><b>In plain English:</b> Spin a blower or pump faster and three things go up, but not by the same amount. This is the picture behind the <b>Speed change effect</b> calculator. Drag the speed and watch the three bars race apart:</p>
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Speed</span><input type="range" id="fan_s" min="50" max="150" value="100" step="1"></div>
 <canvas id="fan_cv" class="lawcv" style="height:210px"></canvas><button class="exbtn2 animtog" id="fan_cv_tog" onclick="toggleAnim('fan')">&#9208; Pause</button>
@@ -514,7 +521,8 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <h2>How heat load works</h2>
 <p class="sub">Water carrying heat away.</p>
 <div class="card">
-<p style="font-size:14.5px">A liquid ring pump makes heat, and the seal water carries it off. How much heat a water stream can carry comes down to two things: how much water flows, and how many degrees it warms up. Watch the water pick up heat as it passes:</p>
+<div class="kelv"><b>The true definition:</b> The sensible heat equation states that the rate of heat carried by a flowing liquid equals its mass flow rate, multiplied by its specific heat capacity, multiplied by the temperature rise it undergoes: Q = m&#775; &times; c &times; &Delta;T.</div>
+<p style="font-size:14.5px"><b>In plain English:</b> A liquid ring pump makes heat, and the seal water carries it off. How much heat a water stream can carry comes down to two things: how much water flows, and how many degrees it warms up. Watch the water pick up heat as it passes:</p>
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Water flow</span><input type="range" id="heat_q" min="1" max="10" value="5" step="0.5"></div>
 <div class="demo-row"><span style="flex:0 0 130px">Warm-up</span><input type="range" id="heat_dt" min="1" max="15" value="5" step="0.5"></div>
@@ -529,7 +537,8 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <h2>Why seal water must stay cool</h2>
 <p class="sub">Cavitation, and how to dodge it.</p>
 <div class="card">
-<p style="font-size:14.5px">Pull a hard enough vacuum and water starts to boil at room temperature. In a liquid ring pump those boiling bubbles collapse violently against the metal, sounding like marbles and slowly chewing the blades away. Warmer water boils more easily, so it cavitates sooner. Drag both sliders and watch:</p>
+<div class="kelv"><b>The true definition:</b> Cavitation is the formation and violent collapse of vapour bubbles in a liquid when its local pressure drops below the liquid's vapour pressure at that temperature &mdash; the liquid boils from lost pressure, not added heat &mdash; and the collapsing bubbles release sharp, localised shockwaves that erode nearby metal.</div>
+<p style="font-size:14.5px"><b>In plain English:</b> Pull a hard enough vacuum and water starts to boil at room temperature. In a liquid ring pump those boiling bubbles collapse violently against the metal, sounding like marbles and slowly chewing the blades away. Warmer water boils more easily, so it cavitates sooner. Drag both sliders and watch:</p>
 <div class="demo">
 <div class="demo-row"><span style="flex:0 0 130px">Vacuum depth</span><input type="range" id="cav_v" min="0" max="98" value="60" step="1"></div>
 <div class="demo-row"><span style="flex:0 0 130px">Water temp</span><input type="range" id="cav_t" min="10" max="80" value="30" step="1"></div>
