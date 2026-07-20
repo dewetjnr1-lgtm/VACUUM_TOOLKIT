@@ -156,6 +156,20 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .dtbl input[type=number]{width:76px;font-family:var(--mono);font-size:14px;padding:6px 3px;border:1px solid var(--line);border-radius:6px;background:rgba(255,255,255,.75);color:var(--ink);text-align:center;}
 .dtbl input[type=number]:focus{outline:2px solid var(--teal);border-color:var(--teal);}
 .dtbl .pct{font-family:var(--mono);font-weight:700;color:var(--teal);}
+.barrow{display:flex;align-items:center;gap:9px;margin:9px 0;font-size:13px;}
+.barlab{flex:0 0 100px;color:var(--ink);line-height:1.25;}
+.barwrap{flex:1;background:var(--paper);border-radius:7px;height:22px;overflow:hidden;border:1px solid var(--line);}
+.barfill{height:100%;width:0%;background:linear-gradient(90deg,var(--teal),var(--green));border-radius:7px;transition:width 1s cubic-bezier(.22,1,.36,1);}
+.barval{flex:0 0 62px;text-align:right;font-family:var(--mono);font-weight:700;color:var(--ink);font-size:13px;}
+.tline{display:flex;align-items:flex-start;gap:0;margin:14px 0 4px;overflow-x:auto;}
+.tline .tstop{flex:1 1 0;min-width:74px;text-align:center;position:relative;padding-top:16px;}
+.tline .tstop:before{content:"";position:absolute;top:5px;left:0;right:0;height:2px;background:var(--line);}
+.tline .tstop:first-child:before{left:50%;}
+.tline .tstop:last-child:before{right:50%;}
+.tline .tdot{position:absolute;top:0;left:50%;transform:translateX(-50%) scale(0);width:12px;height:12px;border-radius:50%;background:var(--accent);border:2px solid #fff;box-shadow:0 0 0 2px var(--accent);transition:transform .4s cubic-bezier(.34,1.56,.64,1);}
+.tline .tstop.on .tdot{transform:translateX(-50%) scale(1);}
+.tline .twhen{font-size:11px;font-weight:700;color:var(--accent);margin-top:6px;}
+.tline .twhat{font-size:11px;color:var(--soft);margin-top:2px;line-height:1.3;}
 </style></head>
 <body><canvas id="bgbub" aria-hidden="true"></canvas><header><div class="hrow"><button id="backbtn" onclick="goBack()">&#8249; Back</button><svg id="logo" width="36" height="36" viewBox="0 0 100 100"><g fill="#B3261E" stroke="#B3261E" stroke-width="2"><path d="M46.34 20.22 L50.00 11.00 L53.66 20.22 Z"/><path d="M68.47 26.36 L77.58 22.42 L73.64 31.53 Z"/><path d="M79.78 46.34 L89.00 50.00 L79.78 53.66 Z"/><path d="M73.64 68.47 L77.58 77.58 L68.47 73.64 Z"/><path d="M53.66 79.78 L50.00 89.00 L46.34 79.78 Z"/><path d="M31.53 73.64 L22.42 77.58 L26.36 68.47 Z"/><path d="M20.22 53.66 L11.00 50.00 L20.22 46.34 Z"/><path d="M26.36 31.53 L22.42 22.42 L31.53 26.36 Z"/></g><circle cx="50" cy="50" r="30" fill="none" stroke="#B3261E" stroke-width="4.5"/><g fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M50.00 42.00 Q52.67 34.22 56.62 26.93"/><path d="M56.93 46.00 Q65.00 44.42 73.29 44.19"/><path d="M56.93 54.00 Q62.33 60.20 66.67 67.26"/><path d="M50.00 58.00 Q47.33 65.78 43.38 73.07"/><path d="M43.07 54.00 Q35.00 55.58 26.71 55.81"/><path d="M43.07 46.00 Q37.67 39.80 33.33 32.74"/></g><circle cx="50" cy="50" r="8" fill="#B3261E" stroke="#fff" stroke-width="2"/></svg><div><h1 id="hdr_t">Vacuum &amp; Compressor Toolkit</h1><p id="hdr_s">Learn it, fill it in, pick your units</p></div></div></header>
 <main><section class="page active" id="home">
@@ -512,21 +526,29 @@ td:first-child{text-align:left;font-family:var(--sans);}
 </div>
 <div class="card"><h3>Gas weights</h3>
 <p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">How much a mole of each gas weighs. Heavier gas is denser at the same conditions, which changes how a leak behaves and how hard a machine works to move it.</p>
-<table><tr><th>Gas</th><th>g/mol</th></tr><tr><td>Air</td><td>28.97</td></tr><tr><td>Carbon dioxide</td><td>44.01</td></tr><tr><td>Water vapour</td><td>18.02</td></tr><tr><td>Nitrogen</td><td>28.01</td></tr><tr><td>Oxygen</td><td>32.00</td></tr></table></div>
+<div id="bar_gas"></div>
+</div>
 <div class="card"><h3>Pipe wall roughness</h3>
-<p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">A rougher pipe wall drags more on the gas moving past it. Feeds the friction factor in the <b>Pipe Loss</b> calculator &mdash; pick the row that matches your pipe.</p>
-<table><tr><th>Material</th><th>mm</th></tr><tr><td>Stainless steel</td><td>0.015</td></tr><tr><td>Steel</td><td>0.045</td></tr><tr><td>Galvanised</td><td>0.15</td></tr><tr><td>Plastic, smooth</td><td>0.0015</td></tr></table></div>
+<p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">A rougher pipe wall drags more on the gas moving past it. Feeds the friction factor in the <b>Pipe Loss</b> calculator &mdash; pick the row that matches your pipe. Plastic's bar looks tiny next to the others because it really is that much smoother.</p>
+<div id="bar_rough"></div>
+</div>
 <div class="card"><h3>Pipe inside width (Schedule 40)</h3>
 <p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">The real bore of a pipe is smaller than its nominal size once you allow for wall thickness. Use these, not the nominal size, in the <b>Pipe Loss</b> calculator.</p>
-<table><tr><th>Size</th><th>Inside mm</th></tr><tr><td>Half inch</td><td>15.8</td></tr><tr><td>One inch</td><td>26.6</td></tr><tr><td>Two inch</td><td>52.5</td></tr><tr><td>Three inch</td><td>77.9</td></tr><tr><td>Four inch</td><td>102.3</td></tr><tr><td>Six inch</td><td>154.1</td></tr></table></div>
+<div id="bar_width"></div>
+</div>
 <div class="card"><h3>Loss numbers for bends and valves</h3>
-<p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">Every bend or valve in a line adds drag on top of the straight pipe. The <b>Pipe Loss</b> calculator turns each one into an equivalent length of extra straight pipe using these numbers.</p>
-<table><tr><th>Fitting</th><th>Number</th></tr><tr><td>Elbow, standard</td><td>0.75</td></tr><tr><td>Elbow, long</td><td>0.45</td></tr><tr><td>Tee, straight through</td><td>0.4</td></tr><tr><td>Tee, off the branch</td><td>1.0</td></tr><tr><td>Gate valve, open</td><td>0.15</td></tr><tr><td>Globe valve, open</td><td>10.0</td></tr></table></div>
+<p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">Every bend or valve in a line adds drag on top of the straight pipe. The <b>Pipe Loss</b> calculator turns each one into an equivalent length of extra straight pipe using these numbers &mdash; see how much more a globe valve costs you than a gate valve.</p>
+<div id="bar_loss"></div>
+</div>
 <div class="card"><h3>Liquid ring pump: running limits</h3><table><tr><th>Check</th><th>Shut down if</th></tr><tr><td>Casing temperature</td><td>14 &deg;C or more above the seal water</td></tr><tr><td>Bearing housing</td><td>17 &deg;C or more above the casing</td></tr><tr><td>Noise or vibration</td><td>Suddenly rough: stop, find the cause</td></tr><tr><td>Packing drip</td><td>Aim 45 to 60 drops a minute, no hotter</td></tr></table><p style="font-size:12px;color:var(--soft);margin:6px 2px 0">A liquid ring pump normally runs a little above its seal water. A sharp rise means too little or too warm water, carryover, or running dry. See where casing and bearings sit on the pump in <b>Inside a Liquid Ring Pump</b>.</p></div>
 <div class="card"><h3>Seal water: quick rules</h3>
 <p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">Most liquid ring pump faults trace back to one of these. If something's off on site, start with the <b>Find the Fault</b> troubleshooter.</p>
 <table><tr><th>Point</th><th>Guide</th></tr><tr><td>Supply pressure</td><td>At least 0.7 bar at the pump</td></tr><tr><td>Each control valve upstream</td><td>Add 0.7 to 1.0 bar</td></tr><tr><td>Low-pressure alarm</td><td>About 0.35 bar</td></tr><tr><td>Temperature</td><td>Coolest available; cooler = deeper vacuum</td></tr><tr><td>Flow order</td><td>Water on before the motor, always</td></tr><tr><td>Too much flow</td><td>Wastes power and erodes the pump</td></tr></table></div>
-<div class="card"><h3>Routine maintenance</h3><table><tr><th>When</th><th>Do</th></tr><tr><td>Every 6 months</td><td>Lubricate pump and motor bearings; oil or grease the coupling; clean the seal water strainer</td></tr><tr><td>Every 12 months</td><td>Inspect bearings; replace the stuffing box packing; check any mechanical seals for leaks and cool running</td></tr><tr><td>First 3 to 4 weeks</td><td>Clean and then remove the temporary inlet screen once the line is clear</td></tr><tr><td>V-belts</td><td>Check tension in the first 24 to 48 hours, then periodically; typical life around 24,000 hours</td></tr></table><p style="font-size:12px;color:var(--soft);margin:6px 2px 0">A guide only. Follow the maker's manual and your own conditions; dirty or hot duty needs shorter intervals.</p></div>
+<div class="card"><h3>Routine maintenance</h3>
+<p style="font-size:13.5px;color:var(--soft);margin:0 0 8px">A timeline of the checks that keep a liquid ring pump from becoming a Find the Fault visit.</p>
+<div class="tline" id="tl_maint"></div>
+<details><summary>Show the table</summary><table><tr><th>When</th><th>Do</th></tr><tr><td>Every 6 months</td><td>Lubricate pump and motor bearings; oil or grease the coupling; clean the seal water strainer</td></tr><tr><td>Every 12 months</td><td>Inspect bearings; replace the stuffing box packing; check any mechanical seals for leaks and cool running</td></tr><tr><td>First 3 to 4 weeks</td><td>Clean and then remove the temporary inlet screen once the line is clear</td></tr><tr><td>V-belts</td><td>Check tension in the first 24 to 48 hours, then periodically; typical life around 24,000 hours</td></tr></table></details>
+<p style="font-size:12px;color:var(--soft);margin:6px 2px 0">A guide only. Follow the maker's manual and your own conditions; dirty or hot duty needs shorter intervals.</p></div>
 </section><section class="page" id="lr">
 <h2>Inside a Liquid Ring Pump</h2>
 <p class="sub">Watch the water ring do the pumping.</p>
@@ -1036,6 +1058,42 @@ function refWatCurve(){
  var visc=interp(t,2)*1000,dens=interp(t,1);
  drawCurve("ref_wat_cv",pts,t,visc,"Water temperature (°C)","Thickness (mPa·s)");
  setT("ref_wat_tt",fmtA(t,0));setT("ref_wat_visc",fmtA(visc,3));setT("ref_wat_dens",fmtA(dens,1));
+}
+function renderBars(id,items,unit,opts){
+ var el=document.getElementById(id);if(!el)return;
+ opts=opts||{};var log=opts.log;
+ var vals=items.map(function(it){return it.v;});
+ var max=Math.max.apply(null,vals),min=Math.min.apply(null,vals);
+ function pct(v){
+  if(log){var lv=Math.log(v),lmin=Math.log(min),lmax=Math.log(max);return lmax>lmin?Math.max(4,(lv-lmin)/(lmax-lmin)*100):100;}
+  return Math.max(4,v/max*100);
+ }
+ var h="";
+ items.forEach(function(it){
+  h+='<div class="barrow"><div class="barlab">'+it.l+'</div><div class="barwrap"><div class="barfill" data-w="'+pct(it.v).toFixed(1)+'"></div></div><div class="barval">'+fmtA(it.v,it.d)+(unit?' '+unit:'')+'</div></div>';
+ });
+ el.innerHTML=h;
+ requestAnimationFrame(function(){requestAnimationFrame(function(){
+  var fills=el.querySelectorAll('.barfill');
+  for(var i=0;i<fills.length;i++)fills[i].style.width=fills[i].getAttribute('data-w')+'%';
+ });});
+}
+function renderTimeline(id,stops){
+ var el=document.getElementById(id);if(!el)return;
+ var h="";
+ stops.forEach(function(s){h+='<div class="tstop"><div class="tdot"></div><div class="twhen">'+s.w+'</div><div class="twhat">'+s.t+'</div></div>';});
+ el.innerHTML=h;
+ requestAnimationFrame(function(){requestAnimationFrame(function(){
+  var items=el.querySelectorAll('.tstop');
+  for(var i=0;i<items.length;i++)(function(it,i){setTimeout(function(){it.classList.add('on');},i*120);})(items[i],i);
+ });});
+}
+function refBarsAndTimeline(){
+ renderBars("bar_gas",[{l:"Air",v:28.97,d:2},{l:"Carbon dioxide",v:44.01,d:2},{l:"Water vapour",v:18.02,d:2},{l:"Nitrogen",v:28.01,d:2},{l:"Oxygen",v:32.00,d:2}],"g/mol");
+ renderBars("bar_rough",[{l:"Stainless steel",v:0.015,d:4},{l:"Steel",v:0.045,d:3},{l:"Galvanised",v:0.15,d:2},{l:"Plastic, smooth",v:0.0015,d:4}],"mm",{log:true});
+ renderBars("bar_width",[{l:"Half inch",v:15.8,d:1},{l:"One inch",v:26.6,d:1},{l:"Two inch",v:52.5,d:1},{l:"Three inch",v:77.9,d:1},{l:"Four inch",v:102.3,d:1},{l:"Six inch",v:154.1,d:1}],"mm");
+ renderBars("bar_loss",[{l:"Elbow, standard",v:0.75,d:2},{l:"Elbow, long",v:0.45,d:2},{l:"Tee, straight through",v:0.4,d:2},{l:"Tee, off the branch",v:1.0,d:2},{l:"Gate valve, open",v:0.15,d:2},{l:"Globe valve, open",v:10.0,d:1}],"",{log:true});
+ renderTimeline("tl_maint",[{w:"First 3–4 weeks",t:"Clean and pull the temporary inlet screen"},{w:"Every 6 months",t:"Lubricate bearings and coupling, clean the strainer"},{w:"Every 12 months",t:"Inspect bearings, replace packing, check seals"},{w:"V-belts",t:"Check tension early on, then periodically"}]);
 }
 function b(x){return "<b>"+fmtA(x)+"</b>";}
 function M(id,html){var e=document.getElementById(id);if(e)e.innerHTML=html;}
@@ -2027,6 +2085,7 @@ function show(id){
  document.getElementById("hdr_t").textContent=TT[id]||TT.home;
  document.getElementById("hdr_s").style.display=id==="home"?"":"none";
  if(window.bubMode)window.bubMode(MENUS[id]?"free":"edge");
+ if(id==="ref")refBarsAndTimeline();
  window.scrollTo(0,0);
 }
 
