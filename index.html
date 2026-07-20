@@ -690,7 +690,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="ar"><b>Where you would use it</b>On a factory or site acceptance test, working down through vacuum steps and logging each one as a row.</div>
 <div class="ar">Add rows as you go. What you type is saved on this phone, so the sheet survives closing the app.</div>
 <span class="law">Based on: liquid ring vacuum pump field test sheet layout in common industry use</span></div>
-<div class="card"><h3>Job &amp; pump details</h3><button class="exbtn" onclick="lftExportPDF()">Export PDF</button><button class="clrbtn" onclick="lftClear()">Clear this sheet</button>
+<div class="card"><h3>Job &amp; pump details</h3><button class="exbtn" onclick="ex('lft')">Insert example</button><button class="exbtn" onclick="lftExportPDF()">Export PDF</button><button class="clrbtn" onclick="lftClear()">Clear this sheet</button>
 <div class="fld"><div class="fh"><label>Company / process plant</label></div><div class="ctrl"><input type="text" id="lft_company"></div></div>
 <div class="fld"><div class="fh"><label>Pump equip No.</label></div><div class="ctrl"><input type="text" id="lft_equipno"></div></div>
 <div class="fld"><div class="fh"><label>Pump model &amp; size</label></div><div class="ctrl"><input type="text" id="lft_model"></div></div>
@@ -1741,7 +1741,13 @@ var EX={
  dt:{dt_t_n:30,dt_p1_n:20,dt_p1_r:"v",dt_p2_n:0,dt_p2_r:"g",dt_air_n:101.3},
  bp:{bp_mrpm_n:1450,bp_md_n:90,bp_pd_n:280,bp_meas_n:410},
  af:{af_n1_n:1450,af_n2_n:1750,af_q_n:1000,af_p_n:400,af_kw_n:15},
- pt:{pt_p1_q_n:900,pt_p1_v_n:0.15,pt_p2_q_n:750,pt_p2_v_n:0.30,pt_p3_q_n:550,pt_p3_v_n:0.50,pt_p4_q_n:380,pt_p4_v_n:0.65,pt_p5_q_n:180,pt_p5_v_n:0.80,pt_p6_q_n:40,pt_p6_v_n:0.92}
+ pt:{pt_p1_q_n:600,pt_p1_v_n:0.40,pt_p2_q_n:450,pt_p2_v_n:0.55,pt_p3_q_n:350,pt_p3_v_n:0.65,pt_p4_q_n:250,pt_p4_v_n:0.75,pt_p5_q_n:150,pt_p5_v_n:0.85,pt_p6_q_n:80,pt_p6_v_n:0.95},
+ lft:{lft_company:"Acme Process Plant",lft_equipno:"P-204",lft_model:"Nash 904",lft_serial:"SN-58421",lft_speed:1450,lft_sealtemp:20,lft_ambtemp:25,lft_motorspeed:1450,lft_motorpower:45,lft_motoramps:78,lft_orifdia_n:50,lft_orifdia_u:"0",lft_barometer_n:101.3,lft_barometer_u:"0",lft_vacunit:"1",lft_date:"2026-07-20",lft_by:"J. Smith",
+  lft_r1_vac_ie:500,lft_r1_vac_de:520,lft_r1_cfm_tested:250,lft_r1_cfm_new:300,lft_r1_amps:75,
+  lft_r2_vac_ie:300,lft_r2_vac_de:300,lft_r2_cfm_tested:150,lft_r2_cfm_new:200,lft_r2_amps:70,
+  lft_r3_vac_ie:150,lft_r3_vac_de:160,lft_r3_cfm_tested:80,lft_r3_cfm_new:110,lft_r3_amps:65,
+  lft_bt_de:55,lft_bt_nde:52,lft_wq_temp:22,lft_wq_cond:450,lft_wq_ds:300,lft_wq_sal:50,lft_wq_ph:7.2,
+  lft_v_de_ax:1.2,lft_v_de_h:1.5,lft_v_de_v:1.1,lft_v_nde_ax:1.0,lft_v_nde_h:1.3,lft_v_nde_v:0.9}
 };
 function ex(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(e)e.value=m[k];}recalc();}
 function clr(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(!e)continue;if(e.tagName==="SELECT"){var d=e.getAttribute("data-ref");if(d)e.value=d;}else e.value="";}recalc();}
