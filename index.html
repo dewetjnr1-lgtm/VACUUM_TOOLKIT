@@ -158,7 +158,14 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .print-sheet .lh-foot .lf3{font-size:7.5px;color:#444;}
 .print-sheet .sigcell{height:46px;}
 .print-sheet .rpt-pphoto{page-break-inside:avoid;margin:0 0 10px;}
-.print-sheet .rpt-pphoto img{width:100%;max-width:420px;display:block;margin:0 auto 4px;border:1px solid #000;}
+.print-sheet .rpt-pphoto img{width:100%;max-width:420px;max-height:175mm;object-fit:contain;display:block;margin:0 auto 4px;border:1px solid #000;}
+.print-sheet table,.print-sheet tr{page-break-inside:avoid;}
+.print-sheet .psec{page-break-after:avoid;}
+.print-sheet .pgen{page-break-inside:avoid;}
+.print-sheet .ppage{padding:10mm 9mm;page-break-after:always;}
+.print-sheet .ppage:last-child{page-break-after:auto;}
+.print-sheet .ppage.lastpage{display:flex;flex-direction:column;min-height:254mm;}
+.print-sheet .ppage.lastpage .lh-foot{margin-top:auto;}
 .rpt-ph{border:1px solid var(--line);border-radius:10px;padding:9px;margin:10px 0;background:rgba(255,255,255,.55);}
 .rpt-ph img{width:100%;border-radius:8px;display:block;margin-bottom:8px;}
 .ctrl label.chk{display:flex;align-items:center;gap:9px;font-size:14.5px;color:var(--ink);width:100%;}
@@ -167,6 +174,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
  @page{margin:0;}
  body>canvas,body>header,body>main{display:none !important;}
  .print-sheet{display:block !important;font-family:Arial,Helvetica,sans-serif;color:#000;padding:10mm 9mm;print-color-adjust:exact;-webkit-print-color-adjust:exact;}
+ .print-sheet.paged{padding:0;}
  body{background:#fff;}
 }
 .dtbl-wrap{overflow-x:auto;margin:8px 0;-webkit-overflow-scrolling:touch;}
@@ -925,7 +933,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div id="lri_photos"></div>
 </div>
 <button class="exbtn" onclick="lriExportPDF()" style="margin:6px 0 0">Export PDF</button><button class="clrbtn" onclick="lriClear()" style="margin:6px 0 0">Clear this report</button>
-</section></main><div id="lft_print" class="print-sheet"></div><div id="pt_print" class="print-sheet"></div><div id="rpt_print" class="print-sheet"></div><div id="lri_print" class="print-sheet"></div><script>"use strict";
+</section></main><div id="lft_print" class="print-sheet"></div><div id="pt_print" class="print-sheet"></div><div id="rpt_print" class="print-sheet"></div><div id="lri_print" class="print-sheet paged"></div><script>"use strict";
 var G={
  pressure:[["kilopascals (kPa)",1],["millibar (mbar)",0.1],["torr (mmHg)",0.1333224],["inches of mercury (inHg)",3.386389],["bar",100]],
  flow:[["cubic metres per hour",1],["cubic feet per minute",1.69901],["litres per second",3.6],["litres per minute",0.06],["US gallons per minute",0.2271247]],
@@ -2716,17 +2724,16 @@ function lriAny(ids){
  return false;
 }
 function lriRowPrint(n){
- var p="lri_r"+n+"_";
- var tag=fv(p+"tag")||("Pump "+n);
- var h='<div class="psec">Pump: '+tag+'</div>';
+ var p="lri_r"+n+"_",parts=[],h;
  if(lriAny([p+"make",p+"model",p+"serial",p+"year",p+"maxp_n",p+"maxt",p+"hours"])){
-  h+='<table><tr><td class="lab">Manufacturer</td><td>'+dash(fv(p+"make"))+'</td><td class="lab">Model</td><td>'+dash(fv(p+"model"))+'</td></tr>';
+  h='<table><tr><td class="lab">Manufacturer</td><td>'+dash(fv(p+"make"))+'</td><td class="lab">Model</td><td>'+dash(fv(p+"model"))+'</td></tr>';
   h+='<tr><td class="lab">Serial No.</td><td>'+dash(fv(p+"serial"))+'</td><td class="lab">Year of manufacture</td><td>'+dash(fv(p+"year"))+'</td></tr>';
   h+='<tr><td class="lab">Max working pressure</td><td>'+dash(fUnitVal(p+"maxp_n",p+"maxp_u"))+'</td><td class="lab">Max working temp</td><td>'+dash(fNum(p+"maxt","&deg;C"))+'</td></tr>';
   h+='<tr><td class="lab">Running hours</td><td colspan="3">'+dash(fNum(p+"hours","h"))+'</td></tr></table>';
+  parts.push(h);
  }
  if(lriAny([p+"seal_type",p+"seal_cond",p+"seal_notes",p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp",p+"brg_notes"])){
-  h+='<table><tr><th colspan="4">Seals &amp; bearings</th></tr>';
+  h='<table><tr><th colspan="4">Seals &amp; bearings</th></tr>';
   h+='<tr><td class="lab">Seal type</td><td>'+dash(fSelText(p+"seal_type"))+'</td><td class="lab">Seal condition</td><td>'+dash(fSelText(p+"seal_cond"))+'</td></tr>';
   if(fv(p+"seal_notes"))h+='<tr><td class="lab" colspan="4">Seal notes: '+fv(p+"seal_notes")+'</td></tr>';
   h+='<tr><td class="lab">Bearing type</td><td>'+dash(fSelText(p+"brg_type"))+'</td><td class="lab">Bearing condition</td><td>'+dash(fSelText(p+"brg_cond"))+'</td></tr>';
@@ -2736,16 +2743,17 @@ function lriRowPrint(n){
   }
   if(fv(p+"brg_notes"))h+='<tr><td class="lab" colspan="4">Bearing notes: '+fv(p+"brg_notes")+'</td></tr>';
   h+='</table>';
+  parts.push(h);
  }
  if(lriAny([p+"bore_corr",p+"bore_cav",p+"bore_notes"])){
-  h+='<table><tr><th colspan="4">Borescope inspection of casing</th></tr>';
+  h='<table><tr><th colspan="4">Borescope inspection of casing</th></tr>';
   h+='<tr><td class="lab">Corrosion</td><td>'+dash(fSelText(p+"bore_corr"))+'</td><td class="lab">Cavitation damage</td><td>'+dash(fSelText(p+"bore_cav"))+'</td></tr>';
   if(fv(p+"bore_notes"))h+='<tr><td class="lab" colspan="4">Borescope notes: '+fv(p+"bore_notes")+'</td></tr>';
   h+='</table>';
+  parts.push(h);
  }
- var isBelt=gs(p+"drive_type")==="belt";
  if(lriAny([p+"drive_type",p+"coup_cond",p+"coup_align",p+"coup_bolts",p+"coup_notes",p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_span",p+"belt_defl",p+"belt_guard",p+"belt_notes"])){
-  h+='<table><tr><th colspan="4">Drive'+(fSelText(p+"drive_type")?": "+fSelText(p+"drive_type"):"")+'</th></tr>';
+  h='<table><tr><th colspan="4">Drive'+(fSelText(p+"drive_type")?": "+fSelText(p+"drive_type"):"")+'</th></tr>';
   if(lriAny([p+"coup_cond",p+"coup_align",p+"coup_bolts",p+"coup_notes"])){
    h+='<tr><td class="lab">Coupling condition</td><td>'+dash(fSelText(p+"coup_cond"))+'</td><td class="lab">Alignment</td><td>'+dash(fSelText(p+"coup_align"))+'</td></tr>';
    h+='<tr><td class="lab">System bolts torqued</td><td colspan="3">'+chkYN(p+"coup_bolts")+(fv(p+"coup_notes")?' &mdash; '+fv(p+"coup_notes"):"")+'</td></tr>';
@@ -2758,14 +2766,16 @@ function lriRowPrint(n){
    if(fv(p+"belt_notes"))h+='<tr><td class="lab" colspan="4">Belt notes: '+fv(p+"belt_notes")+'</td></tr>';
   }
   h+='</table>';
+  parts.push(h);
  }
  if(lriAny([p+"cooler_cond",p+"cooler_bolts",p+"cooler_notes",p+"sep_lining",p+"sep_bolts",p+"sep_notes"])){
-  h+='<table><tr><th colspan="4">Seal water cooler &amp; separator tank</th></tr>';
+  h='<table><tr><th colspan="4">Seal water cooler &amp; separator tank</th></tr>';
   h+='<tr><td class="lab">Cooler condition</td><td>'+dash(fSelText(p+"cooler_cond"))+'</td><td class="lab">Cooler bolts tight &amp; greased</td><td>'+chkYN(p+"cooler_bolts")+'</td></tr>';
   if(fv(p+"cooler_notes"))h+='<tr><td class="lab" colspan="4">Cooler notes: '+fv(p+"cooler_notes")+'</td></tr>';
   h+='<tr><td class="lab">Separator lining</td><td>'+dash(fSelText(p+"sep_lining"))+'</td><td class="lab">Separator bolts torqued</td><td>'+chkYN(p+"sep_bolts")+'</td></tr>';
   if(fv(p+"sep_notes"))h+='<tr><td class="lab" colspan="4">Separator notes: '+fv(p+"sep_notes")+'</td></tr>';
   h+='</table>';
+  parts.push(h);
  }
  var mRows="";
  if(lriAny([p+"t_amb",p+"t_suc",p+"t_dis",p+"t_case",p+"t_motor"])){
@@ -2791,10 +2801,13 @@ function lriRowPrint(n){
   }
  }
  if(vibAny)mRows+='<tr><td class="lab" colspan="4">'+spanText(p+"vib_note")+'</td></tr>';
- if(mRows)h+='<table><tr><th colspan="4">Measurements</th></tr>'+mRows+'</table>';
- h+='<table><tr><td class="lab">Overall condition</td><td>'+lriSevCell([p+"condition"])+'</td><td class="lab">Action priority</td><td>'+lriSevCell([p+"priority"])+'</td></tr></table>';
+ if(mRows)parts.push('<table><tr><th colspan="4">Measurements</th></tr>'+mRows+'</table>');
+ h='<table><tr><td class="lab">Overall condition</td><td>'+lriSevCell([p+"condition"])+'</td><td class="lab">Action priority</td><td>'+lriSevCell([p+"priority"])+'</td></tr></table>';
  h+='<div class="pgen">'+(fv(p+"corrective")?fv(p+"corrective").replace(/\n/g,"<br>"):"No corrective action noted.")+'</div>';
- return h;
+ parts.push(h);
+ var tag=fv(p+"tag")||("Pump "+n);
+ parts[0]='<div class="psec">Pump: '+tag+'</div>'+parts[0];
+ return parts;
 }
 function lriSummaryPrint(){
  var h='<div class="psec">Condition at a glance</div>';
@@ -2823,8 +2836,13 @@ function lriLetterheadFoot(){
  '<p class="lf3">Argentina Australia Austria Bangladesh Belgium Bolivia Brazil Canada Chile China Colombia Czech Republic Denmark Estonia Finland France Germany Hungary India Ireland Israel Italy Japan Korea Malaysia Mexico Netherlands New Zealand Norway Peru Poland Portugal Romania Russia Singapore South Africa Spain Sweden Switzerland Taiwan Thailand Turkey United Arab Emirates United Kingdom United States of America</p>'+
  '</div>';
 }
-function lriBuildPrint(){
- var h="";
+function lriPhotoPrint(i){
+ var cap=LRI_PHOTOS[i].caption;
+ return '<div class="rpt-pphoto"><img src="'+LRI_PHOTOS[i].src+'"><div class="pgen">'+(cap?pEsc(cap).replace(/\n/g,"<br>"):"Photo "+(i+1))+'</div></div>';
+}
+function lriPrintBlocks(){
+ var B=[],h,n,i;
+ h="";
  if(lriLetterheadOn())h+='<div class="lh-head"><img src="'+LRI_LOGO+'"></div>';
  else if(fv("lri_company"))h+='<p class="pcompany">'+fv("lri_company")+'</p>';
  h+='<h1>LIQUID RING VACUUM PUMP INSPECTION REPORT</h1>';
@@ -2833,31 +2851,73 @@ function lriBuildPrint(){
  h+='<tr><td class="lab">Quote / job ref</td><td>'+dash(fv("lri_ref"))+'</td><td class="lab">Customer order / PO No.</td><td>'+dash(fv("lri_po"))+'</td></tr>';
  h+='<tr><td class="lab">Scope of service</td><td>'+dash(fSelText("lri_scope"))+'</td><td class="lab">Inspection date</td><td>'+dash(fDate("lri_date"))+'</td></tr>';
  h+='<tr><td class="lab">Technician(s)</td><td colspan="3">'+dash(fv("lri_by"))+'</td></tr></table>';
- h+=lriSummaryPrint();
- h+='<div class="psec">Findings &amp; recommendations (overall)</div><div class="pgen">'+(fv("lri_findings")?fv("lri_findings").replace(/\n/g,"<br>"):"&mdash;")+'</div>';
- for(var n=1;n<=LRI_ROWCOUNT;n++)h+=lriRowPrint(n);
+ B.push(h);
+ B.push(lriSummaryPrint());
+ B.push('<div class="psec">Findings &amp; recommendations (overall)</div><div class="pgen">'+(fv("lri_findings")?fv("lri_findings").replace(/\n/g,"<br>"):"&mdash;")+'</div>');
+ for(n=1;n<=LRI_ROWCOUNT;n++)B=B.concat(lriRowPrint(n));
  if(fv("lri_followup")||fv("lri_nextdate"))
-  h+='<table><tr><td class="lab">Follow-up required</td><td>'+dash(fv("lri_followup"))+'</td><td class="lab">Next inspection due</td><td>'+dash(fDate("lri_nextdate"))+'</td></tr></table>';
+  B.push('<table><tr><td class="lab">Follow-up required</td><td>'+dash(fv("lri_followup"))+'</td><td class="lab">Next inspection due</td><td>'+dash(fDate("lri_nextdate"))+'</td></tr></table>');
  if(LRI_PHOTOS.length){
-  h+='<div class="psec">Photos</div>';
-  for(var i=0;i<LRI_PHOTOS.length;i++){
-   var cap=LRI_PHOTOS[i].caption;
-   h+='<div class="rpt-pphoto"><img src="'+LRI_PHOTOS[i].src+'"><div class="pgen">'+(cap?pEsc(cap).replace(/\n/g,"<br>"):"Photo "+(i+1))+'</div></div>';
-  }
+  B.push('<div class="psec">Photos</div>'+lriPhotoPrint(0));
+  for(i=1;i<LRI_PHOTOS.length;i++)B.push(lriPhotoPrint(i));
  }
- h+='<div class="psec">Sign-off</div>';
+ h='<div class="psec">Sign-off</div>';
  h+='<table><tr><th>Technician</th><th>Client / site representative</th></tr>';
  h+='<tr><td class="sigcell"></td><td class="sigcell"></td></tr>';
  h+='<tr><td>Name &amp; date: '+dash(fv("lri_by"))+(fDate("lri_date")?" &middot; "+fDate("lri_date"):"")+'</td><td>Name &amp; date:</td></tr></table>';
  if(lriLetterheadOn())h+=lriLetterheadFoot();
- return h;
+ B.push(h);
+ return B;
+}
+function lriBuildPrint(){return lriPrintBlocks().join("");}
+// Pack the report's blocks into explicit A4 pages so nothing splits mid-table or
+// runs to the paper edge. Blocks are measured offscreen at print width first; a
+// block only moves to the next page whole. 975px keeps a safe content height on
+// both A4 and US Letter paper.
+function lriPaginate(blocks,cb){
+ var meas=document.createElement("div");
+ meas.className="print-sheet";
+ meas.style.cssText="display:block;position:absolute;left:-10000px;top:0;width:192mm;padding:0;background:#fff;";
+ var i,w;
+ for(i=0;i<blocks.length;i++){
+  w=document.createElement("div");
+  w.style.overflow="hidden";
+  w.innerHTML=blocks[i];
+  meas.appendChild(w);
+ }
+ document.body.appendChild(meas);
+ var imgs=meas.getElementsByTagName("img"),pending=imgs.length,fired=false;
+ function fin(){
+  if(fired)return;
+  fired=true;
+  var pageH=975,pages=[],cur="",curH=0,j,bh;
+  for(j=0;j<blocks.length;j++){
+   bh=meas.children[j].offsetHeight;
+   if(curH>0&&curH+bh>pageH){pages.push(cur);cur="";curH=0;}
+   cur+=blocks[j];curH+=bh;
+  }
+  if(cur)pages.push(cur);
+  document.body.removeChild(meas);
+  var out="";
+  for(j=0;j<pages.length;j++)out+='<div class="ppage'+(j===pages.length-1?" lastpage":"")+'">'+pages[j]+'</div>';
+  cb(out);
+ }
+ function dec(){pending--;if(pending<=0)fin();}
+ if(!pending){fin();return;}
+ for(i=0;i<imgs.length;i++){
+  if(imgs[i].complete)dec();
+  else{imgs[i].onload=dec;imgs[i].onerror=dec;}
+ }
+ setTimeout(fin,800);
 }
 function lriExportPDF(){
  var el=document.getElementById("lri_print");
  if(!el)return;
  lriSaveCaptions();
- el.innerHTML=lriBuildPrint();
- window.print();
+ lriPaginate(lriPrintBlocks(),function(html){
+  el.innerHTML=html;
+  window.print();
+ });
 }
 window.lriAddRow=lriAddRow;window.lriRemoveRow=lriRemoveRow;window.lriRemovePhoto=lriRemovePhoto;window.lriClear=lriClear;window.lriExportPDF=lriExportPDF;
 
