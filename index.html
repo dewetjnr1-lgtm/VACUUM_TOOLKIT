@@ -3265,23 +3265,39 @@ function pbNormalizePhoto(src){
   img.src=src;
  });
 }
-function pbPhoto(pb,src,caption,dims){
- var maxW=Math.min(PB_W*0.72,120),maxH=150;
- var ratio=dims.w/dims.h||1.33,w=maxW,h=w/ratio;
- if(h>maxH){h=maxH;w=h*ratio;}
- var pad=1.6,fs=8.3,lh=fs*0.41;
- pb.doc.setFont("helvetica","normal");pb.doc.setFontSize(fs);
- var capLines=pbWrap(pb.doc,caption||"Photo",PB_W-2*pad);
- var capH=Math.max(6,capLines.length*lh+2*pad);
- pbEnsure(pb,h+capH+2);
- var x0=PB_M+(PB_W-w)/2;
- var fmt=/^data:image\/png/i.test(src)?"PNG":"JPEG";
- pb.doc.addImage(src,fmt,x0,pb.y,w,h);
- pb.doc.setDrawColor(0,0,0);pb.doc.setLineWidth(0.15);
- pb.doc.rect(x0,pb.y,w,h);
- pb.y+=h+1.5;
- pbRow(pb,[{x:PB_M,w:PB_W,text:caption||"Photo"}]);
- pb.y+=2;
+// Draws one row of up to 2 photos side by side, each with its own caption
+// underneath, sized so 3 rows (6 photos) fit comfortably on a page. items is
+// an array of 1 or 2 {src,caption,w,h}; a single item takes the left half only.
+function pbPhotoRow(pb,items){
+ var gap=6,cw=(PB_W-gap)/2,maxH=64,pad=1.6,fs=8,lh=fs*0.41,i,it,ratio,w,h;
+ var cellW=[],cellH=[],capLines=[],capH=[],rowH=0,t;
+ for(i=0;i<items.length;i++){
+  it=items[i];
+  ratio=(it.w&&it.h)?it.w/it.h:1.33;
+  w=cw;h=w/ratio;
+  if(h>maxH){h=maxH;w=h*ratio;}
+  cellW.push(w);cellH.push(h);
+  pb.doc.setFont("helvetica","normal");pb.doc.setFontSize(fs);
+  var lines=pbWrap(pb.doc,it.caption||"Photo",cw-2*pad);
+  capLines.push(lines);
+  capH.push(Math.max(6,lines.length*lh+2*pad));
+ }
+ for(i=0;i<items.length;i++){t=cellH[i]+1.5+capH[i];if(t>rowH)rowH=t;}
+ pbEnsure(pb,rowH);
+ var y0=pb.y;
+ for(i=0;i<items.length;i++){
+  var x0=PB_M+i*(cw+gap),ix=x0+(cw-cellW[i])/2;
+  var fmt=/^data:image\/png/i.test(items[i].src)?"PNG":"JPEG";
+  pb.doc.addImage(items[i].src,fmt,ix,y0,cellW[i],cellH[i]);
+  pb.doc.setDrawColor(0,0,0);pb.doc.setLineWidth(0.15);
+  pb.doc.rect(ix,y0,cellW[i],cellH[i]);
+  var capY=y0+cellH[i]+1.5;
+  pb.doc.rect(x0,capY,cw,capH[i]);
+  pb.doc.setFont("helvetica","normal");pb.doc.setFontSize(fs);
+  pb.doc.setTextColor(0,0,0);
+  for(var j=0;j<capLines[i].length;j++)pb.doc.text(capLines[i][j],x0+pad,capY+pad+lh*0.78+j*lh);
+ }
+ pb.y=y0+rowH+4;
 }
 function pbLetterheadFooter(pb){
  var fs1=7,fs2=6.2,fs3=5.6;
@@ -3427,7 +3443,11 @@ function lriExportPDF(){
    pbPairRow(pb,"Follow-up required",rv("lri_followup"),"Next inspection due",rDate("lri_nextdate"));
   if(photos.length){
    pbSecHead(pb,"Photos");
-   for(var i=0;i<photos.length;i++)pbPhoto(pb,norm[i].src,photos[i].caption||("Photo "+(i+1)),norm[i]);
+   for(var i=0;i<photos.length;i+=2){
+    var pair=[{src:norm[i].src,caption:photos[i].caption||("Photo "+(i+1)),w:norm[i].w,h:norm[i].h}];
+    if(i+1<photos.length)pair.push({src:norm[i+1].src,caption:photos[i+1].caption||("Photo "+(i+2)),w:norm[i+1].w,h:norm[i+1].h});
+    pbPhotoRow(pb,pair);
+   }
   }
   pbSignoff(pb,rv("lri_by"),rDate("lri_date"));
   if(letterheadOn)pbLetterheadFooter(pb);
