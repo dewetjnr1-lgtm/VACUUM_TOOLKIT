@@ -156,6 +156,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .print-sheet .psec{page-break-after:avoid;}
 .print-sheet .pgen{page-break-inside:avoid;}
 .rpt-ph{border:1px solid var(--line);border-radius:10px;padding:9px;margin:10px 0;background:rgba(255,255,255,.55);}
+.exitem{border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin:8px 0;background:rgba(255,255,255,.55);}
 .rpt-ph img{width:100%;border-radius:8px;display:block;margin-bottom:8px;}
 .ctrl label.chk{display:flex;align-items:center;gap:9px;font-size:14.5px;color:var(--ink);width:100%;}
 .ctrl label.chk input{width:19px;height:19px;flex:0 0 auto;}
@@ -896,9 +897,10 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="ar"><b>Why it matters</b>A client's basic inspection quote usually names three things: seals, bearings, and a borescope of the casing for corrosion or cavitation. This sheet captures exactly that, in the order the quote lists it, so nothing gets left out of the report &mdash; and everything you write here drops straight into a client-ready PDF.</div>
 <div class="ar"><b>Beyond the client's scope</b>Extra checks are included below &mdash; gland packing detail (drip rate against the healthy 45&ndash;60 drops a minute, rings remaining, sleeve condition), general walk-up checks (rotation, hold-down bolts, guards, strainer, hoses), the drive (coupling or V-belts, with a belt tension rule of thumb), a temperature survey around the pump and up and down stream, measured vacuum against rated duty, motor current against nameplate FLA, seal water flow and temperature rise, and a full vibration survey (pump and motor, both ends, three directions) &mdash; because they cost almost nothing to take while you're there and often explain why a pump has lost performance even when the seals and bearings look fine.</div>
 <div class="ar"><b>Blank means left out</b>Only the sections you actually fill in appear on the exported PDF, so a quick seals-and-bearings job prints as a tight report and a full survey prints as the works. Skip anything that wasn't part of the job.</div>
+<div class="ar"><b>Something not on the list?</b>Every pump has an "Additional checks" box near the bottom &mdash; add as many as you like, each with what you checked, a condition, and an optional value or reading. Good for anything that comes up on the day: body tie rod torque, coupling bolt torque, base plate condition, whatever it is. There's no single industry-standard torque figure for tie rods or coupling bolts &mdash; both are set by the pump or coupling maker's own manual &mdash; so this is a free space to log whatever number you actually used.</div>
 <div class="ar">Everything typed here, including photos, is saved on this phone as you go, so the sheet survives closing the app. Export PDF builds the finished PDF file directly and downloads it &mdash; there's no print screen to fight with, and no browser web-address or date stamped on the page.</div>
 </div>
-<div class="card"><h3>Job details</h3><button class="exbtn" onclick="ex('lri')">Insert example</button><button class="exbtn" onclick="lriExportPDF()">Export PDF</button><button class="clrbtn" onclick="lriClear()">Clear this report</button>
+<div class="card"><h3>Job details</h3><button class="exbtn" onclick="lriInsertExample()">Insert example</button><button class="exbtn" onclick="lriExportPDF()">Export PDF</button><button class="clrbtn" onclick="lriClear()">Clear this report</button>
 <div class="fld"><div class="fh"><label>Your company (shown on the report header)</label></div><div class="ctrl"><input type="text" id="lri_company"></div></div>
 <div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="lri_letterhead"> Print on the Busch letterhead (logo header and company footer, instead of the plain company line)</label></div></div>
 <div class="fld"><div class="fh"><label>Client</label></div><div class="ctrl"><input type="text" id="lri_client"></div></div>
@@ -2447,6 +2449,7 @@ var EX={
   lri_r1_sw_flow:120,lri_r1_sw_temp_in:22,lri_r1_sw_temp_out:28,
   lri_r1_vib_pde_ax:1.4,lri_r1_vib_pde_h:1.8,lri_r1_vib_pde_v:1.2,lri_r1_vib_pnde_ax:1.1,lri_r1_vib_pnde_h:1.5,lri_r1_vib_pnde_v:1.0,
   lri_r1_vib_mde_ax:1.0,lri_r1_vib_mde_h:1.2,lri_r1_vib_mde_v:0.9,lri_r1_vib_mnde_ax:0.8,lri_r1_vib_mnde_h:1.1,lri_r1_vib_mnde_v:0.9,
+  lri_r1_ex1_label:"Body tie rod torque",lri_r1_ex1_cond:"good",lri_r1_ex1_value:"45 Nm (per NASH IOM)",lri_r1_ex1_notes:"All tie rods checked and torqued to spec, no leaks at the casing joint.",
   lri_r1_condition:"good",lri_r1_priority:"routine",lri_r1_corrective:"No immediate action required. Re-inspect at next scheduled PM.",
   lri_r2_tag:"Hogging Vacuum Pump B",lri_r2_make:"NASH",lri_r2_model:"2BE1 (per nameplate)",lri_r2_serial:"e.g. 123457",lri_r2_year:2015,lri_r2_maxp_n:6.5,lri_r2_maxp_u:"4",lri_r2_maxt:80,
   lri_r2_seal_type:"mech",lri_r2_seal_cond:"poor",lri_r2_seal_notes:"Visible seal face weepage, recommend replacement at next opportunity.",
@@ -2462,6 +2465,7 @@ var EX={
   lri_r2_sw_flow:115,lri_r2_sw_temp_in:23,lri_r2_sw_temp_out:31,
   lri_r2_vib_pde_ax:3.2,lri_r2_vib_pde_h:3.6,lri_r2_vib_pde_v:2.9,lri_r2_vib_pnde_ax:2.6,lri_r2_vib_pnde_h:2.9,lri_r2_vib_pnde_v:2.4,
   lri_r2_vib_mde_ax:2.1,lri_r2_vib_mde_h:2.4,lri_r2_vib_mde_v:2.0,lri_r2_vib_mnde_ax:1.8,lri_r2_vib_mnde_h:2.0,lri_r2_vib_mnde_v:1.7,
+  lri_r2_ex1_label:"Coupling bolts",lri_r2_ex1_cond:"fair",lri_r2_ex1_value:"Re-torqued to 30 Nm",lri_r2_ex1_notes:"One bolt found finger-loose; re-torqued to the coupling maker's spec and match-marked.",
   lri_r2_condition:"poor",lri_r2_priority:"shutdown",lri_r2_corrective:"Replace mechanical seal and clean seal water cooler at next planned shutdown. Re-tension the belts now. Continue to monitor bearing DE temperature, discharge temperature and vibration."}
 };
 function ex(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(e)e.value=m[k];}recalc();}
@@ -2898,6 +2902,10 @@ function lriRowHTML(n){
  '<p style="font-size:12px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px">Motor, non-drive end</p>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Axial</span><div class="ctrl"><input type="number" id="'+p+'vib_mnde_ax" placeholder="number"></div></div><div class="mgf"><span class="mlab">Horizontal</span><div class="ctrl"><input type="number" id="'+p+'vib_mnde_h" placeholder="number"></div></div><div class="mgf"><span class="mlab">Vertical</span><div class="ctrl"><input type="number" id="'+p+'vib_mnde_v" placeholder="number"></div></div></div>'+
  '<p id="'+p+'vib_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">General guidance per ISO 10816-3 vibration severity zones.</p>'+
+ '<div class="tp-num">Additional checks</div>'+
+ '<p style="font-size:12px;color:var(--soft);margin:0 0 6px">Anything you pick up on site that isn\'t covered above &mdash; tie rod torque, base plate, oil level, whatever comes up. Add as many as you need.</p>'+
+ '<div id="lri_r'+n+'_extras"></div>'+
+ '<button class="clrbtn" onclick="lriAddExtra('+n+')" style="margin:2px 0 0">Add a check</button> <button class="clrbtn" onclick="lriRemoveExtra('+n+')">Remove last</button>'+
  '<div class="tp-num">Overall</div>'+
  '<div class="fld"><div class="fh"><label>Overall pump condition</label></div><div class="ctrl"><select id="'+p+'condition">'+LRI_OPT_COND+'</select></div></div>'+
  '<div class="fld"><div class="fh"><label>Action priority</label></div><div class="ctrl"><select id="'+p+'priority">'+LRI_OPT_PRIORITY+'</select></div></div>'+
@@ -2937,10 +2945,59 @@ function lriRemoveRow(){
  if(!confirm("Remove Pump "+LRI_ROWCOUNT+" and all its data?"))return;
  var el=document.getElementById("lri_row"+LRI_ROWCOUNT);
  if(el)el.remove();
+ delete LRI_EXTRA_COUNT[LRI_ROWCOUNT];
  LRI_ROWCOUNT--;
  try{localStorage.setItem(LRI_RC_KEY,String(LRI_ROWCOUNT));}catch(err){}
  recalc();
 }
+// Additional checks: a free-form, growable list per pump for anything not covered by
+// the fixed fields above -- tie rod torque, base plate condition, whatever comes up
+// on site. LRI_EXTRA_COUNT maps pump index -> how many extra rows it has.
+var LRI_EX_RC_KEY="vt_lri_exrc";
+var LRI_EXTRA_COUNT={};
+function lriExtraHTML(n,m){
+ var p="lri_r"+n+"_ex"+m+"_";
+ return '<div class="exitem" id="lri_r'+n+'_ex'+m+'">'+
+  '<div class="fld" style="margin-top:0"><div class="fh"><label>What you checked</label></div><div class="ctrl"><input type="text" id="'+p+'label" placeholder="e.g. Body tie rod torque, base plate grouting..."></div></div>'+
+  '<div class="mgrid"><div class="mgf"><span class="mlab">Condition</span><div class="ctrl"><select id="'+p+'cond">'+LRI_OPT_COND+'</select></div></div><div class="mgf"><span class="mlab">Value / reading (optional)</span><div class="ctrl"><input type="text" id="'+p+'value" placeholder="e.g. 45 Nm"></div></div></div>'+
+  '<div class="fld"><div class="fh"><label>Notes</label></div><div class="ctrl"><textarea id="'+p+'notes" rows="2"></textarea></div></div>'+
+ '</div>';
+}
+function lriExtraFields(n,m){
+ var p="lri_r"+n+"_ex"+m+"_";
+ return [p+"label",p+"cond",p+"value",p+"notes"];
+}
+function lriAddExtra(n,save){
+ LRI_EXTRA_COUNT[n]=(LRI_EXTRA_COUNT[n]||0)+1;
+ var m=LRI_EXTRA_COUNT[n];
+ var wrap=document.createElement("div");
+ wrap.innerHTML=lriExtraHTML(n,m);
+ populateSelects(wrap);
+ var container=document.getElementById("lri_r"+n+"_extras");
+ if(container)container.appendChild(wrap.firstChild);
+ if(save!==false){lriSaveExtraCounts();recalc();}
+}
+function lriRemoveExtra(n){
+ var m=LRI_EXTRA_COUNT[n]||0;
+ if(m<=0)return;
+ var el=document.getElementById("lri_r"+n+"_ex"+m);
+ if(el)el.remove();
+ LRI_EXTRA_COUNT[n]=m-1;
+ lriSaveExtraCounts();
+ recalc();
+}
+function lriSaveExtraCounts(){
+ try{localStorage.setItem(LRI_EX_RC_KEY,JSON.stringify(LRI_EXTRA_COUNT));}catch(err){}
+}
+// Insert example needs at least one additional-check row per pump to exist before
+// the generic ex() can fill in its demo values, since growable rows aren't in the
+// DOM until something adds them.
+function lriInsertExample(){
+ if((LRI_EXTRA_COUNT[1]||0)<1)lriAddExtra(1,false);
+ if((LRI_EXTRA_COUNT[2]||0)<1)lriAddExtra(2,false);
+ ex("lri");
+}
+window.lriAddExtra=lriAddExtra;window.lriRemoveExtra=lriRemoveExtra;window.lriInsertExample=lriInsertExample;
 function lriRowCalc(n){
  var p="lri_r"+n+"_";
  var dripEl=document.getElementById(p+"seal_drip_note");
@@ -3052,9 +3109,13 @@ function lriSaveCaptions(){
  }
 }
 function lriSave(){
- var o={},i,e,n,j,f;
+ var o={},i,e,n,j,f,m,ec;
  for(i=0;i<LRI_HEADER.length;i++){e=document.getElementById(LRI_HEADER[i]);if(!e)continue;o[LRI_HEADER[i]]=e.type==="checkbox"?e.checked:e.value;}
- for(n=1;n<=LRI_ROWCOUNT;n++){f=lriRowFields(n);for(j=0;j<f.length;j++){e=document.getElementById(f[j]);if(!e)continue;o[f[j]]=e.type==="checkbox"?e.checked:e.value;}}
+ for(n=1;n<=LRI_ROWCOUNT;n++){
+  f=lriRowFields(n);for(j=0;j<f.length;j++){e=document.getElementById(f[j]);if(!e)continue;o[f[j]]=e.type==="checkbox"?e.checked:e.value;}
+  ec=LRI_EXTRA_COUNT[n]||0;
+  for(m=1;m<=ec;m++){f=lriExtraFields(n,m);for(j=0;j<f.length;j++){e=document.getElementById(f[j]);if(!e)continue;o[f[j]]=e.value;}}
+ }
  o.photos=LRI_PHOTOS;
  var warn=document.getElementById("lri_warn");
  try{localStorage.setItem(LRI_KEY,JSON.stringify(o));if(warn)warn.style.display="none";}
@@ -3066,19 +3127,31 @@ function lriLoad(){
  if(rc<1)rc=2;
  var i;
  for(i=0;i<rc;i++)lriAddRow(false);
+ var savedEx={};
+ try{savedEx=JSON.parse(localStorage.getItem(LRI_EX_RC_KEY)||"{}")||{};}catch(err){savedEx={};}
+ var n,m,ec;
+ for(n=1;n<=LRI_ROWCOUNT;n++){ec=+savedEx[n]||0;for(m=1;m<=ec;m++)lriAddExtra(n,false);}
  var o={};
  try{o=JSON.parse(localStorage.getItem(LRI_KEY)||"{}")||{};}catch(err){o={};}
- var e,n,j,f;
+ var e,j,f;
  for(i=0;i<LRI_HEADER.length;i++){e=document.getElementById(LRI_HEADER[i]);if(!e||o[LRI_HEADER[i]]===undefined)continue;if(e.type==="checkbox")e.checked=!!o[LRI_HEADER[i]];else e.value=o[LRI_HEADER[i]];}
- for(n=1;n<=LRI_ROWCOUNT;n++){f=lriRowFields(n);for(j=0;j<f.length;j++){e=document.getElementById(f[j]);if(!e||o[f[j]]===undefined)continue;if(e.type==="checkbox")e.checked=!!o[f[j]];else e.value=o[f[j]];}}
+ for(n=1;n<=LRI_ROWCOUNT;n++){
+  f=lriRowFields(n);for(j=0;j<f.length;j++){e=document.getElementById(f[j]);if(!e||o[f[j]]===undefined)continue;if(e.type==="checkbox")e.checked=!!o[f[j]];else e.value=o[f[j]];}
+  ec=LRI_EXTRA_COUNT[n]||0;
+  for(m=1;m<=ec;m++){f=lriExtraFields(n,m);for(j=0;j<f.length;j++){e=document.getElementById(f[j]);if(!e||o[f[j]]===undefined)continue;e.value=o[f[j]];}}
+ }
  LRI_PHOTOS=Array.isArray(o.photos)?o.photos:[];
  lriRenderPhotos();
 }
 function lriClear(){
  if(!confirm("Clear the whole inspection report, including photos?"))return;
- var i,e,n,j,f;
+ var i,e,n,j,f,m,ec;
  for(i=0;i<LRI_HEADER.length;i++){e=document.getElementById(LRI_HEADER[i]);if(!e)continue;if(e.type==="checkbox")e.checked=false;else e.value="";}
- for(n=1;n<=LRI_ROWCOUNT;n++){f=lriRowFields(n);for(j=0;j<f.length;j++){e=document.getElementById(f[j]);if(!e)continue;if(e.type==="checkbox")e.checked=false;else e.value="";}}
+ for(n=1;n<=LRI_ROWCOUNT;n++){
+  f=lriRowFields(n);for(j=0;j<f.length;j++){e=document.getElementById(f[j]);if(!e)continue;if(e.type==="checkbox")e.checked=false;else e.value="";}
+  ec=LRI_EXTRA_COUNT[n]||0;
+  for(m=1;m<=ec;m++){f=lriExtraFields(n,m);for(j=0;j<f.length;j++){e=document.getElementById(f[j]);if(!e)continue;e.value="";}}
+ }
  LRI_PHOTOS=[];
  lriRenderPhotos();
  try{localStorage.removeItem(LRI_KEY);}catch(err){}
@@ -3473,6 +3546,20 @@ function pbDrawPump(pb,n){
    }
   }
   if(vibAny)pbNoteRow(pb,rSpan(p+"vib_note"));
+  pbGap(pb,3);
+ }
+ var exCount=LRI_EXTRA_COUNT[n]||0,exAny=false,ei;
+ for(ei=1;ei<=exCount;ei++){if(lriAny(lriExtraFields(n,ei))){exAny=true;break;}}
+ if(exAny){
+  pbHeaderRow(pb,"Additional checks");
+  for(ei=1;ei<=exCount;ei++){
+   var ep="lri_r"+n+"_ex"+ei+"_";
+   if(!lriAny(lriExtraFields(n,ei)))continue;
+   var es=lriSevOf(ep+"cond");
+   pbPairRow(pb,rv(ep+"label")||("Check "+ei),rSelText(ep+"cond"),"Value / reading",rv(ep+"value"),
+    es<0?null:PB_SEV_RGB[es]);
+   if(rv(ep+"notes"))pbNoteRow(pb,"Notes: "+rv(ep+"notes"));
+  }
   pbGap(pb,3);
  }
  var condSev=lriSevOf(p+"condition"),prioSev=lriSevOf(p+"priority");
