@@ -237,6 +237,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <button class="bub c4" onclick="show('mav')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15.5a8 8 0 0 1 16 0"/><path d="M12 15.5 15.5 10"/><circle cx="12" cy="15.5" r="1.4"/><path d="M19.5 19.5 21 21M18 18l1 1" opacity=".6"/></svg></span><span>Deepest Vacuum You Can Pull</span></button>
 <button class="bub c4" onclick="show('dl')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3.5" width="12" height="5" rx="1.5"/><path d="M10 8.5v10.5M14 8.5v10.5"/><path d="M10 19h4M8 21h8" opacity=".6"/><path d="M12 11v5" stroke-dasharray="2 2"/></svg></span><span>Drop-Leg Height Check</span></button>
 <button class="bub c4" onclick="tsJump('cy0')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4.2 21 19.5H3Z"/><circle cx="8.5" cy="16" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="13.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.5" cy="16.5" r="1.1" fill="currentColor" stroke="none"/></svg></span><span>Carryover Fault-Finder</span></button>
+<button class="bub c4" onclick="show('vl')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M3 8.5h18M3 15.5h18"/><path d="M6 12h1M10 11.5h1M14 12.5h1M18 12h.5" opacity=".7"/><path d="M4.5 8.5 3 6M19.5 15.5 21 18" opacity=".5"/></svg></span><span>Vacuum Line Loss</span></button>
 </div>
 </section><section class="page" id="learn">
 <h2>Learn the Gas Laws</h2>
@@ -819,6 +820,32 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <svg id="dl_pic" viewBox="0 0 360 225" style="width:100%;height:auto;display:block;margin-top:8px"></svg></div>
 <div class="means" id="dl_m">Fill in the boxes and this explains your answer.</div>
 <details><summary>Show the math</summary><div class="math"><div class="formula">Leg height needed = &Delta;P / (&rho; g)<small>&Delta;P = the vacuum (Pa) &middot; &rho; = filtrate density (kg/m&sup3;) &middot; g = 9.81 m/s&sup2;</small></div><div class="plug" id="mx_dl1">Your numbers appear here when the boxes are filled in.</div><div class="formula">Most vacuum the leg holds = &rho; g L<small>L = installed leg height (m)</small></div><div class="plug" id="mx_dl2">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: hydrostatic (barometric) liquid column, the same balance that gives a 10.33 m water column at one atmosphere (Perry's Chemical Engineers' Handbook; standard vacuum-filtration barometric-leg practice). A full drop leg for water is usually built to about 10.5 m so it drains at any vacuum; less is only safe if the vacuum is truly capped below what the leg can hold. Carryover can also come from too high a gas velocity in an undersized receiver &mdash; check the Pre-separator Sizing tool for that.</p></div></details>
+</section><section class="page" id="vl"><div class="pgh"><h2>Vacuum Line Loss</h2><button class="q" onclick="hp('ab_vl')">?</button></div>
+<div class="about" id="ab_vl">
+<div class="ar"><b>What it is</b>How much vacuum a gas line loses to friction &mdash; the suction pipe from a receiver or pre-separator to the pump, or any duct carrying gas under vacuum.</div>
+<div class="ar"><b>Why it matters</b>This is the air-line partner to the Pipe Loss tool, which is for liquid lines. Gas under vacuum is thin, so for the same duty it moves fast, and a long, narrow, scaled or eroded line can quietly cost real vacuum &mdash; the pump then has to pull that much deeper than the process needs.</div>
+<div class="ar"><b>Where you would use it</b>Checking whether the line between a belt-filter receiver and the pump is robbing vacuum, then feeding the answer into the line-loss box on Belt Filter Pump Sizing.</div>
+<div class="ar">Straight-pipe estimate. It holds well while the loss stays under about a tenth of the line pressure; above that the gas expands enough along the pipe that a full compressible-flow calculation reads a little higher, and the tool says so.</div>
+<span class="law">Uses: Darcy&ndash;Weisbach with gas density from the ideal gas law</span></div>
+<div class="card"><h3>Fill these in</h3>
+<button class="exbtn" onclick="ex('vl')">Insert example</button><button class="clrbtn" onclick="clr('vl')">Clear</button>
+<div class="fld"><div class="fh"><label>Gas flow in the line</label><button class="q" onclick="hp('h_vl_q')">?</button></div><div class="help" id="h_vl_q">The actual gas flow the line carries, at the line's own vacuum &mdash; the same figure Belt Filter Pump Sizing gives as the air the pump must handle.</div><div class="ctrl"><input type="number" id="vl_q_n" placeholder="number"><select id="vl_q_u" data-g="flow" data-du="0"></select></div></div>
+<div class="fld"><div class="fh"><label>Pipe inside width</label><button class="q" onclick="hp('h_vl_d')">?</button></div><div class="help" id="h_vl_d">The real inside width of the pipe, not the nominal size. See the Reference tab.</div><div class="ctrl"><input type="number" id="vl_d_n" placeholder="number"><select id="vl_d_u" data-g="length" data-du="0"></select></div></div>
+<div class="fld"><div class="fh"><label>Pipe length</label><button class="q" onclick="hp('h_vl_l')">?</button></div><div class="help" id="h_vl_l">The straight run length. Add for bends and valves in the box below.</div><div class="ctrl"><input type="number" id="vl_l_n" placeholder="number"><select id="vl_l_u" data-g="length" data-du="2"></select></div></div>
+<div class="fld"><div class="fh"><label>Pipe wall roughness</label><button class="q" onclick="hp('h_vl_e')">?</button></div><div class="help" id="h_vl_e">How rough the wall is. Steel about 0.045, stainless 0.015, plastic 0.0015. A scaled or eroded line is rougher and loses more. See Reference tab.</div><div class="ctrl"><input type="number" id="vl_e_n" placeholder="number"><span class="fu">millimetres</span></div></div>
+<div class="fld"><div class="fh"><label>Vacuum in the line</label><button class="q" onclick="hp('h_vl_vac')">?</button></div><div class="help" id="h_vl_vac">The vacuum the line runs at, typed as a plain positive number below the surrounding air. This sets how thin (and how fast) the gas is. Switch the menu if your reading is gauge or absolute.</div><div class="ctrl"><input type="number" id="vl_vac_n" placeholder="number"><select id="vl_vac_u" data-g="pressure" data-du="0"></select><select id="vl_vac_r" data-ref="v"></select></div></div>
+<div class="fld"><div class="fh"><label>Air pressure where you are</label><button class="q" onclick="hp('h_vl_air')">?</button></div><div class="help" id="h_vl_air">The air pressure at the site, used to resolve gauge/absolute/vacuum. About 101 kPa at sea level, near 84 at 1600 metres (highveld).</div><div class="ctrl"><input type="number" id="vl_air_n" placeholder="number"><select id="vl_air_u" data-g="pressure" data-du="0"></select></div></div>
+<div class="fld"><div class="fh"><label>Gas temperature</label><button class="q" onclick="hp('h_vl_t')">?</button></div><div class="help" id="h_vl_t">How warm the gas is. Warmer gas is thinner, which slightly lowers the loss.</div><div class="ctrl"><input type="number" id="vl_t_n" placeholder="number"><span class="fu">&deg;C</span></div></div>
+<div class="fld"><div class="fh"><label>Gas weight</label><button class="q" onclick="hp('h_vl_mw')">?</button></div><div class="help" id="h_vl_mw">The molecular weight of the gas. Air about 29, carbon dioxide 44, water vapour 18. Leave at 29 for ordinary damp air.</div><div class="ctrl"><input type="number" id="vl_mw_n" placeholder="number"><span class="fu">grams per mole</span></div></div>
+<div class="fld"><div class="fh"><label>Allowance for bends and valves</label><button class="q" onclick="hp('h_vl_k')">?</button></div><div class="help" id="h_vl_k">Add the loss numbers from the Reference tab, or leave blank for straight pipe.</div><div class="ctrl"><input type="number" id="vl_k_n" placeholder="number"><span class="fu">total number</span></div></div>
+</div>
+<div class="card"><h3>Answer</h3>
+<div class="res big"><div class="fh"><span class="res-lab" style="margin:0">Vacuum lost along the line</span><button class="q" onclick="hp('hy_vl_dp')">?</button></div><div class="help" id="hy_vl_dp">How much vacuum this line costs. Put this figure into the "pressure lost between the receiver and the pump" box on Belt Filter Pump Sizing.</div><div class="ctrl"><span class="res-v" id="vl_dp_v" data-g="pressure">&mdash;</span><select id="vl_dp_u2" data-g="pressure" data-du="0"></select></div></div>
+<div class="res"><div class="fh"><span class="res-lab" style="margin:0">Speed of the gas</span><button class="q" onclick="hp('hy_vl_v')">?</button></div><div class="help" id="hy_vl_v">How fast the gas travels. Vacuum lines are usually kept under about 20 m/s; much faster and the loss climbs steeply, so a bigger pipe pays off.</div><div class="ctrl"><span class="res-v" id="vl_v_v" data-g="velocity">&mdash;</span><select id="vl_v_u2" data-g="velocity" data-du="0"></select></div></div>
+<div class="res"><div class="fh"><span class="res-lab" style="margin:0">How thin the gas is (density)</span></div><div class="ctrl"><span class="res-v" id="vl_rho">&mdash;</span><span class="fu">kg/m&sup3;</span></div></div>
+</div>
+<div class="means" id="vl_m">Fill in the boxes and this explains your answer.</div>
+<details><summary>Show the math</summary><div class="math"><div class="formula">&rho; = P / (R T)<small>P absolute (Pa) &middot; R = 8314 / gas weight &middot; T in Kelvin</small></div><div class="plug" id="mx_vl1">Your numbers appear here when the boxes are filled in.</div><div class="formula">&Delta;P = (f L/D + K) &times; &rho; v&sup2; / 2<small>f from Swamee-Jain at the Reynolds number &middot; v = flow / pipe area</small></div><div class="plug" id="mx_vl2">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: Darcy-Weisbach with the Swamee-Jain friction factor and gas density from the ideal gas law; the incompressible form is valid while the loss stays under about 10% of the line pressure, per Crane TP-410. Gas viscosity taken as that of air; fittings per Crane TP-410.</p></div></details>
 </section><section class="page" id="rpt"><div class="pgh"><h2>Site Investigation Report</h2><button class="q" onclick="hp('ab_rpt')">?</button></div>
 <div class="about" id="ab_rpt">
 <div class="ar"><b>What it is</b>Pulls a site visit into one PDF for the client: job details, your findings and recommendations, photos with captions, and, if you want, the live numbers currently sitting in Drop-Leg Height Check, Deepest Vacuum You Can Pull, or Belt Filter Pump Sizing.</div>
@@ -846,6 +873,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="rpt_inc_dl"> Drop-Leg Height Check</label></div></div>
 <div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="rpt_inc_mav"> Deepest Vacuum You Can Pull</label></div></div>
 <div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="rpt_inc_bf"> Belt Filter Pump Sizing</label></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="rpt_inc_vl"> Vacuum Line Loss</label></div></div>
 <p style="font-size:12px;color:var(--soft);margin:4px 2px 0">Pulls whatever is currently filled in on that tool's page right now, in this session.</p>
 </div>
 <button class="exbtn" onclick="rptExportPDF()" style="margin:6px 0 0">Export PDF</button><button class="clrbtn" onclick="rptClear()" style="margin:6px 0 0">Clear this report</button>
@@ -1197,6 +1225,29 @@ function recalc(){
   showU("pl_v",vel,"velocity");showU("pl_dp",dp,"pressure");showU("pl_head",head*1000,"length");
   PLG("mx_pl",isFinite(dp),"<b>"+fmtA(dp)+" kPa</b> = ("+fmtA(f)+" &times; "+fmtA(L/D)+" + "+fmtA(K)+") &times; "+fmtA(rho)+" &times; "+fmtA(vel)+"&sup2; / 2 / 1000");
   M("pl_m",isFinite(dp)?("The liquid moves at about "+b(vel)+" metres a second and loses about "+b(dp)+" kilopascals along this pipe. Aim to keep the speed between 1 and 3 metres a second."):"Fill in the boxes and this explains your answer.");})();
+ // VACUUM LINE LOSS
+ (function(){var Q=readUnit("vl_q","flow"),D=readUnit("vl_d","length")/1000,L=readUnit("vl_l","length")/1000,e=gv("vl_e_n"),K=gv("vl_k_n");if(isNaN(K))K=0;
+  var B=airOf("vl_air"),pabs=readPress("vl_vac",B),T=readUnit("vl_t","temp"),MW=gv("vl_mw_n");if(isNaN(MW))MW=29;
+  var mu=1.8e-5,Rsp=8314/MW,TK=T+273.15;
+  var rho=(isFinite(pabs)&&pabs>0&&isFinite(TK))?(pabs*1000)/(Rsp*TK):NaN;
+  var A=Math.PI/4*D*D,vel=(Q/3600)/A,Re=rho*vel*D/mu,rr=(e/1000)/D;
+  var f=Re<2300?64/Re:0.25/Math.pow(Math.log10(rr/3.7+5.74/Math.pow(Re,0.9)),2);
+  var dp=(f*(L/D)+K)*rho*vel*vel/2/1000;
+  var ok=isFinite(dp)&&isFinite(rho)&&rho>0&&isFinite(vel)&&D>0;
+  if(!ok){dp=NaN;vel=NaN;}
+  showN("vl_rho",rho,3);showU("vl_v",vel,"velocity");showU("vl_dp",dp,"pressure");
+  PLG("mx_vl1",isFinite(rho),"<b>"+fmtA(rho,3)+" kg/m&sup3;</b> = "+fmtA(pabs*1000)+" / ("+fmtA(Rsp)+" &times; "+fmtA(TK)+")");
+  PLG("mx_vl2",isFinite(dp),"<b>"+fmtA(dp)+" kPa</b> = ("+fmtA(f)+" &times; "+fmtA(L/D)+" + "+fmtA(K)+") &times; "+fmtA(rho,3)+" &times; "+fmtA(vel)+"&sup2; / 2 / 1000");
+  var msg;
+  if(isFinite(pabs)&&pabs<=0)msg="The vacuum in the line is as deep as, or deeper than, the surrounding air pressure, which cannot happen. Check the vacuum and the air pressure.";
+  else if(!ok)msg="Fill in the flow, the pipe inside width, its length and the vacuum in the line, and this explains your answer.";
+  else{var pct=dp/pabs*100;
+   msg="The gas moves at about "+b(vel)+" m/s and loses about "+b(dp)+" kPa of vacuum along this line. Put that figure into the line-loss box on Belt Filter Pump Sizing.";
+   if(vel>30)msg+=" <b>That speed is high for a vacuum line</b> &mdash; aim under about 20 m/s; a bigger pipe would cut both the speed and the loss sharply.";
+   if(pct>10)msg+=" The loss is more than a tenth of the line pressure, so treat it as a rough guide &mdash; at this size the gas expands noticeably along the pipe and a full compressible-flow calculation would read a bit higher.";
+   else msg+=" That is a small share of the line pressure, so this straight-line estimate holds well.";
+  }
+  M("vl_m",msg);})();
  // POWER
  (function(){var B=airOf("pw_air");var Q=readUnit("pw_q","flow"),p1=readPress("pw_p1",B),p2=readPress("pw_p2",B),eff=gv("pw_e_n"),marg=gv("pw_m_n");
   var ratio=p2/p1,iso=p1*Q*Math.log(ratio)/3600,motor=iso/eff*marg;
@@ -1952,6 +2003,7 @@ var EX={
  bf:{bf_area_n:40,bf_q_n:60,bf_margin_n:20,bf_vac_n:60,bf_loss_n:5,bf_loss_u:"0",bf_air_n:101.3,bf_swt_n:20},
  mav:{mav_swt_n:30,mav_air_n:90},
  dl:{dl_vac_n:85,dl_rho_n:1000,dl_h_n:8,dl_air_n:101.3},
+ vl:{vl_q_n:2880,vl_d_n:250,vl_l_n:20,vl_e_n:0.045,vl_vac_n:60,vl_air_n:101.3,vl_t_n:20,vl_mw_n:29,vl_k_n:0},
  pt:{pt_p1_q_n:600,pt_p1_v_n:0.40,pt_p2_q_n:450,pt_p2_v_n:0.55,pt_p3_q_n:350,pt_p3_v_n:0.65,pt_p4_q_n:250,pt_p4_v_n:0.75,pt_p5_q_n:150,pt_p5_v_n:0.85,pt_p6_q_n:80,pt_p6_v_n:0.95},
  lft:{lft_company:"Acme Process Plant",lft_equipno:"P-204",lft_model:"Nash 904",lft_serial:"SN-58421",lft_speed:1450,lft_sealtemp:20,lft_ambtemp:25,lft_motorspeed:1450,lft_motorpower:45,lft_motoramps:78,lft_orifdia_n:50,lft_orifdia_u:"0",lft_barometer_n:101.3,lft_barometer_u:"0",lft_vacunit:"1",lft_date:"2026-07-20",lft_by:"J. Smith",
   lft_r1_vac_ie:500,lft_r1_vac_de:520,lft_r1_cfm_tested:250,lft_r1_cfm_new:300,lft_r1_amps:75,
@@ -2160,7 +2212,7 @@ window.lftAddRow=lftAddRow;window.lftClear=lftClear;window.lftExportPDF=lftExpor
 
 // Site investigation report: job details, findings, photos (resized client-side) and optional calculator readings.
 var RPT_KEY="vt_rpt1";
-var RPT_HEADER=["rpt_client","rpt_site","rpt_area","rpt_ref","rpt_date","rpt_by","rpt_findings","rpt_inc_dl","rpt_inc_mav","rpt_inc_bf"];
+var RPT_HEADER=["rpt_client","rpt_site","rpt_area","rpt_ref","rpt_date","rpt_by","rpt_findings","rpt_inc_dl","rpt_inc_mav","rpt_inc_bf","rpt_inc_vl"];
 var RPT_PHOTOS=[];
 function rptPhotoHTML(i){
  var p=RPT_PHOTOS[i];
@@ -2259,16 +2311,26 @@ function rptBfSection(){
  h+='<div class="pgen">'+(document.getElementById("bf_m")?pEsc(document.getElementById("bf_m").textContent):"")+'</div>';
  return h;
 }
+function rptVlSection(){
+ var h='<div class="psec">Vacuum Line Loss</div>';
+ h+='<table><tr><td class="lab">Gas flow in line</td><td>'+dash(fUnitVal("vl_q_n","vl_q_u"))+'</td><td class="lab">Pipe inside width</td><td>'+dash(fUnitVal("vl_d_n","vl_d_u"))+'</td></tr>';
+ h+='<tr><td class="lab">Pipe length</td><td>'+dash(fUnitVal("vl_l_n","vl_l_u"))+'</td><td class="lab">Wall roughness</td><td>'+dash(fNum("vl_e_n","mm"))+'</td></tr>';
+ h+='<tr><td class="lab">Vacuum in line</td><td>'+dash(fPress("vl_vac"))+'</td><td class="lab">Gas temp</td><td>'+dash(fNum("vl_t_n","&deg;C"))+'</td></tr>';
+ h+='<tr><td class="lab">Gas speed</td><td>'+dash(spanText("vl_v_v")+" "+selShort("vl_v_u2"))+'</td><td class="lab">Vacuum lost along line</td><td>'+dash(spanText("vl_dp_v")+" "+selShort("vl_dp_u2"))+'</td></tr></table>';
+ h+='<div class="pgen">'+(document.getElementById("vl_m")?pEsc(document.getElementById("vl_m").textContent):"")+'</div>';
+ return h;
+}
 function rptBuildPrint(){
  var h='<h1>SITE INVESTIGATION REPORT</h1>';
  h+='<table><tr><td class="lab">Client</td><td>'+dash(fv("rpt_client"))+'</td><td class="lab">Site / mine</td><td>'+dash(fv("rpt_site"))+'</td></tr>';
  h+='<tr><td class="lab">Location / area</td><td>'+dash(fv("rpt_area"))+'</td><td class="lab">Equipment / tag ref</td><td>'+dash(fv("rpt_ref"))+'</td></tr>';
  h+='<tr><td class="lab">Date</td><td>'+dash(fDate("rpt_date"))+'</td><td class="lab">Prepared by</td><td>'+dash(fv("rpt_by"))+'</td></tr></table>';
  h+='<div class="psec">Findings &amp; recommendations</div><div class="pgen">'+(fv("rpt_findings")?fv("rpt_findings").replace(/\n/g,"<br>"):"&mdash;")+'</div>';
- var incDl=document.getElementById("rpt_inc_dl"),incMav=document.getElementById("rpt_inc_mav"),incBf=document.getElementById("rpt_inc_bf");
+ var incDl=document.getElementById("rpt_inc_dl"),incMav=document.getElementById("rpt_inc_mav"),incBf=document.getElementById("rpt_inc_bf"),incVl=document.getElementById("rpt_inc_vl");
  if(incDl&&incDl.checked)h+=rptDlSection();
  if(incMav&&incMav.checked)h+=rptMavSection();
  if(incBf&&incBf.checked)h+=rptBfSection();
+ if(incVl&&incVl.checked)h+=rptVlSection();
  if(RPT_PHOTOS.length){
   h+='<div class="psec">Photos</div>';
   for(var i=0;i<RPT_PHOTOS.length;i++){
@@ -2286,8 +2348,8 @@ function rptExportPDF(){
 }
 window.rptRemovePhoto=rptRemovePhoto;window.rptClear=rptClear;window.rptExportPDF=rptExportPDF;
 
-var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the Gas Laws",learn_intro:"What a Gas Really Is",learn_boyle:"Boyle's Law",learn_charles:"Charles's Law",learn_gl:"Gay-Lussac's Law",learn_combined:"The Combined Gas Law",learn_ideal:"The Ideal Gas Law",learn_dalton:"Dalton's Law",fc:"Normal / Actual Flow",vac:"Vacuum Pump Sizing",cmp:"Compressor Sizing",pc:"Conveying Sizing",mp:"Which Machine",vap:"Vapour & Wet Gas",pd:"Pump-down Time",lk:"Leak Check",pl:"Pipe Loss",pw:"Power & Motor Current",cv:"Unit Converter",ref:"Reference Tables",orf:"Orifice Sizing",hl:"Heat Load, Water",mw:"Cooling Tower Make-up",cw:"Conveying Step-by-Step",cat_learn:"Play and Learn",cat_size:"Sizing Tools",cat_site:"On-Site Checks",ts:"Find the Fault",ps:"Pre-separator Sizing",lr:"Inside a Liquid Ring Pump",dt:"Discharge Temperature",ck:"Commissioning Checklist",bp:"Belt & Pulley Speed",af:"Speed Change Effect",learn_fan:"Speed and the Fan Laws",learn_heat:"How Heat Load Works",learn_cav:"Why Seal Water Stays Cool",pt:"Production Test vs Factory Curve",lft:"Liquid Ring Pump Field Test Sheet",cat_bf:"Belt Filters & Dewatering",bf:"Belt Filter Pump Sizing",mav:"Deepest Vacuum You Can Pull",dl:"Drop-Leg Height Check",rpt:"Site Investigation Report"};
-var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",pt:"cat_site",lft:"cat_site",bf:"cat_bf",mav:"cat_bf",dl:"cat_bf",rpt:"cat_site"};
+var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the Gas Laws",learn_intro:"What a Gas Really Is",learn_boyle:"Boyle's Law",learn_charles:"Charles's Law",learn_gl:"Gay-Lussac's Law",learn_combined:"The Combined Gas Law",learn_ideal:"The Ideal Gas Law",learn_dalton:"Dalton's Law",fc:"Normal / Actual Flow",vac:"Vacuum Pump Sizing",cmp:"Compressor Sizing",pc:"Conveying Sizing",mp:"Which Machine",vap:"Vapour & Wet Gas",pd:"Pump-down Time",lk:"Leak Check",pl:"Pipe Loss",pw:"Power & Motor Current",cv:"Unit Converter",ref:"Reference Tables",orf:"Orifice Sizing",hl:"Heat Load, Water",mw:"Cooling Tower Make-up",cw:"Conveying Step-by-Step",cat_learn:"Play and Learn",cat_size:"Sizing Tools",cat_site:"On-Site Checks",ts:"Find the Fault",ps:"Pre-separator Sizing",lr:"Inside a Liquid Ring Pump",dt:"Discharge Temperature",ck:"Commissioning Checklist",bp:"Belt & Pulley Speed",af:"Speed Change Effect",learn_fan:"Speed and the Fan Laws",learn_heat:"How Heat Load Works",learn_cav:"Why Seal Water Stays Cool",pt:"Production Test vs Factory Curve",lft:"Liquid Ring Pump Field Test Sheet",cat_bf:"Belt Filters & Dewatering",bf:"Belt Filter Pump Sizing",mav:"Deepest Vacuum You Can Pull",dl:"Drop-Leg Height Check",vl:"Vacuum Line Loss",rpt:"Site Investigation Report"};
+var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",pt:"cat_site",lft:"cat_site",bf:"cat_bf",mav:"cat_bf",dl:"cat_bf",vl:"cat_bf",rpt:"cat_site"};
 var CUR="home";
 function goBack(){show(PARENT[CUR]||"home");}
 var MENUS={home:1,cat_learn:1,cat_size:1,cat_site:1,cat_bf:1,learn:1};
@@ -2618,36 +2680,42 @@ for(var exk in EX_LAW)renderExample(exk);
   if(still)paint();}
  function paint(){ctx.clearRect(0,0,W,H);
   for(var i=0;i<BB.length;i++){var b=BB[i];ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.2832);ctx.fillStyle=b.c;ctx.fill();}}
- // On tool pages the bubbles are drawn to whichever screen border is
- // nearest -- left, right, top or bottom -- like a magnet, hugging in
- // tight and settling to a slow drift along that edge. Back on a menu
- // page the pull releases: a short outward boost fans them back out from
- // every angle, then they settle to normal drift.
- function step(){var boost=RETURN>0?1+(RETURN/100)*4.5:1;if(RETURN>0)RETURN--;
+ // On a tool page the bubbles ease out to whichever screen border is
+ // nearest -- left, right, top or bottom. The pull toward the edge is
+ // eased: strong while a bubble is still over the reading area (so it
+ // clears out quickly) and gentle as it nears the border (so it settles
+ // without a jolt), then it drifts slowly along that edge. Back on a menu
+ // page the pull releases and a soft outward boost fans them back into
+ // view before they settle to normal drift.
+ function step(){if(RETURN>0)RETURN--;
+  var ease=0.10,vmax=6;
   for(var i=0;i<BB.length;i++){var b=BB[i];
-  b.x+=b.dx*(MODE==="free"?boost:1);b.y+=b.dy*(MODE==="free"?boost:1);
   if(MODE==="edge"){
-   var inC=b.x>MG&&b.x<W-MG&&b.y>MGT&&b.y<H-MG;
-   if(inC){
-    var dl=b.x-MG,dr=(W-MG)-b.x,dt=b.y-MGT,db=(H-MG)-b.y,mn=Math.min(dl,dr,dt,db);
-    if(b.out){
-     if(mn===dl){b.x=MG;b.dx=-Math.abs(b.dx);}
-     else if(mn===dr){b.x=W-MG;b.dx=Math.abs(b.dx);}
-     else if(mn===dt){b.y=MGT;b.dy=-Math.abs(b.dy);}
-     else{b.y=H-MG;b.dy=Math.abs(b.dy);}
-    }else{var cap=Math.max(0.3,b.s0*3.2);
-     if(mn===dl){b.dx-=0.007;if(b.dx<-cap)b.dx=-cap;}
-     else if(mn===dr){b.dx+=0.007;if(b.dx>cap)b.dx=cap;}
-     else if(mn===dt){b.dy-=0.007;if(b.dy<-cap)b.dy=-cap;}
-     else{b.dy+=0.007;if(b.dy>cap)b.dy=cap;}
-    }
-   }else{b.out=true;
-    var s2=Math.sqrt(b.dx*b.dx+b.dy*b.dy);
-    if(s2>b.s0*0.7){b.dx*=0.965;b.dy*=0.965;}
+   b.out=true;
+   var dl=b.x-MG,dr=(W-MG)-b.x,dt=b.y-MGT,db=(H-MG)-b.y,mn=Math.min(dl,dr,dt,db),drift=b.s0*0.8;
+   if(mn===dl||mn===dr){
+    var tx=(mn===dl)?MG:(W-MG),vx=(tx-b.x)*ease;if(vx>vmax)vx=vmax;else if(vx<-vmax)vx=-vmax;
+    b.x+=vx;
+    var sy=b.dy>=0?1:-1;b.dy=sy*Math.min(Math.max(Math.abs(b.dy),drift*0.55),drift);
+    b.y+=b.dy;
+    if(b.y<MGT){b.y=MGT;b.dy=Math.abs(b.dy);}else if(b.y>H-MG){b.y=H-MG;b.dy=-Math.abs(b.dy);}
+   }else{
+    var ty=(mn===dt)?MGT:(H-MG),vy=(ty-b.y)*ease;if(vy>vmax)vy=vmax;else if(vy<-vmax)vy=-vmax;
+    b.y+=vy;
+    var sx=b.dx>=0?1:-1;b.dx=sx*Math.min(Math.max(Math.abs(b.dx),drift*0.55),drift);
+    b.x+=b.dx;
+    if(b.x<MG){b.x=MG;b.dx=Math.abs(b.dx);}else if(b.x>W-MG){b.x=W-MG;b.dx=-Math.abs(b.dx);}
    }
-  }else if(b.out){b.out=false;var na=Math.random()*6.2832;b.dx=Math.cos(na)*b.s0;b.dy=Math.sin(na)*b.s0;}
-  if(b.x<b.r){b.x=b.r;b.dx=-b.dx;}else if(b.x>W-b.r){b.x=W-b.r;b.dx=-b.dx;}
-  if(b.y<b.r){b.y=b.r;b.dy=-b.dy;}else if(b.y>H-b.r){b.y=H-b.r;b.dy=-b.dy;}}}
+  }else{
+   // Release: on the first free frame after edge mode, fan the bubble off its
+   // border at a brisk speed in a random direction, then ease that speed back
+   // down to its normal slow drift so they settle rather than keep racing.
+   if(b.out){b.out=false;var na=Math.random()*6.2832;b.dx=Math.cos(na)*2.7;b.dy=Math.sin(na)*2.7;}
+   else{var sp2=b.dx*b.dx+b.dy*b.dy;if(sp2>b.s0*b.s0*1.1){b.dx*=0.984;b.dy*=0.984;}}
+   b.x+=b.dx;b.y+=b.dy;
+   if(b.x<b.r){b.x=b.r;b.dx=-b.dx;}else if(b.x>W-b.r){b.x=W-b.r;b.dx=-b.dx;}
+   if(b.y<b.r){b.y=b.r;b.dy=-b.dy;}else if(b.y>H-b.r){b.y=H-b.r;b.dy=-b.dy;}
+  }}}
  window.bubMode=function(m){if(m==="free"&&MODE==="edge")RETURN=100;MODE=m;};
  function loop(){step();paint();requestAnimationFrame(loop);}
  window.addEventListener("resize",size);size();
