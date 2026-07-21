@@ -159,6 +159,9 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .print-sheet .pgen{page-break-inside:avoid;}
 .rpt-ph{border:1px solid var(--line);border-radius:10px;padding:9px;margin:10px 0;background:rgba(255,255,255,.55);}
 .exitem{border:1px solid var(--line);border-radius:10px;padding:9px 12px;margin:8px 0;background:rgba(255,255,255,.55);}
+.exitem input.secname{width:100%;border:none;border-bottom:1px dashed var(--line);background:transparent;font-size:13px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.05em;padding:2px 0 6px;font-family:var(--sans);}
+.exitem input.secname:focus{outline:none;border-bottom-color:var(--teal);}
+.exitem input.secname::placeholder{color:var(--soft);text-transform:none;font-weight:600;letter-spacing:normal;}
 .rpt-ph img{width:100%;border-radius:8px;display:block;margin-bottom:8px;}
 .ctrl label.chk{display:flex;align-items:center;gap:9px;font-size:14.5px;color:var(--ink);width:100%;}
 .ctrl label.chk input{width:19px;height:19px;flex:0 0 auto;}
@@ -897,9 +900,9 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="about" id="ab_lri">
 <div class="ar"><b>What it is</b>A structured inspection sheet for a liquid ring vacuum pump service call: seals, bearings and a borescope check of the casing (the standard basic inspection scope), plus the coupling, seal-water-cooler and separator-tank bolting/lining checks called up by most O&amp;M preventative maintenance schedules. One pump per block &mdash; add as many as are on the job.</div>
 <div class="ar"><b>Why it matters</b>A client's basic inspection quote usually names three things: seals, bearings, and a borescope of the casing for corrosion or cavitation. This sheet captures exactly that, in the order the quote lists it, so nothing gets left out of the report &mdash; and everything you write here drops straight into a client-ready PDF.</div>
-<div class="ar"><b>Beyond the client's scope</b>Extra checks are included below &mdash; gland packing detail (drip rate against the healthy 45&ndash;60 drops a minute, rings remaining, sleeve condition), general walk-up checks (rotation, hold-down bolts, guards, strainer, hoses), the drive (coupling or V-belts, with a belt tension rule of thumb), a temperature survey around the pump and up and down stream, measured vacuum against rated duty, motor current against nameplate FLA, seal water flow and temperature rise, and a full vibration survey (pump and motor, both ends, three directions) &mdash; because they cost almost nothing to take while you're there and often explain why a pump has lost performance even when the seals and bearings look fine.</div>
+<div class="ar"><b>Beyond the client's scope</b>Extra checks are included below &mdash; gland packing detail (drip rate against the healthy 45&ndash;60 drops a minute, rings remaining, sleeve condition), general walk-up checks (rotation, hold-down bolts, guards, strainer, hoses), torque settings on the body tie rods and coupling bolts, the drive (coupling or V-belts, with a belt tension rule of thumb), a temperature survey around the pump and up and down stream, measured vacuum against rated duty, motor current against nameplate FLA, seal water flow and temperature rise, and a full vibration survey (pump and motor, both ends, three directions) &mdash; because they cost almost nothing to take while you're there and often explain why a pump has lost performance even when the seals and bearings look fine.</div>
 <div class="ar"><b>Blank means left out</b>Only the sections you actually fill in appear on the exported PDF, so a quick seals-and-bearings job prints as a tight report and a full survey prints as the works. Skip anything that wasn't part of the job.</div>
-<div class="ar"><b>Something not on the list?</b>Every pump has an "Additional checks" box near the bottom &mdash; add as many as you like, each with what you checked, a condition, and an optional value or reading. Good for anything that comes up on the day: body tie rod torque, coupling bolt torque, base plate condition, whatever it is. There's no single industry-standard torque figure for tie rods or coupling bolts &mdash; both are set by the pump or coupling maker's own manual &mdash; so this is a free space to log whatever number you actually used.</div>
+<div class="ar"><b>Something not on the list?</b>Every pump has an "Add your own section" box near the bottom. Give it a name &mdash; base plate, oil level, whatever comes up on the day &mdash; and it prints on the PDF as its own section, exactly like Seals or Bearings above. Add as many as you like; a blank one simply won't appear.</div>
 <div class="ar"><b>No nameplate duty figure handy?</b>The "Extra: vacuum performance" heading in each pump block is a link &mdash; tap it to jump straight to the "Deepest Vacuum You Can Pull" calculator, fill in today's seal water temperature and site altitude, then tap the &lsquo;&#8249; Back&rsquo; button at the top to come straight back to this report. Tap "Pull from vacuum calculator" to drop that number into Rated duty vacuum as your comparison point.</div>
 <div class="ar">Everything typed here, including photos, is saved on this phone as you go, so the sheet survives closing the app. Export PDF builds the finished PDF file directly and downloads it &mdash; there's no print screen to fight with, and no browser web-address or date stamped on the page.</div>
 </div>
@@ -2443,6 +2446,7 @@ var EX={
   lri_r1_brg_type:"ball",lri_r1_brg_cond:"good",lri_r1_brg_de_temp:58,lri_r1_brg_nde_temp:55,lri_r1_brg_notes:"No abnormal noise, grease condition acceptable.",
   lri_r1_bore_corr:"light",lri_r1_bore_cav:"none",lri_r1_bore_notes:"Light surface corrosion on casing at discharge port, no pitting through the wall.",
   lri_r1_chk_strainer:"good",lri_r1_chk_hoses:"good",lri_r1_run_obs:"Runs smoothly, no abnormal noise or leaks.",
+  lri_r1_torq_tierod:"45 Nm (per NASH IOM)",lri_r1_torq_tierod_cond:"good",lri_r1_torq_coup:"25 Nm (per coupling manual)",lri_r1_torq_coup_cond:"good",lri_r1_torq_notes:"All body tie rods and coupling bolts checked and torqued to spec, no leaks at the casing joint.",
   lri_r1_drive_type:"direct",lri_r1_coup_cond:"good",lri_r1_coup_align:"inspec",lri_r1_coup_notes:"Flexible element in good condition.",
   lri_r1_cooler_cond:"good",lri_r1_cooler_notes:"No leaks, fins clean.",
   lri_r1_sep_lining:"none",lri_r1_sep_notes:"Lining intact, no cuts or abrasions observed via borescope.",
@@ -2452,13 +2456,14 @@ var EX={
   lri_r1_sw_flow:120,lri_r1_sw_temp_in:22,lri_r1_sw_temp_out:28,
   lri_r1_vib_pde_ax:1.4,lri_r1_vib_pde_h:1.8,lri_r1_vib_pde_v:1.2,lri_r1_vib_pnde_ax:1.1,lri_r1_vib_pnde_h:1.5,lri_r1_vib_pnde_v:1.0,
   lri_r1_vib_mde_ax:1.0,lri_r1_vib_mde_h:1.2,lri_r1_vib_mde_v:0.9,lri_r1_vib_mnde_ax:0.8,lri_r1_vib_mnde_h:1.1,lri_r1_vib_mnde_v:0.9,
-  lri_r1_ex1_label:"Body tie rod torque",lri_r1_ex1_cond:"good",lri_r1_ex1_value:"45 Nm (per NASH IOM)",lri_r1_ex1_notes:"All tie rods checked and torqued to spec, no leaks at the casing joint.",
+  lri_r1_ex1_label:"Base plate grouting",lri_r1_ex1_cond:"good",lri_r1_ex1_value:"",lri_r1_ex1_notes:"No cracking or voids visible, grout in sound condition.",
   lri_r1_condition:"good",lri_r1_priority:"routine",lri_r1_corrective:"No immediate action required. Re-inspect at next scheduled PM.",
   lri_r2_tag:"Hogging Vacuum Pump B",lri_r2_make:"NASH",lri_r2_model:"2BE1 (per nameplate)",lri_r2_serial:"e.g. 123457",lri_r2_year:2015,lri_r2_maxp_n:6.5,lri_r2_maxp_u:"4",lri_r2_maxt:80,
   lri_r2_seal_type:"mech",lri_r2_seal_cond:"poor",lri_r2_seal_notes:"Visible seal face weepage, recommend replacement at next opportunity.",
   lri_r2_brg_type:"ball",lri_r2_brg_cond:"fair",lri_r2_brg_de_temp:64,lri_r2_brg_nde_temp:60,lri_r2_brg_notes:"Slightly elevated DE temperature, monitor.",
   lri_r2_bore_corr:"moderate",lri_r2_bore_cav:"light",lri_r2_bore_notes:"Moderate corrosion and light cavitation pitting near the rotor tips, casing wall thickness appears adequate.",
   lri_r2_chk_strainer:"fair",lri_r2_chk_hoses:"good",lri_r2_run_obs:"Slight rumble at the drive end under load.",
+  lri_r2_torq_tierod:"45 Nm (per NASH IOM)",lri_r2_torq_tierod_cond:"fair",lri_r2_torq_notes:"One tie rod found a quarter-turn loose; re-torqued to spec. Belt driven, no coupling bolts on this pump.",
   lri_r2_drive_type:"belt",lri_r2_belt_profile:"SPB x 3",lri_r2_belt_cond:"fair",lri_r2_belt_tension:"loose",lri_r2_belt_align:"inspec",lri_r2_belt_groove:"fair",lri_r2_belt_span:900,lri_r2_belt_defl:20,lri_r2_belt_notes:"Belts glazed on one face; re-tension now, budget a belt set at next service.",
   lri_r2_cooler_cond:"fair",lri_r2_cooler_notes:"Some scale build-up on the waterside, recommend clean.",
   lri_r2_sep_lining:"wear",lri_r2_sep_notes:"Light surface wear observed, no through-wall damage.",
@@ -2468,7 +2473,7 @@ var EX={
   lri_r2_sw_flow:115,lri_r2_sw_temp_in:23,lri_r2_sw_temp_out:31,
   lri_r2_vib_pde_ax:3.2,lri_r2_vib_pde_h:3.6,lri_r2_vib_pde_v:2.9,lri_r2_vib_pnde_ax:2.6,lri_r2_vib_pnde_h:2.9,lri_r2_vib_pnde_v:2.4,
   lri_r2_vib_mde_ax:2.1,lri_r2_vib_mde_h:2.4,lri_r2_vib_mde_v:2.0,lri_r2_vib_mnde_ax:1.8,lri_r2_vib_mnde_h:2.0,lri_r2_vib_mnde_v:1.7,
-  lri_r2_ex1_label:"Coupling bolts",lri_r2_ex1_cond:"fair",lri_r2_ex1_value:"Re-torqued to 30 Nm",lri_r2_ex1_notes:"One bolt found finger-loose; re-torqued to the coupling maker's spec and match-marked.",
+  lri_r2_ex1_label:"Oil level / lubrication",lri_r2_ex1_cond:"fair",lri_r2_ex1_value:"Below sight glass minimum",lri_r2_ex1_notes:"Topped up to the mark with the specified grade; recommend checking again next visit.",
   lri_r2_condition:"poor",lri_r2_priority:"shutdown",lri_r2_corrective:"Replace mechanical seal and clean seal water cooler at next planned shutdown. Re-tension the belts now. Continue to monitor bearing DE temperature, discharge temperature and vibration."}
 };
 function ex(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(e)e.value=m[k];}recalc();}
@@ -2855,6 +2860,11 @@ function lriRowHTML(n){
  '<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="'+p+'chk_guards"> All guards fitted and secure</label></div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Inlet strainer / screen</span><div class="ctrl"><select id="'+p+'chk_strainer">'+LRI_OPT_COND3+'</select></div></div><div class="mgf"><span class="mlab">Flexible connections / hoses</span><div class="ctrl"><select id="'+p+'chk_hoses">'+LRI_OPT_COND3+'</select></div></div></div>'+
  '<div class="fld"><div class="fh"><label>Running observations</label></div><div class="ctrl"><textarea id="'+p+'run_obs" rows="2" placeholder="Noise, leaks, anything unusual while running..."></textarea></div></div>'+
+ '<div class="tp-num">Torque settings</div>'+
+ '<p style="font-size:12px;color:var(--soft);margin:0 0 6px">There\'s no single industry-standard figure for either of these &mdash; both come from the pump or coupling maker\'s own manual. Log whatever spec and reading you actually used.</p>'+
+ '<div class="mgrid"><div class="mgf"><span class="mlab">Body tie rods</span><div class="ctrl"><input type="text" id="'+p+'torq_tierod" placeholder="e.g. 45 Nm (per OEM manual)"></div></div><div class="mgf"><span class="mlab">Condition</span><div class="ctrl"><select id="'+p+'torq_tierod_cond">'+LRI_OPT_COND+'</select></div></div></div>'+
+ '<div class="mgrid"><div class="mgf"><span class="mlab">Coupling bolts</span><div class="ctrl"><input type="text" id="'+p+'torq_coup" placeholder="e.g. 30 Nm (per coupling manual)"></div></div><div class="mgf"><span class="mlab">Condition</span><div class="ctrl"><select id="'+p+'torq_coup_cond">'+LRI_OPT_COND+'</select></div></div></div>'+
+ '<div class="fld"><div class="fh"><label>Torque notes</label></div><div class="ctrl"><textarea id="'+p+'torq_notes" rows="2"></textarea></div></div>'+
  '<div class="tp-num">Drive: coupling or V-belts</div>'+
  '<div class="fld"><div class="fh"><label>Drive type</label></div><div class="ctrl"><select id="'+p+'drive_type">'+LRI_OPT_DRIVE+'</select></div></div>'+
  '<p style="font-size:12px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px">Coupling (skip if belt driven)</p>'+
@@ -2906,10 +2916,10 @@ function lriRowHTML(n){
  '<p style="font-size:12px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px">Motor, non-drive end</p>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Axial</span><div class="ctrl"><input type="number" id="'+p+'vib_mnde_ax" placeholder="number"></div></div><div class="mgf"><span class="mlab">Horizontal</span><div class="ctrl"><input type="number" id="'+p+'vib_mnde_h" placeholder="number"></div></div><div class="mgf"><span class="mlab">Vertical</span><div class="ctrl"><input type="number" id="'+p+'vib_mnde_v" placeholder="number"></div></div></div>'+
  '<p id="'+p+'vib_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">General guidance per ISO 10816-3 vibration severity zones.</p>'+
- '<div class="tp-num">Additional checks</div>'+
- '<p style="font-size:12px;color:var(--soft);margin:0 0 6px">Anything you pick up on site that isn\'t covered above &mdash; tie rod torque, base plate, oil level, whatever comes up. Add as many as you need.</p>'+
+ '<div class="tp-num">Add your own section</div>'+
+ '<p style="font-size:12px;color:var(--soft);margin:0 0 6px">Anything you pick up on site that isn\'t covered above &mdash; base plate, oil level, whatever comes up. Give it a name and it appears on the printed report as its own section, exactly like the ones above. Add as many as you need; leave one blank and it simply won\'t print.</p>'+
  '<div id="lri_r'+n+'_extras"></div>'+
- '<button class="clrbtn" onclick="lriAddExtra('+n+')" style="margin:2px 0 0">Add a check</button> <button class="clrbtn" onclick="lriRemoveExtra('+n+')">Remove last</button>'+
+ '<button class="clrbtn" onclick="lriAddExtra('+n+')" style="margin:2px 0 0">Add a section</button> <button class="clrbtn" onclick="lriRemoveExtra('+n+')">Remove last</button>'+
  '<div class="tp-num">Overall</div>'+
  '<div class="fld"><div class="fh"><label>Overall pump condition</label></div><div class="ctrl"><select id="'+p+'condition">'+LRI_OPT_COND+'</select></div></div>'+
  '<div class="fld"><div class="fh"><label>Action priority</label></div><div class="ctrl"><select id="'+p+'priority">'+LRI_OPT_PRIORITY+'</select></div></div>'+
@@ -2923,6 +2933,7 @@ function lriRowFields(n){
   p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp",p+"brg_notes",
   p+"bore_corr",p+"bore_cav",p+"bore_notes",
   p+"chk_rotation",p+"chk_footbolts",p+"chk_guards",p+"chk_strainer",p+"chk_hoses",p+"run_obs",
+  p+"torq_tierod",p+"torq_tierod_cond",p+"torq_coup",p+"torq_coup_cond",p+"torq_notes",
   p+"drive_type",p+"coup_cond",p+"coup_align",p+"coup_bolts",p+"coup_notes",
   p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_span",p+"belt_defl",p+"belt_guard",p+"belt_notes",
   p+"cooler_cond",p+"cooler_bolts",p+"cooler_notes",
@@ -2954,15 +2965,15 @@ function lriRemoveRow(){
  try{localStorage.setItem(LRI_RC_KEY,String(LRI_ROWCOUNT));}catch(err){}
  recalc();
 }
-// Additional checks: a free-form, growable list per pump for anything not covered by
-// the fixed fields above -- tie rod torque, base plate condition, whatever comes up
+// Add your own section: a free-form, growable list per pump for anything not covered by
+// the fixed sections above -- each entry prints as its own named section, not a shared bucket
 // on site. LRI_EXTRA_COUNT maps pump index -> how many extra rows it has.
 var LRI_EX_RC_KEY="vt_lri_exrc";
 var LRI_EXTRA_COUNT={};
 function lriExtraHTML(n,m){
  var p="lri_r"+n+"_ex"+m+"_";
  return '<div class="exitem" id="lri_r'+n+'_ex'+m+'">'+
-  '<div class="fld" style="margin-top:0"><div class="fh"><label>What you checked</label></div><div class="ctrl"><input type="text" id="'+p+'label" placeholder="e.g. Body tie rod torque, base plate grouting..."></div></div>'+
+  '<div class="fld" style="margin-top:0"><div class="ctrl"><input type="text" class="secname" id="'+p+'label" placeholder="Name this section — e.g. Base plate, oil level..."></div></div>'+
   '<div class="mgrid"><div class="mgf"><span class="mlab">Condition</span><div class="ctrl"><select id="'+p+'cond">'+LRI_OPT_COND+'</select></div></div><div class="mgf"><span class="mlab">Value / reading (optional)</span><div class="ctrl"><input type="text" id="'+p+'value" placeholder="e.g. 45 Nm"></div></div></div>'+
   '<div class="fld"><div class="fh"><label>Notes</label></div><div class="ctrl"><textarea id="'+p+'notes" rows="2"></textarea></div></div>'+
  '</div>';
@@ -3507,6 +3518,16 @@ function pbDrawPump(pb,n){
   if(rv(p+"run_obs"))pbNoteRow(pb,"Running observations: "+rv(p+"run_obs"));
   pbGap(pb,3);
  }
+ if(lriAny([p+"torq_tierod",p+"torq_tierod_cond",p+"torq_coup",p+"torq_coup_cond",p+"torq_notes"])){
+  var tierodSev=lriSevOf(p+"torq_tierod_cond"),coupSev=lriSevOf(p+"torq_coup_cond");
+  pbHeaderRow(pb,"Torque settings");
+  pbPairRow(pb,"Body tie rods",rv(p+"torq_tierod")||"—",
+   "Condition",rSelText(p+"torq_tierod_cond"),null,tierodSev<0?null:PB_SEV_RGB[tierodSev]);
+  pbPairRow(pb,"Coupling bolts",rv(p+"torq_coup")||"—",
+   "Condition",rSelText(p+"torq_coup_cond"),null,coupSev<0?null:PB_SEV_RGB[coupSev]);
+  if(rv(p+"torq_notes"))pbNoteRow(pb,"Torque notes: "+rv(p+"torq_notes"));
+  pbGap(pb,3);
+ }
  if(lriAny([p+"drive_type",p+"coup_cond",p+"coup_align",p+"coup_bolts",p+"coup_notes",p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_span",p+"belt_defl",p+"belt_guard",p+"belt_notes"])){
   var driveTxt=rSelText(p+"drive_type");
   pbHeaderRow(pb,"Drive"+(driveTxt?": "+driveTxt:""));
@@ -3562,18 +3583,15 @@ function pbDrawPump(pb,n){
   if(vibAny)pbNoteRow(pb,rSpan(p+"vib_note"));
   pbGap(pb,3);
  }
- var exCount=LRI_EXTRA_COUNT[n]||0,exAny=false,ei;
- for(ei=1;ei<=exCount;ei++){if(lriAny(lriExtraFields(n,ei))){exAny=true;break;}}
- if(exAny){
-  pbHeaderRow(pb,"Additional checks");
-  for(ei=1;ei<=exCount;ei++){
-   var ep="lri_r"+n+"_ex"+ei+"_";
-   if(!lriAny(lriExtraFields(n,ei)))continue;
-   var es=lriSevOf(ep+"cond");
-   pbPairRow(pb,rv(ep+"label")||("Check "+ei),rSelText(ep+"cond"),"Value / reading",rv(ep+"value"),
-    es<0?null:PB_SEV_RGB[es]);
-   if(rv(ep+"notes"))pbNoteRow(pb,"Notes: "+rv(ep+"notes"));
-  }
+ var exCount=LRI_EXTRA_COUNT[n]||0,ei;
+ for(ei=1;ei<=exCount;ei++){
+  var ep="lri_r"+n+"_ex"+ei+"_";
+  if(!lriAny(lriExtraFields(n,ei)))continue;
+  var es=lriSevOf(ep+"cond");
+  pbHeaderRow(pb,rv(ep+"label")||"Additional section");
+  pbPairRow(pb,"Condition",rSelText(ep+"cond"),"Value / reading",rv(ep+"value"),
+   es<0?null:PB_SEV_RGB[es]);
+  if(rv(ep+"notes"))pbNoteRow(pb,"Notes: "+rv(ep+"notes"));
   pbGap(pb,3);
  }
  var condSev=lriSevOf(p+"condition"),prioSev=lriSevOf(p+"priority");
