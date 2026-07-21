@@ -142,6 +142,12 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .print-sheet td.lab{font-weight:700;background:#f4f4f4;width:26%;}
 .print-sheet .psec{font-size:10.5px;font-weight:800;margin:9px 0 3px;text-transform:uppercase;letter-spacing:.03em;}
 .print-sheet .pgen{border:1px solid #000;padding:6px;min-height:34px;white-space:pre-wrap;font-size:10px;margin-bottom:8px;}
+.print-sheet .rpt-pphoto{page-break-inside:avoid;margin:0 0 10px;}
+.print-sheet .rpt-pphoto img{width:100%;max-width:420px;display:block;margin:0 auto 4px;border:1px solid #000;}
+.rpt-ph{border:1px solid var(--line);border-radius:10px;padding:9px;margin:10px 0;background:rgba(255,255,255,.55);}
+.rpt-ph img{width:100%;border-radius:8px;display:block;margin-bottom:8px;}
+.ctrl label.chk{display:flex;align-items:center;gap:9px;font-size:14.5px;color:var(--ink);width:100%;}
+.ctrl label.chk input{width:19px;height:19px;flex:0 0 auto;}
 @media print{
  @page{margin:9mm;}
  body>canvas,body>header,body>main{display:none !important;}
@@ -221,6 +227,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <button class="bub c3" onclick="show('ck')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="5" width="15" height="15.5" rx="2"/><path d="M9 5V3.5h6V5"/><path d="M8 10.5h.5M11 10.5h5M8 14h.5M11 14h5M8 17.5h.5M11 17.5h5"/></svg></span><span>Commissioning Checklist</span></button>
 <button class="bub c3" onclick="show('pt')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V5.5M4 20h16"/><path d="M4 16.5 9 11l3.5 3 6-7"/></svg></span><span>Production Test vs Factory Curve</span></button>
 <button class="bub c3" onclick="show('lft')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8.5 9.5v10M14 9.5v10"/></svg></span><span>Liquid Ring Pump Field Test Sheet</span></button>
+<button class="bub c3" onclick="show('rpt')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="3.5" width="15" height="17" rx="2"/><circle cx="9.5" cy="8.5" r="1.6"/><path d="M6 15.5l3.5-3.5 2 2 3-3.5 3.5 4" stroke-linejoin="round"/></svg></span><span>Site Investigation Report</span></button>
 </div>
 </section><section class="page" id="cat_bf">
 <h2>Belt Filters &amp; Dewatering</h2>
@@ -810,7 +817,37 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <svg id="dl_pic" viewBox="0 0 360 225" style="width:100%;height:auto;display:block;margin-top:8px"></svg></div>
 <div class="means" id="dl_m">Fill in the boxes and this explains your answer.</div>
 <details><summary>Show the math</summary><div class="math"><div class="formula">Leg height needed = &Delta;P / (&rho; g)<small>&Delta;P = the vacuum (Pa) &middot; &rho; = filtrate density (kg/m&sup3;) &middot; g = 9.81 m/s&sup2;</small></div><div class="plug" id="mx_dl1">Your numbers appear here when the boxes are filled in.</div><div class="formula">Most vacuum the leg holds = &rho; g L<small>L = installed leg height (m)</small></div><div class="plug" id="mx_dl2">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: hydrostatic (barometric) liquid column, the same balance that gives a 10.33 m water column at one atmosphere (Perry's Chemical Engineers' Handbook; standard vacuum-filtration barometric-leg practice). A full drop leg for water is usually built to about 10.5 m so it drains at any vacuum; less is only safe if the vacuum is truly capped below what the leg can hold. Carryover can also come from too high a gas velocity in an undersized receiver &mdash; check the Pre-separator Sizing tool for that.</p></div></details>
-</section></main><div id="lft_print" class="print-sheet"></div><div id="pt_print" class="print-sheet"></div><script>"use strict";
+</section><section class="page" id="rpt"><div class="pgh"><h2>Site Investigation Report</h2><button class="q" onclick="hp('ab_rpt')">?</button></div>
+<div class="about" id="ab_rpt">
+<div class="ar"><b>What it is</b>Pulls a site visit into one PDF for the client: job details, your findings and recommendations, photos with captions, and, if you want, the live numbers currently sitting in Drop-Leg Height Check, Deepest Vacuum You Can Pull, or Belt Filter Pump Sizing.</div>
+<div class="ar"><b>Why it matters</b>A finding is easy to lose by the time you're back at your desk. Build the report on site, photo by photo, while it's in front of you, and it's ready to send before you leave the gate.</div>
+<div class="ar"><b>More than one of something on the line?</b> (two pre-separators, two pumps) Run the relevant calculator once per item and photograph each &mdash; the checkboxes below pull in one live reading each, not a list. Caption each photo with its own numbers, the way you'd write it up by hand.</div>
+<div class="ar">Photos and text are saved on this phone as you go. Export PDF opens your device's print screen with everything laid out &mdash; choose Save as PDF (or Share) there to send it on.</div>
+</div>
+<div class="card"><h3>Job details</h3><button class="exbtn" onclick="rptExportPDF()">Export PDF</button><button class="clrbtn" onclick="rptClear()">Clear this report</button>
+<div class="fld"><div class="fh"><label>Client</label></div><div class="ctrl"><input type="text" id="rpt_client"></div></div>
+<div class="fld"><div class="fh"><label>Site / mine</label></div><div class="ctrl"><input type="text" id="rpt_site"></div></div>
+<div class="fld"><div class="fh"><label>Location / area on site</label></div><div class="ctrl"><input type="text" id="rpt_area"></div></div>
+<div class="fld"><div class="fh"><label>Equipment / tag reference</label></div><div class="ctrl"><input type="text" id="rpt_ref"></div></div>
+<div class="fld"><div class="fh"><label>Date</label></div><div class="ctrl"><input type="date" id="rpt_date"></div></div>
+<div class="fld"><div class="fh"><label>Prepared by</label></div><div class="ctrl"><input type="text" id="rpt_by"></div></div>
+</div>
+<div class="card"><h3>Findings &amp; recommendations</h3>
+<div class="fld"><div class="fh"><label>What you found, and what you recommend</label></div><div class="ctrl"><textarea id="rpt_findings" rows="8" placeholder="e.g. Pre-separator A (8 m installed) is undersized for the pump's deepest vacuum of 85 kPa, which needs 8.66 m of leg -- see Drop-Leg Height Check. Foam observed at the pump discharge; seal water is recirculated, so the loop is likely contaminated with frother..."></textarea></div></div>
+</div>
+<div class="card"><h3>Photos</h3>
+<div class="fld"><div class="fh"><label>Add photos</label></div><div class="ctrl"><input type="file" id="rpt_photo_input" accept="image/*" multiple></div></div>
+<div class="note warn" id="rpt_warn" style="display:none">This phone is low on storage for photos. Export the PDF now to keep what you have, then remove a photo or two and try adding more.</div>
+<div id="rpt_photos"></div>
+</div>
+<div class="card"><h3>Attach current calculator readings (optional)</h3>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="rpt_inc_dl"> Drop-Leg Height Check</label></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="rpt_inc_mav"> Deepest Vacuum You Can Pull</label></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="rpt_inc_bf"> Belt Filter Pump Sizing</label></div></div>
+<p style="font-size:12px;color:var(--soft);margin:4px 2px 0">Pulls whatever is currently filled in on that tool's page right now, in this session.</p>
+</div>
+<button class="exbtn" onclick="rptExportPDF()" style="margin:6px 0 0">Export PDF</button><button class="clrbtn" onclick="rptClear()" style="margin:6px 0 0">Clear this report</button>
+</section></main><div id="lft_print" class="print-sheet"></div><div id="pt_print" class="print-sheet"></div><div id="rpt_print" class="print-sheet"></div><script>"use strict";
 var G={
  pressure:[["kilopascals (kPa)",1],["millibar (mbar)",0.1],["torr (mmHg)",0.1333224],["inches of mercury (inHg)",3.386389],["bar",100]],
  flow:[["cubic metres per hour",1],["cubic feet per minute",1.69901],["litres per second",3.6],["litres per minute",0.06],["US gallons per minute",0.2271247]],
@@ -1114,6 +1151,9 @@ function recalc(){
   }
   M("dl_m",msg);
  })();
+ // SITE REPORT
+ rptSaveCaptions();
+ rptSave();
  // COMPRESSOR
  (function(){var B=airOf("cmp_air");var sin=readPress("cmp_p",B),din=readPress("cmp_dp",B),loss=readMag("cmp_loss");if(isNaN(loss))loss=0;var svol=sin-loss;
   var flow=readUnit("cmp_flow","flowIn"),N=gv("cmp_n_n"),t=readUnit("cmp_t","temp"),tn=+gs("cmp_ref"),co=gv("cmp_co_n");if(isNaN(co))co=1;
@@ -1925,8 +1965,11 @@ function fv(id){var e=document.getElementById(id);return e&&e.value!==""?pEsc(e.
 function fSelText(id){var e=document.getElementById(id);if(!e||e.selectedIndex<0)return "";return pEsc(e.options[e.selectedIndex].textContent);}
 function fNum(id,unit){var v=fv(id);return v===""?"":v+(unit?" "+unit:"");}
 function fUnitVal(nId,uId){var n=fv(nId);return n===""?"":n+" "+fSelText(uId);}
+function fPress(base){var n=fv(base+"_n");if(n==="")return "";var u=fSelText(base+"_u");var e=document.getElementById(base+"_r");var r=e?e.value:"";var rl=r==="a"?"abs":r==="g"?"gauge":"vacuum";return n+" "+u+" ("+rl+")";}
 function fDate(id){var e=document.getElementById(id);var v=e?e.value:"";if(!v)return "";var p=v.split("-");return p.length===3?(p[2]+"/"+p[1]+"/"+p[0]):v;}
 function dash(s){return s===""?"—":s;}
+function spanText(id){var e=document.getElementById(id);return e?pEsc(e.textContent):"";}
+function selShort(id){var e=document.getElementById(id);if(!e||e.selectedIndex<0)return "";var t=e.options[e.selectedIndex].textContent;var m=t.match(/\(([^)]+)\)/);return pEsc(m?m[1]:t);}
 
 // Production test vs factory curve: growable factory curve points, saved to this phone.
 function populateSelects(root){
@@ -2109,8 +2152,135 @@ function lftExportPDF(){
 }
 window.lftAddRow=lftAddRow;window.lftClear=lftClear;window.lftExportPDF=lftExportPDF;
 
-var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the Gas Laws",learn_intro:"What a Gas Really Is",learn_boyle:"Boyle's Law",learn_charles:"Charles's Law",learn_gl:"Gay-Lussac's Law",learn_combined:"The Combined Gas Law",learn_ideal:"The Ideal Gas Law",learn_dalton:"Dalton's Law",fc:"Normal / Actual Flow",vac:"Vacuum Pump Sizing",cmp:"Compressor Sizing",pc:"Conveying Sizing",mp:"Which Machine",vap:"Vapour & Wet Gas",pd:"Pump-down Time",lk:"Leak Check",pl:"Pipe Loss",pw:"Power & Motor Current",cv:"Unit Converter",ref:"Reference Tables",orf:"Orifice Sizing",hl:"Heat Load, Water",mw:"Cooling Tower Make-up",cw:"Conveying Step-by-Step",cat_learn:"Play and Learn",cat_size:"Sizing Tools",cat_site:"On-Site Checks",ts:"Find the Fault",ps:"Pre-separator Sizing",lr:"Inside a Liquid Ring Pump",dt:"Discharge Temperature",ck:"Commissioning Checklist",bp:"Belt & Pulley Speed",af:"Speed Change Effect",learn_fan:"Speed and the Fan Laws",learn_heat:"How Heat Load Works",learn_cav:"Why Seal Water Stays Cool",pt:"Production Test vs Factory Curve",lft:"Liquid Ring Pump Field Test Sheet",cat_bf:"Belt Filters & Dewatering",bf:"Belt Filter Pump Sizing",mav:"Deepest Vacuum You Can Pull",dl:"Drop-Leg Height Check"};
-var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",pt:"cat_site",lft:"cat_site",bf:"cat_bf",mav:"cat_bf",dl:"cat_bf"};
+// Site investigation report: job details, findings, photos (resized client-side) and optional calculator readings.
+var RPT_KEY="vt_rpt1";
+var RPT_HEADER=["rpt_client","rpt_site","rpt_area","rpt_ref","rpt_date","rpt_by","rpt_findings","rpt_inc_dl","rpt_inc_mav","rpt_inc_bf"];
+var RPT_PHOTOS=[];
+function rptPhotoHTML(i){
+ var p=RPT_PHOTOS[i];
+ return '<div class="rpt-ph"><img src="'+p.src+'"><div class="ctrl"><input type="text" id="rpt_ph'+i+'_cap" placeholder="Caption, e.g. Pre-separator A, 8 m installed" value="'+pEsc(p.caption)+'"></div><button class="clrbtn" onclick="rptRemovePhoto('+i+')" style="margin:6px 0 0">Remove photo</button></div>';
+}
+function rptRenderPhotos(){
+ var el=document.getElementById("rpt_photos");
+ if(!el)return;
+ var h="";
+ for(var i=0;i<RPT_PHOTOS.length;i++)h+=rptPhotoHTML(i);
+ el.innerHTML=h||'<p style="font-size:13px;color:var(--soft);margin:8px 2px">No photos yet.</p>';
+}
+function rptHandleFiles(files){
+ var arr=Array.prototype.slice.call(files||[]);
+ arr.forEach(function(file){
+  var reader=new FileReader();
+  reader.onload=function(e){
+   var img=new Image();
+   img.onload=function(){
+    var maxW=1000,scale=Math.min(1,maxW/img.width);
+    var w=Math.round(img.width*scale),h=Math.round(img.height*scale);
+    var canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
+    canvas.getContext("2d").drawImage(img,0,0,w,h);
+    RPT_PHOTOS.push({src:canvas.toDataURL("image/jpeg",0.72),caption:""});
+    rptRenderPhotos();
+    rptSave();
+   };
+   img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+ });
+}
+function rptRemovePhoto(i){RPT_PHOTOS.splice(i,1);rptRenderPhotos();rptSave();}
+function rptSaveCaptions(){
+ for(var i=0;i<RPT_PHOTOS.length;i++){
+  var e=document.getElementById("rpt_ph"+i+"_cap");
+  if(e)RPT_PHOTOS[i].caption=e.value;
+ }
+}
+function rptSave(){
+ var o={},i;
+ for(i=0;i<RPT_HEADER.length;i++){
+  var e=document.getElementById(RPT_HEADER[i]);
+  if(!e)continue;
+  o[RPT_HEADER[i]]=e.type==="checkbox"?e.checked:e.value;
+ }
+ o.photos=RPT_PHOTOS;
+ var warn=document.getElementById("rpt_warn");
+ try{localStorage.setItem(RPT_KEY,JSON.stringify(o));if(warn)warn.style.display="none";}
+ catch(err){if(warn)warn.style.display="block";}
+}
+function rptLoad(){
+ var o={};
+ try{o=JSON.parse(localStorage.getItem(RPT_KEY)||"{}")||{};}catch(err){o={};}
+ for(var i=0;i<RPT_HEADER.length;i++){
+  var e=document.getElementById(RPT_HEADER[i]);
+  if(!e||o[RPT_HEADER[i]]===undefined)continue;
+  if(e.type==="checkbox")e.checked=!!o[RPT_HEADER[i]];else e.value=o[RPT_HEADER[i]];
+ }
+ RPT_PHOTOS=Array.isArray(o.photos)?o.photos:[];
+ rptRenderPhotos();
+}
+function rptClear(){
+ if(!confirm("Clear the whole report, including photos?"))return;
+ for(var i=0;i<RPT_HEADER.length;i++){
+  var e=document.getElementById(RPT_HEADER[i]);
+  if(!e)continue;
+  if(e.type==="checkbox")e.checked=false;else e.value="";
+ }
+ RPT_PHOTOS=[];
+ rptRenderPhotos();
+ try{localStorage.removeItem(RPT_KEY);}catch(err){}
+}
+function rptDlSection(){
+ var h='<div class="psec">Drop-Leg Height Check</div>';
+ h+='<table><tr><td class="lab">Vacuum checked against</td><td>'+dash(fPress("dl_vac"))+'</td><td class="lab">Filtrate density</td><td>'+dash(fNum("dl_rho_n","kg/m&sup3;"))+'</td></tr>';
+ h+='<tr><td class="lab">Installed leg height</td><td>'+dash(fUnitVal("dl_h_n","dl_h_u"))+'</td><td class="lab">Air pressure</td><td>'+dash(fUnitVal("dl_air_n","dl_air_u"))+'</td></tr>';
+ h+='<tr><td class="lab">Leg height this vacuum needs</td><td>'+dash(spanText("dl_req_v")+" "+selShort("dl_req_u2"))+'</td><td class="lab">Most vacuum leg can hold</td><td>'+dash(spanText("dl_hold_v")+" "+selShort("dl_hold_u2"))+'</td></tr></table>';
+ h+='<div class="pgen">'+(document.getElementById("dl_m")?pEsc(document.getElementById("dl_m").textContent):"")+'</div>';
+ return h;
+}
+function rptMavSection(){
+ var h='<div class="psec">Deepest Vacuum You Can Pull</div>';
+ h+='<table><tr><td class="lab">Seal water temperature</td><td>'+dash(fNum("mav_swt_n","&deg;C"))+'</td><td class="lab">Air pressure</td><td>'+dash(fUnitVal("mav_air_n","mav_air_u"))+'</td></tr>';
+ h+='<tr><td class="lab">Deepest vacuum you can pull</td><td colspan="3">'+dash(spanText("mav_deep_v")+" "+selShort("mav_deep_u2"))+'</td></tr></table>';
+ h+='<div class="pgen">'+(document.getElementById("mav_m")?pEsc(document.getElementById("mav_m").textContent):"")+'</div>';
+ return h;
+}
+function rptBfSection(){
+ var h='<div class="psec">Belt Filter Pump Sizing</div>';
+ h+='<table><tr><td class="lab">Filter area</td><td>'+dash(fUnitVal("bf_area_n","bf_area_u"))+'</td><td class="lab">Air per m&sup2;</td><td>'+dash(fNum("bf_q_n","m&sup3;/h&middot;m&sup2;"))+'</td></tr>';
+ h+='<tr><td class="lab">Margin</td><td>'+dash(fNum("bf_margin_n","%"))+'</td><td class="lab">Operating vacuum</td><td>'+dash(fPress("bf_vac"))+'</td></tr>';
+ h+='<tr><td class="lab">Seal water temp</td><td>'+dash(fNum("bf_swt_n","&deg;C"))+'</td><td class="lab">Air pressure</td><td>'+dash(fUnitVal("bf_air_n","bf_air_u"))+'</td></tr>';
+ h+='<tr><td class="lab">Air pump must handle</td><td>'+dash(spanText("bf_load_v")+" "+selShort("bf_load_u2"))+'</td><td class="lab">Deepest vacuum reachable</td><td>'+dash(spanText("bf_deep_v")+" "+selShort("bf_deep_u2"))+'</td></tr></table>';
+ h+='<div class="pgen">'+(document.getElementById("bf_m")?pEsc(document.getElementById("bf_m").textContent):"")+'</div>';
+ return h;
+}
+function rptBuildPrint(){
+ var h='<h1>SITE INVESTIGATION REPORT</h1>';
+ h+='<table><tr><td class="lab">Client</td><td>'+dash(fv("rpt_client"))+'</td><td class="lab">Site / mine</td><td>'+dash(fv("rpt_site"))+'</td></tr>';
+ h+='<tr><td class="lab">Location / area</td><td>'+dash(fv("rpt_area"))+'</td><td class="lab">Equipment / tag ref</td><td>'+dash(fv("rpt_ref"))+'</td></tr>';
+ h+='<tr><td class="lab">Date</td><td>'+dash(fDate("rpt_date"))+'</td><td class="lab">Prepared by</td><td>'+dash(fv("rpt_by"))+'</td></tr></table>';
+ h+='<div class="psec">Findings &amp; recommendations</div><div class="pgen">'+(fv("rpt_findings")?fv("rpt_findings").replace(/\n/g,"<br>"):"&mdash;")+'</div>';
+ var incDl=document.getElementById("rpt_inc_dl"),incMav=document.getElementById("rpt_inc_mav"),incBf=document.getElementById("rpt_inc_bf");
+ if(incDl&&incDl.checked)h+=rptDlSection();
+ if(incMav&&incMav.checked)h+=rptMavSection();
+ if(incBf&&incBf.checked)h+=rptBfSection();
+ if(RPT_PHOTOS.length){
+  h+='<div class="psec">Photos</div>';
+  for(var i=0;i<RPT_PHOTOS.length;i++){
+   var cap=RPT_PHOTOS[i].caption;
+   h+='<div class="rpt-pphoto"><img src="'+RPT_PHOTOS[i].src+'"><div class="pgen">'+(cap?pEsc(cap).replace(/\n/g,"<br>"):"Photo "+(i+1))+'</div></div>';
+  }
+ }
+ return h;
+}
+function rptExportPDF(){
+ var el=document.getElementById("rpt_print");
+ if(!el)return;
+ el.innerHTML=rptBuildPrint();
+ window.print();
+}
+window.rptRemovePhoto=rptRemovePhoto;window.rptClear=rptClear;window.rptExportPDF=rptExportPDF;
+
+var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the Gas Laws",learn_intro:"What a Gas Really Is",learn_boyle:"Boyle's Law",learn_charles:"Charles's Law",learn_gl:"Gay-Lussac's Law",learn_combined:"The Combined Gas Law",learn_ideal:"The Ideal Gas Law",learn_dalton:"Dalton's Law",fc:"Normal / Actual Flow",vac:"Vacuum Pump Sizing",cmp:"Compressor Sizing",pc:"Conveying Sizing",mp:"Which Machine",vap:"Vapour & Wet Gas",pd:"Pump-down Time",lk:"Leak Check",pl:"Pipe Loss",pw:"Power & Motor Current",cv:"Unit Converter",ref:"Reference Tables",orf:"Orifice Sizing",hl:"Heat Load, Water",mw:"Cooling Tower Make-up",cw:"Conveying Step-by-Step",cat_learn:"Play and Learn",cat_size:"Sizing Tools",cat_site:"On-Site Checks",ts:"Find the Fault",ps:"Pre-separator Sizing",lr:"Inside a Liquid Ring Pump",dt:"Discharge Temperature",ck:"Commissioning Checklist",bp:"Belt & Pulley Speed",af:"Speed Change Effect",learn_fan:"Speed and the Fan Laws",learn_heat:"How Heat Load Works",learn_cav:"Why Seal Water Stays Cool",pt:"Production Test vs Factory Curve",lft:"Liquid Ring Pump Field Test Sheet",cat_bf:"Belt Filters & Dewatering",bf:"Belt Filter Pump Sizing",mav:"Deepest Vacuum You Can Pull",dl:"Drop-Leg Height Check",rpt:"Site Investigation Report"};
+var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",pt:"cat_site",lft:"cat_site",bf:"cat_bf",mav:"cat_bf",dl:"cat_bf",rpt:"cat_site"};
 var CUR="home";
 function goBack(){show(PARENT[CUR]||"home");}
 var MENUS={home:1,cat_learn:1,cat_size:1,cat_site:1,cat_bf:1,learn:1};
@@ -2286,6 +2456,9 @@ tsRender();
 ptFcLoad();
 ptLoad();
 lftLoad();
+rptLoad();
+var rptPhotoInput=document.getElementById("rpt_photo_input");
+if(rptPhotoInput)rptPhotoInput.addEventListener("change",function(){rptHandleFiles(this.files);this.value="";});
 document.addEventListener("input",recalc);
 document.addEventListener("change",recalc);
 recalc();
