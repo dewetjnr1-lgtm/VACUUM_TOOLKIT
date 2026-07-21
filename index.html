@@ -228,6 +228,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="bubs">
 <button class="bub c4" onclick="show('bf')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M2.5 9.5h19M2.5 14.5h19"/><circle cx="4.5" cy="12" r="1.6"/><circle cx="19.5" cy="12" r="1.6"/><path d="M8 12h7" stroke-dasharray="2 2"/><path d="M11 20l-1.5-3.5M13 20l1.5-3.5"/></svg></span><span>Belt Filter Pump Sizing</span></button>
 <button class="bub c4" onclick="show('mav')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15.5a8 8 0 0 1 16 0"/><path d="M12 15.5 15.5 10"/><circle cx="12" cy="15.5" r="1.4"/><path d="M19.5 19.5 21 21M18 18l1 1" opacity=".6"/></svg></span><span>Deepest Vacuum You Can Pull</span></button>
+<button class="bub c4" onclick="show('dl')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="6" y="3.5" width="12" height="5" rx="1.5"/><path d="M10 8.5v10.5M14 8.5v10.5"/><path d="M10 19h4M8 21h8" opacity=".6"/><path d="M12 11v5" stroke-dasharray="2 2"/></svg></span><span>Drop-Leg Height Check</span></button>
 </div>
 </section><section class="page" id="learn">
 <h2>Learn the Gas Laws</h2>
@@ -788,6 +789,26 @@ td:first-child{text-align:left;font-family:var(--sans);}
 </div>
 <div class="means" id="mav_m">Fill in the boxes and this explains your answer.</div>
 <details><summary>Show the math</summary><div class="math"><div class="formula">P<sub>vapour</sub> = 6.112 &times; e^(17.62 T / (243.12 + T)) / 10<small>kPa absolute &middot; T = seal water temperature in &deg;C</small></div><div class="plug" id="mx_mav1">Your numbers appear here when the boxes are filled in.</div><div class="formula">Deepest vacuum = Air pressure &minus; P<sub>vapour</sub></div><div class="plug" id="mx_mav2">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: Magnus&ndash;Tetens saturation vapour pressure of water. A liquid ring pump's ultimate suction pressure is its seal water's vapour pressure; makers quote a small practical margin above this because the water warms as it circulates.</p></div></details>
+</section><section class="page" id="dl"><div class="pgh"><h2>Drop-Leg Height Check</h2><button class="q" onclick="hp('ab_dl')">?</button></div>
+<div class="about" id="ab_dl">
+<div class="ar"><b>What it is</b>Checks whether the filtrate drop leg (barometric leg) under a vacuum receiver is tall enough to drain against the vacuum &mdash; or whether the vacuum can pull the water column, and the fines in it, up into the receiver and on into the vacuum pump.</div>
+<div class="ar"><b>Why it matters</b>A drop leg is a column of liquid held up by the vacuum, like a barometer. As long as the bottom forms a water seal, the vacuum <b>can</b> lift the liquid to the full barometric height &mdash; about 10.3 m of water at a near-full vacuum. If the leg is shorter than that height, the receiver floods and slugs carryover (fine and coarse minerals) into the vacuum pump and the filtrate pump, wearing them out.</div>
+<div class="ar"><b>The trap on belt filters</b>While running normally, a belt filter pulls only a modest vacuum &mdash; air bleeds through the open cake &mdash; so a short leg looks fine. But when the cake blinds, a wet patch seals the cloth, or the feed drops, the air bleed collapses and the vacuum spikes toward the pump's deepest pull. That is when a leg sized for the running vacuum gets overwhelmed. <b>Size the leg for the deepest vacuum the pump can pull, not the everyday running vacuum.</b></div>
+<div class="ar">Not sure of the deepest vacuum? Work it out first in <button class="exbtn2" onclick="show('mav')" style="margin-top:4px">Deepest Vacuum You Can Pull &#8250;</button></div>
+<span class="law">Uses: barometric (hydrostatic) liquid column, h = &Delta;P / (&rho; g)</span></div>
+<div class="card"><h3>Fill these in</h3>
+<button class="exbtn" onclick="ex('dl')">Insert example</button><button class="clrbtn" onclick="clr('dl')">Clear</button>
+<div class="fld"><div class="fh"><label>Vacuum to check against</label><button class="q" onclick="hp('h_dl_vac')">?</button></div><div class="help" id="h_dl_vac">Type the vacuum as a plain positive number below the surrounding air. Use the <b>deepest</b> vacuum the pump can pull, not the everyday running vacuum &mdash; carryover happens during upsets when the vacuum spikes. Switch the menu if your reading is gauge or absolute.</div><div class="ctrl"><input type="number" id="dl_vac_n" placeholder="number"><select id="dl_vac_u" data-g="pressure" data-du="0"></select><select id="dl_vac_r" data-ref="v"></select></div></div>
+<div class="fld"><div class="fh"><label>Filtrate density</label><button class="q" onclick="hp('h_dl_rho')">?</button></div><div class="help" id="h_dl_rho">How heavy the filtrate is. Clean water is 1000. Filtrate carrying fine solids is heavier, maybe 1050&ndash;1200. Heavier liquid needs a little less height, but it is the solids in it that wreck the pump.</div><div class="ctrl"><input type="number" id="dl_rho_n" placeholder="number"><span class="fu">kg/m&sup3;</span></div></div>
+<div class="fld"><div class="fh"><label>Installed leg height</label><button class="q" onclick="hp('h_dl_h')">?</button></div><div class="help" id="h_dl_h">How tall the drop leg actually is: the vertical drop from the receiver outlet down to the seal tank or launder.</div><div class="ctrl"><input type="number" id="dl_h_n" placeholder="number"><select id="dl_h_u" data-g="length" data-du="2"></select></div></div>
+<div class="fld"><div class="fh"><label>Air pressure where you are</label><button class="q" onclick="hp('h_dl_air')">?</button></div><div class="help" id="h_dl_air">The air pressure at the site, used to resolve gauge/absolute/vacuum. About 101 kPa at sea level, near 84 at 1600 metres (highveld).</div><div class="ctrl"><input type="number" id="dl_air_n" placeholder="number"><select id="dl_air_u" data-g="pressure" data-du="0"></select></div></div>
+</div>
+<div class="card"><h3>Answer</h3>
+<div class="res big"><div class="fh"><span class="res-lab" style="margin:0">Leg height this vacuum needs</span><button class="q" onclick="hp('hy_dl_req')">?</button></div><div class="help" id="hy_dl_req">The height of liquid this vacuum can hold up. The leg must be at least this tall (plus a margin) or the vacuum pulls the column, and its solids, up into the receiver.</div><div class="ctrl"><span class="res-v" id="dl_req_v" data-g="length">&mdash;</span><select id="dl_req_u2" data-g="length" data-du="2"></select></div></div>
+<div class="res"><div class="fh"><span class="res-lab" style="margin:0">Most vacuum your leg can hold</span><button class="q" onclick="hp('hy_dl_hold')">?</button></div><div class="help" id="hy_dl_hold">The deepest vacuum your installed leg can drain against. If the vacuum ever climbs past this, the leg floods and carries over.</div><div class="ctrl"><span class="res-v" id="dl_hold_v" data-g="pressure">&mdash;</span><select id="dl_hold_u2" data-g="pressure" data-du="0"></select></div></div>
+<svg id="dl_pic" viewBox="0 0 360 225" style="width:100%;height:auto;display:block;margin-top:8px"></svg></div>
+<div class="means" id="dl_m">Fill in the boxes and this explains your answer.</div>
+<details><summary>Show the math</summary><div class="math"><div class="formula">Leg height needed = &Delta;P / (&rho; g)<small>&Delta;P = the vacuum (Pa) &middot; &rho; = filtrate density (kg/m&sup3;) &middot; g = 9.81 m/s&sup2;</small></div><div class="plug" id="mx_dl1">Your numbers appear here when the boxes are filled in.</div><div class="formula">Most vacuum the leg holds = &rho; g L<small>L = installed leg height (m)</small></div><div class="plug" id="mx_dl2">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: hydrostatic (barometric) liquid column, the same balance that gives a 10.33 m water column at one atmosphere (Perry's Chemical Engineers' Handbook; standard vacuum-filtration barometric-leg practice). A full drop leg for water is usually built to about 10.5 m so it drains at any vacuum; less is only safe if the vacuum is truly capped below what the leg can hold. Carryover can also come from too high a gas velocity in an undersized receiver &mdash; check the Pre-separator Sizing tool for that.</p></div></details>
 </section></main><div id="lft_print" class="print-sheet"></div><div id="pt_print" class="print-sheet"></div><script>"use strict";
 var G={
  pressure:[["kilopascals (kPa)",1],["millibar (mbar)",0.1],["torr (mmHg)",0.1333224],["inches of mercury (inHg)",3.386389],["bar",100]],
@@ -845,6 +866,32 @@ function drawDuty(id,xv,yv,xlab,ylab){var el=document.getElementById(id);if(!el)
  s+='<text x="'+(left?px+10:px-10)+'" y="'+(py-10)+'" text-anchor="'+(left?"start":"end")+'" font-size="11.5" font-weight="700" fill="#171E23">'+fmtA(yv)+' at '+fmtA(xv)+'</text>';
  s+='<text x="'+(L+pw/2)+'" y="'+(H-6)+'" text-anchor="middle" font-size="10.5" fill="#4C5860">'+xlab+'</text>';
  s+='<text transform="rotate(-90)" x="'+(-(T+ph/2))+'" y="11" text-anchor="middle" font-size="10.5" fill="#4C5860">'+ylab+'</text>';
+ el.innerHTML=s;}
+function drawLeg(id,hReq,hInst,rho){var el=document.getElementById(id);if(!el)return;
+ if(!isFinite(hReq)||!isFinite(hInst)||hReq<=0||hInst<=0){el.innerHTML='<text x="180" y="112" text-anchor="middle" font-size="13" fill="#8A959D">Fill in the boxes to draw the leg</text>';return;}
+ var W=360,H=225,T=18,gh=20,ph=H-T-gh;
+ var top=Math.max(hReq,hInst)*1.18;
+ function y(h){return T+ph*(1-h/top);}
+ var cx=104,pw=30,floods=hReq>hInst;
+ var acc=floods?"#9A3412":"#2E7D52",accbg=floods?"#FBEAE3":"#E4F1E9";
+ var s="";
+ s+='<rect x="40" y="'+y(0).toFixed(1)+'" width="150" height="'+gh+'" fill="#E4EDF3" stroke="#B9CEDC"/>';
+ s+='<text x="115" y="'+(y(0)+13.5).toFixed(1)+'" text-anchor="middle" font-size="9.5" fill="#4C5860">seal tank</text>';
+ var ry=y(hInst)-30;
+ s+='<rect x="'+(cx-42)+'" y="'+ry.toFixed(1)+'" width="84" height="30" rx="4" fill="'+accbg+'" stroke="'+acc+'" stroke-width="1.5"/>';
+ s+='<text x="'+cx+'" y="'+(ry+18.5).toFixed(1)+'" text-anchor="middle" font-size="10.5" font-weight="600" fill="'+acc+'">receiver</text>';
+ s+='<rect x="'+(cx-pw/2)+'" y="'+y(hInst).toFixed(1)+'" width="'+pw+'" height="'+(y(0)-y(hInst)).toFixed(1)+'" fill="none" stroke="#4C5860" stroke-width="2"/>';
+ var wtop=Math.min(hReq,hInst);
+ s+='<rect x="'+(cx-pw/2+2)+'" y="'+y(wtop).toFixed(1)+'" width="'+(pw-4)+'" height="'+(y(0)-y(wtop)).toFixed(1)+'" fill="#1D5A78" opacity="0.45"/>';
+ if(floods){
+  s+='<rect x="'+(cx-40)+'" y="'+(ry+2).toFixed(1)+'" width="80" height="26" rx="3" fill="#1D5A78" opacity="0.35"/>';
+  s+='<text x="'+cx+'" y="'+(ry-6).toFixed(1)+'" text-anchor="middle" font-size="10.5" font-weight="700" fill="#9A3412">carryover &#8594; pump</text>';
+ }
+ s+='<line x1="'+(cx+pw/2)+'" y1="'+y(hInst).toFixed(1)+'" x2="215" y2="'+y(hInst).toFixed(1)+'" stroke="#4C5860" stroke-dasharray="3 3"/>';
+ s+='<text x="219" y="'+(y(hInst)+4).toFixed(1)+'" font-size="10.5" fill="#171E23">leg '+fmtA(hInst)+' m</text>';
+ s+='<line x1="'+(cx+pw/2)+'" y1="'+y(hReq).toFixed(1)+'" x2="215" y2="'+y(hReq).toFixed(1)+'" stroke="'+acc+'" stroke-width="1.4" stroke-dasharray="4 3"/>';
+ s+='<text x="219" y="'+(y(hReq)+4).toFixed(1)+'" font-size="10.5" font-weight="700" fill="'+acc+'">needs '+fmtA(hReq)+' m</text>';
+ s+='<text x="352" y="'+(T+2)+'" text-anchor="end" font-size="12" font-weight="700" fill="'+acc+'">'+(floods?"TOO SHORT":"OK")+'</text>';
  el.innerHTML=s;}
 function drawFall(id,P1,P2,tmin){var el=document.getElementById(id);if(!el)return;
  if(!isFinite(P1)||!isFinite(P2)||!isFinite(tmin)||tmin<=0||P2>=P1||P2<=0){el.innerHTML='<text x="180" y="116" text-anchor="middle" font-size="13" fill="#8A959D">Fill in the boxes to draw the curve</text>';return;}
@@ -1042,6 +1089,29 @@ function recalc(){
   if(!isFinite(psat)||!isFinite(B))msg="Fill in the seal water temperature and the site air pressure, and this explains your answer.";
   else msg="With seal water at "+b(tsw)+" &deg;C, it boils under vacuum at about "+b(psat)+" kPa absolute. So the deepest a liquid ring pump can pull here is about "+b(vacMax)+" kPa of vacuum &mdash; roughly "+b(pct)+"% of a perfect vacuum for your altitude."+(tsw>=30?" <b>That warm water is costing you a lot of vacuum &mdash; colder seal water is the single easiest fix.</b>":isFinite(vacMax)?" Real pumps land a little short of this as the water warms up while it works.":"");
   M("mav_m",msg);
+ })();
+ // DROP LEG HEIGHT
+ (function(){
+  var B=airOf("dl_air"),pabs=readPress("dl_vac",B),rho=gv("dl_rho_n");if(isNaN(rho))rho=1000;
+  var Lmm=readUnit("dl_h","length"),L=isFinite(Lmm)?Lmm/1000:NaN;
+  var dP=(isFinite(B)&&isFinite(pabs))?(B-pabs)*1000:NaN;
+  var hReq=(isFinite(pabs)&&pabs>0&&isFinite(dP)&&dP>0&&rho>0)?dP/(rho*9.81):NaN;
+  var holdKPa=(isFinite(L)&&L>0&&rho>0)?rho*9.81*L/1000:NaN;
+  showU("dl_req",isFinite(hReq)?hReq*1000:NaN,"length");
+  showU("dl_hold",holdKPa,"pressure");
+  drawLeg("dl_pic",hReq,L,rho);
+  PLG("mx_dl1",isFinite(hReq),"<b>"+fmtA(hReq)+" m</b> = "+fmtA(dP)+" / ("+fmtA(rho)+" &times; 9.81)");
+  PLG("mx_dl2",isFinite(holdKPa),"<b>"+fmtA(holdKPa)+" kPa</b> = "+fmtA(rho)+" &times; 9.81 &times; "+fmtA(L));
+  var msg;
+  if(isFinite(pabs)&&pabs<=0)msg="The vacuum is as deep as, or deeper than, the surrounding air pressure, which cannot happen. Check the vacuum and the air pressure.";
+  else if(!isFinite(hReq)||!isFinite(L))msg="Fill in the vacuum, the filtrate density and the installed leg height, and this explains your answer.";
+  else{
+   var vac=B-pabs,margin=L-hReq;
+   if(L<hReq)msg="At "+b(vac)+" kPa of vacuum the column wants to stand about "+b(hReq)+" m tall, but your leg is only "+b(L)+" m. <b>The leg is too short: the vacuum pulls the water, and the fine and coarse minerals in it, up into the receiver and on into the vacuum pump and filtrate pump.</b> This is a very likely cause of your carryover. Fixes: build the leg to about "+b(hReq)+" m or more, cap the vacuum below "+b(holdKPa)+" kPa, or swap the barometric leg for a level-controlled filtrate pump.";
+   else if(margin<0.5)msg="At "+b(vac)+" kPa of vacuum the column wants about "+b(hReq)+" m and your leg is "+b(L)+" m &mdash; only "+b(margin)+" m of margin. That is tight: a deeper vacuum during an upset will flood it and carry over. Aim for at least 0.5 to 1 m of spare height.";
+   else msg="At "+b(vac)+" kPa of vacuum the column stands about "+b(hReq)+" m tall and your "+b(L)+" m leg clears it by "+b(margin)+" m, so it drains freely. Your leg holds against up to "+b(holdKPa)+" kPa of vacuum before it would flood &mdash; keep the pump's deepest pull below that.";
+  }
+  M("dl_m",msg);
  })();
  // COMPRESSOR
  (function(){var B=airOf("cmp_air");var sin=readPress("cmp_p",B),din=readPress("cmp_dp",B),loss=readMag("cmp_loss");if(isNaN(loss))loss=0;var svol=sin-loss;
@@ -1834,6 +1904,7 @@ var EX={
  af:{af_n1_n:1450,af_n2_n:1750,af_q_n:1000,af_p_n:400,af_kw_n:15},
  bf:{bf_area_n:40,bf_q_n:60,bf_margin_n:20,bf_vac_n:60,bf_air_n:101.3,bf_swt_n:20},
  mav:{mav_swt_n:30,mav_air_n:90},
+ dl:{dl_vac_n:85,dl_rho_n:1000,dl_h_n:8,dl_air_n:101.3},
  pt:{pt_p1_q_n:600,pt_p1_v_n:0.40,pt_p2_q_n:450,pt_p2_v_n:0.55,pt_p3_q_n:350,pt_p3_v_n:0.65,pt_p4_q_n:250,pt_p4_v_n:0.75,pt_p5_q_n:150,pt_p5_v_n:0.85,pt_p6_q_n:80,pt_p6_v_n:0.95},
  lft:{lft_company:"Acme Process Plant",lft_equipno:"P-204",lft_model:"Nash 904",lft_serial:"SN-58421",lft_speed:1450,lft_sealtemp:20,lft_ambtemp:25,lft_motorspeed:1450,lft_motorpower:45,lft_motoramps:78,lft_orifdia_n:50,lft_orifdia_u:"0",lft_barometer_n:101.3,lft_barometer_u:"0",lft_vacunit:"1",lft_date:"2026-07-20",lft_by:"J. Smith",
   lft_r1_vac_ie:500,lft_r1_vac_de:520,lft_r1_cfm_tested:250,lft_r1_cfm_new:300,lft_r1_amps:75,
@@ -2037,8 +2108,8 @@ function lftExportPDF(){
 }
 window.lftAddRow=lftAddRow;window.lftClear=lftClear;window.lftExportPDF=lftExportPDF;
 
-var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the Gas Laws",learn_intro:"What a Gas Really Is",learn_boyle:"Boyle's Law",learn_charles:"Charles's Law",learn_gl:"Gay-Lussac's Law",learn_combined:"The Combined Gas Law",learn_ideal:"The Ideal Gas Law",learn_dalton:"Dalton's Law",fc:"Normal / Actual Flow",vac:"Vacuum Pump Sizing",cmp:"Compressor Sizing",pc:"Conveying Sizing",mp:"Which Machine",vap:"Vapour & Wet Gas",pd:"Pump-down Time",lk:"Leak Check",pl:"Pipe Loss",pw:"Power & Motor Current",cv:"Unit Converter",ref:"Reference Tables",orf:"Orifice Sizing",hl:"Heat Load, Water",mw:"Cooling Tower Make-up",cw:"Conveying Step-by-Step",cat_learn:"Play and Learn",cat_size:"Sizing Tools",cat_site:"On-Site Checks",ts:"Find the Fault",ps:"Pre-separator Sizing",lr:"Inside a Liquid Ring Pump",dt:"Discharge Temperature",ck:"Commissioning Checklist",bp:"Belt & Pulley Speed",af:"Speed Change Effect",learn_fan:"Speed and the Fan Laws",learn_heat:"How Heat Load Works",learn_cav:"Why Seal Water Stays Cool",pt:"Production Test vs Factory Curve",lft:"Liquid Ring Pump Field Test Sheet",cat_bf:"Belt Filters & Dewatering",bf:"Belt Filter Pump Sizing",mav:"Deepest Vacuum You Can Pull"};
-var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",pt:"cat_site",lft:"cat_site",bf:"cat_bf",mav:"cat_bf"};
+var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the Gas Laws",learn_intro:"What a Gas Really Is",learn_boyle:"Boyle's Law",learn_charles:"Charles's Law",learn_gl:"Gay-Lussac's Law",learn_combined:"The Combined Gas Law",learn_ideal:"The Ideal Gas Law",learn_dalton:"Dalton's Law",fc:"Normal / Actual Flow",vac:"Vacuum Pump Sizing",cmp:"Compressor Sizing",pc:"Conveying Sizing",mp:"Which Machine",vap:"Vapour & Wet Gas",pd:"Pump-down Time",lk:"Leak Check",pl:"Pipe Loss",pw:"Power & Motor Current",cv:"Unit Converter",ref:"Reference Tables",orf:"Orifice Sizing",hl:"Heat Load, Water",mw:"Cooling Tower Make-up",cw:"Conveying Step-by-Step",cat_learn:"Play and Learn",cat_size:"Sizing Tools",cat_site:"On-Site Checks",ts:"Find the Fault",ps:"Pre-separator Sizing",lr:"Inside a Liquid Ring Pump",dt:"Discharge Temperature",ck:"Commissioning Checklist",bp:"Belt & Pulley Speed",af:"Speed Change Effect",learn_fan:"Speed and the Fan Laws",learn_heat:"How Heat Load Works",learn_cav:"Why Seal Water Stays Cool",pt:"Production Test vs Factory Curve",lft:"Liquid Ring Pump Field Test Sheet",cat_bf:"Belt Filters & Dewatering",bf:"Belt Filter Pump Sizing",mav:"Deepest Vacuum You Can Pull",dl:"Drop-Leg Height Check"};
+var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",pt:"cat_site",lft:"cat_site",bf:"cat_bf",mav:"cat_bf",dl:"cat_bf"};
 var CUR="home";
 function goBack(){show(PARENT[CUR]||"home");}
 var MENUS={home:1,cat_learn:1,cat_size:1,cat_site:1,cat_bf:1,learn:1};
