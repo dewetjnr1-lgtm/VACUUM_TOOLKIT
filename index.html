@@ -3133,26 +3133,35 @@ function pbWrap(doc,text,maxW){
  for(i=0;i<paras.length;i++){w=doc.splitTextToSize(paras[i]===""?" ":paras[i],maxW);out=out.concat(w);}
  return out;
 }
+// The engine reserves a header zone at the top and a footer zone at the bottom
+// of EVERY page, like real letterhead paper: the logo (or the typed company
+// line) is drawn as each page starts, and pbFinalize() stamps the footer plus
+// "Page X of Y" onto every page once the total page count is known.
 function pbCreate(letterheadOn,company){
  var doc=new window.jspdf.jsPDF({unit:"mm",format:"a4",compress:true});
  doc.setFont("helvetica","normal");
- var pb={doc:doc,y:PB_M,page:1,letterhead:!!letterheadOn,company:company||""};
- pbPageTop(pb,true);
+ var pb={doc:doc,page:1,letterhead:!!letterheadOn,company:company||""};
+ if(pb.letterhead)pb.headH=48*120/502+5;
+ else if(pb.company)pb.headH=8;
+ else pb.headH=0;
+ pb.foot=pbFooterCalc(pb);
+ pb.top=PB_M+pb.headH;
+ pb.limit=PB_PH-10-pb.foot.H-3;
+ pb.y=pb.top;
+ pbDrawHeader(pb);
  return pb;
 }
-function pbPageTop(pb,isFirst){
- if(isFirst&&pb.letterhead){
+function pbDrawHeader(pb){
+ if(pb.letterhead){
   var w=48,h=w*120/502;
-  pb.doc.addImage(LRI_LOGO,"PNG",PB_PW-PB_M-w,pb.y,w,h);
-  pb.y+=h+5;
- }else if(isFirst&&pb.company){
+  pb.doc.addImage(LRI_LOGO,"PNG",PB_PW-PB_M-w,PB_M,w,h);
+ }else if(pb.company){
   pb.doc.setFont("helvetica","bold");pb.doc.setFontSize(9);
-  pb.doc.text(pb.company.toUpperCase(),PB_PW/2,pb.y+3,{align:"center"});
-  pb.y+=8;
+  pb.doc.text(pb.company.toUpperCase(),PB_PW/2,PB_M+3,{align:"center"});
  }
 }
-function pbNewPage(pb){pb.doc.addPage();pb.page++;pb.y=PB_M;}
-function pbEnsure(pb,h){if(pb.y+h>PB_PH-PB_M){pbNewPage(pb);}}
+function pbNewPage(pb){pb.doc.addPage();pb.page++;pb.y=pb.top;pbDrawHeader(pb);}
+function pbEnsure(pb,h){if(pb.y+h>pb.limit){pbNewPage(pb);}}
 function pbGap(pb,mm){pb.y+=mm;}
 function pbTitle(pb,text){
  pbEnsure(pb,10);
@@ -3322,8 +3331,12 @@ function pbPhotoRow(pb,items){
  }
  pb.y=y0+ch+1.5+capH+4;
 }
-function pbLetterheadFooter(pb){
+// Measures the footer for this report once, up front, so pbCreate can reserve
+// the right amount of space at the bottom of every page. Letterhead mode gets
+// the full Busch company block; plain mode just a page-number line.
+function pbFooterCalc(pb){
  var fs1=7,fs2=6.2,fs3=5.6;
+ if(!pb.letterhead)return {H:4,fs1:fs1};
  var line1="30 Lakeside Drive  |  Broadmeadows, VIC 3047  |  P +61 (0) 3 93 55 06 00  |  sales@busch.com.au  |  www.buschvacuum.com";
  var line2a="UST-ID DE264058499      Commonwealth Bank of Australia (CBA)  |  BSB 063-893  |  Account No. 10046328  |  SWIFT: CTBAAU2S";
  var line2b="ABN 38 006 402 964           National Australian Bank (NAB)  |  BSB 083-363  |  Account No. 155822068  |  SWIFT: NATAAU3303M";
@@ -3332,23 +3345,36 @@ function pbLetterheadFooter(pb){
  pb.doc.setFontSize(fs2);var w2a=pbWrap(pb.doc,line2a,PB_W),w2b=pbWrap(pb.doc,line2b,PB_W);
  pb.doc.setFontSize(fs3);var w3=pbWrap(pb.doc,line3,PB_W);
  var lh1=fs1*0.42,lh2=fs2*0.42,lh3=fs3*0.42,nameH=lh1*1.1;
- var totalH=nameH+w1.length*lh1+2+(w2a.length+w2b.length)*lh2+2+w3.length*lh3+2;
- pbEnsure(pb,totalH);
- var y0=Math.max(pb.y,PB_PH-PB_M-totalH),yy=y0,j;
- pb.doc.setFont("helvetica","bold");pb.doc.setFontSize(fs1);
- pb.doc.text("BUSCH ANZ Pty Ltd",PB_M,yy+lh1*0.8);yy+=nameH;
- pb.doc.setFont("helvetica","normal");pb.doc.setFontSize(fs1);
- for(j=0;j<w1.length;j++)pb.doc.text(w1[j],PB_M,yy+lh1*0.8+j*lh1);
- yy+=w1.length*lh1+2;
- pb.doc.setFontSize(fs2);pb.doc.setTextColor(40,40,40);
- for(j=0;j<w2a.length;j++)pb.doc.text(w2a[j],PB_M,yy+lh2*0.8+j*lh2);
- yy+=w2a.length*lh2;
- for(j=0;j<w2b.length;j++)pb.doc.text(w2b[j],PB_M,yy+lh2*0.8+j*lh2);
- yy+=w2b.length*lh2+2;
- pb.doc.setFontSize(fs3);pb.doc.setTextColor(90,90,90);
- for(j=0;j<w3.length;j++)pb.doc.text(w3[j],PB_M,yy+lh3*0.8+j*lh3);
+ return {fs1:fs1,fs2:fs2,fs3:fs3,w1:w1,w2a:w2a,w2b:w2b,w3:w3,lh1:lh1,lh2:lh2,lh3:lh3,nameH:nameH,
+  H:nameH+w1.length*lh1+2+(w2a.length+w2b.length)*lh2+2+w3.length*lh3};
+}
+function pbDrawFooter(pb,pageNo,total){
+ var f=pb.foot,y0=PB_PH-10-f.H,j;
+ pb.doc.setFont("helvetica","normal");pb.doc.setFontSize(f.fs1);pb.doc.setTextColor(120,120,120);
+ pb.doc.text("Page "+pageNo+" of "+total,PB_PW-PB_M,pb.letterhead?y0+f.lh1*0.8:PB_PH-10,{align:"right"});
  pb.doc.setTextColor(0,0,0);
- pb.y=y0+totalH;
+ if(!pb.letterhead)return;
+ var yy=y0;
+ pb.doc.setFont("helvetica","bold");pb.doc.setFontSize(f.fs1);
+ pb.doc.text("BUSCH ANZ Pty Ltd",PB_M,yy+f.lh1*0.8);yy+=f.nameH;
+ pb.doc.setFont("helvetica","normal");pb.doc.setFontSize(f.fs1);
+ for(j=0;j<f.w1.length;j++)pb.doc.text(f.w1[j],PB_M,yy+f.lh1*0.8+j*f.lh1);
+ yy+=f.w1.length*f.lh1+2;
+ pb.doc.setFontSize(f.fs2);pb.doc.setTextColor(40,40,40);
+ for(j=0;j<f.w2a.length;j++)pb.doc.text(f.w2a[j],PB_M,yy+f.lh2*0.8+j*f.lh2);
+ yy+=f.w2a.length*f.lh2;
+ for(j=0;j<f.w2b.length;j++)pb.doc.text(f.w2b[j],PB_M,yy+f.lh2*0.8+j*f.lh2);
+ yy+=f.w2b.length*f.lh2+2;
+ pb.doc.setFontSize(f.fs3);pb.doc.setTextColor(90,90,90);
+ for(j=0;j<f.w3.length;j++)pb.doc.text(f.w3[j],PB_M,yy+f.lh3*0.8+j*f.lh3);
+ pb.doc.setTextColor(0,0,0);
+}
+function pbFinalize(pb){
+ var total=pb.doc.getNumberOfPages();
+ for(var i=1;i<=total;i++){
+  pb.doc.setPage(i);
+  pbDrawFooter(pb,i,total);
+ }
 }
 function pbDrawPump(pb,n){
  var p="lri_r"+n+"_";
@@ -3486,7 +3512,7 @@ function lriExportPDF(){
    }
   }
   pbSignoff(pb,rv("lri_by"),rDate("lri_date"));
-  if(letterheadOn)pbLetterheadFooter(pb);
+  pbFinalize(pb);
   var fname=(rv("lri_ref")||"Liquid_Ring_Pump_Inspection").replace(/[^a-z0-9\-_]+/gi,"_")+".pdf";
   pb.doc.save(fname);
  });
