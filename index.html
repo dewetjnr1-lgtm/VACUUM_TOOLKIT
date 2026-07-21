@@ -2442,7 +2442,7 @@ var EX={
   lri_findings:"Both hogging vacuum pumps inspected per quote WA26-0123 (basic inspection plus O&M preventative maintenance checks). Pump A is in good order. Pump B needs a mechanical seal replacement and a seal water cooler clean at the next planned shutdown; bearing DE temperature, discharge temperature and vibration are all elevated and worth monitoring in the meantime.",
   lri_followup:"Quote mechanical seal replacement and cooler clean, Pump B",
   lri_r1_tag:"Hogging Vacuum Pump A",lri_r1_make:"NASH",lri_r1_model:"2BE1 (per nameplate)",lri_r1_serial:"e.g. 123456",lri_r1_year:2015,lri_r1_maxp_n:6.5,lri_r1_maxp_u:"4",lri_r1_maxt:80,
-  lri_r1_seal_type:"gland",lri_r1_seal_cond:"fair",lri_r1_seal_drip:50,lri_r1_seal_rings:4,lri_r1_seal_sleeve:"good",lri_r1_seal_adj:"some",lri_r1_seal_notes:"Slight weep at gland, seal water flush clean.",
+  lri_r1_seal_type:"gland",lri_r1_seal_cond:"fair",lri_r1_seal_drip_before:"Pouring — steady stream, too fast to count",lri_r1_seal_drip_after:55,lri_r1_seal_rings:4,lri_r1_seal_sleeve:"good",lri_r1_seal_adj:"some",lri_r1_seal_notes:"Found the gland pouring on arrival — follower had backed off. Nipped it up evenly until a healthy weep was restored. Seal water flush clean.",
   lri_r1_brg_type:"ball",lri_r1_brg_cond:"good",lri_r1_brg_de_temp:58,lri_r1_brg_nde_temp:55,lri_r1_brg_notes:"No abnormal noise, grease condition acceptable.",
   lri_r1_bore_corr:"light",lri_r1_bore_cav:"none",lri_r1_bore_notes:"Light surface corrosion on casing at discharge port, no pitting through the wall.",
   lri_r1_chk_strainer:"good",lri_r1_chk_hoses:"good",lri_r1_run_obs:"Runs smoothly, no abnormal noise or leaks.",
@@ -2464,7 +2464,7 @@ var EX={
   lri_r2_bore_corr:"moderate",lri_r2_bore_cav:"light",lri_r2_bore_notes:"Moderate corrosion and light cavitation pitting near the rotor tips, casing wall thickness appears adequate.",
   lri_r2_chk_strainer:"fair",lri_r2_chk_hoses:"good",lri_r2_run_obs:"Slight rumble at the drive end under load.",
   lri_r2_torq_tierod:"45 Nm (per NASH IOM)",lri_r2_torq_tierod_cond:"fair",lri_r2_torq_notes:"One tie rod found a quarter-turn loose; re-torqued to spec. Belt driven, no coupling bolts on this pump.",
-  lri_r2_drive_type:"belt",lri_r2_belt_profile:"SPB x 3",lri_r2_belt_cond:"fair",lri_r2_belt_tension:"loose",lri_r2_belt_align:"inspec",lri_r2_belt_groove:"fair",lri_r2_belt_span:900,lri_r2_belt_defl:20,lri_r2_belt_notes:"Belts glazed on one face; re-tension now, budget a belt set at next service.",
+  lri_r2_drive_type:"belt",lri_r2_belt_profile:"SPB x 3",lri_r2_belt_cond:"fair",lri_r2_belt_tension:"loose",lri_r2_belt_align:"inspec",lri_r2_belt_groove:"fair",lri_r2_belt_span:900,lri_r2_belt_defl_before:20,lri_r2_belt_notes:"Belts glazed on one face; re-tension now, budget a belt set at next service.",
   lri_r2_cooler_cond:"fair",lri_r2_cooler_notes:"Some scale build-up on the waterside, recommend clean.",
   lri_r2_sep_lining:"wear",lri_r2_sep_notes:"Light surface wear observed, no through-wall damage.",
   lri_r2_t_amb:24,lri_r2_t_suc:27,lri_r2_t_dis:63,lri_r2_t_case:41,lri_r2_t_motor:56,
@@ -2841,9 +2841,10 @@ function lriRowHTML(n){
  '<div class="tp-num">Seals</div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Type</span><div class="ctrl"><select id="'+p+'seal_type">'+LRI_OPT_SEALTYPE+'</select></div></div><div class="mgf"><span class="mlab">Condition</span><div class="ctrl"><select id="'+p+'seal_cond">'+LRI_OPT_COND+'</select></div></div></div>'+
  '<p style="font-size:12px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px">Gland packing (skip if mechanical seal)</p>'+
- '<div class="mgrid"><div class="mgf"><span class="mlab">Gland drip rate</span><div class="ctrl"><input type="number" id="'+p+'seal_drip" placeholder="number"><span class="fu">drops/min</span></div></div><div class="mgf"><span class="mlab">Packing rings remaining</span><div class="ctrl"><input type="number" id="'+p+'seal_rings" placeholder="number"></div></div></div>'+
- '<div class="mgrid"><div class="mgf"><span class="mlab">Shaft / sleeve under packing</span><div class="ctrl"><select id="'+p+'seal_sleeve">'+LRI_OPT_COND3+'</select></div></div><div class="mgf"><span class="mlab">Follower adjustment left</span><div class="ctrl"><select id="'+p+'seal_adj"><option value=""></option><option value="plenty">Plenty</option><option value="some">Some</option><option value="none">None &mdash; repack due</option></select></div></div></div>'+
- '<p id="'+p+'seal_drip_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Gland packing should weep &mdash; about 45 to 60 drops a minute keeps it cool and lubricated.</p>'+
+ '<div class="mgrid"><div class="mgf"><span class="mlab">Drip rate &mdash; as found</span><div class="ctrl"><input type="text" id="'+p+'seal_drip_before" placeholder="e.g. 50, or &lsquo;pouring&rsquo;, &lsquo;dry&rsquo;"><span class="fu">drops/min</span></div></div><div class="mgf"><span class="mlab">Drip rate &mdash; after adjustment</span><div class="ctrl"><input type="text" id="'+p+'seal_drip_after" placeholder="leave blank if not adjusted"><span class="fu">drops/min</span></div></div></div>'+
+ '<p id="'+p+'seal_drip_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Gland packing should weep &mdash; about 45 to 60 drops a minute keeps it cool and lubricated. If the flow is too fast to count, just write that (e.g. &lsquo;pouring&rsquo;).</p>'+
+ '<div class="mgrid"><div class="mgf"><span class="mlab">Packing rings remaining</span><div class="ctrl"><input type="text" id="'+p+'seal_rings" placeholder="e.g. 4, or &lsquo;Not checked&rsquo;"></div></div><div class="mgf"><span class="mlab">Shaft / sleeve under packing</span><div class="ctrl"><select id="'+p+'seal_sleeve">'+LRI_OPT_COND3+'</select></div></div></div>'+
+ '<div class="mgrid"><div class="mgf"><span class="mlab">Follower adjustment left</span><div class="ctrl"><select id="'+p+'seal_adj"><option value=""></option><option value="plenty">Plenty</option><option value="some">Some</option><option value="none">None &mdash; repack due</option></select></div></div><div class="mgf"></div></div>'+
  '<div class="fld"><div class="fh"><label>Seal notes</label></div><div class="ctrl"><textarea id="'+p+'seal_notes" rows="2" placeholder="Leakage rate, seal water flush condition..."></textarea></div></div>'+
  '<div class="tp-num">Bearings</div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Type</span><div class="ctrl"><select id="'+p+'brg_type">'+LRI_OPT_BRGTYPE+'</select></div></div><div class="mgf"><span class="mlab">Condition</span><div class="ctrl"><select id="'+p+'brg_cond">'+LRI_OPT_COND+'</select></div></div></div>'+
@@ -2875,7 +2876,8 @@ function lriRowHTML(n){
  '<div class="fld"><div class="fh"><label>Belt profile &amp; number of belts</label></div><div class="ctrl"><input type="text" id="'+p+'belt_profile" placeholder="e.g. SPB x 3"></div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Belt condition</span><div class="ctrl"><select id="'+p+'belt_cond">'+LRI_OPT_COND+'</select></div></div><div class="mgf"><span class="mlab">Tension</span><div class="ctrl"><select id="'+p+'belt_tension">'+LRI_OPT_TENSION+'</select></div></div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Pulley alignment</span><div class="ctrl"><select id="'+p+'belt_align">'+LRI_OPT_ALIGN+'</select></div></div><div class="mgf"><span class="mlab">Pulley groove wear</span><div class="ctrl"><select id="'+p+'belt_groove">'+LRI_OPT_COND3+'</select></div></div></div>'+
- '<div class="mgrid"><div class="mgf"><span class="mlab">Belt span (centre to centre)</span><div class="ctrl"><input type="number" id="'+p+'belt_span" placeholder="number"><span class="fu">mm</span></div></div><div class="mgf"><span class="mlab">Deflection measured</span><div class="ctrl"><input type="number" id="'+p+'belt_defl" placeholder="number"><span class="fu">mm</span></div></div></div>'+
+ '<div class="mgrid"><div class="mgf"><span class="mlab">Belt span (centre to centre)</span><div class="ctrl"><input type="number" id="'+p+'belt_span" placeholder="number"><span class="fu">mm</span></div></div><div class="mgf"><span class="mlab">Deflection &mdash; as found</span><div class="ctrl"><input type="number" id="'+p+'belt_defl_before" placeholder="number"><span class="fu">mm</span></div></div></div>'+
+ '<div class="mgrid"><div class="mgf"><span class="mlab">Deflection &mdash; after adjustment</span><div class="ctrl"><input type="number" id="'+p+'belt_defl_after" placeholder="leave blank if not adjusted"><span class="fu">mm</span></div></div><div class="mgf"></div></div>'+
  '<p id="'+p+'belt_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Fill in the span to get a target deflection (rule of thumb: about 16 mm per metre of span under firm thumb pressure).</p>'+
  '<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="'+p+'belt_guard"> Belt guard refitted and secure</label></div></div>'+
  '<div class="fld"><div class="fh"><label>Belt drive notes</label></div><div class="ctrl"><textarea id="'+p+'belt_notes" rows="2"></textarea></div></div>'+
@@ -2929,13 +2931,13 @@ function lriRowHTML(n){
 function lriRowFields(n){
  var p="lri_r"+n+"_";
  return [p+"tag",p+"make",p+"model",p+"serial",p+"year",p+"maxp_n",p+"maxp_u",p+"maxt",p+"hours",
-  p+"seal_type",p+"seal_cond",p+"seal_drip",p+"seal_rings",p+"seal_sleeve",p+"seal_adj",p+"seal_notes",
+  p+"seal_type",p+"seal_cond",p+"seal_drip_before",p+"seal_drip_after",p+"seal_rings",p+"seal_sleeve",p+"seal_adj",p+"seal_notes",
   p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp",p+"brg_notes",
   p+"bore_corr",p+"bore_cav",p+"bore_notes",
   p+"chk_rotation",p+"chk_footbolts",p+"chk_guards",p+"chk_strainer",p+"chk_hoses",p+"run_obs",
   p+"torq_tierod",p+"torq_tierod_cond",p+"torq_coup",p+"torq_coup_cond",p+"torq_notes",
   p+"drive_type",p+"coup_cond",p+"coup_align",p+"coup_bolts",p+"coup_notes",
-  p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_span",p+"belt_defl",p+"belt_guard",p+"belt_notes",
+  p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_span",p+"belt_defl_before",p+"belt_defl_after",p+"belt_guard",p+"belt_notes",
   p+"cooler_cond",p+"cooler_bolts",p+"cooler_notes",
   p+"sep_lining",p+"sep_bolts",p+"sep_notes",
   p+"t_amb",p+"t_suc",p+"t_dis",p+"t_case",p+"t_motor",
@@ -3027,12 +3029,33 @@ function lriRowCalc(n){
  var p="lri_r"+n+"_";
  var dripEl=document.getElementById(p+"seal_drip_note");
  if(dripEl){
-  var drip=gv(p+"seal_drip");
-  if(isNaN(drip))dripEl.textContent="Gland packing should weep — about 45 to 60 drops a minute keeps it cool and lubricated.";
-  else if(drip<=0)dripEl.textContent="A dry gland runs hot and burns the packing and sleeve — slacken the follower evenly until it just weeps (about 45 to 60 drops a minute).";
-  else if(drip<45)dripEl.textContent=fmtA(drip,0)+" drops/min is on the dry side of the usual 45 to 60 — watch the gland temperature; slacken slightly if it runs warm.";
-  else if(drip<=60)dripEl.textContent=fmtA(drip,0)+" drops/min — right in the healthy 45 to 60 range for gland packing.";
-  else dripEl.textContent=fmtA(drip,0)+" drops/min is more than a weep — nip the follower a quarter turn at a time (per the commissioning procedure), or repack if there is no adjustment left.";
+  var dripBeforeRaw=rv(p+"seal_drip_before"),dripAfterRaw=rv(p+"seal_drip_after");
+  var dripHealth=function(raw){
+   if(!lriIsNum(raw))return "“"+raw+"”";
+   var v=parseFloat(raw);
+   if(v<=0)return "dry, no drip at all";
+   if(v<45)return fmtA(v,0)+" drops/min, on the dry side of the healthy 45 to 60 range";
+   if(v<=60)return fmtA(v,0)+" drops/min — right in the healthy 45 to 60 range";
+   return fmtA(v,0)+" drops/min, more than a weep";
+  };
+  var dripAction=function(raw){
+   if(!lriIsNum(raw))return "Slacken or nip the follower until it weeps at a healthy 45 to 60 drops a minute, or repack if there is no adjustment left.";
+   var v=parseFloat(raw);
+   if(v<=0)return "A dry gland runs hot and burns the packing and sleeve — slacken the follower evenly until it just weeps.";
+   if(v<45)return "Watch the gland temperature; slacken slightly if it runs warm.";
+   if(v<=60)return "";
+   return "Nip the follower a quarter turn at a time, or repack if there is no adjustment left.";
+  };
+  if(dripBeforeRaw===""&&dripAfterRaw==="")dripEl.textContent="Gland packing should weep — about 45 to 60 drops a minute keeps it cool and lubricated. If the flow is too fast to count, just write that (e.g. ‘pouring’).";
+  else if(dripAfterRaw!==""){
+   var afterMsg="After adjustment: "+dripHealth(dripAfterRaw)+".";
+   var afterAct=dripAction(dripAfterRaw);if(afterAct)afterMsg+=" "+afterAct;
+   dripEl.textContent=(dripBeforeRaw!==""?"As found: "+dripHealth(dripBeforeRaw)+". ":"")+afterMsg;
+  }else{
+   var beforeMsg="As found: "+dripHealth(dripBeforeRaw)+".";
+   var beforeAct=dripAction(dripBeforeRaw);if(beforeAct)beforeMsg+=" "+beforeAct;
+   dripEl.textContent=beforeMsg;
+  }
  }
  var rn=gv(p+"vac_rated_n"),ru=gs(p+"vac_rated_u"),mn=gv(p+"vac_meas_n"),mu=gs(p+"vac_meas_u");
  var vacEl=document.getElementById(p+"vac_note");
@@ -3071,15 +3094,17 @@ function lriRowCalc(n){
  }
  var beltEl=document.getElementById(p+"belt_note");
  if(beltEl){
-  var span=gv(p+"belt_span"),defl=gv(p+"belt_defl");
+  var span=gv(p+"belt_span"),deflBefore=gv(p+"belt_defl_before"),deflAfter=gv(p+"belt_defl_after");
   if(isNaN(span)||span<=0)beltEl.textContent="Fill in the span to get a target deflection (rule of thumb: about 16 mm per metre of span under firm thumb pressure).";
   else{
    var target=span*16/1000,m2="Target deflection about "+fmtA(target,0)+" mm for a "+fmtA(span,0)+" mm span (rule of thumb: 16 mm per metre under firm thumb pressure — confirm with a tension gauge against the maker's table).";
-   if(!isNaN(defl)){
-    if(defl>target*1.25)m2+=" Measured "+fmtA(defl,0)+" mm — belts are loose, re-tension.";
-    else if(defl<target*0.75)m2+=" Measured "+fmtA(defl,0)+" mm — belts are over-tight, which loads the bearings; slacken off.";
-    else m2+=" Measured "+fmtA(defl,0)+" mm — tension looks right.";
-   }
+   var deflState=function(d){
+    if(d>target*1.25)return "belts are loose, re-tension";
+    if(d<target*0.75)return "belts are over-tight, which loads the bearings; slacken off";
+    return "tension looks right";
+   };
+   if(!isNaN(deflBefore))m2+=" As found "+fmtA(deflBefore,0)+" mm — "+deflState(deflBefore)+".";
+   if(!isNaN(deflAfter))m2+=" After adjustment "+fmtA(deflAfter,0)+" mm — "+deflState(deflAfter)+".";
    beltEl.textContent=m2;
   }
  }
@@ -3193,6 +3218,7 @@ function lriSevCell(ids){
  var cls=best<=0?"pOK":best===1?"pMid":"pBad";
  return '<span class="'+cls+'">'+fSelText(bid)+'</span>';
 }
+function lriIsNum(s){return /^-?\d*\.?\d+$/.test((s||"").trim());}
 function lriAny(ids){
  for(var i=0;i<ids.length;i++){
   var e=document.getElementById(ids[i]);
@@ -3218,6 +3244,7 @@ function lriAny(ids){
 function rv(id){var e=document.getElementById(id);return e&&e.value!==""?e.value:"";}
 function rSelText(id){var e=document.getElementById(id);if(!e||e.selectedIndex<0)return "";return e.options[e.selectedIndex].textContent;}
 function rNum(id,unit){var v=rv(id);return v===""?"":v+(unit?" "+unit:"");}
+function pbNumOrText(id,unit){var v=rv(id);if(v==="")return "—";return lriIsNum(v)?v+(unit?" "+unit:""):v;}
 function rUnitVal(nId,uId){var n=rv(nId);return n===""?"":n+" "+rSelText(uId);}
 function rDate(id){var e=document.getElementById(id);var v=e?e.value:"";if(!v)return "";var pt=v.split("-");return pt.length===3?(pt[2]+"/"+pt[1]+"/"+pt[0]):v;}
 function rSpan(id){var e=document.getElementById(id);return e?e.textContent:"";}
@@ -3487,14 +3514,15 @@ function pbDrawPump(pb,n){
   pbPairRow(pb,"Running hours",rNum(p+"hours","h"));
   pbGap(pb,3);
  }
- if(lriAny([p+"seal_type",p+"seal_cond",p+"seal_drip",p+"seal_rings",p+"seal_sleeve",p+"seal_adj",p+"seal_notes",p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp",p+"brg_notes"])){
+ if(lriAny([p+"seal_type",p+"seal_cond",p+"seal_drip_before",p+"seal_drip_after",p+"seal_rings",p+"seal_sleeve",p+"seal_adj",p+"seal_notes",p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp",p+"brg_notes"])){
   pbHeaderRow(pb,"Seals & bearings");
   pbPairRow(pb,"Seal type",rSelText(p+"seal_type"),"Seal condition",rSelText(p+"seal_cond"));
-  if(lriAny([p+"seal_drip",p+"seal_rings"]))
-   pbPairRow(pb,"Gland drip rate",rNum(p+"seal_drip","drops/min"),"Packing rings remaining",rv(p+"seal_rings"));
+  if(lriAny([p+"seal_drip_before",p+"seal_drip_after"]))
+   pbPairRow(pb,"Drip rate, as found",pbNumOrText(p+"seal_drip_before","drops/min"),"After adjustment",pbNumOrText(p+"seal_drip_after","drops/min"));
+  if(lriAny([p+"seal_rings"]))pbPairRow(pb,"Packing rings remaining",rv(p+"seal_rings"));
   if(lriAny([p+"seal_sleeve",p+"seal_adj"]))
    pbPairRow(pb,"Shaft / sleeve under packing",rSelText(p+"seal_sleeve"),"Follower adjustment left",rSelText(p+"seal_adj"));
-  if(lriAny([p+"seal_drip"]))pbNoteRow(pb,rSpan(p+"seal_drip_note"));
+  if(lriAny([p+"seal_drip_before",p+"seal_drip_after"]))pbNoteRow(pb,rSpan(p+"seal_drip_note"));
   if(rv(p+"seal_notes"))pbNoteRow(pb,"Seal notes: "+rv(p+"seal_notes"));
   pbPairRow(pb,"Bearing type",rSelText(p+"brg_type"),"Bearing condition",rSelText(p+"brg_cond"));
   if(lriAny([p+"brg_de_temp",p+"brg_nde_temp"])){
@@ -3528,17 +3556,19 @@ function pbDrawPump(pb,n){
   if(rv(p+"torq_notes"))pbNoteRow(pb,"Torque notes: "+rv(p+"torq_notes"));
   pbGap(pb,3);
  }
- if(lriAny([p+"drive_type",p+"coup_cond",p+"coup_align",p+"coup_bolts",p+"coup_notes",p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_span",p+"belt_defl",p+"belt_guard",p+"belt_notes"])){
+ if(lriAny([p+"drive_type",p+"coup_cond",p+"coup_align",p+"coup_bolts",p+"coup_notes",p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_span",p+"belt_defl_before",p+"belt_defl_after",p+"belt_guard",p+"belt_notes"])){
   var driveTxt=rSelText(p+"drive_type");
   pbHeaderRow(pb,"Drive"+(driveTxt?": "+driveTxt:""));
   if(lriAny([p+"coup_cond",p+"coup_align",p+"coup_bolts",p+"coup_notes"])){
    pbPairRow(pb,"Coupling condition",rSelText(p+"coup_cond"),"Alignment",rSelText(p+"coup_align"));
    pbPairRow(pb,"System bolts torqued",rChkYN(p+"coup_bolts")+(rv(p+"coup_notes")?" — "+rv(p+"coup_notes"):""));
   }
-  if(lriAny([p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_span",p+"belt_defl",p+"belt_guard",p+"belt_notes"])){
+  if(lriAny([p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_span",p+"belt_defl_before",p+"belt_defl_after",p+"belt_guard",p+"belt_notes"])){
    pbPairRow(pb,"Belts",rv(p+"belt_profile"),"Belt condition",rSelText(p+"belt_cond"));
    pbPairRow(pb,"Tension",rSelText(p+"belt_tension"),"Pulley alignment",rSelText(p+"belt_align"));
    pbPairRow(pb,"Pulley groove wear",rSelText(p+"belt_groove"),"Guard refitted",rChkYN(p+"belt_guard"));
+   if(lriAny([p+"belt_span",p+"belt_defl_before",p+"belt_defl_after"]))
+    pbPairRow(pb,"Span",rNum(p+"belt_span","mm")||"—","Deflection, as found / after",(rNum(p+"belt_defl_before","mm")||"—")+" / "+(rNum(p+"belt_defl_after","mm")||"—"));
    if(lriAny([p+"belt_span"]))pbNoteRow(pb,rSpan(p+"belt_note"));
    if(rv(p+"belt_notes"))pbNoteRow(pb,"Belt notes: "+rv(p+"belt_notes"));
   }
