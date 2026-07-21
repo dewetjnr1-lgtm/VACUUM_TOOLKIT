@@ -892,7 +892,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="about" id="ab_lri">
 <div class="ar"><b>What it is</b>A structured inspection sheet for a liquid ring vacuum pump service call: seals, bearings and a borescope check of the casing (the standard basic inspection scope), plus the coupling, seal-water-cooler and separator-tank bolting/lining checks called up by most O&amp;M preventative maintenance schedules. One pump per block &mdash; add as many as are on the job.</div>
 <div class="ar"><b>Why it matters</b>A client's basic inspection quote usually names three things: seals, bearings, and a borescope of the casing for corrosion or cavitation. This sheet captures exactly that, in the order the quote lists it, so nothing gets left out of the report &mdash; and everything you write here drops straight into a client-ready PDF.</div>
-<div class="ar"><b>Beyond the client's scope</b>Extra checks are included below &mdash; the drive (coupling or V-belts, with a belt tension rule of thumb), a temperature survey around the pump and up and down stream, measured vacuum against rated duty, motor current against nameplate FLA, seal water flow and temperature rise, and a full vibration survey (pump and motor, both ends, three directions) &mdash; because they cost almost nothing to take while you're there and often explain why a pump has lost performance even when the seals and bearings look fine.</div>
+<div class="ar"><b>Beyond the client's scope</b>Extra checks are included below &mdash; gland packing detail (drip rate against the healthy 45&ndash;60 drops a minute, rings remaining, sleeve condition), general walk-up checks (rotation, hold-down bolts, guards, strainer, hoses), the drive (coupling or V-belts, with a belt tension rule of thumb), a temperature survey around the pump and up and down stream, measured vacuum against rated duty, motor current against nameplate FLA, seal water flow and temperature rise, and a full vibration survey (pump and motor, both ends, three directions) &mdash; because they cost almost nothing to take while you're there and often explain why a pump has lost performance even when the seals and bearings look fine.</div>
 <div class="ar"><b>Blank means left out</b>Only the sections you actually fill in appear on the exported PDF, so a quick seals-and-bearings job prints as a tight report and a full survey prints as the works. Skip anything that wasn't part of the job.</div>
 <div class="ar">Everything typed here, including photos, is saved on this phone as you go, so the sheet survives closing the app. Export PDF builds the finished PDF file directly and downloads it &mdash; there's no print screen to fight with, and no browser web-address or date stamped on the page.</div>
 </div>
@@ -2432,9 +2432,10 @@ var EX={
   lri_findings:"Both hogging vacuum pumps inspected per quote WA26-0123 (basic inspection plus O&M preventative maintenance checks). Pump A is in good order. Pump B needs a mechanical seal replacement and a seal water cooler clean at the next planned shutdown; bearing DE temperature, discharge temperature and vibration are all elevated and worth monitoring in the meantime.",
   lri_followup:"Quote mechanical seal replacement and cooler clean, Pump B",
   lri_r1_tag:"Hogging Vacuum Pump A",lri_r1_make:"NASH",lri_r1_model:"2BE1 (per nameplate)",lri_r1_serial:"e.g. 123456",lri_r1_year:2015,lri_r1_maxp_n:6.5,lri_r1_maxp_u:"4",lri_r1_maxt:80,
-  lri_r1_seal_type:"gland",lri_r1_seal_cond:"fair",lri_r1_seal_notes:"Packing 4 rings remaining of 5, slight weep at gland, no excessive drip.",
+  lri_r1_seal_type:"gland",lri_r1_seal_cond:"fair",lri_r1_seal_drip:50,lri_r1_seal_rings:4,lri_r1_seal_sleeve:"good",lri_r1_seal_adj:"some",lri_r1_seal_notes:"Slight weep at gland, seal water flush clean.",
   lri_r1_brg_type:"ball",lri_r1_brg_cond:"good",lri_r1_brg_de_temp:58,lri_r1_brg_nde_temp:55,lri_r1_brg_notes:"No abnormal noise, grease condition acceptable.",
   lri_r1_bore_corr:"light",lri_r1_bore_cav:"none",lri_r1_bore_notes:"Light surface corrosion on casing at discharge port, no pitting through the wall.",
+  lri_r1_chk_strainer:"good",lri_r1_chk_hoses:"good",lri_r1_run_obs:"Runs smoothly, no abnormal noise or leaks.",
   lri_r1_drive_type:"direct",lri_r1_coup_cond:"good",lri_r1_coup_align:"inspec",lri_r1_coup_notes:"Flexible element in good condition.",
   lri_r1_cooler_cond:"good",lri_r1_cooler_notes:"No leaks, fins clean.",
   lri_r1_sep_lining:"none",lri_r1_sep_notes:"Lining intact, no cuts or abrasions observed via borescope.",
@@ -2449,6 +2450,7 @@ var EX={
   lri_r2_seal_type:"mech",lri_r2_seal_cond:"poor",lri_r2_seal_notes:"Visible seal face weepage, recommend replacement at next opportunity.",
   lri_r2_brg_type:"ball",lri_r2_brg_cond:"fair",lri_r2_brg_de_temp:64,lri_r2_brg_nde_temp:60,lri_r2_brg_notes:"Slightly elevated DE temperature, monitor.",
   lri_r2_bore_corr:"moderate",lri_r2_bore_cav:"light",lri_r2_bore_notes:"Moderate corrosion and light cavitation pitting near the rotor tips, casing wall thickness appears adequate.",
+  lri_r2_chk_strainer:"fair",lri_r2_chk_hoses:"good",lri_r2_run_obs:"Slight rumble at the drive end under load.",
   lri_r2_drive_type:"belt",lri_r2_belt_profile:"SPB x 3",lri_r2_belt_cond:"fair",lri_r2_belt_tension:"loose",lri_r2_belt_align:"inspec",lri_r2_belt_groove:"fair",lri_r2_belt_span:900,lri_r2_belt_defl:20,lri_r2_belt_notes:"Belts glazed on one face; re-tension now, budget a belt set at next service.",
   lri_r2_cooler_cond:"fair",lri_r2_cooler_notes:"Some scale build-up on the waterside, recommend clean.",
   lri_r2_sep_lining:"wear",lri_r2_sep_notes:"Light surface wear observed, no through-wall damage.",
@@ -2824,7 +2826,11 @@ function lriRowHTML(n){
  '<div class="mgrid"><div class="mgf"><span class="mlab">Max working temp</span><div class="ctrl"><input type="number" id="'+p+'maxt" placeholder="number"><span class="fu">&deg;C</span></div></div><div class="mgf"><span class="mlab">Running hours (if known)</span><div class="ctrl"><input type="number" id="'+p+'hours" placeholder="number"><span class="fu">h</span></div></div></div>'+
  '<div class="tp-num">Seals</div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Type</span><div class="ctrl"><select id="'+p+'seal_type">'+LRI_OPT_SEALTYPE+'</select></div></div><div class="mgf"><span class="mlab">Condition</span><div class="ctrl"><select id="'+p+'seal_cond">'+LRI_OPT_COND+'</select></div></div></div>'+
- '<div class="fld"><div class="fh"><label>Seal notes</label></div><div class="ctrl"><textarea id="'+p+'seal_notes" rows="2" placeholder="Packing rings remaining, leakage rate, water flow..."></textarea></div></div>'+
+ '<p style="font-size:12px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px">Gland packing (skip if mechanical seal)</p>'+
+ '<div class="mgrid"><div class="mgf"><span class="mlab">Gland drip rate</span><div class="ctrl"><input type="number" id="'+p+'seal_drip" placeholder="number"><span class="fu">drops/min</span></div></div><div class="mgf"><span class="mlab">Packing rings remaining</span><div class="ctrl"><input type="number" id="'+p+'seal_rings" placeholder="number"></div></div></div>'+
+ '<div class="mgrid"><div class="mgf"><span class="mlab">Shaft / sleeve under packing</span><div class="ctrl"><select id="'+p+'seal_sleeve">'+LRI_OPT_COND3+'</select></div></div><div class="mgf"><span class="mlab">Follower adjustment left</span><div class="ctrl"><select id="'+p+'seal_adj"><option value=""></option><option value="plenty">Plenty</option><option value="some">Some</option><option value="none">None &mdash; repack due</option></select></div></div></div>'+
+ '<p id="'+p+'seal_drip_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Gland packing should weep &mdash; about 45 to 60 drops a minute keeps it cool and lubricated.</p>'+
+ '<div class="fld"><div class="fh"><label>Seal notes</label></div><div class="ctrl"><textarea id="'+p+'seal_notes" rows="2" placeholder="Leakage rate, seal water flush condition..."></textarea></div></div>'+
  '<div class="tp-num">Bearings</div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Type</span><div class="ctrl"><select id="'+p+'brg_type">'+LRI_OPT_BRGTYPE+'</select></div></div><div class="mgf"><span class="mlab">Condition</span><div class="ctrl"><select id="'+p+'brg_cond">'+LRI_OPT_COND+'</select></div></div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Temp, drive end</span><div class="ctrl"><input type="number" id="'+p+'brg_de_temp" placeholder="number"><span class="fu">&deg;C</span></div></div><div class="mgf"><span class="mlab">Temp, non-drive end</span><div class="ctrl"><input type="number" id="'+p+'brg_nde_temp" placeholder="number"><span class="fu">&deg;C</span></div></div></div>'+
@@ -2834,6 +2840,12 @@ function lriRowHTML(n){
  '<p style="font-size:12px;color:var(--soft);margin:0 0 6px">Internal condition for corrosion and/or cavitation damage on the casting.</p>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Corrosion</span><div class="ctrl"><select id="'+p+'bore_corr">'+LRI_OPT_SEV+'</select></div></div><div class="mgf"><span class="mlab">Cavitation damage</span><div class="ctrl"><select id="'+p+'bore_cav">'+LRI_OPT_SEV+'</select></div></div></div>'+
  '<div class="fld"><div class="fh"><label>Borescope notes / location of damage</label></div><div class="ctrl"><textarea id="'+p+'bore_notes" rows="2"></textarea></div></div>'+
+ '<div class="tp-num">General &amp; installation</div>'+
+ '<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="'+p+'chk_rotation"> Rotation direction checked and correct</label></div></div>'+
+ '<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="'+p+'chk_footbolts"> Foot &amp; hold-down bolts firmly tightened</label></div></div>'+
+ '<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="'+p+'chk_guards"> All guards fitted and secure</label></div></div>'+
+ '<div class="mgrid"><div class="mgf"><span class="mlab">Inlet strainer / screen</span><div class="ctrl"><select id="'+p+'chk_strainer">'+LRI_OPT_COND3+'</select></div></div><div class="mgf"><span class="mlab">Flexible connections / hoses</span><div class="ctrl"><select id="'+p+'chk_hoses">'+LRI_OPT_COND3+'</select></div></div></div>'+
+ '<div class="fld"><div class="fh"><label>Running observations</label></div><div class="ctrl"><textarea id="'+p+'run_obs" rows="2" placeholder="Noise, leaks, anything unusual while running..."></textarea></div></div>'+
  '<div class="tp-num">Drive: coupling or V-belts</div>'+
  '<div class="fld"><div class="fh"><label>Drive type</label></div><div class="ctrl"><select id="'+p+'drive_type">'+LRI_OPT_DRIVE+'</select></div></div>'+
  '<p style="font-size:12px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px">Coupling (skip if belt driven)</p>'+
@@ -2893,9 +2905,10 @@ function lriRowHTML(n){
 function lriRowFields(n){
  var p="lri_r"+n+"_";
  return [p+"tag",p+"make",p+"model",p+"serial",p+"year",p+"maxp_n",p+"maxp_u",p+"maxt",p+"hours",
-  p+"seal_type",p+"seal_cond",p+"seal_notes",
+  p+"seal_type",p+"seal_cond",p+"seal_drip",p+"seal_rings",p+"seal_sleeve",p+"seal_adj",p+"seal_notes",
   p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp",p+"brg_notes",
   p+"bore_corr",p+"bore_cav",p+"bore_notes",
+  p+"chk_rotation",p+"chk_footbolts",p+"chk_guards",p+"chk_strainer",p+"chk_hoses",p+"run_obs",
   p+"drive_type",p+"coup_cond",p+"coup_align",p+"coup_bolts",p+"coup_notes",
   p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_span",p+"belt_defl",p+"belt_guard",p+"belt_notes",
   p+"cooler_cond",p+"cooler_bolts",p+"cooler_notes",
@@ -2928,6 +2941,15 @@ function lriRemoveRow(){
 }
 function lriRowCalc(n){
  var p="lri_r"+n+"_";
+ var dripEl=document.getElementById(p+"seal_drip_note");
+ if(dripEl){
+  var drip=gv(p+"seal_drip");
+  if(isNaN(drip))dripEl.textContent="Gland packing should weep — about 45 to 60 drops a minute keeps it cool and lubricated.";
+  else if(drip<=0)dripEl.textContent="A dry gland runs hot and burns the packing and sleeve — slacken the follower evenly until it just weeps (about 45 to 60 drops a minute).";
+  else if(drip<45)dripEl.textContent=fmtA(drip,0)+" drops/min is on the dry side of the usual 45 to 60 — watch the gland temperature; slacken slightly if it runs warm.";
+  else if(drip<=60)dripEl.textContent=fmtA(drip,0)+" drops/min — right in the healthy 45 to 60 range for gland packing.";
+  else dripEl.textContent=fmtA(drip,0)+" drops/min is more than a weep — nip the follower a quarter turn at a time (per the commissioning procedure), or repack if there is no adjustment left.";
+ }
  var rn=gv(p+"vac_rated_n"),ru=gs(p+"vac_rated_u"),mn=gv(p+"vac_meas_n"),mu=gs(p+"vac_meas_u");
  var vacEl=document.getElementById(p+"vac_note");
  if(vacEl){
@@ -3245,59 +3267,60 @@ function pbSignoff(pb,by,dateStr){
  pb.y=y0+h;
  pbRow(pb,[{x:PB_M,w:half,text:"Name & date: "+(by||"—")+(dateStr?" · "+dateStr:"")},{x:PB_M+half,w:half,text:"Name & date:"}]);
 }
-// Re-encodes a photo onto a canvas sized to a multiple of 16 in both directions
-// before it goes into the PDF. jsPDF's built-in JPEG decoder can corrupt the
-// edge of an image whose width isn't a whole number of 8x8 JPEG blocks (this is
-// exactly what happened to the vendor logo during testing) -- since a resized
-// phone photo can land on any odd width, every photo gets this safety pass.
+// Re-encodes every photo onto an identical 960x640 white canvas before it goes
+// into the PDF, scaled to fit without cropping (evidence photos must never lose
+// content). Two birds: every photo tile in the report is exactly the same size,
+// and the fixed 16-aligned dimensions sidestep a jsPDF JPEG-decoder bug that
+// corrupts the edge of images whose width isn't a whole number of JPEG blocks
+// (which is what was slicing the letterhead logo during testing).
 function pbNormalizePhoto(src){
  return new Promise(function(resolve){
   var img=new Image();
   img.onload=function(){
-   var w=Math.max(16,Math.round((img.naturalWidth||img.width||4)/16)*16);
-   var h=Math.max(16,Math.round((img.naturalHeight||img.height||3)/16)*16);
+   var W=960,H=640;
+   var iw=img.naturalWidth||img.width||4,ih=img.naturalHeight||img.height||3;
+   var s=Math.min(W/iw,H/ih),dw=iw*s,dh=ih*s;
    var canvas=document.createElement("canvas");
-   canvas.width=w;canvas.height=h;
-   canvas.getContext("2d").drawImage(img,0,0,w,h);
-   resolve({src:canvas.toDataURL("image/jpeg",0.85),w:w,h:h});
+   canvas.width=W;canvas.height=H;
+   var g=canvas.getContext("2d");
+   g.fillStyle="#ffffff";g.fillRect(0,0,W,H);
+   g.drawImage(img,(W-dw)/2,(H-dh)/2,dw,dh);
+   resolve({src:canvas.toDataURL("image/jpeg",0.85),w:W,h:H});
   };
   img.onerror=function(){resolve({src:src,w:4,h:3});};
   img.src=src;
  });
 }
-// Draws one row of up to 2 photos side by side, each with its own caption
-// underneath, sized so 3 rows (6 photos) fit comfortably on a page. items is
-// an array of 1 or 2 {src,caption,w,h}; a single item takes the left half only.
+// Draws one row of up to 2 photos side by side. Every photo arrives from
+// pbNormalizePhoto on an identical 960x640 canvas, so every tile is exactly
+// the same size and the grid stays perfectly regular -- three rows (6 photos)
+// to a page. Caption boxes under a row share the taller height so their bottom
+// edges line up. items is 1 or 2 {src,caption}; an odd one takes the left half.
 function pbPhotoRow(pb,items){
- var gap=6,cw=(PB_W-gap)/2,maxH=64,pad=1.6,fs=8,lh=fs*0.41,i,it,ratio,w,h;
- var cellW=[],cellH=[],capLines=[],capH=[],rowH=0,t;
+ var gap=6,cw=(PB_W-gap)/2,ch=cw*640/960,pad=1.6,fs=8,lh=fs*0.41,i;
+ var capLines=[],capH=0;
+ pb.doc.setFont("helvetica","normal");pb.doc.setFontSize(fs);
  for(i=0;i<items.length;i++){
-  it=items[i];
-  ratio=(it.w&&it.h)?it.w/it.h:1.33;
-  w=cw;h=w/ratio;
-  if(h>maxH){h=maxH;w=h*ratio;}
-  cellW.push(w);cellH.push(h);
-  pb.doc.setFont("helvetica","normal");pb.doc.setFontSize(fs);
-  var lines=pbWrap(pb.doc,it.caption||"Photo",cw-2*pad);
+  var lines=pbWrap(pb.doc,items[i].caption||"Photo",cw-2*pad);
   capLines.push(lines);
-  capH.push(Math.max(6,lines.length*lh+2*pad));
+  var hh=Math.max(6,lines.length*lh+2*pad);
+  if(hh>capH)capH=hh;
  }
- for(i=0;i<items.length;i++){t=cellH[i]+1.5+capH[i];if(t>rowH)rowH=t;}
- pbEnsure(pb,rowH);
+ pbEnsure(pb,ch+1.5+capH+4);
  var y0=pb.y;
  for(i=0;i<items.length;i++){
-  var x0=PB_M+i*(cw+gap),ix=x0+(cw-cellW[i])/2;
+  var x0=PB_M+i*(cw+gap);
   var fmt=/^data:image\/png/i.test(items[i].src)?"PNG":"JPEG";
-  pb.doc.addImage(items[i].src,fmt,ix,y0,cellW[i],cellH[i]);
+  pb.doc.addImage(items[i].src,fmt,x0,y0,cw,ch);
   pb.doc.setDrawColor(0,0,0);pb.doc.setLineWidth(0.15);
-  pb.doc.rect(ix,y0,cellW[i],cellH[i]);
-  var capY=y0+cellH[i]+1.5;
-  pb.doc.rect(x0,capY,cw,capH[i]);
+  pb.doc.rect(x0,y0,cw,ch);
+  var capY=y0+ch+1.5;
+  pb.doc.rect(x0,capY,cw,capH);
   pb.doc.setFont("helvetica","normal");pb.doc.setFontSize(fs);
   pb.doc.setTextColor(0,0,0);
   for(var j=0;j<capLines[i].length;j++)pb.doc.text(capLines[i][j],x0+pad,capY+pad+lh*0.78+j*lh);
  }
- pb.y=y0+rowH+4;
+ pb.y=y0+ch+1.5+capH+4;
 }
 function pbLetterheadFooter(pb){
  var fs1=7,fs2=6.2,fs3=5.6;
@@ -3338,9 +3361,14 @@ function pbDrawPump(pb,n){
   pbPairRow(pb,"Running hours",rNum(p+"hours","h"));
   pbGap(pb,3);
  }
- if(lriAny([p+"seal_type",p+"seal_cond",p+"seal_notes",p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp",p+"brg_notes"])){
+ if(lriAny([p+"seal_type",p+"seal_cond",p+"seal_drip",p+"seal_rings",p+"seal_sleeve",p+"seal_adj",p+"seal_notes",p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp",p+"brg_notes"])){
   pbHeaderRow(pb,"Seals & bearings");
   pbPairRow(pb,"Seal type",rSelText(p+"seal_type"),"Seal condition",rSelText(p+"seal_cond"));
+  if(lriAny([p+"seal_drip",p+"seal_rings"]))
+   pbPairRow(pb,"Gland drip rate",rNum(p+"seal_drip","drops/min"),"Packing rings remaining",rv(p+"seal_rings"));
+  if(lriAny([p+"seal_sleeve",p+"seal_adj"]))
+   pbPairRow(pb,"Shaft / sleeve under packing",rSelText(p+"seal_sleeve"),"Follower adjustment left",rSelText(p+"seal_adj"));
+  if(lriAny([p+"seal_drip"]))pbNoteRow(pb,rSpan(p+"seal_drip_note"));
   if(rv(p+"seal_notes"))pbNoteRow(pb,"Seal notes: "+rv(p+"seal_notes"));
   pbPairRow(pb,"Bearing type",rSelText(p+"brg_type"),"Bearing condition",rSelText(p+"brg_cond"));
   if(lriAny([p+"brg_de_temp",p+"brg_nde_temp"])){
@@ -3354,6 +3382,14 @@ function pbDrawPump(pb,n){
   pbHeaderRow(pb,"Borescope inspection of casing");
   pbPairRow(pb,"Corrosion",rSelText(p+"bore_corr"),"Cavitation damage",rSelText(p+"bore_cav"));
   if(rv(p+"bore_notes"))pbNoteRow(pb,"Borescope notes: "+rv(p+"bore_notes"));
+  pbGap(pb,3);
+ }
+ if(lriAny([p+"chk_rotation",p+"chk_footbolts",p+"chk_guards",p+"chk_strainer",p+"chk_hoses",p+"run_obs"])){
+  pbHeaderRow(pb,"General & installation");
+  pbPairRow(pb,"Rotation direction correct",rChkYN(p+"chk_rotation"),"Foot & hold-down bolts tight",rChkYN(p+"chk_footbolts"));
+  pbPairRow(pb,"All guards fitted & secure",rChkYN(p+"chk_guards"),"Inlet strainer / screen",rSelText(p+"chk_strainer"));
+  pbPairRow(pb,"Flexible connections / hoses",rSelText(p+"chk_hoses"));
+  if(rv(p+"run_obs"))pbNoteRow(pb,"Running observations: "+rv(p+"run_obs"));
   pbGap(pb,3);
  }
  if(lriAny([p+"drive_type",p+"coup_cond",p+"coup_align",p+"coup_bolts",p+"coup_notes",p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_span",p+"belt_defl",p+"belt_guard",p+"belt_notes"])){
