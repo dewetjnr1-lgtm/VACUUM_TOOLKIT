@@ -129,6 +129,8 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .ctrl textarea{flex:1 1 100%;font-family:var(--sans);font-size:16px;padding:10px;border:1px solid var(--line);border-radius:10px;background:rgba(255,255,255,.65);color:var(--ink);resize:vertical;min-height:70px;}
 .ctrl textarea:focus{outline:2px solid var(--teal);border-color:var(--teal);}
 .tp-num{font-size:13px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.05em;margin:16px 0 4px;}
+.tp-num.tp-link{cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;}
+.tp-num.tp-link .tp-go{float:right;font-weight:600;text-transform:none;letter-spacing:normal;font-size:12px;color:var(--accent);}
 .tp-num:first-child{margin-top:0;}
 .mgrid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:2px 12px;margin-top:6px;}
 .mgf{display:flex;flex-direction:column;min-width:0;}
@@ -898,6 +900,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="ar"><b>Beyond the client's scope</b>Extra checks are included below &mdash; gland packing detail (drip rate against the healthy 45&ndash;60 drops a minute, rings remaining, sleeve condition), general walk-up checks (rotation, hold-down bolts, guards, strainer, hoses), the drive (coupling or V-belts, with a belt tension rule of thumb), a temperature survey around the pump and up and down stream, measured vacuum against rated duty, motor current against nameplate FLA, seal water flow and temperature rise, and a full vibration survey (pump and motor, both ends, three directions) &mdash; because they cost almost nothing to take while you're there and often explain why a pump has lost performance even when the seals and bearings look fine.</div>
 <div class="ar"><b>Blank means left out</b>Only the sections you actually fill in appear on the exported PDF, so a quick seals-and-bearings job prints as a tight report and a full survey prints as the works. Skip anything that wasn't part of the job.</div>
 <div class="ar"><b>Something not on the list?</b>Every pump has an "Additional checks" box near the bottom &mdash; add as many as you like, each with what you checked, a condition, and an optional value or reading. Good for anything that comes up on the day: body tie rod torque, coupling bolt torque, base plate condition, whatever it is. There's no single industry-standard torque figure for tie rods or coupling bolts &mdash; both are set by the pump or coupling maker's own manual &mdash; so this is a free space to log whatever number you actually used.</div>
+<div class="ar"><b>No nameplate duty figure handy?</b>The "Extra: vacuum performance" heading in each pump block is a link &mdash; tap it to jump straight to the "Deepest Vacuum You Can Pull" calculator, fill in today's seal water temperature and site altitude, then tap the &lsquo;&#8249; Back&rsquo; button at the top to come straight back to this report. Tap "Pull from vacuum calculator" to drop that number into Rated duty vacuum as your comparison point.</div>
 <div class="ar">Everything typed here, including photos, is saved on this phone as you go, so the sheet survives closing the app. Export PDF builds the finished PDF file directly and downloads it &mdash; there's no print screen to fight with, and no browser web-address or date stamped on the page.</div>
 </div>
 <div class="card"><h3>Job details</h3><button class="exbtn" onclick="lriInsertExample()">Insert example</button><button class="exbtn" onclick="lriExportPDF()">Export PDF</button><button class="clrbtn" onclick="lriClear()">Clear this report</button>
@@ -2882,9 +2885,10 @@ function lriRowHTML(n){
  '<div class="mgrid"><div class="mgf"><span class="mlab">Discharge line</span><div class="ctrl"><input type="number" id="'+p+'t_dis" placeholder="number"><span class="fu">&deg;C</span></div></div><div class="mgf"><span class="mlab">Pump casing</span><div class="ctrl"><input type="number" id="'+p+'t_case" placeholder="number"><span class="fu">&deg;C</span></div></div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Motor frame</span><div class="ctrl"><input type="number" id="'+p+'t_motor" placeholder="number"><span class="fu">&deg;C</span></div></div><div class="mgf"></div></div>'+
  '<p id="'+p+'temp_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Fill in suction and discharge to see the temperature rise across the pump.</p>'+
- '<div class="tp-num">Extra: vacuum performance</div>'+
+ '<div class="tp-num tp-link" onclick="lriGoCalc(\'mav\','+n+')" title="Open the vacuum calculator, then come back and pull the number in">Extra: vacuum performance <span class="tp-go">Open calculator &rsaquo;</span></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Rated duty vacuum</span><div class="ctrl"><input type="number" id="'+p+'vac_rated_n" placeholder="number"><select id="'+p+'vac_rated_u" data-g="pressure" data-du="0"></select></div></div><div class="mgf"><span class="mlab">Measured today</span><div class="ctrl"><input type="number" id="'+p+'vac_meas_n" placeholder="number"><select id="'+p+'vac_meas_u" data-g="pressure" data-du="0"></select></div></div></div>'+
- '<p id="'+p+'vac_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Fill in both to compare against rated duty.</p>'+
+ '<button class="clrbtn" style="margin:2px 0 0" onclick="lriPullMav('+n+')">Pull from vacuum calculator</button>'+
+ '<p id="'+p+'vac_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Fill in both to compare against rated duty. No nameplate figure handy? Open the vacuum calculator above, enter today\'s seal water temperature and site altitude, then come back and tap "Pull from vacuum calculator" to use that as your rated comparison point.</p>'+
  '<div class="tp-num">Extra: motor current</div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Nameplate FLA</span><div class="ctrl"><input type="number" id="'+p+'amps_rated" placeholder="number"><span class="fu">A</span></div></div><div class="mgf"><span class="mlab">Measured running current</span><div class="ctrl"><input type="number" id="'+p+'amps_meas" placeholder="number"><span class="fu">A</span></div></div></div>'+
  '<p id="'+p+'amps_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Fill in both to see % of full load.</p>'+
@@ -2989,6 +2993,16 @@ function lriRemoveExtra(n){
 function lriSaveExtraCounts(){
  try{localStorage.setItem(LRI_EX_RC_KEY,JSON.stringify(LRI_EXTRA_COUNT));}catch(err){}
 }
+function lriPullMav(n){
+ var a=BASE["mav_deep"],B=PB["mav_deep"];
+ if(isNaN(a)||isNaN(B)){alert("Open the vacuum calculator first (tap the \"Extra: vacuum performance\" heading above) and fill in the seal water temperature and air pressure, then come back.");return;}
+ var vacKPa=B-a;
+ var p="lri_r"+n+"_",u=gs(p+"vac_rated_u");
+ if(u===null){alert("Add this pump row first.");return;}
+ document.getElementById(p+"vac_rated_n").value=Math.round((vacKPa/G.pressure[+u][1])*100)/100;
+ recalc();
+}
+window.lriPullMav=lriPullMav;
 // Insert example needs at least one additional-check row per pump to exist before
 // the generic ex() can fill in its demo values, since growable rows aren't in the
 // DOM until something adds them.
@@ -3611,10 +3625,22 @@ window.lriAddRow=lriAddRow;window.lriRemoveRow=lriRemoveRow;window.lriRemovePhot
 var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the Gas Laws",learn_intro:"What a Gas Really Is",learn_boyle:"Boyle's Law",learn_charles:"Charles's Law",learn_gl:"Gay-Lussac's Law",learn_combined:"The Combined Gas Law",learn_ideal:"The Ideal Gas Law",learn_dalton:"Dalton's Law",fc:"Normal / Actual Flow",vac:"Vacuum Pump Sizing",cmp:"Compressor Sizing",pc:"Conveying Sizing",mp:"Which Machine",vap:"Vapour & Wet Gas",pd:"Pump-down Time",lk:"Leak Check",pl:"Pipe Loss",pw:"Power & Motor Current",cv:"Unit Converter",ref:"Reference Tables",orf:"Orifice Sizing",hl:"Heat Load, Water",mw:"Cooling Tower Make-up",cw:"Conveying Step-by-Step",cat_learn:"Play and Learn",cat_size:"Sizing Tools",cat_site:"On-Site Checks",ts:"Find the Fault",ps:"Pre-separator Sizing",lr:"Inside a Liquid Ring Pump",dt:"Discharge Temperature",ck:"Commissioning Checklist",bp:"Belt & Pulley Speed",af:"Speed Change Effect",learn_fan:"Speed and the Fan Laws",learn_heat:"How Heat Load Works",learn_cav:"Why Seal Water Stays Cool",pt:"Production Test vs Factory Curve",lft:"Liquid Ring Pump Field Test Sheet",cat_bf:"Belt Filters & Dewatering",bf:"Belt Filter Pump Sizing",mav:"Deepest Vacuum You Can Pull",dl:"Drop-Leg Height Check",vl:"Vacuum Line Loss",rpt:"Site Investigation Report",lri:"Liquid Ring Pump Inspection Report"};
 var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",pt:"cat_site",lft:"cat_site",bf:"cat_bf",mav:"cat_bf",dl:"cat_bf",vl:"cat_bf",rpt:"cat_site",lri:"cat_site"};
 var CUR="home";
-function goBack(){show(PARENT[CUR]||"home");}
+var LRI_RETURN=null;
+function lriGoCalc(calcId,n){LRI_RETURN={calc:calcId,n:n};show(calcId);}
+function goBack(){
+ if(LRI_RETURN&&CUR===LRI_RETURN.calc){
+  var n=LRI_RETURN.n;LRI_RETURN=null;
+  show("lri");
+  var row=document.getElementById("lri_row"+n);
+  if(row)setTimeout(function(){row.scrollIntoView({block:"start"});},0);
+  return;
+ }
+ show(PARENT[CUR]||"home");
+}
 var MENUS={home:1,cat_learn:1,cat_size:1,cat_site:1,cat_bf:1,learn:1};
 function show(id){
  CUR=id;
+ if(LRI_RETURN&&id!==LRI_RETURN.calc&&id!=="lri")LRI_RETURN=null;
  var ps=document.querySelectorAll(".page");for(var i=0;i<ps.length;i++)ps[i].classList.toggle("active",ps[i].id===id);
  document.body.classList.toggle("inpage",id!=="home");
  document.getElementById("hdr_t").textContent=TT[id]||TT.home;
