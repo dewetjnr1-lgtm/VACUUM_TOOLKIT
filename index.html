@@ -762,6 +762,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="ar"><b>What it is</b>Works out how big a vacuum pump a horizontal belt filter needs, from the filter area and how much air it pulls through the cake.</div>
 <div class="ar"><b>Why it matters</b>On a belt filter you don't size the pump on the filtrate &mdash; you size it on the <b>air</b> that gets pulled through the cake and cloth once the cake dewaters and cracks. Get that number right and the cake comes off dry; get it wrong and either the cake is wet or you've oversold the pump.</div>
 <div class="ar"><b>Where you would use it</b>A mine wants a belt filter for concentrate or tailings. You know the filter area (or you've sized it from the tonnage) and the vacuum they want to run. This gives the air the pump must handle, at the right suction pressure, and warns you if the altitude and seal-water temperature won't let you reach that vacuum in the first place.</div>
+<div class="ar"><b>Watch this feedback loop</b>A scaled, eroded or too-long line between the receiver and the pump costs vacuum, so the pump has to pull deeper than the filter needs just to overcome it. That eats into the margin Drop-Leg Height Check needs, and pushes the pump closer to its seal-water limit &mdash; both of which make carryover more likely, which is what wore or scaled the line in the first place. A line that keeps getting worse is a sign to check the whole system, not just re-quote a bigger pump.</div>
 <span class="law">Uses: specific air demand &times; area, with the seal-water vacuum limit</span></div>
 <div class="card"><h3>Fill these in</h3>
 <button class="exbtn" onclick="ex('bf')">Insert example</button><button class="clrbtn" onclick="clr('bf')">Clear</button>
@@ -769,16 +770,17 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="fld"><div class="fh"><label>Air pulled through, per m&sup2;</label><button class="q" onclick="hp('h_bf_q')">?</button></div><div class="help" id="h_bf_q">The specific air demand: how much air the pump draws through each square metre of cake at the operating vacuum, in m&sup3;/h per m&sup2;. Typical starting figures &mdash; coarse coal or minerals 75&ndash;120, base-metal concentrate 45&ndash;75, fine flotation concentrate 30&ndash;50, fine tailings or clay 25&ndash;40. (Divide by 60 for m&sup3;/min per m&sup2;.) Always confirm with a filtration or pilot test &mdash; this is the number that moves the pump size the most.</div><div class="ctrl"><input type="number" id="bf_q_n" placeholder="number"><span class="fu">m&sup3;/h·m&sup2;</span></div></div>
 <div class="fld"><div class="fh"><label>Leakage &amp; safety margin</label><button class="q" onclick="hp('h_bf_margin')">?</button></div><div class="help" id="h_bf_margin">Extra capacity for air leaking in at the belt seals, cloth edges and vacuum-box wear, plus a safety allowance. 15&ndash;30% is usual. Leave blank for none.</div><div class="ctrl"><input type="number" id="bf_margin_n" placeholder="number"><span class="fu">%</span></div></div>
 <div class="fld"><div class="fh"><label>Operating vacuum</label><button class="q" onclick="hp('h_bf_vac')">?</button></div><div class="help" id="h_bf_vac">The vacuum you want to run the filter at, typed as a plain positive number below the surrounding air. Deeper vacuum means a drier cake, up to the limit your seal water allows.</div><div class="ctrl"><input type="number" id="bf_vac_n" placeholder="number"><select id="bf_vac_u" data-g="pressure" data-du="0"></select><select id="bf_vac_r" data-ref="v"></select></div></div>
+<div class="fld"><div class="fh"><label>Pressure lost between the receiver and the pump</label><button class="q" onclick="hp('h_bf_loss')">?</button></div><div class="help" id="h_bf_loss">An allowance for the vacuum line between the pre-separator/receiver and the pump: bends, a long run, a partly scaled or eroded pipe. The pump has to pull this much deeper than the vacuum at the filter to deliver it. Leave blank for none. This isn't the seal-water Pipe Loss tool &mdash; that one is sized for liquid lines, not this air line &mdash; so use a maker's duct-loss figure or a measured reading if you have one.</div><div class="ctrl"><input type="number" id="bf_loss_n" placeholder="number"><select id="bf_loss_u" data-g="pressure" data-du="0"></select></div></div>
 <div class="fld"><div class="fh"><label>Air pressure where you are</label><button class="q" onclick="hp('h_bf_air')">?</button></div><div class="help" id="h_bf_air">The air pressure at the site. About 101 kilopascals at sea level, near 95 at 500 metres up, near 90 at 1000 metres, near 84 at 1600 metres (highveld). At altitude you simply cannot pull as deep a vacuum &mdash; that is why this matters.</div><div class="ctrl"><input type="number" id="bf_air_n" placeholder="number"><select id="bf_air_u" data-g="pressure" data-du="0"></select></div></div>
 <div class="fld"><div class="fh"><label>Seal water temperature</label><button class="q" onclick="hp('h_bf_swt')">?</button></div><div class="help" id="h_bf_swt">How warm the seal water is. Warmer water boils at a lower vacuum, so it sets the deepest vacuum a liquid ring pump can reach. Cold water lets you pull deeper.</div><div class="ctrl"><input type="number" id="bf_swt_n" placeholder="number"><span class="fu">&deg;C</span></div></div>
 </div>
 <div class="card"><h3>Answer</h3>
 <div class="res big"><div class="fh"><span class="res-lab" style="margin:0">Air the pump must handle, at this vacuum</span><button class="q" onclick="hp('hy_bf_load')">?</button></div><div class="help" id="hy_bf_load">The actual air volume the vacuum pump has to move at the operating vacuum. This is the flow you take to the liquid ring pump curve. Switch the unit menu for CFM.</div><div class="ctrl"><span class="res-v" id="bf_load_v" data-g="flow">&mdash;</span><select id="bf_load_u2" data-g="flow" data-du="0"></select></div></div>
-<div class="res"><div class="fh"><span class="res-lab" style="margin:0">Absolute suction pressure at the filter</span></div><div class="ctrl"><span class="res-v" id="bf_pabs_v">&mdash;</span><select id="bf_pabs_u2" data-g="pressure" data-du="0"></select><select id="bf_pabs_r2" data-ref="a"></select></div></div>
+<div class="res"><div class="fh"><span class="res-lab" style="margin:0">Absolute pressure the pump itself must reach</span><button class="q" onclick="hp('hy_bf_pabs')">?</button></div><div class="help" id="hy_bf_pabs">The vacuum at the filter, plus any line loss to the pump. This, not the filter's own vacuum, is what to compare against the pump curve and against how deep the seal water lets the pump go.</div><div class="ctrl"><span class="res-v" id="bf_pabs_v">&mdash;</span><select id="bf_pabs_u2" data-g="pressure" data-du="0"></select><select id="bf_pabs_r2" data-ref="a"></select></div></div>
 <div class="res"><div class="fh"><span class="res-lab" style="margin:0">Deepest vacuum this seal water can pull</span><button class="q" onclick="hp('hy_bf_deep')">?</button></div><div class="help" id="hy_bf_deep">The deepest vacuum a liquid ring pump can reach with seal water this warm, at this altitude. If your operating vacuum is close to or past this, the cake will suffer and the pump will start to cavitate &mdash; use colder seal water.</div><div class="ctrl"><span class="res-v" id="bf_deep_v">&mdash;</span><select id="bf_deep_u2" data-g="pressure" data-du="0"></select><select id="bf_deep_r2" data-ref="v"></select></div></div>
 <div class="fh" style="margin-top:14px"><span class="res-lab" style="margin:0">Your duty point, find it on the maker's curve</span><button class="q" onclick="hp('hy_bf_duty')">?</button></div><div class="help" id="hy_bf_duty">A vacuum pump curve plots flow up the side against absolute inlet pressure along the bottom. This is your point: pick a model whose curve passes above it.</div><svg id="bf_duty" viewBox="0 0 360 225" style="width:100%;height:auto;display:block;margin-top:4px"></svg></div>
 <div class="means" id="bf_m">Fill in the boxes and this explains your answer.</div>
-<details><summary>Show the math</summary><div class="math"><div class="formula">Air load = Area &times; air per m&sup2; &times; (1 + margin)<small>at the operating vacuum, actual m&sup3;/h</small></div><div class="plug" id="mx_bf1">Your numbers appear here when the boxes are filled in.</div><div class="formula">Deepest vacuum = Air pressure &minus; P<sub>vapour</sub>(seal water)<small>P<sub>vapour</sub> = 6.112 &times; e^(17.62 T / (243.12 + T)) / 10, kPa &middot; T in &deg;C</small></div><div class="plug" id="mx_bf2">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: specific-air-demand sizing per standard vacuum-filtration practice (Perry's Chemical Engineers' Handbook, filtration section); seal-water vapour limit from the Magnus&ndash;Tetens saturation vapour pressure of water. Air demand figures are typical ranges &mdash; confirm the final pump against the maker's curve and a filtration test.</p></div></details>
+<details><summary>Show the math</summary><div class="math"><div class="formula">Air load = Area &times; air per m&sup2; &times; (1 + margin)<small>at the operating vacuum, actual m&sup3;/h</small></div><div class="plug" id="mx_bf1">Your numbers appear here when the boxes are filled in.</div><div class="formula">Pressure at the pump = Pressure at the filter &minus; line loss<small>the pump must reach a lower absolute pressure than the filter by whatever the line between them costs</small></div><div class="plug" id="mx_bf3">Your numbers appear here when the boxes are filled in.</div><div class="formula">Deepest vacuum = Air pressure &minus; P<sub>vapour</sub>(seal water)<small>P<sub>vapour</sub> = 6.112 &times; e^(17.62 T / (243.12 + T)) / 10, kPa &middot; T in &deg;C</small></div><div class="plug" id="mx_bf2">Your numbers appear here when the boxes are filled in.</div><p style="font-size:12.5px;color:var(--soft)">Source: specific-air-demand sizing per standard vacuum-filtration practice (Perry's Chemical Engineers' Handbook, filtration section); seal-water vapour limit from the Magnus&ndash;Tetens saturation vapour pressure of water. Air demand figures are typical ranges &mdash; confirm the final pump against the maker's curve and a filtration test.</p></div></details>
 </section><section class="page" id="mav"><div class="pgh"><h2>Deepest Vacuum You Can Pull</h2><button class="q" onclick="hp('ab_mav')">?</button></div>
 <div class="about" id="ab_mav">
 <div class="ar"><b>What it is</b>The deepest vacuum a liquid ring pump can realistically reach, set by your seal water temperature and your altitude.</div>
@@ -1089,25 +1091,29 @@ function recalc(){
  // BELT FILTER PUMP SIZING
  (function(){
   var A=readUnit("bf_area","area"),q=gv("bf_q_n"),m=gv("bf_margin_n");if(isNaN(m))m=0;
-  var B=airOf("bf_air"),pabs=readPress("bf_vac",B),tsw=readUnit("bf_swt","temp");
-  var load=(isFinite(A)&&isFinite(q)&&isFinite(pabs)&&pabs>0)?A*q*(1+m/100):NaN;
+  var B=airOf("bf_air"),pabsFilter=readPress("bf_vac",B),tsw=readUnit("bf_swt","temp");
+  var lineLoss=readMag("bf_loss");if(isNaN(lineLoss))lineLoss=0;
+  var pabs=isFinite(pabsFilter)?pabsFilter-lineLoss:NaN;
+  var load=(isFinite(A)&&isFinite(q)&&isFinite(pabsFilter)&&pabsFilter>0&&isFinite(pabs)&&pabs>0)?A*q*(1+m/100):NaN;
   var psat=isFinite(tsw)?6.112*Math.exp(17.62*tsw/(243.12+tsw))/10:NaN;
   showU("bf_load",load,"flow");
   showPress("bf_pabs",pabs,B);
   showPress("bf_deep",psat,B);
   drawDuty("bf_duty",pabs,load,"Absolute inlet pressure (kPa)","Air the pump must move (m3/h)");
   PLG("mx_bf1",isFinite(load),"<b>"+fmtA(load)+"</b> = "+fmtA(A)+" &times; "+fmtA(q)+" &times; (1 + "+fmtA(m/100)+")");
+  PLG("mx_bf3",isFinite(pabs),"<b>"+fmtA(pabs)+" kPa</b> = "+fmtA(pabsFilter)+" &minus; "+fmtA(lineLoss));
   PLG("mx_bf2",isFinite(psat)&&isFinite(B),"<b>"+fmtA(B-psat)+"</b> = "+fmtA(B)+" &minus; "+fmtA(psat));
   var msg;
-  if(isFinite(pabs)&&pabs<=0)msg="The operating vacuum is as deep as, or deeper than, the surrounding air pressure, which cannot happen. Check the vacuum reading and the air pressure.";
+  if(isFinite(pabsFilter)&&pabsFilter<=0)msg="The operating vacuum is as deep as, or deeper than, the surrounding air pressure, which cannot happen. Check the vacuum reading and the air pressure.";
+  else if(isFinite(pabs)&&pabs<=0)msg="The vacuum at the filter plus the line loss to the pump add up to more than the surrounding air pressure, which cannot happen. Check the vacuum, the line loss and the air pressure.";
   else if(!isFinite(load))msg="Fill in the filter area, the air pulled through per m&sup2; and the operating vacuum, and this explains your answer.";
   else{
-   var vacOp=B-pabs;
-   msg="This filter needs the pump to move about "+b(load)+" m&sup3;/h of air at "+b(pabs)+" kPa absolute (a "+b(vacOp)+" kPa vacuum). Take that flow and that pressure to the maker's pump curve.";
+   var vacOp=B-pabsFilter,vacPump=B-pabs;
+   msg="This filter needs the pump to move about "+b(load)+" m&sup3;/h of air. At the filter that is a "+b(vacOp)+" kPa vacuum"+(lineLoss>0?(", but once the line loss is added the pump itself must reach "+b(pabs)+" kPa absolute (a "+b(vacPump)+" kPa vacuum).") :(" ("+b(pabs)+" kPa absolute).")) +" Take the flow and the pump-side pressure to the maker's pump curve.";
    if(isFinite(psat)){
     var vacMax=B-psat;
-    if(pabs<psat)msg+=" <b>Warning:</b> seal water at "+b(tsw)+" &deg;C can only pull down to about "+b(psat)+" kPa absolute, so you will not reach this vacuum &mdash; the cake stays wet and the pump cavitates. Use colder seal water, or design for a shallower vacuum.";
-    else if(pabs-psat<3)msg+=" You are running right at the deepest vacuum this "+b(tsw)+" &deg;C seal water allows ("+b(vacMax)+" kPa), so keep the water cold and expect no more.";
+    if(pabs<psat)msg+=" <b>Warning:</b> seal water at "+b(tsw)+" &deg;C can only pull down to about "+b(psat)+" kPa absolute, so the pump cannot reach this"+(lineLoss>0?" once the line loss is included":"")+" &mdash; the cake stays wet and the pump cavitates. Use colder seal water, design for a shallower vacuum, or cut the line loss.";
+    else if(pabs-psat<3)msg+=" You are running right at the deepest vacuum this "+b(tsw)+" &deg;C seal water allows ("+b(vacMax)+" kPa)"+(lineLoss>0?" &mdash; any extra line loss will tip this over, so keep the run clean.":", so keep the water cold and expect no more.");
     else msg+=" Seal water at "+b(tsw)+" &deg;C can pull down to about "+b(vacMax)+" kPa of vacuum, so this duty is comfortably within reach.";
    }
   }
@@ -1943,7 +1949,7 @@ var EX={
  dt:{dt_t_n:30,dt_p1_n:20,dt_p1_r:"v",dt_p2_n:0,dt_p2_r:"g",dt_air_n:101.3},
  bp:{bp_mrpm_n:1450,bp_md_n:90,bp_pd_n:280,bp_meas_n:410},
  af:{af_n1_n:1450,af_n2_n:1750,af_q_n:1000,af_p_n:400,af_kw_n:15},
- bf:{bf_area_n:40,bf_q_n:60,bf_margin_n:20,bf_vac_n:60,bf_air_n:101.3,bf_swt_n:20},
+ bf:{bf_area_n:40,bf_q_n:60,bf_margin_n:20,bf_vac_n:60,bf_loss_n:5,bf_loss_u:"0",bf_air_n:101.3,bf_swt_n:20},
  mav:{mav_swt_n:30,mav_air_n:90},
  dl:{dl_vac_n:85,dl_rho_n:1000,dl_h_n:8,dl_air_n:101.3},
  pt:{pt_p1_q_n:600,pt_p1_v_n:0.40,pt_p2_q_n:450,pt_p2_v_n:0.55,pt_p3_q_n:350,pt_p3_v_n:0.65,pt_p4_q_n:250,pt_p4_v_n:0.75,pt_p5_q_n:150,pt_p5_v_n:0.85,pt_p6_q_n:80,pt_p6_v_n:0.95},
@@ -2247,8 +2253,9 @@ function rptBfSection(){
  var h='<div class="psec">Belt Filter Pump Sizing</div>';
  h+='<table><tr><td class="lab">Filter area</td><td>'+dash(fUnitVal("bf_area_n","bf_area_u"))+'</td><td class="lab">Air per m&sup2;</td><td>'+dash(fNum("bf_q_n","m&sup3;/h&middot;m&sup2;"))+'</td></tr>';
  h+='<tr><td class="lab">Margin</td><td>'+dash(fNum("bf_margin_n","%"))+'</td><td class="lab">Operating vacuum</td><td>'+dash(fPress("bf_vac"))+'</td></tr>';
- h+='<tr><td class="lab">Seal water temp</td><td>'+dash(fNum("bf_swt_n","&deg;C"))+'</td><td class="lab">Air pressure</td><td>'+dash(fUnitVal("bf_air_n","bf_air_u"))+'</td></tr>';
- h+='<tr><td class="lab">Air pump must handle</td><td>'+dash(spanText("bf_load_v")+" "+selShort("bf_load_u2"))+'</td><td class="lab">Deepest vacuum reachable</td><td>'+dash(spanText("bf_deep_v")+" "+selShort("bf_deep_u2"))+'</td></tr></table>';
+ h+='<tr><td class="lab">Line loss to pump</td><td>'+dash(fUnitVal("bf_loss_n","bf_loss_u"))+'</td><td class="lab">Seal water temp</td><td>'+dash(fNum("bf_swt_n","&deg;C"))+'</td></tr>';
+ h+='<tr><td class="lab">Air pressure</td><td>'+dash(fUnitVal("bf_air_n","bf_air_u"))+'</td><td class="lab">Air pump must handle</td><td>'+dash(spanText("bf_load_v")+" "+selShort("bf_load_u2"))+'</td></tr>';
+ h+='<tr><td class="lab">Pressure pump must reach</td><td>'+dash(spanText("bf_pabs_v")+" "+selShort("bf_pabs_u2"))+'</td><td class="lab">Deepest vacuum reachable</td><td>'+dash(spanText("bf_deep_v")+" "+selShort("bf_deep_u2"))+'</td></tr></table>';
  h+='<div class="pgen">'+(document.getElementById("bf_m")?pEsc(document.getElementById("bf_m").textContent):"")+'</div>';
  return h;
 }
@@ -2379,8 +2386,21 @@ function tsRender(){var n=TS[TSTK[TSTK.length-1]];var e=document.getElementById(
  else{if(n.urgent)h+='<div class="note warn" style="margin:0 0 10px"><b>Stop the pump before it gets worse.</b></div>';
   h+='<div class="means" style="margin:0 0 10px"><b>'+n.r+'</b><br>'+n.why+'</div><p style="font-weight:700;margin:8px 0 4px">What to do</p><ol style="margin:0 0 10px;padding-left:20px;font-size:14.5px">';
   for(i=0;i<n.fix.length;i++)h+='<li>'+n.fix[i]+'</li>';h+='</ol>';
+  h+='<button class="exbtn2" id="ts_addrpt_btn" onclick="tsAddToReport()" style="margin:2px 0 10px">+ Add this finding to my Site Report</button>';
   h+='<div class="kelv">Before phoning for help, note down: vacuum and gas temperature at the inlet, seal water flow and its in and out temperatures, pump rpm, motor amps, and what changed just before the trouble started.</div>';}
  e.innerHTML=h;}
+function stripHtml(html){var d=document.createElement("div");d.innerHTML=html;return d.textContent;}
+function tsAddToReport(){
+ var n=TS[TSTK[TSTK.length-1]];
+ if(!n||!n.r)return;
+ var block="FINDING: "+stripHtml(n.r)+"\n"+stripHtml(n.why)+"\n";
+ if(n.fix&&n.fix.length){block+="Recommended:\n";for(var i=0;i<n.fix.length;i++)block+="- "+stripHtml(n.fix[i])+"\n";}
+ var ta=document.getElementById("rpt_findings");
+ if(ta){ta.value=(ta.value?ta.value.replace(/\s+$/,"")+"\n\n":"")+block;rptSave();}
+ var btn=document.getElementById("ts_addrpt_btn");
+ if(btn){btn.textContent="Added to your Site Report ✓";btn.disabled=true;setTimeout(function(){if(btn){btn.textContent="+ Add this finding to my Site Report";btn.disabled=false;}},2000);}
+}
+window.tsAddToReport=tsAddToReport;
 function tsGo(id){TSTK.push(id);tsRender();}
 function tsBack(){if(TSTK.length>1)TSTK.pop();tsRender();}
 function tsReset(){TSTK=["start"];tsRender();}
