@@ -210,12 +210,13 @@ td:first-child{text-align:left;font-family:var(--sans);}
 </style></head>
 <body><canvas id="bgbub" aria-hidden="true"></canvas><header><div class="hrow"><button id="backbtn" onclick="goBack()">&#8249; Back</button><svg id="logo" width="36" height="36" viewBox="0 0 100 100"><g fill="#B3261E" stroke="#B3261E" stroke-width="2"><path d="M46.34 20.22 L50.00 11.00 L53.66 20.22 Z"/><path d="M68.47 26.36 L77.58 22.42 L73.64 31.53 Z"/><path d="M79.78 46.34 L89.00 50.00 L79.78 53.66 Z"/><path d="M73.64 68.47 L77.58 77.58 L68.47 73.64 Z"/><path d="M53.66 79.78 L50.00 89.00 L46.34 79.78 Z"/><path d="M31.53 73.64 L22.42 77.58 L26.36 68.47 Z"/><path d="M20.22 53.66 L11.00 50.00 L20.22 46.34 Z"/><path d="M26.36 31.53 L22.42 22.42 L31.53 26.36 Z"/></g><circle cx="50" cy="50" r="30" fill="none" stroke="#B3261E" stroke-width="4.5"/><g fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M50.00 42.00 Q52.67 34.22 56.62 26.93"/><path d="M56.93 46.00 Q65.00 44.42 73.29 44.19"/><path d="M56.93 54.00 Q62.33 60.20 66.67 67.26"/><path d="M50.00 58.00 Q47.33 65.78 43.38 73.07"/><path d="M43.07 54.00 Q35.00 55.58 26.71 55.81"/><path d="M43.07 46.00 Q37.67 39.80 33.33 32.74"/></g><circle cx="50" cy="50" r="8" fill="#B3261E" stroke="#fff" stroke-width="2"/></svg><div><h1 id="hdr_t">Vacuum &amp; Compressor Toolkit</h1><p id="hdr_s">Learn it, fill it in, pick your units</p></div></div></header>
 <main><section class="page active" id="home">
-<div class="pgh"><h2>Pick an area</h2><button class="q" onclick="hp('h_home')">?</button></div><div class="help" id="h_home">Three areas, each with its own tools inside. Every calculator starts empty: tap <b>Insert example</b> to watch one work, and the small <b>?</b> by any box if you are unsure. Tip: save this page to your phone's home screen and it works offline.<br><br>Good working estimates for checks and quoting &mdash; always confirm the final machine and motor size with the maker's selection software.</div>
+<div class="pgh"><h2>Pick an area</h2><button class="q" onclick="hp('h_home')">?</button></div><div class="help" id="h_home">Pick an area below &mdash; each has its own tools inside. Every calculator starts empty: tap <b>Insert example</b> to watch one work, and the small <b>?</b> by any box if you are unsure. Tip: save this page to your phone's home screen and it works offline.<br><br>Good working estimates for checks and quoting &mdash; always confirm the final machine and motor size with the maker's selection software.</div>
 <button class="catrow hero" onclick="show('lri')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><circle cx="9.3" cy="9" r="2.1"/><path d="M9.3 9 12.3 12"/><path d="M6.5 16 9 13.5l2 2 3-3.5"/></svg></span><div><b>Pump Inspection Report</b><small>Walk a liquid ring pump on site &mdash; seals, bearings, borescope, drive, temperatures, vibration &mdash; and hand the client a finished PDF</small></div><span class="chev">&#8250;</span></button>
 <button class="catrow c1" onclick="show('cat_learn')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="7.5" r="2.6"/><circle cx="17" cy="9.5" r="2.1"/><circle cx="11.5" cy="17" r="2.9"/><path d="M10 8.1l4.9 1M15.9 11.3l-2.9 3.4"/></svg></span><div><b>Play and Learn</b><small>The gas laws with toys, a unit converter and reference tables</small></div><span class="chev">&#8250;</span></button>
 <button class="catrow c2" onclick="show('cat_size')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15.5a8 8 0 0 1 16 0"/><path d="M12 15.5 7.7 11.2"/><circle cx="12" cy="15.5" r="1.4"/><path d="M12 7.7v1.5M17.5 10l-1 1M6.5 10l1 1" opacity=".65"/></svg></span><div><b>Tools</b><small>Vacuum pumps, compressors, conveying, belt filters &amp; dewatering</small></div><span class="chev">&#8250;</span></button>
 
 <button class="catrow c3" onclick="show('cat_site')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="5" width="15" height="15.5" rx="2"/><path d="M9 5V3.5h6V5"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg></span><div><b>On-Site Checks</b><small>Find the fault, pump-down, leak check, pipe loss, power</small></div><span class="chev">&#8250;</span></button>
+<button class="catrow c4" onclick="show('cust')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="2.4"/><circle cx="16" cy="9" r="2"/><path d="M3.5 18c.8-2.6 2.8-4 5.5-4s4.7 1.4 5.5 4"/><path d="M14 14c2 .2 3.6 1.2 4.3 3.2"/></svg></span><div><b>Customers</b><small>Site notes, jobs, photos and dual-logo visit reports</small></div><span class="chev">&#8250;</span></button>
 </section><section class="page" id="cat_learn">
 <h2>Play and Learn</h2>
 <p class="sub">Tap a tool to open it.</p>
@@ -939,7 +940,73 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div id="lri_photos"></div>
 </div>
 <button class="exbtn" onclick="lriExportPDF()" style="margin:6px 0 0">Export PDF</button><button class="clrbtn" onclick="lriClear()" style="margin:6px 0 0">Clear this report</button>
-</section></main><div id="lft_print" class="print-sheet"></div><div id="pt_print" class="print-sheet"></div><div id="rpt_print" class="print-sheet"></div><script>/** @license
+</section>
+<section class="page" id="cust">
+<div class="pgh"><h2>Customers</h2><button class="q" onclick="hp('h_cust')">?</button></div>
+<div class="help" id="h_cust">Customers and jobs stay on <b>this phone</b> until you use Backup. Open a site, start a job, add photos, then make a PDF with the Busch logo and their logo.</div>
+<p class="sub">Saved on this phone &mdash; use Backup to copy elsewhere.</p>
+<div class="fld"><div class="fh"><label>Search</label></div><div class="ctrl"><input type="search" id="cust_search" placeholder="Name or site" oninput="custRenderList()"></div></div>
+<div id="cust_list" class="bubs"></div>
+<div class="card"><h3>Backup</h3>
+<p style="font-size:13px;color:var(--soft);margin:0 0 10px">Export a JSON file of customers, jobs and logos. Import it on your Mac or work PC to pick up where you left off.</p>
+<button class="exbtn" onclick="custExportBackup()">Export backup</button>
+<button class="exbtn" onclick="document.getElementById('cust_import').click()">Import backup</button>
+<input type="file" id="cust_import" accept="application/json,.json" style="display:none">
+<button class="clrbtn" onclick="custAddCustomer()">Add customer</button>
+</div>
+</section>
+<section class="page" id="cust_view">
+<div class="pgh"><h2 id="cust_view_title">Customer</h2></div>
+<p class="sub" id="cust_view_sub"></p>
+<div class="means" id="cust_view_means">Saved on this phone &mdash; use Backup to copy elsewhere.</div>
+<div class="card"><h3>Details</h3>
+<div class="fld"><div class="fh"><label>Customer name</label></div><div class="ctrl"><input type="text" id="cv_name" placeholder="e.g. Hancock Iron Ore / Roy Hill"></div></div>
+<div class="fld"><div class="fh"><label>Site label</label></div><div class="ctrl"><input type="text" id="cv_site" placeholder="e.g. Wet plant / desands — belt filters"></div></div>
+<div class="fld"><div class="fh"><label>Contacts</label></div><div class="ctrl"><textarea id="cv_contacts" rows="3" placeholder="Name, phone, email"></textarea></div></div>
+<div class="fld"><div class="fh"><label>Notes</label></div><div class="ctrl"><textarea id="cv_notes" rows="4" placeholder="Context for the site"></textarea></div></div>
+<div class="fld"><div class="fh"><label>Customer logo</label></div><div class="ctrl"><input type="file" id="cv_logo" accept="image/*"></div></div>
+<div id="cv_logo_prev" style="margin:8px 0 4px"></div>
+<button class="exbtn" onclick="custSaveView()">Save details</button>
+<button class="clrbtn" onclick="custClearLogo()">Remove logo</button>
+</div>
+<div class="card"><h3>Equipment tags</h3>
+<p style="font-size:13px;color:var(--soft);margin:0 0 8px">One tag per line. Edit freely for this site.</p>
+<div class="fld"><div class="ctrl"><textarea id="cv_equip" rows="6" placeholder="FLT 151"></textarea></div></div>
+<button class="exbtn" onclick="custSaveView()">Save tags</button>
+</div>
+<div class="card"><h3>Jobs / visits</h3>
+<button class="exbtn" onclick="custNewJob()">New job / visit</button>
+<div id="cv_jobs" class="bubs" style="margin-top:10px"></div>
+</div>
+</section>
+<section class="page" id="cust_job">
+<div class="pgh"><h2 id="cj_title">Job</h2></div>
+<p class="sub" id="cj_sub"></p>
+<div class="card"><h3>Visit</h3>
+<div class="fld"><div class="fh"><label>Date</label></div><div class="ctrl"><input type="date" id="cj_date"></div></div>
+<div class="fld"><div class="fh"><label>Site</label></div><div class="ctrl"><input type="text" id="cj_site" placeholder="Site area"></div></div>
+<div class="fld"><div class="fh"><label>Visit type</label></div><div class="ctrl"><select id="cj_type"><option value="belt-filter vac pumps">Belt-filter vac pumps</option><option value="inspection">Inspection</option><option value="site investigation">Site investigation</option><option value="other">Other</option></select></div></div>
+<div class="fld"><div class="fh"><label>Status</label></div><div class="ctrl"><select id="cj_status"><option value="draft">Draft</option><option value="done">Done</option></select></div></div>
+<div class="fld"><div class="fh"><label>PO / quote ref (optional)</label></div><div class="ctrl"><input type="text" id="cj_po" placeholder="PO or quote number"></div></div>
+<div class="fld"><div class="fh"><label>Findings / notes</label></div><div class="ctrl"><textarea id="cj_findings" rows="6" placeholder="What you found on site"></textarea></div></div>
+<button class="exbtn" onclick="custSaveJob()">Save job</button>
+</div>
+<div class="card"><h3>Photos</h3>
+<div class="fld"><div class="fh"><label>Add photos</label></div><div class="ctrl"><input type="file" id="cj_photo_input" accept="image/*" multiple></div></div>
+<div class="note warn" id="cj_warn" style="display:none">This phone is low on storage for photos. Export a PDF or backup now, then remove a photo or two and try again.</div>
+<div id="cj_photos"></div>
+</div>
+<div class="card"><h3>Report</h3>
+<p style="font-size:13px;color:var(--soft);margin:0 0 10px">PDF header uses the Busch logo plus this customer's logo (placeholder if none loaded yet).</p>
+<button class="exbtn" onclick="custExportJobPDF()">Make PDF</button>
+<button class="clrbtn" onclick="custDeleteJob()">Delete job</button>
+</div>
+</section>
+<section class="page" id="cust_royhill">
+<div class="pgh"><h2>Roy Hill</h2></div>
+<p class="sub">Opening Roy Hill&hellip;</p>
+</section>
+</main><div id="lft_print" class="print-sheet"></div><div id="pt_print" class="print-sheet"></div><div id="rpt_print" class="print-sheet"></div><script>/** @license
  *
  * jsPDF - PDF Document creation from JavaScript
  * Version 4.2.1 Built on 2026-03-17T11:11:27.056Z
@@ -3795,8 +3862,8 @@ function lriExportPDF(){
 }
 window.lriAddRow=lriAddRow;window.lriRemoveRow=lriRemoveRow;window.lriRemovePhoto=lriRemovePhoto;window.lriClear=lriClear;window.lriExportPDF=lriExportPDF;
 
-var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the Gas Laws",learn_intro:"What a Gas Really Is",learn_boyle:"Boyle's Law",learn_charles:"Charles's Law",learn_gl:"Gay-Lussac's Law",learn_combined:"The Combined Gas Law",learn_ideal:"The Ideal Gas Law",learn_dalton:"Dalton's Law",fc:"Normal / Actual Flow",vac:"Vacuum Pump Sizing",cmp:"Compressor Sizing",pc:"Conveying Sizing",mp:"Which Machine",vap:"Vapour & Wet Gas",pd:"Pump-down Time",lk:"Leak Check",pl:"Pipe Loss",pw:"Power & Motor Current",cv:"Unit Converter",ref:"Reference Tables",orf:"Orifice Sizing",hl:"Heat Load, Water",mw:"Cooling Tower Make-up",cw:"Conveying Step-by-Step",cat_learn:"Play and Learn",cat_size:"Tools",cat_site:"On-Site Checks",ts:"Find the Fault",ps:"Pre-separator Sizing",lr:"Inside a Liquid Ring Pump",dt:"Discharge Temperature",ck:"Commissioning Checklist",bp:"Belt & Pulley Speed",af:"Speed Change Effect",learn_fan:"Speed and the Fan Laws",learn_heat:"How Heat Load Works",learn_cav:"Why Seal Water Stays Cool",pt:"Production Test vs Factory Curve",lft:"Liquid Ring Pump Field Test Sheet",bf:"Belt Filter Pump Sizing",mav:"Deepest Vacuum You Can Pull",dl:"Drop-Leg Height Check",vl:"Vacuum Line Loss",rpt:"Site Investigation Report",lri:"Liquid Ring Pump Inspection Report"};
-var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",pt:"cat_site",lft:"cat_site",bf:"cat_size",mav:"cat_size",dl:"cat_size",vl:"cat_size",rpt:"cat_site",lri:"cat_site"};
+var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the Gas Laws",learn_intro:"What a Gas Really Is",learn_boyle:"Boyle's Law",learn_charles:"Charles's Law",learn_gl:"Gay-Lussac's Law",learn_combined:"The Combined Gas Law",learn_ideal:"The Ideal Gas Law",learn_dalton:"Dalton's Law",fc:"Normal / Actual Flow",vac:"Vacuum Pump Sizing",cmp:"Compressor Sizing",pc:"Conveying Sizing",mp:"Which Machine",vap:"Vapour & Wet Gas",pd:"Pump-down Time",lk:"Leak Check",pl:"Pipe Loss",pw:"Power & Motor Current",cv:"Unit Converter",ref:"Reference Tables",orf:"Orifice Sizing",hl:"Heat Load, Water",mw:"Cooling Tower Make-up",cw:"Conveying Step-by-Step",cat_learn:"Play and Learn",cat_size:"Tools",cat_site:"On-Site Checks",ts:"Find the Fault",ps:"Pre-separator Sizing",lr:"Inside a Liquid Ring Pump",dt:"Discharge Temperature",ck:"Commissioning Checklist",bp:"Belt & Pulley Speed",af:"Speed Change Effect",learn_fan:"Speed and the Fan Laws",learn_heat:"How Heat Load Works",learn_cav:"Why Seal Water Stays Cool",pt:"Production Test vs Factory Curve",lft:"Liquid Ring Pump Field Test Sheet",bf:"Belt Filter Pump Sizing",mav:"Deepest Vacuum You Can Pull",dl:"Drop-Leg Height Check",vl:"Vacuum Line Loss",rpt:"Site Investigation Report",lri:"Liquid Ring Pump Inspection Report",cust:"Customers",cust_view:"Customer",cust_job:"Job / visit",cust_royhill:"Roy Hill"};
+var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",pt:"cat_site",lft:"cat_site",bf:"cat_size",mav:"cat_size",dl:"cat_size",vl:"cat_size",rpt:"cat_site",lri:"cat_site",cust:"home",cust_view:"cust",cust_job:"cust_view",cust_royhill:"cust"};
 var CUR="home";
 var LRI_RETURN=null;
 function lriGoCalc(calcId,n){LRI_RETURN={calc:calcId,n:n};show(calcId);}
@@ -3810,8 +3877,368 @@ function goBack(){
  }
  show(PARENT[CUR]||"home");
 }
-var MENUS={home:1,cat_learn:1,cat_size:1,cat_site:1,learn:1};
+
+// ---- Customers v1 (phone-first): localStorage vt_cust_v1 ----
+var CUST_KEY="vt_cust_v1";
+var CUST_DB={version:1,customers:[]};
+var CUST_CUR=null;
+var CUST_JOB_CUR=null;
+function custUid(prefix){return (prefix||"id")+"_"+Date.now().toString(36)+"_"+Math.floor(Math.random()*1e6).toString(36);}
+function custSeedRoyHill(){
+ return {
+  id:"royhill",
+  name:"Hancock Iron Ore / Roy Hill",
+  sites:["Wet plant / desands — belt filters"],
+  contacts:"",
+  notes:"Vacuum pumps on horizontal belt filters (HIO / Old Roy Hill).",
+  logoDataUrl:"",
+  equipment:[
+   {tag:"FLT 151",notes:""},{tag:"FLT 251",notes:""},{tag:"FLT 351",notes:""},
+   {tag:"FLT 451",notes:""},{tag:"FLT 551",notes:""}
+  ],
+  jobs:[{
+   id:"job_seed_rh_20260907",
+   date:"2026-09-07",
+   site:"Wet plant / desands — belt filters",
+   type:"belt-filter vac pumps",
+   status:"draft",
+   po:"",
+   findings:"",
+   photos:[]
+  }]
+ };
+}
+function custLoad(){
+ var o=null;
+ try{o=JSON.parse(localStorage.getItem(CUST_KEY)||"null");}catch(err){o=null;}
+ if(!o||!Array.isArray(o.customers)){
+  CUST_DB={version:1,customers:[custSeedRoyHill()]};
+  custPersist(true);
+ }else{
+  CUST_DB=o;
+  if(!CUST_DB.version)CUST_DB.version=1;
+  var hasRh=false;
+  for(var i=0;i<CUST_DB.customers.length;i++)if(CUST_DB.customers[i].id==="royhill"){hasRh=true;break;}
+  if(!hasRh&&CUST_DB.customers.length===0){CUST_DB.customers.push(custSeedRoyHill());custPersist(true);}
+ }
+}
+function custPersist(quiet){
+ var warn=document.getElementById("cj_warn");
+ try{
+  localStorage.setItem(CUST_KEY,JSON.stringify(CUST_DB));
+  if(warn)warn.style.display="none";
+  return true;
+ }catch(err){
+  if(warn)warn.style.display="block";
+  if(!quiet)alert("Could not save — phone storage may be full. Export a backup or remove photos.");
+  return false;
+ }
+}
+function custFind(id){
+ for(var i=0;i<CUST_DB.customers.length;i++)if(CUST_DB.customers[i].id===id)return CUST_DB.customers[i];
+ return null;
+}
+function custEsc(s){return String(s==null?"":s).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function custRenderList(){
+ var q=((document.getElementById("cust_search")||{}).value||"").toLowerCase().trim();
+ var el=document.getElementById("cust_list");
+ if(!el)return;
+ var h="",i,c,hay,site,nJobs,extra;
+ for(i=0;i<CUST_DB.customers.length;i++){
+  c=CUST_DB.customers[i];
+  hay=(c.name+" "+(c.sites||[]).join(" ")+" "+(c.notes||"")).toLowerCase();
+  if(q&&hay.indexOf(q)<0)continue;
+  site=(c.sites&&c.sites[0])||"";
+  nJobs=(c.jobs&&c.jobs.length)||0;
+  extra=site?("<br><small style=\"font-weight:400;opacity:.8\">"+custEsc(site)+" · "+nJobs+" job"+(nJobs===1?"":"s")+"</small>"):"";
+  h+='<button class="bub c4" onclick="custOpen(\''+String(c.id).replace(/'/g,"")+'\')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V8.2l8-4.2 8 4.2v11.3"/><path d="M9.5 19.5v-6h5v6"/><path d="M4 11.2h16"/></svg></span><span>'+custEsc(c.name)+extra+"</span></button>";
+ }
+ el.innerHTML=h||'<p style="font-size:13px;color:var(--soft);margin:8px 2px">No customers match.</p>';
+}
+function custOpen(id){
+ CUST_CUR=id;
+ show("cust_view");
+}
+function custRenderView(){
+ var c=custFind(CUST_CUR);
+ if(!c){show("cust");return;}
+ var t=document.getElementById("cust_view_title");
+ if(t)t.textContent=c.name.split("/")[0].trim()||c.name;
+ var sub=document.getElementById("cust_view_sub");
+ if(sub)sub.textContent=(c.sites&&c.sites[0])||"";
+ var hdr=document.getElementById("hdr_t");
+ if(hdr)hdr.textContent=c.name;
+ var n=document.getElementById("cv_name");if(n)n.value=c.name||"";
+ var s=document.getElementById("cv_site");if(s)s.value=(c.sites&&c.sites[0])||"";
+ var co=document.getElementById("cv_contacts");if(co)co.value=c.contacts||"";
+ var no=document.getElementById("cv_notes");if(no)no.value=c.notes||"";
+ var eq=document.getElementById("cv_equip");
+ if(eq)eq.value=((c.equipment||[]).map(function(e){return e.tag+(e.notes?" — "+e.notes:"");}).join("\n"));
+ custRenderLogo();
+ custRenderJobs();
+}
+function custRenderLogo(){
+ var c=custFind(CUST_CUR);var el=document.getElementById("cv_logo_prev");
+ if(!el||!c)return;
+ if(c.logoDataUrl){
+  el.innerHTML='<img src="'+c.logoDataUrl+'" alt="Customer logo" style="max-width:180px;max-height:72px;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:6px;background:#fff">';
+ }else{
+  el.innerHTML='<div style="width:160px;height:56px;border:1px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--soft);font-size:12px;background:rgba(255,255,255,.5)">No logo yet</div>';
+ }
+}
+function custSaveView(){
+ var c=custFind(CUST_CUR);if(!c)return;
+ c.name=(document.getElementById("cv_name").value||"").trim()||c.name;
+ var site=(document.getElementById("cv_site").value||"").trim();
+ c.sites=site?[site]:(c.sites||[]);
+ c.contacts=document.getElementById("cv_contacts").value||"";
+ c.notes=document.getElementById("cv_notes").value||"";
+ var lines=(document.getElementById("cv_equip").value||"").split(/\n+/);
+ var eq=[],i,line,parts;
+ for(i=0;i<lines.length;i++){
+  line=lines[i].trim();if(!line)continue;
+  parts=line.split(/\s+[—\-]\s+/);
+  eq.push({tag:parts[0].trim(),notes:(parts[1]||"").trim()});
+ }
+ c.equipment=eq;
+ custPersist();
+ custRenderView();
+}
+function custClearLogo(){
+ var c=custFind(CUST_CUR);if(!c)return;
+ c.logoDataUrl="";
+ custPersist();
+ custRenderLogo();
+}
+function custHandleLogo(file){
+ if(!file)return;
+ var c=custFind(CUST_CUR);if(!c)return;
+ var reader=new FileReader();
+ reader.onload=function(e){
+  var img=new Image();
+  img.onload=function(){
+   var maxW=480,scale=Math.min(1,maxW/img.width);
+   var w=Math.round(img.width*scale),h=Math.round(img.height*scale);
+   var canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
+   canvas.getContext("2d").drawImage(img,0,0,w,h);
+   c.logoDataUrl=canvas.toDataURL("image/png");
+   if(!custPersist()){c.logoDataUrl="";}
+   custRenderLogo();
+  };
+  img.src=e.target.result;
+ };
+ reader.readAsDataURL(file);
+}
+function custRenderJobs(){
+ var c=custFind(CUST_CUR);var el=document.getElementById("cv_jobs");
+ if(!el||!c)return;
+ var jobs=(c.jobs||[]).slice().sort(function(a,b){return (b.date||"").localeCompare(a.date||"");});
+ var h="",i,j,extra;
+ for(i=0;i<jobs.length;i++){
+  j=jobs[i];
+  extra=custEsc(j.status||"draft")+(j.site?" · "+custEsc(j.site):"");
+  h+='<button class="bub c4" onclick="custOpenJob(\''+String(j.id).replace(/'/g,"")+'\')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 3.5v3M16 3.5v3M4 10h16"/></svg></span><span>'+custEsc(j.date||"No date")+" · "+custEsc(j.type||"visit")+'<br><small style="font-weight:400;opacity:.8">'+extra+"</small></span></button>";
+ }
+ el.innerHTML=h||'<p style="font-size:13px;color:var(--soft);margin:8px 2px">No jobs yet — tap New job / visit.</p>';
+}
+function custNewJob(){
+ var c=custFind(CUST_CUR);if(!c)return;
+ var today=new Date();
+ var mo=today.getMonth()+1,da=today.getDate();var ds=today.getFullYear()+"-"+(mo<10?"0":"")+mo+"-"+(da<10?"0":"")+da;
+ var job={id:custUid("job"),date:ds,site:(c.sites&&c.sites[0])||"",type:"belt-filter vac pumps",status:"draft",po:"",findings:"",photos:[]};
+ if(!c.jobs)c.jobs=[];
+ c.jobs.unshift(job);
+ custPersist();
+ CUST_JOB_CUR=job.id;
+ show("cust_job");
+}
+function custOpenJob(jid){CUST_JOB_CUR=jid;show("cust_job");}
+function custFindJob(){
+ var c=custFind(CUST_CUR);if(!c)return null;
+ for(var i=0;i<(c.jobs||[]).length;i++)if(c.jobs[i].id===CUST_JOB_CUR)return {c:c,j:c.jobs[i],i:i};
+ return null;
+}
+function custRenderJob(){
+ var pair=custFindJob();
+ if(!pair){show("cust_view");return;}
+ var c=pair.c,j=pair.j;
+ var t=document.getElementById("cj_title");if(t)t.textContent=(j.date||"Job")+" · "+(j.type||"visit");
+ var sub=document.getElementById("cj_sub");if(sub)sub.textContent=c.name+(j.site?" — "+j.site:"");
+ var hdr=document.getElementById("hdr_t");if(hdr)hdr.textContent="Job / visit";
+ function set(id,v){var e=document.getElementById(id);if(e)e.value=v==null?"":v;}
+ set("cj_date",j.date);set("cj_site",j.site);set("cj_type",j.type||"other");set("cj_status",j.status||"draft");set("cj_po",j.po);set("cj_findings",j.findings);
+ custRenderJobPhotos();
+}
+function custSaveJob(){
+ var pair=custFindJob();if(!pair)return;
+ var j=pair.j;
+ j.date=document.getElementById("cj_date").value||"";
+ j.site=document.getElementById("cj_site").value||"";
+ j.type=document.getElementById("cj_type").value||"other";
+ j.status=document.getElementById("cj_status").value||"draft";
+ j.po=document.getElementById("cj_po").value||"";
+ j.findings=document.getElementById("cj_findings").value||"";
+ custSaveJobCaptions();
+ custPersist();
+ custRenderJob();
+}
+function custSaveJobCaptions(){
+ var pair=custFindJob();if(!pair)return;
+ var photos=pair.j.photos||[];
+ for(var i=0;i<photos.length;i++){
+  var e=document.getElementById("cj_ph"+i+"_cap");
+  if(e)photos[i].caption=e.value;
+ }
+}
+function custRenderJobPhotos(){
+ var pair=custFindJob();var el=document.getElementById("cj_photos");
+ if(!el||!pair)return;
+ var photos=pair.j.photos||[],h="",i,p;
+ for(i=0;i<photos.length;i++){
+  p=photos[i];
+  h+='<div class="rpt-ph"><img src="'+p.dataUrl+'"><div class="ctrl"><input type="text" id="cj_ph'+i+'_cap" placeholder="Caption, e.g. FLT 151 discharge" value="'+custEsc(p.caption||"")+'" onchange="custSaveJob()"></div><button class="clrbtn" onclick="custRemovePhoto('+i+')" style="margin:6px 0 0">Remove photo</button></div>';
+ }
+ el.innerHTML=h||'<p style="font-size:13px;color:var(--soft);margin:8px 2px">No photos yet.</p>';
+}
+function custHandlePhotos(files){
+ var pair=custFindJob();if(!pair)return;
+ var arr=Array.prototype.slice.call(files||[]);
+ arr.forEach(function(file){
+  var reader=new FileReader();
+  reader.onload=function(e){
+   var img=new Image();
+   img.onload=function(){
+    var maxW=1000,scale=Math.min(1,maxW/img.width);
+    var w=Math.round(img.width*scale),h=Math.round(img.height*scale);
+    var canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
+    canvas.getContext("2d").drawImage(img,0,0,w,h);
+    if(!pair.j.photos)pair.j.photos=[];
+    pair.j.photos.push({dataUrl:canvas.toDataURL("image/jpeg",0.72),caption:""});
+    if(!custPersist()){pair.j.photos.pop();}
+    custRenderJobPhotos();
+   };
+   img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+ });
+}
+function custRemovePhoto(i){
+ var pair=custFindJob();if(!pair)return;
+ custSaveJobCaptions();
+ pair.j.photos.splice(i,1);
+ custPersist();
+ custRenderJobPhotos();
+}
+function custDeleteJob(){
+ var pair=custFindJob();if(!pair)return;
+ if(!confirm("Delete this job and its photos?"))return;
+ pair.c.jobs.splice(pair.i,1);
+ CUST_JOB_CUR=null;
+ custPersist();
+ show("cust_view");
+}
+function custAddCustomer(){
+ var name=prompt("Customer name?");
+ if(!name)return;
+ name=name.trim();if(!name)return;
+ var c={id:custUid("cust"),name:name,sites:[],contacts:"",notes:"",logoDataUrl:"",equipment:[],jobs:[]};
+ CUST_DB.customers.push(c);
+ custPersist();
+ custOpen(c.id);
+}
+function custExportBackup(){
+ var blob=new Blob([JSON.stringify(CUST_DB,null,2)],{type:"application/json"});
+ var a=document.createElement("a");
+ var ds=new Date().toISOString().slice(0,10);
+ a.href=URL.createObjectURL(blob);
+ a.download="VacuumToolkit_customers_"+ds+".json";
+ document.body.appendChild(a);a.click();a.remove();
+ setTimeout(function(){URL.revokeObjectURL(a.href);},500);
+}
+function custImportBackup(file){
+ if(!file)return;
+ var reader=new FileReader();
+ reader.onload=function(e){
+  try{
+   var o=JSON.parse(e.target.result);
+   if(!o||!Array.isArray(o.customers))throw new Error("bad");
+   if(!confirm("Replace all customers/jobs on this phone with the backup file?"))return;
+   CUST_DB={version:o.version||1,customers:o.customers};
+   custPersist();
+   CUST_CUR=null;CUST_JOB_CUR=null;
+   show("cust");
+   alert("Backup imported.");
+  }catch(err){alert("That file does not look like a Vacuum Toolkit customers backup.");}
+ };
+ reader.readAsText(file);
+}
+function custFileSafe(name){
+ return String(name||"Customer").replace(/[^a-z0-9]+/gi,"_").replace(/^_|_$/g,"").slice(0,40)||"Customer";
+}
+function custExportJobPDF(){
+ custSaveJob();
+ var pair=custFindJob();
+ if(!pair)return;
+ if(typeof window.jspdf==="undefined"||!window.jspdf.jsPDF){alert("PDF engine not ready.");return;}
+ var c=pair.c,j=pair.j;
+ var photos=(j.photos||[]).slice();
+ var normPromises=[];
+ for(var k=0;k<photos.length;k++)normPromises.push(pbNormalizePhoto(photos[k].dataUrl));
+ Promise.all(normPromises).then(function(norm){
+  var pb=pbCreate(true,"");
+  // Dual logos: Busch (right, via letterhead) + customer (left)
+  if(c.logoDataUrl){
+   try{
+    var fmt=/^data:image\/jpe?g/i.test(c.logoDataUrl)?"JPEG":"PNG";
+    var lw=42,lh=lw*0.35;
+    pb.doc.addImage(c.logoDataUrl,fmt,PB_M,PB_M,lw,lh);
+   }catch(err){}
+  }else{
+   pb.doc.setFont("helvetica","normal");pb.doc.setFontSize(8);
+   pb.doc.setTextColor(120,120,120);
+   pb.doc.text("Customer logo not loaded",PB_M,PB_M+6);
+   pb.doc.setTextColor(0,0,0);
+  }
+  pbTitle(pb,"Site visit report");
+  pbPairRow(pb,"Customer",c.name,"Date",j.date||"—");
+  pbPairRow(pb,"Site",j.site||((c.sites&&c.sites[0])||"—"),"Visit type",j.type||"—");
+  pbPairRow(pb,"Status",j.status||"—","PO / ref",j.po||"—");
+  pbGap(pb,3);
+  pbSecHead(pb,"Findings / notes");
+  pbBox(pb,j.findings||"—",14);
+  if(c.equipment&&c.equipment.length){
+   pbSecHead(pb,"Equipment");
+   pbHeaderRow(pb,"Tag / notes");
+   for(var ei=0;ei<c.equipment.length;ei++){
+    var eq=c.equipment[ei];
+    pbNoteRow(pb,(eq.tag||"—")+(eq.notes?" — "+eq.notes:""));
+   }
+   pbGap(pb,2);
+  }
+  if(photos.length){
+   pbSecHead(pb,"Photos");
+   for(var i=0;i<photos.length;i+=2){
+    var pairPh=[{src:norm[i].src,caption:photos[i].caption||("Photo "+(i+1)),w:norm[i].w,h:norm[i].h}];
+    if(i+1<photos.length)pairPh.push({src:norm[i+1].src,caption:photos[i+1].caption||("Photo "+(i+2)),w:norm[i+1].w,h:norm[i+1].h});
+    pbPhotoRow(pb,pairPh);
+   }
+  }
+  pbFinalize(pb);
+  var siteBit=custFileSafe(j.site||(c.sites&&c.sites[0])||"");
+  var fname=custFileSafe(c.name)+(siteBit?"_"+siteBit:"")+"_"+(j.date||"nodate")+".pdf";
+  pb.doc.save(fname);
+ });
+}
+try{custLoad();}catch(err){CUST_DB={version:1,customers:[custSeedRoyHill()]};}
+window.custOpen=custOpen;window.custOpenJob=custOpenJob;window.custNewJob=custNewJob;
+window.custSaveView=custSaveView;window.custSaveJob=custSaveJob;window.custClearLogo=custClearLogo;
+window.custRemovePhoto=custRemovePhoto;window.custDeleteJob=custDeleteJob;
+window.custExportBackup=custExportBackup;window.custAddCustomer=custAddCustomer;
+window.custExportJobPDF=custExportJobPDF;window.custRenderList=custRenderList;
+
+var MENUS={home:1,cat_learn:1,cat_size:1,cat_site:1,learn:1,cust:1};
 function show(id){
+ if(id==="cust_royhill"){custOpen("royhill");return;}
  CUR=id;
  if(LRI_RETURN&&id!==LRI_RETURN.calc&&id!=="lri")LRI_RETURN=null;
  var ps=document.querySelectorAll(".page");for(var i=0;i<ps.length;i++)ps[i].classList.toggle("active",ps[i].id===id);
@@ -3820,6 +4247,9 @@ function show(id){
  document.getElementById("hdr_s").style.display=id==="home"?"":"none";
  if(window.bubMode)window.bubMode(MENUS[id]?"free":"edge");
  if(id==="ref")refBarsAndTimeline();
+ if(id==="cust")custRenderList();
+ if(id==="cust_view")custRenderView();
+ if(id==="cust_job")custRenderJob();
  window.scrollTo(0,0);
 }
 
@@ -4003,6 +4433,12 @@ if(rptPhotoInput)rptPhotoInput.addEventListener("change",function(){rptHandleFil
 lriLoad();
 var lriPhotoInput=document.getElementById("lri_photo_input");
 if(lriPhotoInput)lriPhotoInput.addEventListener("change",function(){lriHandleFiles(this.files);this.value="";});
+var cvLogoInput=document.getElementById("cv_logo");
+if(cvLogoInput)cvLogoInput.addEventListener("change",function(){custHandleLogo(this.files&&this.files[0]);this.value="";});
+var cjPhotoInput=document.getElementById("cj_photo_input");
+if(cjPhotoInput)cjPhotoInput.addEventListener("change",function(){custHandlePhotos(this.files);this.value="";});
+var custImportInput=document.getElementById("cust_import");
+if(custImportInput)custImportInput.addEventListener("change",function(){custImportBackup(this.files&&this.files[0]);this.value="";});
 document.addEventListener("input",recalc);
 document.addEventListener("change",recalc);
 recalc();
