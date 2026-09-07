@@ -3739,7 +3739,14 @@ function pbDrawHeader(pb){
  }
 }
 function pbNewPage(pb){pb.doc.addPage();pb.page++;pb.y=pb.top;pbDrawHeader(pb);}
-function pbEnsure(pb,h){if(pb.y+h>pb.limit){pbNewPage(pb);}}
+/** Start a new page only if `h` will not fit and we are not already near the top — avoids mid-block splits and huge empty gaps. */
+function pbKeep(pb,h){
+ if(!h||h<=0)return;
+ if(pb.y+h<=pb.limit)return;
+ if(pb.y<=pb.top+3)return;
+ pbNewPage(pb);
+}
+function pbEnsure(pb,h){pbKeep(pb,h);}
 function pbGap(pb,mm){pb.y+=mm;}
 function pbTitle(pb,text){
  pbEnsure(pb,10);
@@ -3748,7 +3755,8 @@ function pbTitle(pb,text){
  pb.y+=11;
 }
 function pbSecHead(pb,text){
- pbEnsure(pb,7.5);
+ // Keep heading with at least one content row on the same page
+ pbKeep(pb,18);
  pb.doc.setFont("helvetica","bold");pb.doc.setFontSize(9.3);
  pb.doc.text(text.toUpperCase(),PB_M,pb.y+3.6);
  pb.y+=7;
@@ -3786,7 +3794,10 @@ function pbRow(pb,cells){
  pb.doc.setTextColor(0,0,0);
  pb.y=y0+rowH;
 }
-function pbHeaderRow(pb,text){pbRow(pb,[{x:PB_M,w:PB_W,text:text.toUpperCase(),bold:true,bg:[230,230,230]}]);}
+function pbHeaderRow(pb,text){
+ pbKeep(pb,22);
+ pbRow(pb,[{x:PB_M,w:PB_W,text:text.toUpperCase(),bold:true,bg:[230,230,230]}]);
+}
 function pbNoteRow(pb,text){pbRow(pb,[{x:PB_M,w:PB_W,text:text}]);}
 // A "label|value|label|value" row, or "label|value" (value spans 3 quarters) if l2 is omitted.
 function pbPairRow(pb,l1,v1,l2,v2,c1,c2){
@@ -3880,38 +3891,40 @@ function pbNormalizePhoto(src){
 }
 // Draws one row of up to 2 photos side by side. Every photo arrives from
 // pbNormalizePhoto on an identical 960x640 canvas, so every tile is exactly
-// the same size and the grid stays perfectly regular -- three rows (6 photos)
-// to a page. Caption boxes under a row share the taller height so their bottom
+// the same size scaled modestly in the report (~6–8 photos per page, captions under each). Caption boxes under a row share the taller height so their bottom
 // edges line up. items is 1 or 2 {src,caption}; an odd one takes the left half.
 function pbPhotoRow(pb,items){
- var gap=6,cw=(PB_W-gap)/2,ch=cw*640/960,pad=1.6,fs=8,lh=fs*0.41,i;
+ // Modest tiles: up to 3 across. ~2–3 rows ⇒ about 6–8 photos/page.
+ // Each photo+caption is one unit (caption stays under its photo; row kept together).
+ if(!items||!items.length)return;
+ var cols=Math.min(3,items.length),gap=4,cw=(PB_W-(cols-1)*gap)/cols;
+ var maxCh=40,ch=Math.min(cw*640/960,maxCh),pad=1.4,fs=7.5,lh=fs*0.40,i;
  var capLines=[],capH=0;
  pb.doc.setFont("helvetica","normal");pb.doc.setFontSize(fs);
  for(i=0;i<items.length;i++){
-  var lines=pbWrap(pb.doc,items[i].caption||"Photo",cw-2*pad);
+  var lines=pbWrap(pb.doc,items[i].caption||("Photo "+(i+1)),cw-2*pad);
+  if(lines.length>4)lines=lines.slice(0,4).concat(["…"]);
   capLines.push(lines);
-  var hh=Math.max(6,lines.length*lh+2*pad);
+  var hh=Math.max(5.5,lines.length*lh+2*pad);
   if(hh>capH)capH=hh;
  }
- pbEnsure(pb,ch+1.5+capH+4);
+ var blockH=ch+1.2+capH+3;
+ pbKeep(pb,blockH);
  var y0=pb.y;
  for(i=0;i<items.length;i++){
   var x0=PB_M+i*(cw+gap);
   var fmt=/^data:image\/png/i.test(items[i].src)?"PNG":"JPEG";
-  pb.doc.addImage(items[i].src,fmt,x0,y0,cw,ch);
+  try{pb.doc.addImage(items[i].src,fmt,x0,y0,cw,ch);}catch(err){}
   pb.doc.setDrawColor(0,0,0);pb.doc.setLineWidth(0.15);
   pb.doc.rect(x0,y0,cw,ch);
-  var capY=y0+ch+1.5;
+  var capY=y0+ch+1.2;
   pb.doc.rect(x0,capY,cw,capH);
   pb.doc.setFont("helvetica","normal");pb.doc.setFontSize(fs);
   pb.doc.setTextColor(0,0,0);
   for(var j=0;j<capLines[i].length;j++)pb.doc.text(capLines[i][j],x0+pad,capY+pad+lh*0.78+j*lh);
  }
- pb.y=y0+ch+1.5+capH+4;
+ pb.y=y0+blockH;
 }
-// Measures the footer for this report once, up front, so pbCreate can reserve
-// the right amount of space at the bottom of every page. Letterhead mode gets
-// the full Busch company block; plain mode just a page-number line.
 function pbFooterCalc(pb){
  var fs1=7,fs2=6.2,fs3=5.6;
  if(!pb.letterhead)return {H:4,fs1:fs1};
@@ -3957,6 +3970,8 @@ function pbFinalize(pb){
 function pbDrawPump(pb,n){
  var p="lri_r"+n+"_";
  var tag=rv(p+"tag")||("Pump "+n);
+ // Prefer starting a pump on a fresh page if only a stub of space remains
+ pbKeep(pb,40);
  pbSecHead(pb,"Pump: "+tag);
  if(lriAny([p+"make",p+"model",p+"serial",p+"year",p+"maxp_n"])){
   pbPairRow(pb,"Manufacturer",rv(p+"make"),"Model",rv(p+"model"));
@@ -4112,10 +4127,12 @@ function lriExportPDF(){
    pbPairRow(pb,"Follow-up required",rv("lri_followup"),"Next inspection due",rDate("lri_nextdate"));
   if(photos.length){
    pbSecHead(pb,"Photos");
-   for(var i=0;i<photos.length;i+=2){
-    var pair=[{src:norm[i].src,caption:photos[i].caption||("Photo "+(i+1)),w:norm[i].w,h:norm[i].h}];
-    if(i+1<photos.length)pair.push({src:norm[i+1].src,caption:photos[i+1].caption||("Photo "+(i+2)),w:norm[i+1].w,h:norm[i+1].h});
-    pbPhotoRow(pb,pair);
+   for(var i=0;i<photos.length;i+=3){
+    var row=[];
+    for(var k=0;k<3&&i+k<photos.length;k++){
+     row.push({src:norm[i+k].src,caption:photos[i+k].caption||("Photo "+(i+k+1)),w:norm[i+k].w,h:norm[i+k].h});
+    }
+    pbPhotoRow(pb,row);
    }
   }
   pbSignoff(pb,rv("lri_by"),rDate("lri_date"));
@@ -4832,10 +4849,12 @@ function custExportJobPDF(){
   }
   if(photos.length){
    pbSecHead(pb,"Photos");
-   for(var i=0;i<photos.length;i+=2){
-    var pairPh=[{src:norm[i].src,caption:photos[i].caption||("Photo "+(i+1)),w:norm[i].w,h:norm[i].h}];
-    if(i+1<photos.length)pairPh.push({src:norm[i+1].src,caption:photos[i+1].caption||("Photo "+(i+2)),w:norm[i+1].w,h:norm[i+1].h});
-    pbPhotoRow(pb,pairPh);
+   for(var i=0;i<photos.length;i+=3){
+    var rowPh=[];
+    for(var k=0;k<3&&i+k<photos.length;k++){
+     rowPh.push({src:norm[i+k].src,caption:photos[i+k].caption||("Photo "+(i+k+1)),w:norm[i+k].w,h:norm[i+k].h});
+    }
+    pbPhotoRow(pb,rowPh);
    }
   }
   pbFinalize(pb);
