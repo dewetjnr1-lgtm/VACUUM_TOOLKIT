@@ -1071,7 +1071,8 @@ td{background:transparent;color:var(--ink);}
 <div class="pgh"><h2 id="cj_title">Job</h2><span id="cj_saved_chip" class="vt-saved-chip">Saved on this phone</span></div>
 <p class="sub" id="cj_sub"></p>
 <div class="card cj-visit"><h3>Visit</h3>
-<div class="fld"><div class="fh"><label>Date</label></div><div class="ctrl"><input type="date" id="cj_date"></div></div>
+<div class="fld"><div class="fh"><label>Start date</label></div><div class="ctrl"><input type="date" id="cj_date"></div></div>
+<div class="fld"><div class="fh"><label>End date <span style="font-weight:500;color:var(--soft);text-transform:none;letter-spacing:0">(optional — blank = same day)</span></label></div><div class="ctrl"><input type="date" id="cj_date_end"></div></div>
 <div class="fld"><div class="fh"><label>Visit type</label></div><div class="ctrl"><select id="cj_type"><option value="belt-filter vac pumps">Belt-filter vac pumps</option><option value="inspection">Inspection</option><option value="site investigation">Site investigation</option><option value="other">Other</option></select></div></div>
 <div class="fld"><div class="fh"><label>Status</label></div><div class="ctrl"><select id="cj_status"><option value="draft">Draft</option><option value="done">Done</option></select></div></div>
 <div class="fld"><div class="fh"><label>PO / quote ref (optional)</label></div><div class="ctrl"><input type="text" id="cj_po" placeholder="PO or quote number"></div></div>
@@ -4467,12 +4468,12 @@ function custHandleLogo(file){
 function custRenderJobs(){
  var c=custFind(CUST_CUR);var el=document.getElementById("cv_jobs");
  if(!el||!c)return;
- var jobs=(c.jobs||[]).slice().sort(function(a,b){return (b.date||"").localeCompare(a.date||"");});
+ var jobs=(c.jobs||[]).slice().sort(function(a,b){return custJobDateSortKey(b).localeCompare(custJobDateSortKey(a));});
  var h="",i,j,extra;
  for(i=0;i<jobs.length;i++){
   j=jobs[i];
   extra=custEsc(j.status||"draft")+(j.site?" · "+custEsc(j.site):"");
-  h+='<button class="bub c4" onclick="custOpenJob(\''+String(j.id).replace(/'/g,"")+'\')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 3.5v3M16 3.5v3M4 10h16"/></svg></span><span>'+custEsc(j.date||"No date")+" · "+custEsc(j.type||"visit")+'<br><small style="font-weight:400;opacity:.8">'+extra+"</small></span></button>";
+  h+='<button class="bub c4" onclick="custOpenJob(\''+String(j.id).replace(/'/g,"")+'\')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 3.5v3M16 3.5v3M4 10h16"/></svg></span><span>'+custEsc(custJobDateLabel(j)||"No date")+" · "+custEsc(j.type||"visit")+'<br><small style="font-weight:400;opacity:.8">'+extra+"</small></span></button>";
  }
  el.innerHTML=h||'<p style="font-size:13px;color:var(--soft);margin:8px 2px">No jobs yet — tap New job / visit.</p>';
 }
@@ -4480,7 +4481,7 @@ function custNewJob(){
  var c=custFind(CUST_CUR);if(!c)return;
  var today=new Date();
  var mo=today.getMonth()+1,da=today.getDate();var ds=today.getFullYear()+"-"+(mo<10?"0":"")+mo+"-"+(da<10?"0":"")+da;
- var job={id:custUid("job"),date:ds,site:(c.sites&&c.sites[0])||"",type:"belt-filter vac pumps",status:"draft",po:"",findings:"",photos:[],calcs:[]};
+ var job={id:custUid("job"),date:ds,dateEnd:"",site:(c.sites&&c.sites[0])||"",type:"belt-filter vac pumps",status:"draft",po:"",findings:"",photos:[],calcs:[]};
  if(!c.jobs)c.jobs=[];
  c.jobs.unshift(job);
  custPersist();
@@ -4497,16 +4498,50 @@ function custRenderJob(){
  var pair=custFindJob();
  if(!pair){show("cust_view");return;}
  var c=pair.c,j=pair.j;
- var t=document.getElementById("cj_title");if(t)t.textContent=(j.date||"Job")+" · "+(j.type||"visit");
+ var t=document.getElementById("cj_title");if(t)t.textContent=(custJobDateLabel(j)||"Job")+" · "+(j.type||"visit");
  var sub=document.getElementById("cj_sub");if(sub)sub.textContent=c.name+(j.site?" — "+j.site:"");
  var hdr=document.getElementById("hdr_t");if(hdr)hdr.textContent="Job / visit";
  function set(id,v){var e=document.getElementById(id);if(e)e.value=v==null?"":v;}
- set("cj_date",j.date);set("cj_site",j.site);set("cj_type",j.type||"other");set("cj_status",j.status||"draft");set("cj_po",j.po);set("cj_findings",j.findings);
+ set("cj_date",j.date);set("cj_date_end",j.dateEnd||"");set("cj_site",j.site);set("cj_type",j.type||"other");set("cj_status",j.status||"draft");set("cj_po",j.po);set("cj_findings",j.findings);
  if(!Array.isArray(j.calcs))j.calcs=[];
  custUpdateLriButton();
  custRenderJobCalcs();
  custRenderJobPhotos();
 }
+
+function custParseISODate(s){
+ if(!s||typeof s!=="string")return null;
+ var p=s.split("-");
+ if(p.length!==3)return null;
+ var y=+p[0],m=+p[1],d=+p[2];
+ if(!y||!m||!d)return null;
+ return {y:y,m:m,d:d};
+}
+function custFmtDayParts(p, withYear){
+ if(!p)return "";
+ var months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+ return p.d+" "+months[p.m-1]+(withYear?" "+p.y:"");
+}
+/** Plain range label for job strip + PDFs, e.g. "7–10 Sep 2026" or "7 Sep 2026". */
+function custJobDateLabel(j){
+ if(!j)return "";
+ var a=j.date||"";
+ var b=j.dateEnd||"";
+ if(b&&a&&b<a){var t=a;a=b;b=t;}
+ if(!a&&!b)return "";
+ if(!b||b===a){
+  var p=custParseISODate(a||b);
+  return p?custFmtDayParts(p,true):(a||b);
+ }
+ var pa=custParseISODate(a),pb=custParseISODate(b);
+ if(!pa||!pb)return a+" – "+b;
+ if(pa.y===pb.y&&pa.m===pb.m)return pa.d+"–"+pb.d+" "+["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"][pa.m-1]+" "+pa.y;
+ if(pa.y===pb.y)return custFmtDayParts(pa,false)+" – "+custFmtDayParts(pb,true);
+ return custFmtDayParts(pa,true)+" – "+custFmtDayParts(pb,true);
+}
+function custJobDateSortKey(j){return (j&&j.date)||"";}
+window.custJobDateLabel=custJobDateLabel;
+
 function custSaveJob(){
  var pair=custFindJob();if(!pair)return;
  var j=pair.j;
@@ -4514,6 +4549,10 @@ function custSaveJob(){
  function grab(id){var e=document.getElementById(id);return e?e.value:null;}
  var v;
  v=grab("cj_date");if(v!==null)j.date=v||"";
+ v=grab("cj_date_end");if(v!==null)j.dateEnd=v||"";
+ // If end blank or equals start, store blank end (= same day).
+ if(!j.dateEnd||j.dateEnd===j.date)j.dateEnd="";
+ if(j.dateEnd&&j.date&&j.dateEnd<j.date){var _t=j.date;j.date=j.dateEnd;j.dateEnd=_t;}
  v=grab("cj_site");if(v!==null)j.site=v||"";
  v=grab("cj_type");if(v!==null)j.type=v||"other";
  v=grab("cj_status");if(v!==null)j.status=v||"draft";
@@ -4770,7 +4809,7 @@ function custExportJobPDF(){
    pb.doc.setTextColor(0,0,0);
   }
   pbTitle(pb,"Site visit report");
-  pbPairRow(pb,"Customer",c.name,"Date",j.date||"—");
+  pbPairRow(pb,"Customer",c.name,"Date",custJobDateLabel(j)||"—");
   pbPairRow(pb,"Site",j.site||((c.sites&&c.sites[0])||"—"),"Visit type",j.type||"—");
   pbPairRow(pb,"Status",j.status||"—","PO / ref",j.po||"—");
   pbGap(pb,3);
@@ -4803,7 +4842,7 @@ function custExportJobPDF(){
   }
   pbFinalize(pb);
   var siteBit=custFileSafe(j.site||(c.sites&&c.sites[0])||"");
-  var fname=custFileSafe(c.name)+(siteBit?"_"+siteBit:"")+"_"+(j.date||"nodate")+".pdf";
+  var fname=custFileSafe(c.name)+(siteBit?"_"+siteBit:"")+"_"+(j.date||"nodate")+(j.dateEnd&&j.dateEnd!==j.date?"_"+j.dateEnd:"")+".pdf";
   pb.doc.save(fname);
  });
 }
