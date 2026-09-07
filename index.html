@@ -57,6 +57,19 @@ h2{font-size:23px;margin:2px 0 10px;font-weight:800;}
 .pgh h2{margin:0;}
 .exbtn{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent);border-radius:10px;padding:9px 14px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:4px;}
 .clrbtn{background:none;color:var(--soft);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px;cursor:pointer;margin-left:8px;}
+.cj-calc-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid rgba(211,218,224,.7);}
+.cj-calc-row:last-child{border-bottom:0;}
+.cj-calc-name{flex:1 1 140px;font-weight:700;font-size:14.5px;}
+.cj-calc-row .exbtn,.cj-calc-row .clrbtn{margin:0;}
+.cj-picker{position:fixed;inset:0;z-index:80;background:rgba(19,42,56,.45);display:flex;align-items:flex-end;justify-content:center;padding:12px;}
+.cj-picker-panel{background:var(--paper);width:min(520px,100%);max-height:85vh;overflow:auto;border-radius:16px 16px 12px 12px;padding:14px 14px 18px;box-shadow:0 -8px 28px rgba(23,30,35,.25);}
+.cj-picker-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:6px;}
+.cj-picker-head b{font-size:16px;}
+.cj-picker-group{font-size:12px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--soft);margin:14px 2px 6px;}
+.cj-picker-item{display:block;width:100%;text-align:left;background:rgba(255,255,255,.7);border:1px solid var(--line);border-radius:12px;padding:11px 12px;margin:6px 0;font-family:var(--sans);font-size:14.5px;font-weight:650;cursor:pointer;color:var(--ink);}
+.cj-picker-item:active{transform:scale(.99);}
+.cj-picker-item small{display:block;font-weight:500;color:var(--soft);font-size:12px;margin-top:2px;}
+
 .fld{padding:12px 0;border-bottom:2px solid rgba(29,90,120,.14);}.fld:last-child{border-bottom:0;}
 .fh{display:flex;align-items:center;justify-content:space-between;gap:8px;}
 .fld label{font-weight:600;font-size:15px;}
@@ -990,6 +1003,18 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="fld"><div class="fh"><label>PO / quote ref (optional)</label></div><div class="ctrl"><input type="text" id="cj_po" placeholder="PO or quote number"></div></div>
 <div class="fld"><div class="fh"><label>Findings / notes</label></div><div class="ctrl"><textarea id="cj_findings" rows="6" placeholder="What you found on site"></textarea></div></div>
 <button class="exbtn" onclick="custSaveJob()">Save job</button>
+</div>
+<div class="card"><h3>Calculations for this job</h3>
+<p style="font-size:13px;color:var(--soft);margin:0 0 10px">Attach Tools or On-Site Checks calculators used on this visit. Open jumps to that calculator; Back returns here.</p>
+<div id="cj_calcs"></div>
+<button class="exbtn" type="button" onclick="custOpenCalcPicker()">Add a calculation</button>
+</div>
+<div id="cj_calc_picker" class="cj-picker" style="display:none" aria-hidden="true">
+<div class="cj-picker-panel">
+<div class="cj-picker-head"><b>Add a calculation</b><button type="button" class="clrbtn" onclick="custCloseCalcPicker()" style="margin:0">Close</button></div>
+<p class="sub" style="margin:0 0 4px">Tools and On-Site Checks</p>
+<div id="cj_calc_picker_list"></div>
+</div>
 </div>
 <div class="card"><h3>Photos</h3>
 <div class="fld"><div class="fh"><label>Add photos</label></div><div class="ctrl"><input type="file" id="cj_photo_input" accept="image/*" multiple></div></div>
@@ -3866,8 +3891,17 @@ var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the Gas Laws",learn_intr
 var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",pt:"cat_site",lft:"cat_site",bf:"cat_size",mav:"cat_size",dl:"cat_size",vl:"cat_size",rpt:"cat_site",lri:"cat_site",cust:"home",cust_view:"cust",cust_job:"cust_view",cust_royhill:"cust"};
 var CUR="home";
 var LRI_RETURN=null;
+var CUST_RETURN=null;
 function lriGoCalc(calcId,n){LRI_RETURN={calc:calcId,n:n};show(calcId);}
 function goBack(){
+ if(CUST_RETURN&&CUR===CUST_RETURN.calc){
+  var jid=CUST_RETURN.jobId,cid=CUST_RETURN.custId;
+  CUST_RETURN=null;
+  if(cid)CUST_CUR=cid;
+  if(jid)CUST_JOB_CUR=jid;
+  show("cust_job");
+  return;
+ }
  if(LRI_RETURN&&CUR===LRI_RETURN.calc){
   var n=LRI_RETURN.n;LRI_RETURN=null;
   show("lri");
@@ -3904,7 +3938,8 @@ function custSeedRoyHill(){
    status:"draft",
    po:"",
    findings:"",
-   photos:[]
+   photos:[],
+   calcs:[]
   }]
  };
 }
@@ -4045,7 +4080,7 @@ function custNewJob(){
  var c=custFind(CUST_CUR);if(!c)return;
  var today=new Date();
  var mo=today.getMonth()+1,da=today.getDate();var ds=today.getFullYear()+"-"+(mo<10?"0":"")+mo+"-"+(da<10?"0":"")+da;
- var job={id:custUid("job"),date:ds,site:(c.sites&&c.sites[0])||"",type:"belt-filter vac pumps",status:"draft",po:"",findings:"",photos:[]};
+ var job={id:custUid("job"),date:ds,site:(c.sites&&c.sites[0])||"",type:"belt-filter vac pumps",status:"draft",po:"",findings:"",photos:[],calcs:[]};
  if(!c.jobs)c.jobs=[];
  c.jobs.unshift(job);
  custPersist();
@@ -4067,6 +4102,8 @@ function custRenderJob(){
  var hdr=document.getElementById("hdr_t");if(hdr)hdr.textContent="Job / visit";
  function set(id,v){var e=document.getElementById(id);if(e)e.value=v==null?"":v;}
  set("cj_date",j.date);set("cj_site",j.site);set("cj_type",j.type||"other");set("cj_status",j.status||"draft");set("cj_po",j.po);set("cj_findings",j.findings);
+ if(!Array.isArray(j.calcs))j.calcs=[];
+ custRenderJobCalcs();
  custRenderJobPhotos();
 }
 function custSaveJob(){
@@ -4129,6 +4166,78 @@ function custRemovePhoto(i){
  custPersist();
  custRenderJobPhotos();
 }
+
+var CUST_CALC_LIST=[
+ {id:"vac",group:"Tools"},{id:"cmp",group:"Tools"},{id:"fc",group:"Tools"},{id:"mp",group:"Tools"},{id:"bf",group:"Tools"},{id:"pc",group:"Tools"},
+ {id:"cw",group:"Tools"},{id:"vap",group:"Tools"},{id:"mav",group:"Tools"},{id:"dl",group:"Tools"},{id:"vl",group:"Tools"},{id:"dt",group:"Tools"},
+ {id:"af",group:"Tools"},{id:"orf",group:"Tools"},{id:"hl",group:"Tools"},{id:"mw",group:"Tools"},{id:"ps",group:"Tools"},
+ {id:"pd",group:"On-Site Checks"},{id:"lk",group:"On-Site Checks"},{id:"pl",group:"On-Site Checks"},{id:"pw",group:"On-Site Checks"},
+ {id:"ts",group:"On-Site Checks"},{id:"bp",group:"On-Site Checks"},{id:"ck",group:"On-Site Checks"},{id:"pt",group:"On-Site Checks"},
+ {id:"lft",group:"On-Site Checks"},{id:"rpt",group:"On-Site Checks"},{id:"lri",group:"On-Site Checks"}
+];
+function custCalcTitle(id){return TT[id]||id;}
+function custEnsureJobCalcs(j){if(!j.calcs)j.calcs=[];if(!Array.isArray(j.calcs))j.calcs=[];return j.calcs;}
+function custRenderJobCalcs(){
+ var pair=custFindJob();var el=document.getElementById("cj_calcs");
+ if(!el||!pair)return;
+ var calcs=custEnsureJobCalcs(pair.j),h="",i,id;
+ for(i=0;i<calcs.length;i++){
+  id=calcs[i];
+  h+='<div class="cj-calc-row"><span class="cj-calc-name">'+custEsc(custCalcTitle(id))+'</span>'+
+   '<button type="button" class="exbtn" onclick="custOpenJobCalc(\''+String(id).replace(/'/g,"")+'\')">Open</button>'+
+   '<button type="button" class="clrbtn" onclick="custRemoveJobCalc(\''+String(id).replace(/'/g,"")+'\')">Remove</button></div>';
+ }
+ el.innerHTML=h||'<p style="font-size:13px;color:var(--soft);margin:8px 2px">No calculations attached yet.</p>';
+}
+function custOpenCalcPicker(){
+ var wrap=document.getElementById("cj_calc_picker");
+ var list=document.getElementById("cj_calc_picker_list");
+ if(!wrap||!list)return;
+ var pair=custFindJob();
+ var have={};
+ if(pair){var cals=custEnsureJobCalcs(pair.j);for(var i=0;i<cals.length;i++)have[cals[i]]=1;}
+ var h="",g="",item;
+ for(var k=0;k<CUST_CALC_LIST.length;k++){
+  item=CUST_CALC_LIST[k];
+  if(item.group!==g){g=item.group;h+='<div class="cj-picker-group">'+custEsc(g)+"</div>";}
+  if(have[item.id])continue;
+  h+='<button type="button" class="cj-picker-item" onclick="custAddJobCalc(\''+item.id+'\')"><span>'+custEsc(custCalcTitle(item.id))+"</span><small>"+custEsc(item.group)+"</small></button>";
+ }
+ if(!h)h='<p style="font-size:13px;color:var(--soft);margin:8px 2px">All listed calculators are already on this job.</p>';
+ list.innerHTML=h;
+ wrap.style.display="flex";
+ wrap.setAttribute("aria-hidden","false");
+}
+function custCloseCalcPicker(){
+ var wrap=document.getElementById("cj_calc_picker");
+ if(!wrap)return;
+ wrap.style.display="none";
+ wrap.setAttribute("aria-hidden","true");
+}
+function custAddJobCalc(id){
+ var pair=custFindJob();if(!pair||!id)return;
+ var calcs=custEnsureJobCalcs(pair.j);
+ if(calcs.indexOf(id)>=0){custCloseCalcPicker();return;}
+ calcs.push(id);
+ custPersist();
+ custCloseCalcPicker();
+ custRenderJobCalcs();
+}
+function custRemoveJobCalc(id){
+ var pair=custFindJob();if(!pair)return;
+ var calcs=custEnsureJobCalcs(pair.j);
+ var ix=calcs.indexOf(id);
+ if(ix<0)return;
+ calcs.splice(ix,1);
+ custPersist();
+ custRenderJobCalcs();
+}
+function custOpenJobCalc(id){
+ var pair=custFindJob();if(!pair||!id)return;
+ CUST_RETURN={calc:id,jobId:pair.j.id,custId:pair.c.id};
+ show(id);
+}
+
 function custDeleteJob(){
  var pair=custFindJob();if(!pair)return;
  if(!confirm("Delete this job and its photos?"))return;
@@ -4206,6 +4315,14 @@ function custExportJobPDF(){
   pbGap(pb,3);
   pbSecHead(pb,"Findings / notes");
   pbBox(pb,j.findings||"—",14);
+  var jobCalcs=Array.isArray(j.calcs)?j.calcs:[];
+  if(jobCalcs.length){
+   pbSecHead(pb,"Calculations for this job");
+   for(var ci=0;ci<jobCalcs.length;ci++){
+    pbNoteRow(pb,(ci+1)+". "+(TT[jobCalcs[ci]]||jobCalcs[ci]));
+   }
+   pbGap(pb,2);
+  }
   if(c.equipment&&c.equipment.length){
    pbSecHead(pb,"Equipment");
    pbHeaderRow(pb,"Tag / notes");
@@ -4235,12 +4352,15 @@ window.custSaveView=custSaveView;window.custSaveJob=custSaveJob;window.custClear
 window.custRemovePhoto=custRemovePhoto;window.custDeleteJob=custDeleteJob;
 window.custExportBackup=custExportBackup;window.custAddCustomer=custAddCustomer;
 window.custExportJobPDF=custExportJobPDF;window.custRenderList=custRenderList;
+window.custOpenCalcPicker=custOpenCalcPicker;window.custCloseCalcPicker=custCloseCalcPicker;
+window.custAddJobCalc=custAddJobCalc;window.custRemoveJobCalc=custRemoveJobCalc;window.custOpenJobCalc=custOpenJobCalc;
 
 var MENUS={home:1,cat_learn:1,cat_size:1,cat_site:1,learn:1,cust:1};
 function show(id){
  if(id==="cust_royhill"){custOpen("royhill");return;}
  CUR=id;
  if(LRI_RETURN&&id!==LRI_RETURN.calc&&id!=="lri")LRI_RETURN=null;
+ if(CUST_RETURN&&id!==CUST_RETURN.calc&&id!=="cust_job")CUST_RETURN=null;
  var ps=document.querySelectorAll(".page");for(var i=0;i<ps.length;i++)ps[i].classList.toggle("active",ps[i].id===id);
  document.body.classList.toggle("inpage",id!=="home");
  document.getElementById("hdr_t").textContent=TT[id]||TT.home;
