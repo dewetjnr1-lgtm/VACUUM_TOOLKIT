@@ -190,6 +190,14 @@ td:first-child{text-align:left;font-family:var(--sans);}
 #lri_rows .tqitem .tp-num,#lri_rows .exitem .tp-num{margin-top:0;padding-top:0;border-top:0;}
 #lri_rows details.lrisec>summary.tp-num{margin-top:0;border-top:0;}
 #lri_rows details.lrisec{margin:10px 0;}
+#lri_rows details.lrisec.lri-sec-off{display:none;}
+.lri-setup .lri-setup-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;margin:8px 0 4px;}
+@media(max-width:520px){.lri-setup .lri-setup-grid{grid-template-columns:1fr;}}
+.lri-setup .lri-setup-grid label.chk{font-size:13.5px;display:flex;align-items:flex-start;gap:8px;margin:0;padding:6px 4px;border-radius:8px;}
+.lri-setup .lri-setup-hint{font-size:13px;color:var(--soft);margin:0 0 8px;line-height:1.4;}
+.lri-copyprev{margin:0 0 10px;}
+.cj-lri-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px;}
+.cj-lri-row .cj-lri-note{font-size:13px;color:var(--soft);flex:1 1 180px;margin:0;line-height:1.35;}
 #lri_rows .tp-vaclink{cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;font-size:13px;color:var(--teal);font-weight:700;margin:0 0 8px;}
 #lri_rows .tp-vaclink .tp-go{float:right;font-weight:600;font-size:12px;color:var(--accent);text-decoration:none;}
 @media print{
@@ -224,12 +232,11 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <body><canvas id="bgbub" aria-hidden="true"></canvas><header><div class="hrow"><button id="backbtn" onclick="goBack()">&#8249; Back</button><svg id="logo" width="36" height="36" viewBox="0 0 100 100"><g fill="#B3261E" stroke="#B3261E" stroke-width="2"><path d="M46.34 20.22 L50.00 11.00 L53.66 20.22 Z"/><path d="M68.47 26.36 L77.58 22.42 L73.64 31.53 Z"/><path d="M79.78 46.34 L89.00 50.00 L79.78 53.66 Z"/><path d="M73.64 68.47 L77.58 77.58 L68.47 73.64 Z"/><path d="M53.66 79.78 L50.00 89.00 L46.34 79.78 Z"/><path d="M31.53 73.64 L22.42 77.58 L26.36 68.47 Z"/><path d="M20.22 53.66 L11.00 50.00 L20.22 46.34 Z"/><path d="M26.36 31.53 L22.42 22.42 L31.53 26.36 Z"/></g><circle cx="50" cy="50" r="30" fill="none" stroke="#B3261E" stroke-width="4.5"/><g fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M50.00 42.00 Q52.67 34.22 56.62 26.93"/><path d="M56.93 46.00 Q65.00 44.42 73.29 44.19"/><path d="M56.93 54.00 Q62.33 60.20 66.67 67.26"/><path d="M50.00 58.00 Q47.33 65.78 43.38 73.07"/><path d="M43.07 54.00 Q35.00 55.58 26.71 55.81"/><path d="M43.07 46.00 Q37.67 39.80 33.33 32.74"/></g><circle cx="50" cy="50" r="8" fill="#B3261E" stroke="#fff" stroke-width="2"/></svg><div><h1 id="hdr_t">Vacuum &amp; Compressor Toolkit</h1><p id="hdr_s">Learn it, fill it in, pick your units</p></div></div></header>
 <main><section class="page active" id="home">
 <div class="pgh"><h2>Pick an area</h2><button class="q" onclick="hp('h_home')">?</button></div><div class="help" id="h_home">Pick an area below &mdash; each has its own tools inside. Every calculator starts empty: tap <b>Insert example</b> to watch one work, and the small <b>?</b> by any box if you are unsure. Tip: save this page to your phone's home screen and it works offline.<br><br>Good working estimates for checks and quoting &mdash; always confirm the final machine and motor size with the maker's selection software.</div>
-<button class="catrow hero" onclick="show('lri')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><circle cx="9.3" cy="9" r="2.1"/><path d="M9.3 9 12.3 12"/><path d="M6.5 16 9 13.5l2 2 3-3.5"/></svg></span><div><b>Pump Inspection Report</b><small>Walk a liquid ring pump on site &mdash; seals, bearings, borescope, drive, temperatures, vibration &mdash; and hand the client a finished PDF</small></div><span class="chev">&#8250;</span></button>
+<button class="catrow hero" onclick="show('cust')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="2.4"/><circle cx="16" cy="9" r="2"/><path d="M3.5 18c.8-2.6 2.8-4 5.5-4s4.7 1.4 5.5 4"/><path d="M14 14c2 .2 3.6 1.2 4.3 3.2"/></svg></span><div><b>Customers</b><small>Jobs, site notes, and pump inspections &mdash; start an inspection from a job</small></div><span class="chev">&#8250;</span></button>
 <button class="catrow c1" onclick="show('cat_learn')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="7.5" cy="7.5" r="2.6"/><circle cx="17" cy="9.5" r="2.1"/><circle cx="11.5" cy="17" r="2.9"/><path d="M10 8.1l4.9 1M15.9 11.3l-2.9 3.4"/></svg></span><div><b>Play and Learn</b><small>The gas laws with toys, a unit converter and reference tables</small></div><span class="chev">&#8250;</span></button>
 <button class="catrow c2" onclick="show('cat_size')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 15.5a8 8 0 0 1 16 0"/><path d="M12 15.5 7.7 11.2"/><circle cx="12" cy="15.5" r="1.4"/><path d="M12 7.7v1.5M17.5 10l-1 1M6.5 10l1 1" opacity=".65"/></svg></span><div><b>Tools</b><small>Vacuum pumps, compressors, conveying, belt filters &amp; dewatering</small></div><span class="chev">&#8250;</span></button>
-
 <button class="catrow c3" onclick="show('cat_site')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="5" width="15" height="15.5" rx="2"/><path d="M9 5V3.5h6V5"/><path d="M8 12.5l2.5 2.5L16 9.5"/></svg></span><div><b>On-Site Checks</b><small>Find the fault, pump-down, leak check, pipe loss, power</small></div><span class="chev">&#8250;</span></button>
-<button class="catrow c4" onclick="show('cust')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="2.4"/><circle cx="16" cy="9" r="2"/><path d="M3.5 18c.8-2.6 2.8-4 5.5-4s4.7 1.4 5.5 4"/><path d="M14 14c2 .2 3.6 1.2 4.3 3.2"/></svg></span><div><b>Customers</b><small>Site notes, jobs, photos and dual-logo visit reports</small></div><span class="chev">&#8250;</span></button>
+
 </section><section class="page" id="cat_learn">
 <h2>Play and Learn</h2>
 <p class="sub">Tap a tool to open it.</p>
@@ -280,7 +287,6 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <button class="bub c3" onclick="show('pt')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V5.5M4 20h16"/><path d="M4 16.5 9 11l3.5 3 6-7"/></svg></span><span>Production Test vs Factory Curve</span></button>
 <button class="bub c3" onclick="show('lft')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="4.5" width="17" height="15" rx="2"/><path d="M3.5 9.5h17M8.5 9.5v10M14 9.5v10"/></svg></span><span>Liquid Ring Pump Field Test Sheet</span></button>
 <button class="bub c3" onclick="show('rpt')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4.5" y="3.5" width="15" height="17" rx="2"/><circle cx="9.5" cy="8.5" r="1.6"/><path d="M6 15.5l3.5-3.5 2 2 3-3.5 3.5 4" stroke-linejoin="round"/></svg></span><span>Site Investigation Report</span></button>
-<button class="bub c3" onclick="show('lri')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3.5" width="16" height="17" rx="2"/><circle cx="9.3" cy="9" r="2.1"/><path d="M9.3 9 12.3 12"/><path d="M6.5 16 9 13.5l2 2 3-3.5"/></svg></span><span>Liquid Ring Pump Inspection Report</span></button>
 </div>
 </section><section class="page" id="learn">
 <h2>Learn the Gas Laws</h2>
@@ -925,6 +931,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="ar"><b>What it is</b>A structured inspection sheet for a liquid ring vacuum pump service call: seals, bearings and a borescope check of the casing (the standard basic inspection scope), plus the coupling, seal-water-cooler and separator-tank bolting/lining checks called up by most O&amp;M preventative maintenance schedules. One pump per block &mdash; add as many as are on the job.</div>
 <div class="ar"><b>Why it matters</b>A client's basic inspection quote usually names three things: seals, bearings, and a borescope of the casing for corrosion or cavitation. This sheet captures exactly that, in the order the quote lists it, so nothing gets left out of the report &mdash; and everything you write here drops straight into a client-ready PDF.</div>
 <div class="ar"><b>Beyond the client's scope</b>Extra checks are included below &mdash; gland packing detail (drip rate against the healthy 45&ndash;60 drops a minute, sleeve condition), general walk-up checks (rotation, hold-down bolts, guards, strainer, hoses), torque settings (name each bolt group, log the value you used and add a comment), the drive (coupling or V-belts, with a belt tension rule of thumb), a temperature survey around the pump and up and down stream, measured vacuum against rated duty, motor current against nameplate FLA, seal water flow and temperature rise, and a full vibration survey (pump and motor, both ends, three directions) &mdash; because they cost almost nothing to take while you're there and often explain why a pump has lost performance even when the seals and bearings look fine.</div>
+<div class="ar"><b>Choose checks once</b>Use <b>Checks for this visit</b> at the top to tick which sections apply today. Every pump then shows the same set, so you are not flipping back to pump 1 to remember what was selected.</div>
 <div class="ar"><b>Blank means left out</b>Only the sections you actually fill in appear on the exported PDF, so a quick seals-and-bearings job prints as a tight report and a full survey prints as the works. Skip anything that wasn't part of the job.</div>
 <div class="ar"><b>Something not on the list?</b>Every pump has an "Add your own section" box near the bottom. Give it a name &mdash; base plate, oil level, whatever comes up on the day &mdash; and it prints on the PDF as its own section, exactly like Seals or Bearings above. Add as many as you like; a blank one simply won't appear.</div>
 <div class="ar"><b>No nameplate duty figure handy?</b>The "Extra: vacuum performance" heading in each pump block is a link &mdash; tap it to jump straight to the "Deepest Vacuum You Can Pull" calculator, fill in today's seal water temperature and site altitude, then tap the &lsquo;&#8249; Back&rsquo; button at the top to come straight back to this report. Tap "Pull from vacuum calculator" to drop that number into Rated duty vacuum as your comparison point.</div>
@@ -940,6 +947,13 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="fld"><div class="fh"><label>Scope of service</label></div><div class="ctrl"><select id="lri_scope"><option value=""></option><option value="basic">Basic inspection (seals, bearings, borescope)</option><option value="basic_om">Basic inspection + O&amp;M preventative maintenance checks</option><option value="overhaul">Full overhaul (off-site)</option></select></div></div>
 <div class="fld"><div class="fh"><label>Inspection date</label></div><div class="ctrl"><input type="date" id="lri_date"></div></div>
 <div class="fld"><div class="fh"><label>Technician(s)</label></div><div class="ctrl"><input type="text" id="lri_by"></div></div>
+</div>
+<div class="card lri-setup" id="lri_setup_card"><h3>Checks for this visit</h3>
+<p class="lri-setup-hint">Tick the sections you will do today. Every pump on this report then shows the same set &mdash; you only choose once.</p>
+<div class="lri-setup-grid" id="lri_setup_grid"></div>
+<p class="lri-setup-hint" style="margin-top:8px">Tip: a basic client quote is usually seals, bearings, and borescope. Tick extras only if you need them.</p>
+<button type="button" class="clrbtn" onclick="lriSetupBasic()" style="margin-left:0">Use basic set</button>
+<button type="button" class="clrbtn" onclick="lriSetupAll()">Tick all</button>
 </div>
 <div id="lri_rows"></div>
 <button class="clrbtn" onclick="lriAddRow()" style="margin-left:0">Add another pump</button> <button class="clrbtn" onclick="lriRemoveRow()">Remove last pump</button>
@@ -1003,6 +1017,12 @@ td:first-child{text-align:left;font-family:var(--sans);}
 <div class="fld"><div class="fh"><label>PO / quote ref (optional)</label></div><div class="ctrl"><input type="text" id="cj_po" placeholder="PO or quote number"></div></div>
 <div class="fld"><div class="fh"><label>Findings / notes</label></div><div class="ctrl"><textarea id="cj_findings" rows="6" placeholder="What you found on site"></textarea></div></div>
 <button class="exbtn" onclick="custSaveJob()">Save job</button>
+</div>
+<div class="card"><h3>Pump inspection</h3>
+<div class="cj-lri-row">
+<button type="button" class="exbtn" id="cj_lri_btn" onclick="custStartOrOpenLri()">Start pump inspection</button>
+<p class="cj-lri-note" id="cj_lri_note">Opens the inspection report with this customer and site filled in. Linked to this job.</p>
+</div>
 </div>
 <div class="card"><h3>Calculations for this job</h3>
 <p style="font-size:13px;color:var(--soft);margin:0 0 10px">Attach Tools or On-Site Checks calculators used on this visit. Open jumps to that calculator; Back returns here.</p>
@@ -2946,17 +2966,146 @@ function lriRefreshAllOC(){var sels=document.querySelectorAll('#lri_rows select'
 window.lriOC=lriOC;
 var LRI_KEY="vt_lri1",LRI_RC_KEY="vt_lri_rc";
 var LRI_HEADER=["lri_company","lri_letterhead","lri_client","lri_site","lri_contact","lri_contact_ph","lri_ref","lri_po","lri_scope","lri_date","lri_by","lri_findings","lri_followup","lri_nextdate"];
+
+var LRI_SEC_KEY="vt_lri_secs";
+var LRI_LINK_KEY="vt_lri_link";
+var LRI_SECTIONS=[
+ {key:"seals",label:"Seals"},
+ {key:"bearings",label:"Bearings"},
+ {key:"borescope",label:"Borescope (casing)"},
+ {key:"general",label:"General & installation"},
+ {key:"torque",label:"Torque settings"},
+ {key:"drive",label:"Drive (coupling / belts)"},
+ {key:"cooler",label:"Seal water cooler"},
+ {key:"separator",label:"Separator tank"},
+ {key:"temps",label:"Temperature survey"},
+ {key:"vac",label:"Vacuum performance"},
+ {key:"amps",label:"Motor current"},
+ {key:"sealwater",label:"Seal water flow / temp"},
+ {key:"vib",label:"Vibration"},
+ {key:"extras",label:"Your own section"},
+ {key:"overall",label:"Overall condition",always:true}
+];
+var LRI_SEC_DEFAULT=["seals","bearings","borescope","general","overall"];
+var LRI_ENABLED={};
+function lriSecEnabledInit(){
+ var i,o=null;
+ try{o=JSON.parse(localStorage.getItem(LRI_SEC_KEY)||"null");}catch(err){o=null;}
+ LRI_ENABLED={};
+ if(o&&typeof o==="object"){
+  for(i=0;i<LRI_SECTIONS.length;i++){
+   var k=LRI_SECTIONS[i].key;
+   LRI_ENABLED[k]=LRI_SECTIONS[i].always?true:!!o[k];
+  }
+ }else{
+  for(i=0;i<LRI_SECTIONS.length;i++){
+   var k2=LRI_SECTIONS[i].key;
+   LRI_ENABLED[k2]=LRI_SECTIONS[i].always||LRI_SEC_DEFAULT.indexOf(k2)>=0;
+  }
+ }
+}
+function lriSaveSections(){
+ var o={},i;
+ for(i=0;i<LRI_SECTIONS.length;i++){
+  var k=LRI_SECTIONS[i].key;
+  o[k]=!!LRI_ENABLED[k];
+ }
+ try{localStorage.setItem(LRI_SEC_KEY,JSON.stringify(o));}catch(err){}
+}
+function lriRenderSetup(){
+ var grid=document.getElementById("lri_setup_grid");
+ if(!grid)return;
+ if(!Object.keys(LRI_ENABLED).length)lriSecEnabledInit();
+ var h="",i,s,dis;
+ for(i=0;i<LRI_SECTIONS.length;i++){
+  s=LRI_SECTIONS[i];
+  dis=s.always?' disabled':'';
+  h+='<label class="chk"><input type="checkbox" data-lrisec-key="'+s.key+'"'+(LRI_ENABLED[s.key]?' checked':'')+dis+' onchange="lriSetupChanged(this)"> '+s.label+(s.always?' (always on)':'')+'</label>';
+ }
+ grid.innerHTML=h;
+}
+function lriSetupChanged(el){
+ if(!el)return;
+ var k=el.getAttribute("data-lrisec-key");
+ if(!k)return;
+ LRI_ENABLED[k]=!!el.checked;
+ lriSaveSections();
+ lriApplySections();
+}
+function lriSetupBasic(){
+ var i,s;
+ for(i=0;i<LRI_SECTIONS.length;i++){
+  s=LRI_SECTIONS[i];
+  LRI_ENABLED[s.key]=s.always||LRI_SEC_DEFAULT.indexOf(s.key)>=0;
+ }
+ lriSaveSections();lriRenderSetup();lriApplySections();
+}
+function lriSetupAll(){
+ var i;
+ for(i=0;i<LRI_SECTIONS.length;i++)LRI_ENABLED[LRI_SECTIONS[i].key]=true;
+ lriSaveSections();lriRenderSetup();lriApplySections();
+}
+function lriApplySections(){
+ if(!Object.keys(LRI_ENABLED).length)lriSecEnabledInit();
+ var nodes=document.querySelectorAll("#lri_rows details.lrisec[data-lrisec]");
+ for(var i=0;i<nodes.length;i++){
+  var k=nodes[i].getAttribute("data-lrisec");
+  var on=LRI_ENABLED[k]!==false;
+  nodes[i].classList.toggle("lri-sec-off",!on);
+ }
+}
+function lriCopyPrevPump(n){
+ if(n<2)return;
+ if(!confirm("Copy filled-in checks from Pump "+(n-1)+" into Pump "+n+"? This overwrites values already typed on Pump "+n+" (pump ID / tag is kept)."))return;
+ var prev=n-1,p0="lri_r"+prev+"_",p1="lri_r"+n+"_";
+ var f=lriRowFields(prev),i,e0,e1,id0,id1,suf;
+ for(i=0;i<f.length;i++){
+  id0=f[i];
+  if(id0===p0+"tag")continue;
+  suf=id0.slice(p0.length);
+  id1=p1+suf;
+  e0=document.getElementById(id0);e1=document.getElementById(id1);
+  if(!e0||!e1)continue;
+  if(e0.type==="checkbox")e1.checked=e0.checked;else e1.value=e0.value;
+ }
+ // Match torque / extra counts then copy
+ var tc0=LRI_TORQ_COUNT[prev]||0,tc1=LRI_TORQ_COUNT[n]||0,m;
+ while(tc1<tc0){lriAddTorq(n,false);tc1++;}
+ for(m=1;m<=tc0;m++){
+  var tf=lriTorqFields(prev,m);
+  for(i=0;i<tf.length;i++){
+   suf=tf[i].slice(("lri_r"+prev+"_").length);
+   e0=document.getElementById(tf[i]);e1=document.getElementById("lri_r"+n+"_"+suf);
+   if(e0&&e1)e1.value=e0.value;
+  }
+ }
+ var ec0=LRI_EXTRA_COUNT[prev]||0,ec1=LRI_EXTRA_COUNT[n]||0;
+ while(ec1<ec0){lriAddExtra(n,false);ec1++;}
+ for(m=1;m<=ec0;m++){
+  var ef=lriExtraFields(prev,m);
+  for(i=0;i<ef.length;i++){
+   suf=ef[i].slice(("lri_r"+prev+"_").length);
+   e0=document.getElementById(ef[i]);e1=document.getElementById("lri_r"+n+"_"+suf);
+   if(e0&&e1)e1.value=e0.value;
+  }
+ }
+ lriRefreshAllOC();
+ lriApplySections();
+ recalc();
+}
+
 var LRI_ROWCOUNT=0;
 var LRI_PHOTOS=[];
 function lriRowHTML(n){
  var p="lri_r"+n+"_";
  return '<details class="card" id="lri_row'+n+'" open><summary>Pump '+n+'</summary><div class="lripump-body">'+
+ (n>1?'<button type="button" class="clrbtn lri-copyprev" onclick="lriCopyPrevPump('+n+')">Copy checks from Pump '+(n-1)+'</button>':'')+
  '<div class="fld"><div class="fh"><label>Pump ID / tag</label></div><div class="ctrl"><input type="text" id="'+p+'tag" placeholder="e.g. Hogging Vacuum Pump A"></div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Manufacturer</span><div class="ctrl"><input type="text" id="'+p+'make"></div></div><div class="mgf"><span class="mlab">Model</span><div class="ctrl"><input type="text" id="'+p+'model"></div></div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Serial No.</span><div class="ctrl"><input type="text" id="'+p+'serial"></div></div><div class="mgf"><span class="mlab">Year of manufacture</span><div class="ctrl"><input type="number" id="'+p+'year" placeholder="number"></div></div></div>'+
  '<div class="fld"><div class="fh"><label>Max working pressure (absolute, nameplate)</label></div><div class="ctrl"><input type="number" id="'+p+'maxp_n" placeholder="number"><select id="'+p+'maxp_u" data-g="pressure" data-du="4"></select><span class="fu">abs</span></div></div>'+
 
- '<details class="lrisec"><summary class="tp-num">Seals</summary><div class="lrisec-body">'+
+ '<details class="lrisec" data-lrisec="seals"><summary class="tp-num">Seals</summary><div class="lrisec-body">'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Type</span>'+lriSelBlock(p+'seal_type',LRI_OPT_SEALTYPE)+'</div><div class="mgf"><span class="mlab">Condition</span>'+lriSelBlock(p+'seal_cond',LRI_OPT_COND)+'</div></div>'+
  '<p style="font-size:12px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px">Gland packing (skip if mechanical seal)</p>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Drip rate &mdash; as found</span><div class="ctrl"><input type="text" id="'+p+'seal_drip_before" placeholder="e.g. 50, or &lsquo;pouring&rsquo;, &lsquo;dry&rsquo;"><span class="fu">drops/min</span></div></div><div class="mgf"><span class="mlab">Drip rate &mdash; after adjustment</span><div class="ctrl"><input type="text" id="'+p+'seal_drip_after" placeholder="leave blank if not adjusted"><span class="fu">drops/min</span></div></div></div>'+
@@ -2965,34 +3114,34 @@ function lriRowHTML(n){
  '<div class="fld"><div class="fh"><label>Seal notes</label></div><div class="ctrl"><textarea id="'+p+'seal_notes" rows="2" placeholder="Leakage rate, seal water flush condition..."></textarea></div></div>'+
  '</div></details>'+
 
- '<details class="lrisec"><summary class="tp-num">Bearings</summary><div class="lrisec-body">'+
+ '<details class="lrisec" data-lrisec="bearings"><summary class="tp-num">Bearings</summary><div class="lrisec-body">'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Type</span>'+lriSelBlock(p+'brg_type',LRI_OPT_BRGTYPE)+'</div><div class="mgf"><span class="mlab">Condition</span>'+lriSelBlock(p+'brg_cond',LRI_OPT_COND)+'</div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Temp, drive end</span><div class="ctrl"><input type="number" id="'+p+'brg_de_temp" placeholder="number"><span class="fu">&deg;C</span></div></div><div class="mgf"><span class="mlab">Temp, non-drive end</span><div class="ctrl"><input type="number" id="'+p+'brg_nde_temp" placeholder="number"><span class="fu">&deg;C</span></div></div></div>'+
  '<p id="'+p+'brg_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Housing temperatures compare against ambient in the temperature survey below.</p>'+
  '<div class="fld"><div class="fh"><label>Bearing notes</label></div><div class="ctrl"><textarea id="'+p+'brg_notes" rows="2"></textarea></div></div>'+
  '</div></details>'+
 
- '<details class="lrisec"><summary class="tp-num">Borescope inspection of casing</summary><div class="lrisec-body">'+
+ '<details class="lrisec" data-lrisec="borescope"><summary class="tp-num">Borescope inspection of casing</summary><div class="lrisec-body">'+
  '<p style="font-size:12px;color:var(--soft);margin:0 0 6px">Internal condition of the casting &mdash; corrosion, cavitation, and any abrasion or erosion damage.</p>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Corrosion</span>'+lriSelBlock(p+'bore_corr',LRI_OPT_SEV)+'</div><div class="mgf"><span class="mlab">Cavitation damage</span>'+lriSelBlock(p+'bore_cav',LRI_OPT_SEV)+'</div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Abrasion / erosion damage</span>'+lriSelBlock(p+'bore_abr',LRI_OPT_SEV)+'</div><div class="mgf"></div></div>'+
  '<div class="fld"><div class="fh"><label>Borescope notes / location of damage</label></div><div class="ctrl"><textarea id="'+p+'bore_notes" rows="2"></textarea></div></div>'+
  '</div></details>'+
 
- '<details class="lrisec"><summary class="tp-num">General &amp; installation</summary><div class="lrisec-body">'+
+ '<details class="lrisec" data-lrisec="general"><summary class="tp-num">General &amp; installation</summary><div class="lrisec-body">'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Rotation direction</span>'+lriSelBlock(p+'chk_rotation',LRI_OPT_YN)+'</div><div class="mgf"><span class="mlab">Foot &amp; hold-down bolts</span>'+lriSelBlock(p+'chk_footbolts',LRI_OPT_YN)+'</div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">All guards fitted and secure</span>'+lriSelBlock(p+'chk_guards',LRI_OPT_YN)+'</div><div class="mgf"></div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Inlet strainer / screen</span>'+lriSelBlock(p+'chk_strainer',LRI_OPT_COND3)+'</div><div class="mgf"><span class="mlab">Flexible connections / hoses</span>'+lriSelBlock(p+'chk_hoses',LRI_OPT_COND3)+'</div></div>'+
  '<div class="fld"><div class="fh"><label>Running observations</label></div><div class="ctrl"><textarea id="'+p+'run_obs" rows="2" placeholder="Noise, leaks, anything unusual while running..."></textarea></div></div>'+
  '</div></details>'+
 
- '<details class="lrisec"><summary class="tp-num">Torque settings</summary><div class="lrisec-body">'+
+ '<details class="lrisec" data-lrisec="torque"><summary class="tp-num">Torque settings</summary><div class="lrisec-body">'+
  '<p style="font-size:12px;color:var(--soft);margin:0 0 6px">There\'s no single industry-standard figure for these &mdash; the spec comes from the pump or coupling maker\'s own manual. Name each item you torqued, log the value you used, and add a comment. Add a line for every bolt group; leave one blank and it won\'t print.</p>'+
  '<div id="'+p+'torq"></div>'+
  '<button class="clrbtn" onclick="lriAddTorq('+n+')" style="margin:2px 0 0">Add a torque item</button> <button class="clrbtn" onclick="lriRemoveTorq('+n+')">Remove last</button>'+
  '</div></details>'+
 
- '<details class="lrisec"><summary class="tp-num">Drive: coupling or V-belts</summary><div class="lrisec-body">'+
+ '<details class="lrisec" data-lrisec="drive"><summary class="tp-num">Drive: coupling or V-belts</summary><div class="lrisec-body">'+
  '<div class="fld"><div class="fh"><label>Drive type</label></div>'+lriSelBlock(p+'drive_type',LRI_OPT_DRIVE)+'</div>'+
  '<p style="font-size:12px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px">Coupling (skip if belt driven)</p>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Coupling condition</span>'+lriSelBlock(p+'coup_cond',LRI_OPT_COND)+'</div><div class="mgf"><span class="mlab">Alignment</span>'+lriSelBlock(p+'coup_align',LRI_OPT_ALIGN)+'</div></div>'+
@@ -3009,19 +3158,19 @@ function lriRowHTML(n){
  '<div class="fld"><div class="fh"><label>Belt drive notes</label></div><div class="ctrl"><textarea id="'+p+'belt_notes" rows="2"></textarea></div></div>'+
  '</div></details>'+
 
- '<details class="lrisec"><summary class="tp-num">Seal water cooler</summary><div class="lrisec-body">'+
+ '<details class="lrisec" data-lrisec="cooler"><summary class="tp-num">Seal water cooler</summary><div class="lrisec-body">'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Seal water system</span>'+lriSelBlock(p+'cooler_system',LRI_OPT_COOLERSYS)+'</div><div class="mgf"><span class="mlab">Cooler condition</span>'+lriSelBlock(p+'cooler_cond',LRI_OPT_COND3)+'</div></div>'+
  '<div class="fld"><div class="fh"><label>Cooler comment</label></div><div class="ctrl"><textarea id="'+p+'cooler_notes" rows="2" placeholder="Observations on the cooler and the seal water arrangement..."></textarea></div></div>'+
  '</div></details>'+
 
- '<details class="lrisec"><summary class="tp-num">Separator tank</summary><div class="lrisec-body">'+
+ '<details class="lrisec" data-lrisec="separator"><summary class="tp-num">Separator tank</summary><div class="lrisec-body">'+
  '<p style="font-size:12px;color:var(--soft);margin:0 0 6px">Inspected by borescope only &mdash; take a photo for the record.</p>'+
  '<div class="fld"><div class="fh"><label>Internal lining condition</label></div>'+lriSelBlock(p+'sep_lining',LRI_OPT_LINING)+'</div>'+
  '<div class="fld"><div class="fh"><label>System bolts checked, tight and torqued to spec</label></div>'+lriSelBlock(p+'sep_bolts',LRI_OPT_YN)+'</div>'+
  '<div class="fld"><div class="fh"><label>Separator tank notes</label></div><div class="ctrl"><textarea id="'+p+'sep_notes" rows="2"></textarea></div></div>'+
  '</div></details>'+
 
- '<details class="lrisec"><summary class="tp-num">Extra: temperature survey (&deg;C)</summary><div class="lrisec-body">'+
+ '<details class="lrisec" data-lrisec="temps"><summary class="tp-num">Extra: temperature survey (&deg;C)</summary><div class="lrisec-body">'+
  '<p style="font-size:12px;color:var(--soft);margin:0 0 6px">Spot readings around the pump and up and down stream &mdash; an infrared gun is fine. Skip any point you can\'t reach.</p>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Ambient</span><div class="ctrl"><input type="number" id="'+p+'t_amb" placeholder="number"><span class="fu">&deg;C</span></div></div><div class="mgf"><span class="mlab">Suction line</span><div class="ctrl"><input type="number" id="'+p+'t_suc" placeholder="number"><span class="fu">&deg;C</span></div></div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Discharge line</span><div class="ctrl"><input type="number" id="'+p+'t_dis" placeholder="number"><span class="fu">&deg;C</span></div></div><div class="mgf"><span class="mlab">Pump casing</span><div class="ctrl"><input type="number" id="'+p+'t_case" placeholder="number"><span class="fu">&deg;C</span></div></div></div>'+
@@ -3029,24 +3178,24 @@ function lriRowHTML(n){
  '<p id="'+p+'temp_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Fill in suction and discharge to see the temperature change across the pump.</p>'+
  '</div></details>'+
 
- '<details class="lrisec" id="lri_r'+n+'_secvac"><summary class="tp-num">Extra: vacuum performance</summary><div class="lrisec-body">'+
+ '<details class="lrisec" data-lrisec="vac" id="lri_r'+n+'_secvac"><summary class="tp-num">Extra: vacuum performance</summary><div class="lrisec-body">'+
  '<p class="tp-vaclink" onclick="lriGoCalc(\'mav\','+n+')" title="Open the vacuum calculator, then come back and pull the number in">Open the &ldquo;Deepest Vacuum You Can Pull&rdquo; calculator <span class="tp-go">Open calculator &rsaquo;</span></p>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Rated duty vacuum</span><div class="ctrl"><input type="number" id="'+p+'vac_rated_n" placeholder="number"><select id="'+p+'vac_rated_u" data-g="pressure" data-du="0"></select></div></div><div class="mgf"><span class="mlab">Measured today</span><div class="ctrl"><input type="number" id="'+p+'vac_meas_n" placeholder="number"><select id="'+p+'vac_meas_u" data-g="pressure" data-du="0"></select></div></div></div>'+
  '<button class="clrbtn" style="margin:2px 0 0" onclick="lriPullMav('+n+')">Pull from vacuum calculator</button>'+
  '<p id="'+p+'vac_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Fill in both to compare against rated duty. No nameplate figure handy? Open the vacuum calculator above, enter today\'s seal water temperature and site altitude, then come back and tap "Pull from vacuum calculator" to use that as your rated comparison point.</p>'+
  '</div></details>'+
 
- '<details class="lrisec"><summary class="tp-num">Extra: motor current</summary><div class="lrisec-body">'+
+ '<details class="lrisec" data-lrisec="amps"><summary class="tp-num">Extra: motor current</summary><div class="lrisec-body">'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Nameplate FLA</span><div class="ctrl"><input type="number" id="'+p+'amps_rated" placeholder="number"><span class="fu">A</span></div></div><div class="mgf"><span class="mlab">Measured running current</span><div class="ctrl"><input type="number" id="'+p+'amps_meas" placeholder="number"><span class="fu">A</span></div></div></div>'+
  '<p id="'+p+'amps_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Fill in both to see % of full load.</p>'+
  '</div></details>'+
 
- '<details class="lrisec"><summary class="tp-num">Extra: seal water</summary><div class="lrisec-body">'+
+ '<details class="lrisec" data-lrisec="sealwater"><summary class="tp-num">Extra: seal water</summary><div class="lrisec-body">'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Flow</span><div class="ctrl"><input type="number" id="'+p+'sw_flow" placeholder="number"><span class="fu">L/min</span></div></div><div class="mgf"><span class="mlab">Inlet temp</span><div class="ctrl"><input type="number" id="'+p+'sw_temp_in" placeholder="number"><span class="fu">&deg;C</span></div></div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Outlet temp</span><div class="ctrl"><input type="number" id="'+p+'sw_temp_out" placeholder="number"><span class="fu">&deg;C</span></div></div><div class="mgf"></div></div>'+
  '</div></details>'+
 
- '<details class="lrisec"><summary class="tp-num">Extra: vibration (mm/s RMS)</summary><div class="lrisec-body">'+
+ '<details class="lrisec" data-lrisec="vib"><summary class="tp-num">Extra: vibration (mm/s RMS)</summary><div class="lrisec-body">'+
  '<p style="font-size:12px;color:var(--soft);margin:0 0 6px">Take readings on the bearing housings, pump and motor, both ends, three directions. Skip what you can\'t reach.</p>'+
  '<p style="font-size:12px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px">Pump, drive end</p>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Axial</span><div class="ctrl"><input type="number" id="'+p+'vib_pde_ax" placeholder="number"></div></div><div class="mgf"><span class="mlab">Horizontal</span><div class="ctrl"><input type="number" id="'+p+'vib_pde_h" placeholder="number"></div></div><div class="mgf"><span class="mlab">Vertical</span><div class="ctrl"><input type="number" id="'+p+'vib_pde_v" placeholder="number"></div></div></div>'+
@@ -3059,13 +3208,13 @@ function lriRowHTML(n){
  '<p id="'+p+'vib_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">General guidance per ISO 10816-3 vibration severity zones.</p>'+
  '</div></details>'+
 
- '<details class="lrisec"><summary class="tp-num">Add your own section</summary><div class="lrisec-body">'+
+ '<details class="lrisec" data-lrisec="extras"><summary class="tp-num">Add your own section</summary><div class="lrisec-body">'+
  '<p style="font-size:12px;color:var(--soft);margin:0 0 6px">Anything you pick up on site that isn\'t covered above &mdash; base plate, oil level, whatever comes up. Give it a name and it appears on the printed report as its own section, exactly like the ones above. Add as many as you need; leave one blank and it simply won\'t print.</p>'+
  '<div id="lri_r'+n+'_extras"></div>'+
  '<button class="clrbtn" onclick="lriAddExtra('+n+')" style="margin:2px 0 0">Add a section</button> <button class="clrbtn" onclick="lriRemoveExtra('+n+')">Remove last</button>'+
  '</div></details>'+
 
- '<details class="lrisec"><summary class="tp-num">Overall</summary><div class="lrisec-body">'+
+ '<details class="lrisec" data-lrisec="overall"><summary class="tp-num">Overall</summary><div class="lrisec-body">'+
  '<div class="fld"><div class="fh"><label>Overall pump condition</label></div>'+lriSelBlock(p+'condition',LRI_OPT_COND)+'</div>'+
  '<div class="fld"><div class="fh"><label>Action priority</label></div>'+lriSelBlock(p+'priority',LRI_OPT_PRIORITY)+'</div>'+
  '<div class="fld"><div class="fh"><label>Corrective action recommended for this pump</label></div><div class="ctrl"><textarea id="'+p+'corrective" rows="3" placeholder="e.g. Replace mechanical seal; bearings within tolerance, monitor next service..."></textarea></div></div>'+
@@ -3106,6 +3255,7 @@ function lriAddRow(save){
  populateSelects(wrap);
  var container=document.getElementById("lri_rows");
  if(container)container.appendChild(wrap.firstChild);
+ lriApplySections();
  if(save!==false){try{localStorage.setItem(LRI_RC_KEY,String(LRI_ROWCOUNT));}catch(err){}recalc();}
 }
 function lriRemoveRow(){
@@ -3402,6 +3552,7 @@ function lriLoad(){
  LRI_PHOTOS=Array.isArray(o.photos)?o.photos:[];
  lriRenderPhotos();
  lriRefreshAllOC();
+ lriSecEnabledInit();lriRenderSetup();lriApplySections();
 }
 function lriClear(){
  if(!confirm("Clear the whole inspection report, including photos?"))return;
@@ -3417,7 +3568,7 @@ function lriClear(){
  LRI_PHOTOS=[];
  lriRenderPhotos();
  lriRefreshAllOC();
- try{localStorage.removeItem(LRI_KEY);}catch(err){}
+ try{localStorage.removeItem(LRI_KEY);localStorage.removeItem(LRI_LINK_KEY);}catch(err){}
  recalc();
 }
 // Severity ranking for condition values: 0 = fine, 1 = watch, 2 = bad, 3 = worst.
@@ -3888,7 +4039,7 @@ function lriExportPDF(){
 window.lriAddRow=lriAddRow;window.lriRemoveRow=lriRemoveRow;window.lriRemovePhoto=lriRemovePhoto;window.lriClear=lriClear;window.lriExportPDF=lriExportPDF;
 
 var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the Gas Laws",learn_intro:"What a Gas Really Is",learn_boyle:"Boyle's Law",learn_charles:"Charles's Law",learn_gl:"Gay-Lussac's Law",learn_combined:"The Combined Gas Law",learn_ideal:"The Ideal Gas Law",learn_dalton:"Dalton's Law",fc:"Normal / Actual Flow",vac:"Vacuum Pump Sizing",cmp:"Compressor Sizing",pc:"Conveying Sizing",mp:"Which Machine",vap:"Vapour & Wet Gas",pd:"Pump-down Time",lk:"Leak Check",pl:"Pipe Loss",pw:"Power & Motor Current",cv:"Unit Converter",ref:"Reference Tables",orf:"Orifice Sizing",hl:"Heat Load, Water",mw:"Cooling Tower Make-up",cw:"Conveying Step-by-Step",cat_learn:"Play and Learn",cat_size:"Tools",cat_site:"On-Site Checks",ts:"Find the Fault",ps:"Pre-separator Sizing",lr:"Inside a Liquid Ring Pump",dt:"Discharge Temperature",ck:"Commissioning Checklist",bp:"Belt & Pulley Speed",af:"Speed Change Effect",learn_fan:"Speed and the Fan Laws",learn_heat:"How Heat Load Works",learn_cav:"Why Seal Water Stays Cool",pt:"Production Test vs Factory Curve",lft:"Liquid Ring Pump Field Test Sheet",bf:"Belt Filter Pump Sizing",mav:"Deepest Vacuum You Can Pull",dl:"Drop-Leg Height Check",vl:"Vacuum Line Loss",rpt:"Site Investigation Report",lri:"Liquid Ring Pump Inspection Report",cust:"Customers",cust_view:"Customer",cust_job:"Job / visit",cust_royhill:"Roy Hill"};
-var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",pt:"cat_site",lft:"cat_site",bf:"cat_size",mav:"cat_size",dl:"cat_size",vl:"cat_size",rpt:"cat_site",lri:"cat_site",cust:"home",cust_view:"cust",cust_job:"cust_view",cust_royhill:"cust"};
+var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",pt:"cat_site",lft:"cat_site",bf:"cat_size",mav:"cat_size",dl:"cat_size",vl:"cat_size",rpt:"cat_site",lri:"cust",cust:"home",cust_view:"cust",cust_job:"cust_view",cust_royhill:"cust"};
 var CUR="home";
 var LRI_RETURN=null;
 var CUST_RETURN=null;
@@ -4103,6 +4254,7 @@ function custRenderJob(){
  function set(id,v){var e=document.getElementById(id);if(e)e.value=v==null?"":v;}
  set("cj_date",j.date);set("cj_site",j.site);set("cj_type",j.type||"other");set("cj_status",j.status||"draft");set("cj_po",j.po);set("cj_findings",j.findings);
  if(!Array.isArray(j.calcs))j.calcs=[];
+ custUpdateLriButton();
  custRenderJobCalcs();
  custRenderJobPhotos();
 }
@@ -4173,8 +4325,65 @@ var CUST_CALC_LIST=[
  {id:"af",group:"Tools"},{id:"orf",group:"Tools"},{id:"hl",group:"Tools"},{id:"mw",group:"Tools"},{id:"ps",group:"Tools"},
  {id:"pd",group:"On-Site Checks"},{id:"lk",group:"On-Site Checks"},{id:"pl",group:"On-Site Checks"},{id:"pw",group:"On-Site Checks"},
  {id:"ts",group:"On-Site Checks"},{id:"bp",group:"On-Site Checks"},{id:"ck",group:"On-Site Checks"},{id:"pt",group:"On-Site Checks"},
- {id:"lft",group:"On-Site Checks"},{id:"rpt",group:"On-Site Checks"},{id:"lri",group:"On-Site Checks"}
+ {id:"lft",group:"On-Site Checks"},{id:"rpt",group:"On-Site Checks"}
 ];
+
+function custLriLinkGet(){
+ try{return JSON.parse(localStorage.getItem(LRI_LINK_KEY)||"null");}catch(err){return null;}
+}
+function custLriLinkSet(custId,jobId){
+ try{localStorage.setItem(LRI_LINK_KEY,JSON.stringify({custId:custId,jobId:jobId}));}catch(err){}
+}
+function custJobHasLri(j){return !!(j&&(j.lri||j.lriLinked));}
+function custMarkJobLri(j,on){
+ if(!j)return;
+ if(on){j.lri=true;j.lriLinked=true;}
+ else{delete j.lri;delete j.lriLinked;}
+}
+function custUpdateLriButton(){
+ var pair=custFindJob();
+ var btn=document.getElementById("cj_lri_btn");
+ var note=document.getElementById("cj_lri_note");
+ if(!btn||!pair)return;
+ var linked=custJobHasLri(pair.j);
+ btn.textContent=linked?"Open pump inspection":"Start pump inspection";
+ if(note)note.textContent=linked
+  ?"Opens the linked inspection report for this job. Back returns here."
+  :"Starts the pump inspection with this customer and site filled in, and links it to this job.";
+}
+function custStartOrOpenLri(){
+ var pair=custFindJob();if(!pair)return;
+ var c=pair.c,j=pair.j;
+ // Persist any edits on the job form first
+ try{custSaveJob();}catch(err){}
+ pair=custFindJob();if(!pair)return;
+ c=pair.c;j=pair.j;
+ var linked=custJobHasLri(j);
+ custMarkJobLri(j,true);
+ custPersist(true);
+ custLriLinkSet(c.id,j.id);
+ // Prefill LRI header from customer + job (do not wipe pump rows if already working)
+ function setIf(id,v,force){
+  var e=document.getElementById(id);if(!e)return;
+  if(force||!e.value)e.value=v==null?"":v;
+ }
+ setIf("lri_client",c.name,!linked);
+ var siteBits=[];
+ if(j.site)siteBits.push(j.site);
+ else if(c.sites&&c.sites[0])siteBits.push(c.sites[0]);
+ setIf("lri_site",siteBits.join(" — "),!linked);
+ setIf("lri_ref",j.po||"",!linked);
+ setIf("lri_po",j.po||"",!linked);
+ setIf("lri_date",j.date||"",!linked);
+ if(!document.getElementById("lri_company").value){
+  var co=document.getElementById("lri_company");if(co)co.value="Busch ANZ Pty Ltd";
+ }
+ try{lriSave();}catch(err){}
+ CUST_RETURN={calc:"lri",jobId:j.id,custId:c.id};
+ show("lri");
+ lriRenderSetup();lriApplySections();
+}
+
 function custCalcTitle(id){return TT[id]||id;}
 function custEnsureJobCalcs(j){if(!j.calcs)j.calcs=[];if(!Array.isArray(j.calcs))j.calcs=[];return j.calcs;}
 function custRenderJobCalcs(){
@@ -4370,6 +4579,7 @@ function show(id){
  if(id==="cust")custRenderList();
  if(id==="cust_view")custRenderView();
  if(id==="cust_job")custRenderJob();
+ if(id==="lri"){lriSecEnabledInit();lriRenderSetup();lriApplySections();}
  window.scrollTo(0,0);
 }
 
