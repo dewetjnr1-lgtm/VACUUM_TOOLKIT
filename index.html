@@ -1071,6 +1071,7 @@ td{background:transparent;color:var(--ink);}
 <div class="pgh"><h2 id="cj_title">Job</h2><span id="cj_saved_chip" class="vt-saved-chip">Saved on this phone</span></div>
 <p class="sub" id="cj_sub"></p>
 <div class="card cj-visit"><h3>Visit</h3>
+<div class="fld"><div class="fh"><label>Job name <span style="font-weight:500;color:var(--soft);text-transform:none;letter-spacing:0">(optional — blank uses the date and visit type)</span></label></div><div class="ctrl"><input type="text" id="cj_name" placeholder="e.g. FLT151 gland service"></div></div>
 <div class="fld"><div class="fh"><label>Start date</label></div><div class="ctrl"><input type="date" id="cj_date"></div></div>
 <div class="fld"><div class="fh"><label>End date <span style="font-weight:500;color:var(--soft);text-transform:none;letter-spacing:0">(optional — blank = same day)</span></label></div><div class="ctrl"><input type="date" id="cj_date_end"></div></div>
 <div class="fld"><div class="fh"><label>Visit type</label></div><div class="ctrl"><select id="cj_type"><option value="belt-filter vac pumps">Belt-filter vac pumps</option><option value="inspection">Inspection</option><option value="site investigation">Site investigation</option><option value="other">Other</option></select></div></div>
@@ -4657,16 +4658,24 @@ function custRenderJobs(){
  var h="",i,j,extra;
  for(i=0;i<jobs.length;i++){
   j=jobs[i];
-  extra=custEsc(j.status||"draft")+(j.site?" · "+custEsc(j.site):"");
-  h+='<button class="bub c4" onclick="custOpenJob(\''+String(j.id).replace(/'/g,"")+'\')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 3.5v3M16 3.5v3M4 10h16"/></svg></span><span>'+custEsc(custJobDateLabel(j)||"No date")+" · "+custEsc(j.type||"visit")+'<br><small style="font-weight:400;opacity:.8">'+extra+"</small></span></button>";
+  var dateType=(custJobDateLabel(j)||"No date")+" · "+(j.type||"visit");
+  var label=j.name?custEsc(j.name):custEsc(dateType);
+  var extraBits=[];
+  if(j.name)extraBits.push(dateType);
+  extraBits.push(j.status||"draft");
+  if(j.site)extraBits.push(j.site);
+  extra=custEsc(extraBits.join(" · "));
+  h+='<button class="bub c4" onclick="custOpenJob(\''+String(j.id).replace(/'/g,"")+'\')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 3.5v3M16 3.5v3M4 10h16"/></svg></span><span>'+label+'<br><small style="font-weight:400;opacity:.8">'+extra+"</small></span></button>";
  }
  el.innerHTML=h||'<p style="font-size:13px;color:var(--soft);margin:8px 2px">No jobs yet — tap New job / visit.</p>';
 }
 function custNewJob(){
  var c=custFind(CUST_CUR);if(!c)return;
+ var nm="";
+ try{nm=prompt("Name this job / visit (optional — leave blank to use the date and type):","")||"";}catch(err){nm="";}
  var today=new Date();
  var mo=today.getMonth()+1,da=today.getDate();var ds=today.getFullYear()+"-"+(mo<10?"0":"")+mo+"-"+(da<10?"0":"")+da;
- var job={id:custUid("job"),date:ds,dateEnd:"",site:(c.sites&&c.sites[0])||"",type:"belt-filter vac pumps",status:"draft",po:"",findings:"",photos:[],calcs:[]};
+ var job={id:custUid("job"),name:nm.trim(),date:ds,dateEnd:"",site:(c.sites&&c.sites[0])||"",type:"belt-filter vac pumps",status:"draft",po:"",findings:"",photos:[],calcs:[]};
  if(!c.jobs)c.jobs=[];
  c.jobs.unshift(job);
  custPersist();
@@ -4683,11 +4692,11 @@ function custRenderJob(){
  var pair=custFindJob();
  if(!pair){show("cust_view");return;}
  var c=pair.c,j=pair.j;
- var t=document.getElementById("cj_title");if(t)t.textContent=(custJobDateLabel(j)||"Job")+" · "+(j.type||"visit");
+ var t=document.getElementById("cj_title");if(t)t.textContent=j.name||((custJobDateLabel(j)||"Job")+" · "+(j.type||"visit"));
  var sub=document.getElementById("cj_sub");if(sub)sub.textContent=c.name+(j.site?" — "+j.site:"");
  var hdr=document.getElementById("hdr_t");if(hdr)hdr.textContent="Job / visit";
  function set(id,v){var e=document.getElementById(id);if(e)e.value=v==null?"":v;}
- set("cj_date",j.date);set("cj_date_end",j.dateEnd||"");set("cj_site",j.site);set("cj_type",j.type||"other");set("cj_status",j.status||"draft");set("cj_po",j.po);set("cj_findings",j.findings);
+ set("cj_name",j.name||"");set("cj_date",j.date);set("cj_date_end",j.dateEnd||"");set("cj_site",j.site);set("cj_type",j.type||"other");set("cj_status",j.status||"draft");set("cj_po",j.po);set("cj_findings",j.findings);
  if(!Array.isArray(j.calcs))j.calcs=[];
  custUpdateLriButton();
  custRenderJobCalcs();
@@ -4731,6 +4740,7 @@ function custSaveJob(){
  // Only update fields still present in the DOM so removed inputs (site/findings) keep stored values.
  function grab(id){var e=document.getElementById(id);return e?e.value:null;}
  var v;
+ v=grab("cj_name");if(v!==null)j.name=v||"";
  v=grab("cj_date");if(v!==null)j.date=v||"";
  v=grab("cj_date_end");if(v!==null)j.dateEnd=v||"";
  // If end blank or equals start, store blank end (= same day).
