@@ -1125,15 +1125,23 @@ td{background:transparent;color:var(--ink);}
 <div class="note warn">Critical risks flagged on the work instruction for this job: <b>Dropped objects</b>, <b>Entanglement and crushing</b>, <b>Uncontrolled release of stored energy</b>. Complete a Take-5 (and a JHA if it prompts one) before starting, with permits/clearances and PPE per HIO's requirements (ear, eye, head protection, gloves) &mdash; this sheet doesn't replace that.</div>
 </div>
 <div class="card"><h3>Procedure &mdash; Gland Service &amp; Commissioning (OP-WIN-15873)</h3>
-<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step1"> 1&ndash;7. Read WI, JHA signed, Take-5, tooling prepped and inspected, muster point identified, permits ready.</label></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step1"> 1. Read and understand this work instruction &mdash; if in doubt, ask.</label></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step2"> 2. Complete a JHA, including any hold points, signed by a HIO approved supervisor.</label></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step3"> 3. Perform a Take-5 before starting. If a new risk is identified or conditions have changed, advise the supervisor.</label></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step4"> 4. Prepare equipment and tooling: ratchet spanner M24 (gland followers), ratchet with 10 mm socket (gland guards).</label></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step5"> 5. Inspect tools and equipment &mdash; fit for purpose and in good condition. Tag damaged items 'Out of Service'.</label></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step6"> 6. Identify the nearest muster point and safety showers.</label></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step7"> 7. Prepare necessary work permits and clearances.</label></div></div>
 <div class="note warn"><b>HOLD POINT &mdash; Step 8.</b> Barricade set up (per OP-PRO-00993), all entrances covered. A HIO Mechanical Supervisor must inspect the barricading and work area before you continue.</div>
 <div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step8"> 8. Barricade set up and inspected.</label></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">Supervisor (Step 8)</span><div class="ctrl"><input type="text" id="hio_step8_sup" placeholder="HIO Supervisor"></div></div><div class="mgf"></div></div>
-<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step9"> 9&ndash;10. Notified other work groups; gland guards removed.</label></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step9"> 9. Notify other work groups in the immediate area.</label></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step10"> 10. Remove gland guards (10 mm socket + ratchet; gloves &amp; glasses; ear plugs for noise; good comms with Ops; skilled labour for dropped-tools risk near rotating parts).</label></div></div>
 <div class="note warn"><b>HOLD POINT &mdash; Step 11.</b> Tighten gland followers while the pump is running: gloves off and sleeves rolled up; 24 mm ratchet spanner x2, one on each side for uniform load; tighten one flat at a time at 5&ndash;10 minute intervals. Ensure the drip rate is sustainable for 10&ndash;20 minutes (45&ndash;60 drops/min, per OEM) before fitting the guards back on. If that flow rate can't be achieved, check the vacuum pressure doesn't exceed &minus;68 kPa &mdash; if it does, that can point to worn gland packing letting atmosphere leak past the gland.</div>
 <div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step11"> 11. Gland followers tightened, drip rate sustained, confirmed before refitting guards.</label></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">Supervisor (Step 11)</span><div class="ctrl"><input type="text" id="hio_step11_sup" placeholder="HIO Supervisor"></div></div><div class="mgf"></div></div>
-<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step12"> 12&ndash;13. Gland guards reinstalled; barricading removed and work area cleaned up.</label></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step12"> 12. Reinstall gland guards (same PPE, tooling and comms cautions as Step 10).</label></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step13"> 13. Remove barricading and clean up the work area.</label></div></div>
 </div>
 <div class="card"><h3>Inspection readings</h3>
 <div class="mgrid"><div class="mgf"><span class="mlab">Impeller clearance to casing, DE</span><div class="ctrl"><input type="number" id="hio_imp_de" placeholder="number"><span class="fu">mm</span></div></div><div class="mgf"><span class="mlab">Impeller clearance to casing, NDE</span><div class="ctrl"><input type="number" id="hio_imp_nde" placeholder="number"><span class="fu">mm</span></div></div></div>
@@ -3734,7 +3742,8 @@ function lriIsNum(s){return /^-?\d*\.?\d+$/.test((s||"").trim());}
 // the visit live on the job itself, not here.
 var HIO_KEY="vt_hio1";
 var HIO_FIELDS=["hio_wo","hio_pump","hio_floc","hio_floc_desc",
- "hio_step1","hio_step8","hio_step8_sup","hio_step9","hio_step11","hio_step11_sup","hio_step12",
+ "hio_step1","hio_step2","hio_step3","hio_step4","hio_step5","hio_step6","hio_step7",
+ "hio_step8","hio_step8_sup","hio_step9","hio_step10","hio_step11","hio_step11_sup","hio_step12","hio_step13",
  "hio_imp_de","hio_imp_nde","hio_scale_imp","hio_scale_port","hio_seal_nde","hio_seal_de","hio_brg_nde","hio_brg_de","hio_drip_de","hio_drip_nde","hio_vac","hio_iso_start","hio_iso_end",
  "hio_defects","hio_sup_name","hio_sup_date"];
 function hioSave(){
