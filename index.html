@@ -1111,6 +1111,49 @@ td{background:transparent;color:var(--ink);}
 <div class="pgh"><h2>Roy Hill</h2></div>
 <p class="sub">Opening Roy Hill&hellip;</p>
 </section>
+<section class="page" id="hio"><div class="pgh"><h2>HIO Checklist</h2><button class="q" onclick="hp('ab_hio')">?</button></div>
+<div class="about" id="ab_hio">
+<div class="ar"><b>What it is</b>Hancock Iron Ore's own paperwork for a belt-filter vacuum pump job (FLT151&ndash;FLT551 class): the SAP Preventative Maintenance Instruction (impeller clearance, scale buildup, seal/bearing condition, drip rate, vacuum pressure) plus the gland service &amp; commissioning work instruction OP-WIN-15873, on one sheet.</div>
+<div class="ar"><b>Why it matters</b>The paper version has two hold points &mdash; barricading inspected at Step 8, drip rate confirmed sustainable at Step 11 &mdash; before which work must stop for a HIO supervisor. This keeps both readings and both sign-offs together.</div>
+<div class="ar">This is attached from a job under Customers, same as any other calculator &mdash; photos for the visit go on the job itself. Specific to Hancock Iron Ore's current procedure as photographed on site; if HIO revises it, this needs updating to match.</div>
+</div>
+<div class="card"><h3>Job details</h3><button class="exbtn" onclick="ex('hio')">Insert example</button><button class="clrbtn" onclick="hioClear()">Clear this checklist</button>
+<div class="mgrid"><div class="mgf"><span class="mlab">Work Order No.</span><div class="ctrl"><input type="text" id="hio_wo" placeholder="e.g. 120993895"></div></div><div class="mgf"><span class="mlab">Pump tag</span><div class="ctrl"><input type="text" id="hio_pump" placeholder="e.g. FLT151"></div></div></div>
+<div class="mgrid"><div class="mgf"><span class="mlab">FLOC</span><div class="ctrl"><input type="text" id="hio_floc" placeholder="e.g. 1071-30-20-01-FLT151-PMP1-PMP001"></div></div><div class="mgf"><span class="mlab">FLOC Description</span><div class="ctrl"><input type="text" id="hio_floc_desc" placeholder="e.g. Vacuum Pump FLT151"></div></div></div>
+</div>
+<div class="card"><h3>Safety</h3>
+<div class="note warn">Critical risks flagged on the work instruction for this job: <b>Dropped objects</b>, <b>Entanglement and crushing</b>, <b>Uncontrolled release of stored energy</b>. Complete a Take-5 (and a JHA if it prompts one) before starting, with permits/clearances and PPE per HIO's requirements (ear, eye, head protection, gloves) &mdash; this sheet doesn't replace that.</div>
+</div>
+<div class="card"><h3>Procedure &mdash; Gland Service &amp; Commissioning (OP-WIN-15873)</h3>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step1"> 1&ndash;7. Read WI, JHA signed, Take-5, tooling prepped and inspected, muster point identified, permits ready.</label></div></div>
+<div class="note warn"><b>HOLD POINT &mdash; Step 8.</b> Barricade set up (per OP-PRO-00993), all entrances covered. A HIO Mechanical Supervisor must inspect the barricading and work area before you continue.</div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step8"> 8. Barricade set up and inspected.</label></div></div>
+<div class="mgrid"><div class="mgf"><span class="mlab">Supervisor (Step 8)</span><div class="ctrl"><input type="text" id="hio_step8_sup" placeholder="HIO Supervisor"></div></div><div class="mgf"></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step9"> 9&ndash;10. Notified other work groups; gland guards removed.</label></div></div>
+<div class="note warn"><b>HOLD POINT &mdash; Step 11.</b> Tighten gland followers while the pump is running: gloves off and sleeves rolled up; 24 mm ratchet spanner x2, one on each side for uniform load; tighten one flat at a time at 5&ndash;10 minute intervals. Ensure the drip rate is sustainable for 10&ndash;20 minutes (45&ndash;60 drops/min, per OEM) before fitting the guards back on. If that flow rate can't be achieved, check the vacuum pressure doesn't exceed &minus;68 kPa &mdash; if it does, that can point to worn gland packing letting atmosphere leak past the gland.</div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step11"> 11. Gland followers tightened, drip rate sustained, confirmed before refitting guards.</label></div></div>
+<div class="mgrid"><div class="mgf"><span class="mlab">Supervisor (Step 11)</span><div class="ctrl"><input type="text" id="hio_step11_sup" placeholder="HIO Supervisor"></div></div><div class="mgf"></div></div>
+<div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="hio_step12"> 12&ndash;13. Gland guards reinstalled; barricading removed and work area cleaned up.</label></div></div>
+</div>
+<div class="card"><h3>Inspection readings</h3>
+<div class="mgrid"><div class="mgf"><span class="mlab">Impeller clearance to casing, DE</span><div class="ctrl"><input type="number" id="hio_imp_de" placeholder="number"><span class="fu">mm</span></div></div><div class="mgf"><span class="mlab">Impeller clearance to casing, NDE</span><div class="ctrl"><input type="number" id="hio_imp_nde" placeholder="number"><span class="fu">mm</span></div></div></div>
+<p id="hio_imp_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Acceptable limit is under 4 mm each side &mdash; 4 mm or over needs a SAP notification.</p>
+<div class="mgrid"><div class="mgf"><span class="mlab">Scale buildup on impeller</span><div class="ctrl"><input type="number" id="hio_scale_imp" placeholder="number"><span class="fu">mm</span></div></div><div class="mgf"><span class="mlab">Scale buildup on port plates</span><div class="ctrl"><input type="number" id="hio_scale_port" placeholder="number"><span class="fu">mm</span></div></div></div>
+<p id="hio_scale_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Acceptable limit is under 5 mm each &mdash; 5 mm or over needs a SAP notification.</p>
+<div class="mgrid"><div class="mgf"><span class="mlab">NDE seals</span><div class="ctrl"><select id="hio_seal_nde"><option value=""></option><option value="seated">Correctly seated</option><option value="damaged">Damaged / dislodged</option></select></div></div><div class="mgf"><span class="mlab">DE seals</span><div class="ctrl"><select id="hio_seal_de"><option value=""></option><option value="seated">Correctly seated</option><option value="damaged">Damaged / dislodged</option></select></div></div></div>
+<div class="mgrid"><div class="mgf"><span class="mlab">NDE bearing condition</span><div class="ctrl"><select id="hio_brg_nde"><option value=""></option><option value="clean">Clean grease present</option><option value="contam">Contamination present</option></select></div></div><div class="mgf"><span class="mlab">DE bearing condition</span><div class="ctrl"><select id="hio_brg_de"><option value=""></option><option value="clean">Clean grease present</option><option value="contam">Contamination present</option></select></div></div></div>
+<div class="mgrid"><div class="mgf"><span class="mlab">Drip rate, Drive End</span><div class="ctrl"><input type="text" id="hio_drip_de" placeholder="e.g. 50, or 'pouring', 'dry'"><span class="fu">drops/min</span></div></div><div class="mgf"><span class="mlab">Drip rate, Non-Drive End</span><div class="ctrl"><input type="text" id="hio_drip_nde" placeholder="e.g. 50, or 'pouring', 'dry'"><span class="fu">drops/min</span></div></div></div>
+<p id="hio_drip_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Acceptable limit is 45 to 60 drops/min per gland, per OEM.</p>
+<div class="mgrid"><div class="mgf"><span class="mlab">Vacuum pressure</span><div class="ctrl"><input type="number" id="hio_vac" placeholder="e.g. -50"><span class="fu">kPa</span></div></div><div class="mgf"></div></div>
+<p id="hio_vac_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">If drip rate can't be reached, check this doesn't exceed &minus;68 kPa &mdash; if it does, that can mean worn gland packing letting atmosphere leak past the gland.</p>
+<div class="mgrid"><div class="mgf"><label class="chk"><input type="checkbox" id="hio_iso_start"> Isolation and Lockout completed</label></div><div class="mgf"><label class="chk"><input type="checkbox" id="hio_iso_end"> De-Isolate and Lockout completed</label></div></div>
+</div>
+<div class="card"><h3>Defects / SAP notifications &amp; sign-off</h3>
+<div class="fld"><div class="fh"><label>Defects / work required</label></div><div class="ctrl"><textarea id="hio_defects" rows="3" placeholder="e.g. DE bearing contaminated with grease — SAP Noti 12345678"></textarea></div></div>
+<div class="mgrid"><div class="mgf"><span class="mlab">Supervisor sign-off</span><div class="ctrl"><input type="text" id="hio_sup_name"></div></div><div class="mgf"><span class="mlab">Date</span><div class="ctrl"><input type="date" id="hio_sup_date"></div></div></div>
+</div>
+<button class="clrbtn" onclick="hioClear()" style="margin:6px 0 0">Clear this checklist</button>
+</section>
 </main><div id="lft_print" class="print-sheet"></div><div id="pt_print" class="print-sheet"></div><div id="rpt_print" class="print-sheet"></div><script>/** @license
  *
  * jsPDF - PDF Document creation from JavaScript
@@ -1797,6 +1840,9 @@ function recalc(){
  for(var lriN=1;lriN<=LRI_ROWCOUNT;lriN++)lriRowCalc(lriN);
  lriSaveCaptions();
  lriSave(true);
+ // HIO CHECKLIST
+ hioCalc();
+ hioSave();
  // COMPRESSOR
  (function(){var B=airOf("cmp_air");var sin=readPress("cmp_p",B),din=readPress("cmp_dp",B),loss=readMag("cmp_loss");if(isNaN(loss))loss=0;var svol=sin-loss;
   var flow=readUnit("cmp_flow","flowIn"),N=gv("cmp_n_n"),t=readUnit("cmp_t","temp"),tn=+gs("cmp_ref"),co=gv("cmp_co_n");if(isNaN(co))co=1;
@@ -2657,7 +2703,18 @@ var EX={
   lri_r2_vib_pde_ax:3.2,lri_r2_vib_pde_h:3.6,lri_r2_vib_pde_v:2.9,lri_r2_vib_pnde_ax:2.6,lri_r2_vib_pnde_h:2.9,lri_r2_vib_pnde_v:2.4,
   lri_r2_vib_mde_ax:2.1,lri_r2_vib_mde_h:2.4,lri_r2_vib_mde_v:2.0,lri_r2_vib_mnde_ax:1.8,lri_r2_vib_mnde_h:2.0,lri_r2_vib_mnde_v:1.7,
   lri_r2_ex1_label:"Oil level / lubrication",lri_r2_ex1_cond:"fair",lri_r2_ex1_value:"Below sight glass minimum",lri_r2_ex1_notes:"Topped up to the mark with the specified grade; recommend checking again next visit.",
-  lri_r2_condition:"poor",lri_r2_priority:"shutdown",lri_r2_corrective:"Replace mechanical seal and clean seal water cooler at next planned shutdown. Re-tension the belts now. Continue to monitor bearing DE temperature, discharge temperature and vibration."}
+  lri_r2_condition:"poor",lri_r2_priority:"shutdown",lri_r2_corrective:"Replace mechanical seal and clean seal water cooler at next planned shutdown. Re-tension the belts now. Continue to monitor bearing DE temperature, discharge temperature and vibration."},
+ hio:{hio_wo:"120993895",hio_pump:"FLT151",
+  hio_floc:"1071-30-20-01-FLT151-PMP1-PMP001",hio_floc_desc:"Vacuum Pump FLT151",
+  hio_step8_sup:"HIO Supervisor",hio_step11_sup:"HIO Supervisor",
+  hio_imp_de:2.5,hio_imp_nde:3,
+  hio_scale_imp:1,hio_scale_port:1,
+  hio_seal_nde:"seated",hio_seal_de:"seated",
+  hio_brg_nde:"clean",hio_brg_de:"clean",
+  hio_drip_de:52,hio_drip_nde:48,
+  hio_vac:-50,
+  hio_defects:"DE gland drip rate had dropped to almost nothing overnight — nipped up the follower one flat at a time until it came back to 52 drops/min, sustained for 15 minutes before refitting the guard.",
+  hio_sup_name:"HIO Supervisor",hio_sup_date:"2026-09-09"}
 };
 function ex(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(e)e.value=m[k];}recalc();}
 function clr(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(!e)continue;if(e.tagName==="SELECT"){var d=e.getAttribute("data-ref");if(d)e.value=d;}else e.value="";}recalc();}
@@ -3671,6 +3728,80 @@ function lriSevCell(ids){
  return '<span class="'+cls+'">'+fSelText(bid)+'</span>';
 }
 function lriIsNum(s){return /^-?\d*\.?\d+$/.test((s||"").trim());}
+
+// HIO CHECKLIST -- Hancock Iron Ore belt-filter vacuum pump PM + gland service checklist.
+// Attached to a customer job like any other calculator (see CUST_CALC_LIST); photos for
+// the visit live on the job itself, not here.
+var HIO_KEY="vt_hio1";
+var HIO_FIELDS=["hio_wo","hio_pump","hio_floc","hio_floc_desc",
+ "hio_step1","hio_step8","hio_step8_sup","hio_step9","hio_step11","hio_step11_sup","hio_step12",
+ "hio_imp_de","hio_imp_nde","hio_scale_imp","hio_scale_port","hio_seal_nde","hio_seal_de","hio_brg_nde","hio_brg_de","hio_drip_de","hio_drip_nde","hio_vac","hio_iso_start","hio_iso_end",
+ "hio_defects","hio_sup_name","hio_sup_date"];
+function hioSave(){
+ var o={},i,e,f=HIO_FIELDS;
+ for(i=0;i<f.length;i++){e=document.getElementById(f[i]);if(!e)continue;o[f[i]]=e.type==="checkbox"?e.checked:e.value;}
+ try{localStorage.setItem(HIO_KEY,JSON.stringify(o));}catch(err){}
+}
+function hioLoad(){
+ var o={};
+ try{o=JSON.parse(localStorage.getItem(HIO_KEY)||"{}")||{};}catch(err){o={};}
+ var i,e,f=HIO_FIELDS;
+ for(i=0;i<f.length;i++){e=document.getElementById(f[i]);if(!e||o[f[i]]===undefined)continue;if(e.type==="checkbox")e.checked=!!o[f[i]];else e.value=o[f[i]];}
+}
+function hioClear(){
+ if(!confirm("Clear this checklist?"))return;
+ var i,e,f=HIO_FIELDS;
+ for(i=0;i<f.length;i++){e=document.getElementById(f[i]);if(!e)continue;if(e.type==="checkbox")e.checked=false;else e.value="";}
+ try{localStorage.removeItem(HIO_KEY);}catch(err){}
+ recalc();
+}
+function hioCalc(){
+ if(!document.getElementById("hio_imp_note"))return;
+ var deC=gv("hio_imp_de"),ndeC=gv("hio_imp_nde");
+ var impEl=document.getElementById("hio_imp_note");
+ if(isNaN(deC)&&isNaN(ndeC))impEl.textContent="Acceptable limit is under 4 mm each side — 4 mm or over needs a SAP notification.";
+ else{
+  var ibits=[];
+  if(!isNaN(deC))ibits.push("DE "+fmtA(deC,1)+" mm"+(deC>=4?" — 4 mm or over, raise a SAP notification.":" — within limit."));
+  if(!isNaN(ndeC))ibits.push("NDE "+fmtA(ndeC,1)+" mm"+(ndeC>=4?" — 4 mm or over, raise a SAP notification.":" — within limit."));
+  impEl.textContent=ibits.join(" ");
+ }
+ var impS=gv("hio_scale_imp"),portS=gv("hio_scale_port");
+ var scaleEl=document.getElementById("hio_scale_note");
+ if(isNaN(impS)&&isNaN(portS))scaleEl.textContent="Acceptable limit is under 5 mm each — 5 mm or over needs a SAP notification.";
+ else{
+  var sbits=[];
+  if(!isNaN(impS))sbits.push("Impeller "+fmtA(impS,1)+" mm"+(impS>=5?" — 5 mm or over, raise a SAP notification.":" — within limit."));
+  if(!isNaN(portS))sbits.push("Port plates "+fmtA(portS,1)+" mm"+(portS>=5?" — 5 mm or over, raise a SAP notification.":" — within limit."));
+  scaleEl.textContent=sbits.join(" ");
+ }
+ var dripDeRaw=rv("hio_drip_de"),dripNdeRaw=rv("hio_drip_nde");
+ var dripState=function(raw){
+  if(raw==="")return null;
+  if(!lriIsNum(raw))return {text:raw};
+  return {num:parseFloat(raw)};
+ };
+ var dripHealth=function(s){
+  if(!s)return "not recorded";
+  if(s.text!==undefined)return "“"+s.text+"”";
+  var n=s.num;
+  if(n<45)return fmtA(n,0)+" drops/min — under the 45–60 limit.";
+  if(n<=60)return fmtA(n,0)+" drops/min — within the 45–60 limit.";
+  return fmtA(n,0)+" drops/min — over the 45–60 limit, ease off.";
+ };
+ var deS=dripState(dripDeRaw),ndeS=dripState(dripNdeRaw);
+ var dripEl=document.getElementById("hio_drip_note");
+ if(!deS&&!ndeS)dripEl.textContent="Acceptable limit is 45 to 60 drops/min per gland, per OEM. Sustain this for 10–20 minutes before fitting the guards back on.";
+ else dripEl.textContent="DE: "+dripHealth(deS)+" NDE: "+dripHealth(ndeS);
+ var vac=gv("hio_vac");
+ var vacEl=document.getElementById("hio_vac_note");
+ var dryFlag=(deS&&deS.num!==undefined&&deS.num<45)||(ndeS&&ndeS.num!==undefined&&ndeS.num<45)||(deS&&deS.text!==undefined)||(ndeS&&ndeS.text!==undefined);
+ if(isNaN(vac))vacEl.textContent="If drip rate can't be reached, check this doesn't exceed −68 kPa — if it does, that can mean worn gland packing letting atmosphere leak past the gland.";
+ else if(vac<=0&&vac>=-68&&dryFlag)vacEl.textContent=fmtA(vac,0)+" kPa, with the drip rate short of spec — this combination can point to worn gland packing letting atmosphere leak past the gland. Investigate further.";
+ else vacEl.textContent=fmtA(vac,0)+" kPa recorded.";
+}
+window.hioClear=hioClear;
+
 function lriAny(ids){
  for(var i=0;i<ids.length;i++){
   var e=document.getElementById(ids[i]);
@@ -4332,8 +4463,8 @@ function lriBindStickyScroll(){
 
 window.lriAddRow=lriAddRow;window.lriRemoveRow=lriRemoveRow;window.lriRemovePhoto=lriRemovePhoto;window.lriClear=lriClear;window.lriExportPDF=lriExportPDF;window.lriCopyPrevPump=lriCopyPrevPump;window.lriApplySections=lriApplySections;
 
-var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the Gas Laws",learn_intro:"What a Gas Really Is",learn_boyle:"Boyle's Law",learn_charles:"Charles's Law",learn_gl:"Gay-Lussac's Law",learn_combined:"The Combined Gas Law",learn_ideal:"The Ideal Gas Law",learn_dalton:"Dalton's Law",fc:"Normal / Actual Flow",vac:"Vacuum Pump Sizing",cmp:"Compressor Sizing",pc:"Conveying Sizing",mp:"Which Machine",vap:"Vapour & Wet Gas",pd:"Pump-down Time",lk:"Leak Check",pl:"Pipe Loss",pw:"Power & Motor Current",cv:"Unit Converter",ref:"Reference Tables",orf:"Orifice Sizing",hl:"Heat Load, Water",mw:"Cooling Tower Make-up",cw:"Conveying Step-by-Step",cat_learn:"Play and Learn",cat_size:"Tools",cat_site:"On-Site Checks",ts:"Find the Fault",ps:"Pre-separator Sizing",lr:"Inside a Liquid Ring Pump",dt:"Discharge Temperature",ck:"Commissioning Checklist",bp:"Belt & Pulley Speed",af:"Speed Change Effect",learn_fan:"Speed and the Fan Laws",learn_heat:"How Heat Load Works",learn_cav:"Why Seal Water Stays Cool",pt:"Production Test vs Factory Curve",lft:"Liquid Ring Pump Field Test Sheet",bf:"Belt Filter Pump Sizing",mav:"Deepest Vacuum You Can Pull",dl:"Drop-Leg Height Check",vl:"Vacuum Line Loss",rpt:"Site Investigation Report",lri:"Liquid Ring Pump Inspection Report",cust:"Customers",cust_view:"Customer",cust_job:"Job / visit",cust_royhill:"Roy Hill"};
-var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",pt:"cat_site",lft:"cat_site",bf:"cat_size",mav:"cat_size",dl:"cat_size",vl:"cat_size",rpt:"cat_site",lri:"cust",cust:"home",cust_view:"cust",cust_job:"cust_view",cust_royhill:"cust"};
+var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the Gas Laws",learn_intro:"What a Gas Really Is",learn_boyle:"Boyle's Law",learn_charles:"Charles's Law",learn_gl:"Gay-Lussac's Law",learn_combined:"The Combined Gas Law",learn_ideal:"The Ideal Gas Law",learn_dalton:"Dalton's Law",fc:"Normal / Actual Flow",vac:"Vacuum Pump Sizing",cmp:"Compressor Sizing",pc:"Conveying Sizing",mp:"Which Machine",vap:"Vapour & Wet Gas",pd:"Pump-down Time",lk:"Leak Check",pl:"Pipe Loss",pw:"Power & Motor Current",cv:"Unit Converter",ref:"Reference Tables",orf:"Orifice Sizing",hl:"Heat Load, Water",mw:"Cooling Tower Make-up",cw:"Conveying Step-by-Step",cat_learn:"Play and Learn",cat_size:"Tools",cat_site:"On-Site Checks",ts:"Find the Fault",ps:"Pre-separator Sizing",lr:"Inside a Liquid Ring Pump",dt:"Discharge Temperature",ck:"Commissioning Checklist",bp:"Belt & Pulley Speed",af:"Speed Change Effect",learn_fan:"Speed and the Fan Laws",learn_heat:"How Heat Load Works",learn_cav:"Why Seal Water Stays Cool",pt:"Production Test vs Factory Curve",lft:"Liquid Ring Pump Field Test Sheet",bf:"Belt Filter Pump Sizing",mav:"Deepest Vacuum You Can Pull",dl:"Drop-Leg Height Check",vl:"Vacuum Line Loss",rpt:"Site Investigation Report",lri:"Liquid Ring Pump Inspection Report",cust:"Customers",cust_view:"Customer",cust_job:"Job / visit",cust_royhill:"Roy Hill",hio:"HIO Checklist"};
+var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",pt:"cat_site",lft:"cat_site",bf:"cat_size",mav:"cat_size",dl:"cat_size",vl:"cat_size",rpt:"cat_site",lri:"cust",cust:"home",cust_view:"cust",cust_job:"cust_view",cust_royhill:"cust",hio:"cust_job"};
 var CUR="home";
 var LRI_RETURN=null;
 var CUST_RETURN=null;
@@ -4659,7 +4790,7 @@ var CUST_CALC_LIST=[
  {id:"af",group:"Tools"},{id:"orf",group:"Tools"},{id:"hl",group:"Tools"},{id:"mw",group:"Tools"},{id:"ps",group:"Tools"},
  {id:"pd",group:"On-Site Checks"},{id:"lk",group:"On-Site Checks"},{id:"pl",group:"On-Site Checks"},{id:"pw",group:"On-Site Checks"},
  {id:"ts",group:"On-Site Checks"},{id:"bp",group:"On-Site Checks"},{id:"ck",group:"On-Site Checks"},{id:"pt",group:"On-Site Checks"},
- {id:"lft",group:"On-Site Checks"},{id:"rpt",group:"On-Site Checks"}
+ {id:"lft",group:"On-Site Checks"},{id:"rpt",group:"On-Site Checks"},{id:"hio",group:"On-Site Checks"}
 ];
 
 function custLriLinkGet(){
@@ -5097,6 +5228,7 @@ if(rptPhotoInput)rptPhotoInput.addEventListener("change",function(){rptHandleFil
 lriLoad();
 var lriPhotoInput=document.getElementById("lri_photo_input");
 if(lriPhotoInput)lriPhotoInput.addEventListener("change",function(){lriHandleFiles(this.files);this.value="";});
+hioLoad();
 var cvLogoInput=document.getElementById("cv_logo");
 if(cvLogoInput)cvLogoInput.addEventListener("change",function(){custHandleLogo(this.files&&this.files[0]);this.value="";});
 var cjPhotoInput=document.getElementById("cj_photo_input");
