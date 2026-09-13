@@ -1102,6 +1102,22 @@ td{background:transparent;color:var(--ink);}
 <div class="note warn" id="cj_warn" style="display:none">This phone is low on storage for photos. Export a PDF or backup now, then remove a photo or two and try again.</div>
 <div id="cj_photos"></div>
 </div>
+<div class="card"><h3>Feedback report</h3>
+<p style="font-size:13px;color:var(--soft);margin:0 0 10px">The Busch client letter format &mdash; used for HIO's chemical flush / descale reports. Tag photos above with a group (Pre-flush, In progress, Post-flush, Additional works) so they land in the right section.</p>
+<div class="fld"><div class="fh"><label>Recipient email</label></div><div class="ctrl"><input type="text" id="cj_fb_email" placeholder="e.g. rh.operations.processing@royhill.com.au"></div></div>
+<div class="mgrid"><div class="mgf"><span class="mlab">Company</span><div class="ctrl"><input type="text" id="cj_fb_company" placeholder="e.g. Hancock Iron Ore"></div></div><div class="mgf"><span class="mlab">Phone</span><div class="ctrl"><input type="text" id="cj_fb_phone"></div></div></div>
+<div class="mgrid"><div class="mgf"><span class="mlab">From</span><div class="ctrl"><input type="text" id="cj_fb_from"></div></div><div class="mgf"><span class="mlab">Date</span><div class="ctrl"><input type="date" id="cj_fb_date"></div></div></div>
+<div class="mgrid"><div class="mgf"><span class="mlab">CC name</span><div class="ctrl"><input type="text" id="cj_fb_cc_name"></div></div><div class="mgf"><span class="mlab">CC email</span><div class="ctrl"><input type="text" id="cj_fb_cc_email"></div></div></div>
+<div class="fld"><div class="fh"><label>Subject</label></div><div class="ctrl"><input type="text" id="cj_fb_subject" placeholder="e.g. Liquid ring vacuum pump chemical flush feedback report"></div></div>
+<div class="mgrid"><div class="mgf"><span class="mlab">Busch ref</span><div class="ctrl"><input type="text" id="cj_fb_busch_ref" placeholder="e.g. 26NBQ146"></div></div><div class="mgf"><span class="mlab">Your ref</span><div class="ctrl"><input type="text" id="cj_fb_your_ref" placeholder="e.g. DESANDS MODULE VACUUM PUMP FLT 151"></div></div></div>
+<div class="fld"><div class="fh"><label>Greeting &amp; summary</label></div><div class="ctrl"><textarea id="cj_fb_greeting" rows="4"></textarea></div></div>
+<div class="fld"><div class="fh"><label>Introduction heading</label></div><div class="ctrl"><input type="text" id="cj_fb_intro_head"></div></div>
+<div class="fld"><div class="fh"><label>Introduction text</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="6"></textarea></div></div>
+<div class="fld"><div class="fh"><label>Additional works completed</label></div><div class="ctrl"><textarea id="cj_fb_additional" rows="3" placeholder="One item per line, e.g. Gland packing changes (DE and NDE)"></textarea></div></div>
+<div class="fld"><div class="fh"><label>Closing</label></div><div class="ctrl"><textarea id="cj_fb_closing" rows="3"></textarea></div></div>
+<button class="exbtn" onclick="custSaveJob()">Save</button>
+<button class="exbtn" onclick="custExportFeedbackPDF()">Make Feedback Report PDF</button>
+</div>
 <div class="card"><h3>Report</h3>
 <p style="font-size:13px;color:var(--soft);margin:0 0 10px">PDF header uses the Busch logo plus this customer's logo (placeholder if none loaded yet).</p>
 <button class="exbtn" onclick="custExportJobPDF()">Make PDF</button>
@@ -4698,10 +4714,26 @@ function custRenderJob(){
  function set(id,v){var e=document.getElementById(id);if(e)e.value=v==null?"":v;}
  set("cj_name",j.name||"");set("cj_date",j.date);set("cj_date_end",j.dateEnd||"");set("cj_site",j.site);set("cj_type",j.type||"other");set("cj_status",j.status||"draft");set("cj_po",j.po);set("cj_findings",j.findings);
  if(!Array.isArray(j.calcs))j.calcs=[];
+ if(j.fbIntroHead===undefined)j.fbIntroHead=CUST_FB_DEFAULTS.introHead;
+ if(j.fbIntroBody===undefined)j.fbIntroBody=CUST_FB_DEFAULTS.introBody;
+ if(j.fbGreeting===undefined)j.fbGreeting=CUST_FB_DEFAULTS.greeting;
+ if(j.fbClosing===undefined)j.fbClosing=CUST_FB_DEFAULTS.closing;
+ set("cj_fb_email",j.fbEmail);set("cj_fb_company",j.fbCompany||c.name);set("cj_fb_phone",j.fbPhone);
+ set("cj_fb_from",j.fbFrom);set("cj_fb_date",j.fbDate||j.date);
+ set("cj_fb_cc_name",j.fbCcName);set("cj_fb_cc_email",j.fbCcEmail);
+ set("cj_fb_subject",j.fbSubject);set("cj_fb_busch_ref",j.fbBuschRef);set("cj_fb_your_ref",j.fbYourRef);
+ set("cj_fb_greeting",j.fbGreeting);set("cj_fb_intro_head",j.fbIntroHead);set("cj_fb_intro_body",j.fbIntroBody);
+ set("cj_fb_additional",j.fbAdditional);set("cj_fb_closing",j.fbClosing);
  custUpdateLriButton();
  custRenderJobCalcs();
  custRenderJobPhotos();
 }
+var CUST_FB_DEFAULTS={
+ introHead:"Introduction to BUSCH Liquid Ring Vacuum Pump Flush chemical",
+ introBody:"The de-scaler is a non-toxic, non-corrosive, non-flammable, non-injurious tar oil base solvent, heavily fortified with wetting and penetrating agents used for the rapid removal of water scale, lime and rust deposits found on the water side of any equipment that is water cooled, water heated or water operated, in any manner.\n\nThe de-scaler is biodegradable which allows for expended solution to be disposed of through regular sewer systems with a water flush.\n\nThe solution is non-toxic, non-corrosive, non-flammable and non-injurious to personnel when used as directed at any temperature within operating limits (not to exceed 48°C and used in accordance with SDS and site requirements).\n\nThe solution does not corrode, erode, attack, pit, oxidize or have other effects on metals or materials such as copper, fibre, plastic, iron, steel, rubber or lead, or other materials or metals found in water heated, water-cooled or water operated equipment when used as directed.",
+ greeting:"Hi Team\n\nWe thank you for the opportunity presented to BUSCH Vacuum Solutions to perform on-site services, chemically flushing the vacuum pump.\n\nShould you require any further assistance, please contact me.",
+ closing:"All the works were completed and everything inspected, found to be within the prescribed fitments and measurements.\n\nBUSCH Vacuum Solutions would like to take the opportunity to thank all involved on site."
+};
 function custParseISODate(s){
  if(!s||typeof s!=="string")return null;
  var p=s.split("-");
@@ -4751,6 +4783,21 @@ function custSaveJob(){
  v=grab("cj_status");if(v!==null)j.status=v||"draft";
  v=grab("cj_po");if(v!==null)j.po=v||"";
  v=grab("cj_findings");if(v!==null)j.findings=v||"";
+ v=grab("cj_fb_email");if(v!==null)j.fbEmail=v||"";
+ v=grab("cj_fb_company");if(v!==null)j.fbCompany=v||"";
+ v=grab("cj_fb_phone");if(v!==null)j.fbPhone=v||"";
+ v=grab("cj_fb_from");if(v!==null)j.fbFrom=v||"";
+ v=grab("cj_fb_date");if(v!==null)j.fbDate=v||"";
+ v=grab("cj_fb_cc_name");if(v!==null)j.fbCcName=v||"";
+ v=grab("cj_fb_cc_email");if(v!==null)j.fbCcEmail=v||"";
+ v=grab("cj_fb_subject");if(v!==null)j.fbSubject=v||"";
+ v=grab("cj_fb_busch_ref");if(v!==null)j.fbBuschRef=v||"";
+ v=grab("cj_fb_your_ref");if(v!==null)j.fbYourRef=v||"";
+ v=grab("cj_fb_greeting");if(v!==null)j.fbGreeting=v||"";
+ v=grab("cj_fb_intro_head");if(v!==null)j.fbIntroHead=v||"";
+ v=grab("cj_fb_intro_body");if(v!==null)j.fbIntroBody=v||"";
+ v=grab("cj_fb_additional");if(v!==null)j.fbAdditional=v||"";
+ v=grab("cj_fb_closing");if(v!==null)j.fbClosing=v||"";
  custSaveJobCaptions();
  custPersist();
  custRenderJob();
@@ -4761,17 +4808,24 @@ function custSaveJobCaptions(){
  for(var i=0;i<photos.length;i++){
   var e=document.getElementById("cj_ph"+i+"_cap");
   if(e)photos[i].caption=e.value;
+  var g=document.getElementById("cj_ph"+i+"_grp");
+  if(g)photos[i].group=g.value;
  }
 }
+var CUST_PHOTO_GROUP_OPT='<option value="">&mdash; none &mdash;</option><option value="pre">Pre-flush</option><option value="during">In progress</option><option value="post">Post-flush</option><option value="additional">Additional works</option>';
 function custRenderJobPhotos(){
  var pair=custFindJob();var el=document.getElementById("cj_photos");
  if(!el||!pair)return;
  var photos=pair.j.photos||[],h="",i,p;
  for(i=0;i<photos.length;i++){
   p=photos[i];
-  h+='<div class="rpt-ph"><img src="'+p.dataUrl+'"><div class="ctrl"><input type="text" id="cj_ph'+i+'_cap" placeholder="Caption, e.g. FLT 151 discharge" value="'+custEsc(p.caption||"")+'" onchange="custSaveJob()"></div><button class="clrbtn" onclick="custRemovePhoto('+i+')" style="margin:6px 0 0">Remove photo</button></div>';
+  h+='<div class="rpt-ph"><img src="'+p.dataUrl+'"><div class="mgrid"><div class="mgf"><span class="mlab">Caption</span><div class="ctrl"><input type="text" id="cj_ph'+i+'_cap" placeholder="Caption, e.g. FLT 151 discharge" value="'+custEsc(p.caption||"")+'" onchange="custSaveJob()"></div></div><div class="mgf"><span class="mlab">Feedback report group</span><div class="ctrl"><select id="cj_ph'+i+'_grp" onchange="custSaveJob()">'+CUST_PHOTO_GROUP_OPT+'</select></div></div></div><button class="clrbtn" onclick="custRemovePhoto('+i+')" style="margin:6px 0 0">Remove photo</button></div>';
  }
  el.innerHTML=h||'<p style="font-size:13px;color:var(--soft);margin:8px 2px">No photos yet.</p>';
+ for(i=0;i<photos.length;i++){
+  var s=document.getElementById("cj_ph"+i+"_grp");
+  if(s)s.value=photos[i].group||"";
+ }
 }
 function custHandlePhotos(files){
  var pair=custFindJob();if(!pair)return;
@@ -5039,6 +5093,65 @@ function custExportJobPDF(){
   pb.doc.save(fname);
  });
 }
+var CUST_FB_GROUP_LABELS={pre:"Pre-flush photos",during:"Pump flush in progress",post:"Post-flush photos",additional:"Additional works completed"};
+function custExportFeedbackPDF(){
+ custSaveJob();
+ var pair=custFindJob();
+ if(!pair)return;
+ if(typeof window.jspdf==="undefined"||!window.jspdf.jsPDF){alert("PDF engine not ready.");return;}
+ var c=pair.c,j=pair.j;
+ var photos=(j.photos||[]).slice();
+ var normPromises=[];
+ for(var k=0;k<photos.length;k++)normPromises.push(pbNormalizePhoto(photos[k].dataUrl));
+ Promise.all(normPromises).then(function(norm){
+  var pb=pbCreate(true,"");
+  pbTitle(pb,j.fbSubject||"Vacuum pump chem-flush feedback report");
+  pbGap(pb,2);
+  pbPairRow(pb,"Email",j.fbEmail||"—");
+  pbPairRow(pb,"Company",j.fbCompany||c.name||"—","Phone",j.fbPhone||"—");
+  var fbDateP=custParseISODate(j.fbDate||j.date);
+  pbPairRow(pb,"From",j.fbFrom||"—","Date",fbDateP?custFmtDayParts(fbDateP,true):(j.fbDate||j.date||"—"));
+  if(j.fbCcName||j.fbCcEmail)pbPairRow(pb,"CC",j.fbCcName||"—","Email",j.fbCcEmail||"—");
+  pbPairRow(pb,"Busch ref",j.fbBuschRef||"—","Your ref",j.fbYourRef||"—");
+  pbGap(pb,3);
+  if(j.fbGreeting)pbBox(pb,j.fbGreeting,20);
+  if(j.fbIntroBody){
+   pbSecHead(pb,j.fbIntroHead||"Introduction");
+   pbBox(pb,j.fbIntroBody,20);
+  }
+  var groupKeys=["pre","during","post"];
+  for(var gi=0;gi<groupKeys.length;gi++){
+   var gk=groupKeys[gi],rowPh=[],idxs=[];
+   for(var i=0;i<photos.length;i++)if(photos[i].group===gk)idxs.push(i);
+   if(!idxs.length)continue;
+   pbSecHead(pb,CUST_FB_GROUP_LABELS[gk]);
+   for(var ii=0;ii<idxs.length;ii+=2){
+    var i0=idxs[ii],row=[{src:norm[i0].src,caption:photos[i0].caption||"",w:norm[i0].w,h:norm[i0].h}];
+    if(ii+1<idxs.length){var i1=idxs[ii+1];row.push({src:norm[i1].src,caption:photos[i1].caption||"",w:norm[i1].w,h:norm[i1].h});}
+    pbPhotoRow(pb,row);
+   }
+  }
+  if(j.fbAdditional){
+   pbSecHead(pb,"Additional works completed");
+   pbBox(pb,j.fbAdditional,14);
+  }
+  var addIdxs=[];
+  for(var ai=0;ai<photos.length;ai++)if(photos[ai].group==="additional")addIdxs.push(ai);
+  if(addIdxs.length){
+   for(var aj=0;aj<addIdxs.length;aj+=2){
+    var a0=addIdxs[aj],rowA=[{src:norm[a0].src,caption:photos[a0].caption||"",w:norm[a0].w,h:norm[a0].h}];
+    if(aj+1<addIdxs.length){var a1=addIdxs[aj+1];rowA.push({src:norm[a1].src,caption:photos[a1].caption||"",w:norm[a1].w,h:norm[a1].h});}
+    pbPhotoRow(pb,rowA);
+   }
+  }
+  if(j.fbClosing)pbBox(pb,j.fbClosing,16);
+  pbFinalize(pb);
+  var refBit=custFileSafe(j.fbBuschRef||"");
+  var fname=(refBit?refBit+"_":"")+custFileSafe(c.name)+"_"+(j.date||"nodate")+"_FeedbackReport.pdf";
+  pb.doc.save(fname);
+ });
+}
+window.custExportFeedbackPDF=custExportFeedbackPDF;
 try{custLoad();}catch(err){CUST_DB={version:1,customers:[custSeedRoyHill()]};}
 window.custOpen=custOpen;window.custOpenJob=custOpenJob;window.custNewJob=custNewJob;
 window.custSaveView=custSaveView;window.custSaveJob=custSaveJob;window.custClearLogo=custClearLogo;
