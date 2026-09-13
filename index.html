@@ -984,7 +984,7 @@ td{background:transparent;color:var(--ink);}
 <p style="font-size:12px;color:var(--soft);margin:4px 2px 0">Pulls whatever is currently filled in on that tool's page right now, in this session.</p>
 </div>
 <button class="exbtn" onclick="rptExportPDF()" style="margin:6px 0 0">Export PDF</button><button class="clrbtn" onclick="rptClear()" style="margin:6px 0 0">Clear this report</button>
-</section><section class="page" id="lri"><div class="pgh"><h2>Liquid Ring Pump Inspection Report</h2><span id="lri_saved_chip" class="vt-saved-chip">Saved on this phone</span><button class="q" onclick="hp('ab_lri')">?</button></div>
+</section><section class="page" id="lri"><div class="pgh"><h2>Liquid Ring Pump Inspection Report</h2><span id="lri_saved_chip" class="vt-saved-chip">Saved on this device</span><button class="q" onclick="hp('ab_lri')">?</button></div>
 <div class="about" id="ab_lri">
 <div class="ar"><b>What it is</b>A structured inspection sheet for a liquid ring vacuum pump service call: seals, bearings and a borescope check of the casing (the standard basic inspection scope), plus the coupling, seal-water-cooler and separator-tank bolting/lining checks called up by most O&amp;M preventative maintenance schedules. One pump per block &mdash; add as many as are on the job.</div>
 <div class="ar"><b>Why it matters</b>A client's basic inspection quote usually names three things: seals, bearings, and a borescope of the casing for corrosion or cavitation. This sheet captures exactly that, in the order the quote lists it, so nothing gets left out of the report &mdash; and everything you write here drops straight into a client-ready PDF.</div>
@@ -1032,7 +1032,7 @@ td{background:transparent;color:var(--ink);}
 <section class="page" id="cust">
 <div class="pgh"><h2>Customers</h2><button class="q" onclick="hp('h_cust')">?</button></div>
 <div class="help" id="h_cust">Customers and jobs stay on <b>this phone</b> until you use Backup. Open a site, start a job, add photos, then make a PDF with the Busch logo and their logo.</div>
-<p class="sub">Saved on this phone &mdash; use Backup to copy elsewhere.</p>
+<p class="sub">Saved on this device &mdash; use Backup to copy elsewhere.</p>
 <div class="fld"><div class="fh"><label>Search</label></div><div class="ctrl"><input type="search" id="cust_search" placeholder="Name or site" oninput="custRenderList()"></div></div>
 <div id="cust_list" class="bubs"></div>
 <div class="card"><h3>Backup</h3>
@@ -1046,7 +1046,7 @@ td{background:transparent;color:var(--ink);}
 <section class="page" id="cust_view">
 <div class="pgh"><h2 id="cust_view_title">Customer</h2></div>
 <p class="sub" id="cust_view_sub"></p>
-<div class="means" id="cust_view_means">Saved on this phone &mdash; use Backup to copy elsewhere.</div>
+<div class="means" id="cust_view_means">Saved on this device &mdash; use Backup to copy elsewhere.</div>
 <div class="card"><h3>Details</h3>
 <div class="fld"><div class="fh"><label>Customer name</label></div><div class="ctrl"><input type="text" id="cv_name" placeholder="e.g. Hancock Iron Ore / Roy Hill"></div></div>
 <div class="fld"><div class="fh"><label>Site label</label></div><div class="ctrl"><input type="text" id="cv_site" placeholder="e.g. Wet plant / desands — belt filters"></div></div>
@@ -1068,7 +1068,7 @@ td{background:transparent;color:var(--ink);}
 </div>
 </section>
 <section class="page" id="cust_job">
-<div class="pgh"><h2 id="cj_title">Job</h2><span id="cj_saved_chip" class="vt-saved-chip">Saved on this phone</span></div>
+<div class="pgh"><h2 id="cj_title">Job</h2><span id="cj_saved_chip" class="vt-saved-chip">Saved on this device</span></div>
 <p class="sub" id="cj_sub"></p>
 <div class="card cj-visit"><h3>Visit</h3>
 <div class="fld"><div class="fh"><label>Job name <span style="font-weight:500;color:var(--soft);text-transform:none;letter-spacing:0">(optional — blank uses the date and visit type)</span></label></div><div class="ctrl"><input type="text" id="cj_name" placeholder="e.g. FLT151 gland service"></div></div>
@@ -4318,7 +4318,7 @@ function vtFlashSaved(id){
  var el=document.getElementById(id);if(!el)return;
  el.textContent="Saved just now";el.classList.add("just");
  if(_vtSavedTimers[id])clearTimeout(_vtSavedTimers[id]);
- _vtSavedTimers[id]=setTimeout(function(){el.textContent="Saved on this phone";el.classList.remove("just");},1500);
+ _vtSavedTimers[id]=setTimeout(function(){el.textContent="Saved on this device";el.classList.remove("just");},1500);
 }
 window.vtFlashSaved=vtFlashSaved;
 function lriFieldMeaningful(el){
