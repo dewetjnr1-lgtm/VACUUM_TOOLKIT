@@ -39,3 +39,6 @@
 ## Hard wall check
 
 Preview DOM is built from sell totals + letter/commercial text only. Staff calc chips stay on Costing. FX strip stays on Setup. Forbidden-token probe remains in `renderPreview()`.
+
+## First open (2026-09-19)
+**Blank by default.** 26NBQ142 is layout/print reference only — not prefilled. **Demo** button loads Hydro/LB seed deliberately; **New** clears to blank. Storage key bumped to `busch-wa-quote-v2-blank` so old demo autosaves do not return.

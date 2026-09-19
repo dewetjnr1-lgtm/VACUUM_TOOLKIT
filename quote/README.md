@@ -48,3 +48,6 @@ See `/workspace/quoting/SAMPLE_QUOTE_LOCK.md` and `MATCH_NOTES.md` in this folde
 ## Images
 
 Optional drawings live in quote JSON (compressed JPEG data URLs). Demo ships `assets/demo-drawing1.jpg` / `demo-drawing2.jpg` extracted from sample 26NBQ142 pages 3–4. Tick **6. Vacuum pump drawing** on Preview to show them on paper/print; untick to hide.
+
+## First open
+Starts **blank** (no Hydro / LB 0265 A seed). Use **Demo** only to load the layout sample deliberately. **New** clears to blank.
