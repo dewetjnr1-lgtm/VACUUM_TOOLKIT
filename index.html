@@ -251,6 +251,23 @@ td{background:transparent;color:var(--ink);}
 .math code{background:var(--elev2);color:var(--ink);}
 .cj-picker{background:rgba(7,16,24,.72);}
 .cj-picker-panel{background:var(--elev);border:1px solid var(--line);box-shadow:0 -8px 28px rgba(0,0,0,.5);}
+.cj-fb-preview-panel{width:min(640px,100%);max-height:92vh;display:flex;flex-direction:column;padding:0;overflow:hidden;}
+.cj-fb-preview-scroll{overflow:auto;padding:12px 14px 8px;flex:1;-webkit-overflow-scrolling:touch;}
+.cj-fb-preview-actions{display:flex;flex-direction:column;gap:8px;padding:10px 14px 16px;border-top:1px solid var(--line);background:var(--elev);}
+.cj-fb-letter{font-size:13.5px;color:var(--ink);line-height:1.45;}
+.cj-fb-letter h4{margin:0 0 8px;font-size:15px;font-weight:800;color:var(--ink);}
+.cj-fb-letter .fb-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px 10px;margin:0 0 12px;font-size:12.5px;}
+.cj-fb-letter .fb-grid .full{grid-column:1/-1;}
+.cj-fb-letter .fb-k{color:var(--soft);font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.04em;}
+.cj-fb-letter .fb-v{margin-top:1px;word-break:break-word;}
+.cj-fb-letter .fb-box{border:1px solid var(--line);border-radius:10px;padding:10px 12px;margin:0 0 12px;background:var(--elev2);white-space:pre-wrap;}
+.cj-fb-letter .fb-sec{font-size:12px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--soft);margin:14px 0 8px;}
+.cj-fb-letter .fb-photos{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 10px;}
+.cj-fb-letter .fb-ph{border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--elev2);}
+.cj-fb-letter .fb-ph img{display:block;width:100%;height:110px;object-fit:cover;}
+.cj-fb-letter .fb-ph .cap{padding:6px 8px;font-size:11.5px;color:var(--ink);}
+.cj-fb-letter .fb-note{font-size:12px;color:var(--soft);margin:0 0 10px;}
+
 
 /* LRI polish — locked brief: Open/Mid/Done strip, next incomplete, sticky pump, saved chip */
 .vt-status-strip{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:8px 2px 10px;margin:4px 0 8px;position:sticky;top:58px;z-index:18;background:linear-gradient(180deg,var(--paper) 70%,rgba(11,21,32,0));}
@@ -1118,12 +1135,22 @@ td{background:transparent;color:var(--ink);}
 <div class="fld"><div class="fh"><label>Closing</label></div><div class="ctrl"><textarea id="cj_fb_closing" rows="3"></textarea></div></div>
 </div>
 <div class="card cj-pdfs"><h3>PDF</h3>
-<button class="exbtn" style="display:block;width:100%;margin-left:0" onclick="custExportFeedbackPDF()">Client feedback letter (PDF)</button>
-<p class="sub" style="margin:4px 0 12px;font-size:12.5px">Chem-flush / HIO client letter &mdash; primary on site.</p>
+<button class="exbtn" style="display:block;width:100%;margin-left:0" onclick="custPreviewFeedbackLetter()">Preview client feedback letter</button>
+<p class="sub" style="margin:4px 0 12px;font-size:12.5px">Check the letter on screen, then Make PDF &mdash; or Close to edit.</p>
 </div>
 <button class="exbtn" style="display:block;width:100%;margin:12px 0 8px" onclick="custSaveJob()">Save on this device</button>
 <p class="sub" style="margin:0 0 12px;font-size:12.5px">Stays on this phone/laptop. <b>Export backup</b> on the Customers list copies to a file.</p>
 <button class="clrbtn" style="display:block;width:100%;margin-left:0;margin-bottom:16px" onclick="custDeleteJob()">Delete job</button>
+<div id="cj_fb_preview" class="cj-picker" style="display:none" aria-hidden="true">
+<div class="cj-picker-panel cj-fb-preview-panel">
+<div class="cj-picker-head" style="padding:12px 14px 0"><b>Client feedback letter</b><button type="button" class="clrbtn" onclick="custCloseFeedbackPreview()" style="margin:0">Close</button></div>
+<div class="cj-fb-preview-scroll" id="cj_fb_preview_body"></div>
+<div class="cj-fb-preview-actions">
+<button type="button" class="exbtn" style="display:block;width:100%;margin:0" onclick="custConfirmFeedbackPDF()">Make PDF</button>
+<button type="button" class="clrbtn" style="display:block;width:100%;margin:0" onclick="custCloseFeedbackPreview()">Close</button>
+</div>
+</div>
+</div>
 </section>
 <section class="page" id="cust_royhill">
 <div class="pgh"><h2>Roy Hill</h2></div>
@@ -5143,7 +5170,95 @@ function custFbEmitPhotoRows(pb,photos,norm,idxs){
   pbPhotoRow(pb,row);
  }
 }
-function custExportFeedbackPDF(){
+function custFbDash(v){return (v&&String(v).trim())?String(v):"—";}
+function custFbGroupedPhotos(photos){
+ var out={pre:[],during:[],post:[],additional:[]},ungrouped=0,i,g;
+ for(i=0;i<photos.length;i++){
+  g=(photos[i].group||"").trim();
+  if(g&&out[g])out[g].push(i);
+  else if(!g)ungrouped++;
+ }
+ return {by:out,ungrouped:ungrouped};
+}
+function custFbWarnUngrouped(n){
+ if(!n)return true;
+ var msg=n+(n===1?" photo":" photos")+" won't appear — Export anyway / Go tag them.\n\nOK = Export anyway (skip untagged).\nCancel = Go tag them.";
+ return confirm(msg);
+}
+function custFbDateLabel(fb){
+ var fbDateP=custParseISODate(fb.date);
+ return fbDateP?custFmtDayParts(fbDateP,true):(fb.date||"—");
+}
+function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
+ var h='<div class="cj-fb-letter">';
+ h+='<h4>'+custEsc(fb.subject||"Feedback letter")+'</h4>';
+ h+='<div class="fb-grid">';
+ h+='<div class="full"><div class="fb-k">Email</div><div class="fb-v">'+custEsc(custFbDash(fb.email))+'</div></div>';
+ h+='<div><div class="fb-k">Company</div><div class="fb-v">'+custEsc(custFbDash(fb.company))+'</div></div>';
+ h+='<div><div class="fb-k">Phone</div><div class="fb-v">'+custEsc(custFbDash(fb.phone))+'</div></div>';
+ h+='<div><div class="fb-k">From</div><div class="fb-v">'+custEsc(custFbDash(fb.from))+'</div></div>';
+ h+='<div><div class="fb-k">Date</div><div class="fb-v">'+custEsc(custFbDateLabel(fb))+'</div></div>';
+ h+='<div><div class="fb-k">CC</div><div class="fb-v">'+custEsc(custFbDash(j.fbCcName))+'</div></div>';
+ h+='<div><div class="fb-k">CC email</div><div class="fb-v">'+custEsc(custFbDash(j.fbCcEmail))+'</div></div>';
+ h+='<div class="full"><div class="fb-k">Subject</div><div class="fb-v">'+custEsc(custFbDash(fb.subject))+'</div></div>';
+ h+='<div><div class="fb-k">Busch ref</div><div class="fb-v">'+custEsc(custFbDash(fb.buschRef))+'</div></div>';
+ h+='<div><div class="fb-k">Your ref</div><div class="fb-v">'+custEsc(custFbDash(fb.yourRef))+'</div></div>';
+ h+='</div>';
+ if(fb.greeting)h+='<div class="fb-box">'+custEsc(fb.greeting)+'</div>';
+ if(fb.introBody){
+  h+='<div class="fb-sec">'+custEsc(fb.introHead||"Introduction")+'</div>';
+  h+='<div class="fb-box">'+custEsc(fb.introBody)+'</div>';
+ }
+ var order=["pre","during","post","additional"],oi,gk,idxs,ii,ph,cap;
+ for(oi=0;oi<order.length;oi++){
+  gk=order[oi];idxs=grouped.by[gk]||[];
+  if(gk==="additional"&&fb.additional){
+   h+='<div class="fb-sec">Additional works completed</div>';
+   h+='<div class="fb-box">'+custEsc(fb.additional)+'</div>';
+  }
+  if(!idxs.length)continue;
+  if(!(gk==="additional"&&fb.additional))h+='<div class="fb-sec">'+custEsc(CUST_FB_GROUP_LABELS[gk]||gk)+'</div>';
+  h+='<div class="fb-photos">';
+  for(ii=0;ii<idxs.length;ii++){
+   ph=photos[idxs[ii]];
+   cap=(ph.caption||"").trim()||("Photo "+(idxs[ii]+1));
+   h+='<div class="fb-ph"><img src="'+ph.dataUrl+'" alt=""><div class="cap">'+custEsc(cap)+'</div></div>';
+  }
+  h+='</div>';
+ }
+ if(grouped.ungrouped)h+='<p class="fb-note">'+grouped.ungrouped+' untagged photo(s) skipped — tag a Letter section to include them.</p>';
+ var closeTxt=fb.closing||CUST_FB_DEFAULTS.closing||"";
+ if(closeTxt)h+='<div class="fb-box">'+custEsc(closeTxt)+'</div>';
+ h+='</div>';
+ return h;
+}
+function custCloseFeedbackPreview(){
+ var el=document.getElementById("cj_fb_preview");
+ if(!el)return;
+ el.style.display="none";
+ el.setAttribute("aria-hidden","true");
+}
+function custPreviewFeedbackLetter(){
+ custSaveJob("auto");
+ var pair=custFindJob();
+ if(!pair)return;
+ var c=pair.c,j=pair.j;
+ var fb=custFbResolve(j,c);
+ var photos=(j.photos||[]).slice();
+ var grouped=custFbGroupedPhotos(photos);
+ if(!custFbWarnUngrouped(grouped.ungrouped))return;
+ var body=document.getElementById("cj_fb_preview_body");
+ var el=document.getElementById("cj_fb_preview");
+ if(!body||!el){alert("Preview UI missing.");return;}
+ body.innerHTML=custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped);
+ el.style.display="flex";
+ el.setAttribute("aria-hidden","false");
+ body.scrollTop=0;
+}
+function custConfirmFeedbackPDF(){
+ custExportFeedbackPDF(true);
+}
+function custExportFeedbackPDF(skipUngroupedWarn){
  custSaveJob("auto");
  var pair=custFindJob();
  if(!pair)return;
@@ -5151,12 +5266,8 @@ function custExportFeedbackPDF(){
  var c=pair.c,j=pair.j;
  var fb=custFbResolve(j,c);
  var photos=(j.photos||[]).slice();
- var ungrouped=0,gi0;
- for(gi0=0;gi0<photos.length;gi0++)if(!(photos[gi0].group||"").trim())ungrouped++;
- if(ungrouped){
-  var msg=ungrouped+(ungrouped===1?" photo":" photos")+" won't appear — Export anyway / Go tag them.\n\nOK = Export anyway (skip untagged).\nCancel = Go tag them.";
-  if(!confirm(msg))return;
- }
+ var grouped=custFbGroupedPhotos(photos);
+ if(!skipUngroupedWarn&&!custFbWarnUngrouped(grouped.ungrouped))return;
  var normPromises=[];
  for(var k=0;k<photos.length;k++)normPromises.push(pbNormalizePhoto(photos[k].dataUrl));
  Promise.all(normPromises).then(function(norm){
@@ -5165,8 +5276,7 @@ function custExportFeedbackPDF(){
   pbGap(pb,2);
   pbPairRow(pb,"Email",fb.email||"—");
   pbPairRow(pb,"Company",fb.company||"—","Phone",fb.phone||"—");
-  var fbDateP=custParseISODate(fb.date);
-  pbPairRow(pb,"From",fb.from||"—","Date",fbDateP?custFmtDayParts(fbDateP,true):(fb.date||"—"));
+  pbPairRow(pb,"From",fb.from||"—","Date",custFbDateLabel(fb));
   pbPairRow(pb,"CC",j.fbCcName||"—","Email",j.fbCcEmail||"—");
   pbPairRow(pb,"Subject",fb.subject||"—");
   pbPairRow(pb,"Busch ref",fb.buschRef||"—","Your ref",fb.yourRef||"—");
@@ -5177,10 +5287,8 @@ function custExportFeedbackPDF(){
    pbBox(pb,fb.introBody,20);
   }
   var groupKeys=["pre","during","post"];
-  var used={};
   for(var gi=0;gi<groupKeys.length;gi++){
-   var gk=groupKeys[gi],idxs=[];
-   for(var i=0;i<photos.length;i++)if(photos[i].group===gk){idxs.push(i);used[i]=1;}
+   var gk=groupKeys[gi],idxs=grouped.by[gk]||[];
    if(!idxs.length)continue;
    pbSecHead(pb,CUST_FB_GROUP_LABELS[gk]);
    custFbEmitPhotoRows(pb,photos,norm,idxs);
@@ -5189,14 +5297,11 @@ function custExportFeedbackPDF(){
    pbSecHead(pb,"Additional works completed");
    pbBox(pb,fb.additional,14);
   }
-  var addIdxs=[];
-  for(var ai=0;ai<photos.length;ai++)if(photos[ai].group==="additional"){addIdxs.push(ai);used[ai]=1;}
+  var addIdxs=grouped.by.additional||[];
   if(addIdxs.length){
    if(!fb.additional)pbSecHead(pb,CUST_FB_GROUP_LABELS.additional);
    custFbEmitPhotoRows(pb,photos,norm,addIdxs);
   }
-  // Ungrouped photos skipped by default (warned above)
-  // Always emit closing (resolved defaults if blank)
   var closeTxt=fb.closing||CUST_FB_DEFAULTS.closing||"";
   if(closeTxt){
    pbGap(pb,4);
@@ -5206,6 +5311,7 @@ function custExportFeedbackPDF(){
   var refBit=custFileSafe(fb.buschRef||"");
   var fname=(refBit?refBit+"_":"")+custFileSafe(c.name)+"_"+(j.date||"nodate")+"_FeedbackReport.pdf";
   pb.doc.save(fname);
+  custCloseFeedbackPreview();
  });
 }
 
@@ -5228,7 +5334,7 @@ function custExportFeedbackPDF(){
  });
 })();
 
-window.custExportFeedbackPDF=custExportFeedbackPDF;
+window.custExportFeedbackPDF=custExportFeedbackPDF;window.custPreviewFeedbackLetter=custPreviewFeedbackLetter;window.custCloseFeedbackPreview=custCloseFeedbackPreview;window.custConfirmFeedbackPDF=custConfirmFeedbackPDF;
 try{custLoad();}catch(err){CUST_DB={version:1,customers:[custSeedRoyHill()]};}
 window.custOpen=custOpen;window.custOpenJob=custOpenJob;window.custNewJob=custNewJob;
 window.custSaveView=custSaveView;window.custSaveJob=custSaveJob;window.custScheduleAutoSave=custScheduleAutoSave;window.custClearLogo=custClearLogo;
