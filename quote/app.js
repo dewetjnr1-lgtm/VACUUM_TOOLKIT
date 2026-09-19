@@ -1869,7 +1869,7 @@
       if (f) importJSON(f);
       e.target.value = "";
     };
-    
+
     const btnInsComm = document.getElementById("btnInsertCommercial");
     if (btnInsComm) {
       btnInsComm.onclick = function () {

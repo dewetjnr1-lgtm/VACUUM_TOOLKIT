@@ -57,3 +57,6 @@ First open / **New** = empty fields with gray placeholders only (storage key `bu
 
 ## iPhone Safari
 Form controls use **16px** font-size so iOS does not zoom on focus.
+
+## Save / Open
+**Save file** is the orange bar above the Setup/Costing/Preview tabs (thumb-friendly). **Open file** (top) loads a saved JSON quote. Top **Saved** chip is browser autosave only.

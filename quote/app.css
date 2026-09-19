@@ -25,7 +25,7 @@ body{
   color:var(--ink);
   font-size:15px;
   -webkit-font-smoothing:antialiased;
-  padding-bottom:calc(72px + var(--safe-b));
+  padding-bottom:calc(132px + var(--safe-b));
 }
 button{font:inherit;color:inherit;}
 /* iOS Safari: inputs <16px trigger focus zoom — keep controls ≥16px */
@@ -63,6 +63,26 @@ a{color:var(--orange-hi);}
 }
 #topbar .btn-icon.primary{background:var(--orange);border-color:var(--orange);color:#111;font-weight:600;}
 #topbar .btn-icon:active{opacity:.85;}
+
+
+/* Thumb Save file — above step tabs */
+.save-bar{
+  position:fixed;left:0;right:0;z-index:45;
+  bottom:calc(60px + var(--safe-b));
+  padding:8px 12px;
+  background:linear-gradient(to top, #0c0d12f2 70%, #0c0d1200);
+  pointer-events:none;
+}
+.save-bar .btn-save-file{
+  pointer-events:auto;
+  display:block;width:100%;max-width:720px;margin:0 auto;
+  min-height:var(--tap);
+  border-radius:14px;border:none;
+  background:var(--orange);color:#111;
+  font-size:16px;font-weight:800;letter-spacing:.02em;
+  box-shadow:0 4px 16px rgba(0,0,0,.35);
+}
+.save-bar .btn-save-file:active{transform:scale(.98);opacity:.92;}
 
 #tabs{
   position:fixed;bottom:0;left:0;right:0;z-index:50;
@@ -212,7 +232,7 @@ details.more .more-body{padding:0 14px 14px;}
 .calc-row .c .v{font-weight:700;margin-top:2px;}
 
 .totals-bar{
-  position:sticky;bottom:calc(72px + var(--safe-b));z-index:30;
+  position:sticky;bottom:calc(132px + var(--safe-b));z-index:30;
   background:#0c0d12f2;border:1px solid var(--border);border-radius:12px;
   padding:10px 12px;margin-top:12px;
   display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;
@@ -542,7 +562,7 @@ details.more .more-body{padding:0 14px 14px;}
 
 @media print{
   body{background:#fff;padding:0;color:#000;}
-  #topbar,#tabs,.staff-banner,.preview-toolbar,.section-ticks,.images-panel,
+  #topbar,#tabs,.save-bar,.staff-banner,.preview-toolbar,.section-ticks,.images-panel,
   .print-block-msg,.no-print{display:none!important;}
   main{max-width:none;padding:0;margin:0;}
   .panel{display:none!important;}

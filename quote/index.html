@@ -13,12 +13,16 @@
   <div class="refpill" id="refPill">—</div>
   <div class="spacer"></div>
   <div class="save-status" id="saveStatus" title="Autosave">Saved</div>
-  <button type="button" class="btn-icon" id="btnDemo" title="Load demo">Demo</button>
-  <button type="button" class="btn-icon" id="btnNew" title="New quote">New</button>
-  <button type="button" class="btn-icon" id="btnOpen" title="Open JSON">Open</button>
-  <button type="button" class="btn-icon primary" id="btnSave" title="Save JSON">Save</button>
+  <button type="button" class="btn-icon" id="btnDemo" title="Load layout demo">Demo</button>
+  <button type="button" class="btn-icon" id="btnNew" title="New blank quote">New</button>
+  <button type="button" class="btn-icon" id="btnOpen" title="Open saved quote JSON file">Open file</button>
   <input type="file" id="fileOpen" accept="application/json,.json" class="hidden">
 </header>
+
+<!-- Thumb Save — above step tabs -->
+<div id="saveBar" class="save-bar">
+  <button type="button" class="btn-save-file" id="btnSave" title="Download quote JSON file">Save file</button>
+</div>
 
 <nav id="tabs" aria-label="Steps">
   <button type="button" data-tab="setup" class="active">Setup</button>
