@@ -1031,17 +1031,17 @@ td{background:transparent;color:var(--ink);}
 </section>
 <section class="page" id="cust">
 <div class="pgh"><h2>Customers</h2><button class="q" onclick="hp('h_cust')">?</button></div>
-<div class="help" id="h_cust">Customers and jobs stay on <b>this phone</b> until you use Backup. Open a site, start a job, add photos, then make a PDF with the Busch logo and their logo.</div>
+<div class="help" id="h_cust">Customers and jobs stay on <b>this device</b> when you tap Save. Use <b>Backup file</b> to download a JSON copy. Open a site, start a job, add photos, then make a visit summary PDF or chem-flush feedback PDF.</div>
 <p class="sub">Saved on this device &mdash; use Backup to copy elsewhere.</p>
 <div class="fld"><div class="fh"><label>Search</label></div><div class="ctrl"><input type="search" id="cust_search" placeholder="Name or site" oninput="custRenderList()"></div></div>
 <div id="cust_list" class="bubs"></div>
-<div class="card"><h3>Backup</h3>
-<p style="font-size:13px;color:var(--soft);margin:0 0 10px">Export a JSON file of customers, jobs and logos. Import it on your Mac or work PC to pick up where you left off.</p>
-<button class="exbtn" onclick="custExportBackup()">Export backup</button>
-<button class="exbtn" onclick="document.getElementById('cust_import').click()">Import backup</button>
+<div class="card"><h3>Backup file</h3>
+<p style="font-size:13px;color:var(--soft);margin:0 0 10px">Downloads a <b>JSON file</b> of customers, jobs and logos (usually to Downloads). This is separate from <b>Save job</b>, which writes only on this device. Import the file on your Mac or work PC to pick up where you left off.</p>
+<button class="exbtn" onclick="custExportBackup()">Export backup file</button>
+<button class="exbtn" onclick="document.getElementById('cust_import').click()">Import backup file</button>
 <input type="file" id="cust_import" accept="application/json,.json" style="display:none">
-<button class="clrbtn" onclick="custAddCustomer()">Add customer</button>
 </div>
+<button class="clrbtn" onclick="custAddCustomer()" style="margin:8px 0 16px">Add customer</button>
 </section>
 <section class="page" id="cust_view">
 <div class="pgh"><h2 id="cust_view_title">Customer</h2></div>
@@ -1078,6 +1078,7 @@ td{background:transparent;color:var(--ink);}
 <div class="fld"><div class="fh"><label>Status</label></div><div class="ctrl"><select id="cj_status"><option value="draft">Draft</option><option value="done">Done</option></select></div></div>
 <div class="fld"><div class="fh"><label>PO / quote ref (optional)</label></div><div class="ctrl"><input type="text" id="cj_po" placeholder="PO or quote number"></div></div>
 <button class="exbtn" onclick="custSaveJob()">Save job</button>
+<p class="sub" style="margin:8px 0 0;font-size:12.5px">Saves on <b>this device</b> (not a file). Use Backup file on the Customers list to download JSON.</p>
 </div>
 <div class="card"><h3>Pump inspection</h3>
 <div class="cj-lri-row">
@@ -1115,12 +1116,14 @@ td{background:transparent;color:var(--ink);}
 <div class="fld"><div class="fh"><label>Introduction text</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="6"></textarea></div></div>
 <div class="fld"><div class="fh"><label>Additional works completed</label></div><div class="ctrl"><textarea id="cj_fb_additional" rows="3" placeholder="One item per line, e.g. Gland packing changes (DE and NDE)"></textarea></div></div>
 <div class="fld"><div class="fh"><label>Closing</label></div><div class="ctrl"><textarea id="cj_fb_closing" rows="3"></textarea></div></div>
-<button class="exbtn" onclick="custSaveJob()">Save</button>
-<button class="exbtn" onclick="custExportFeedbackPDF()">Make Feedback Report PDF</button>
+<button class="exbtn" onclick="custSaveJob()">Save feedback fields</button>
+<p class="sub" style="margin:8px 0 10px;font-size:12.5px">Saves on <b>this device</b> with the job (localStorage). Not a download.</p>
+<button class="exbtn" onclick="custExportFeedbackPDF()">Make chem-flush feedback PDF</button>
+<p class="sub" style="margin:8px 0 0;font-size:12.5px">Client letter for chemical flush / descale (photos by Pre-flush / In progress / Post-flush / Additional).</p>
 </div>
-<div class="card"><h3>Report</h3>
-<p style="font-size:13px;color:var(--soft);margin:0 0 10px">PDF header uses the Busch logo plus this customer's logo (placeholder if none loaded yet).</p>
-<button class="exbtn" onclick="custExportJobPDF()">Make PDF</button>
+<div class="card"><h3>Visit summary PDF</h3>
+<p style="font-size:13px;color:var(--soft);margin:0 0 10px">Job/visit summary with findings, calcs and all job photos. Busch logo + customer logo in the header (placeholder if none loaded). <b>Not</b> the chem-flush feedback letter.</p>
+<button class="exbtn" onclick="custExportJobPDF()">Make visit summary PDF</button>
 <button class="clrbtn" onclick="custDeleteJob()">Delete job</button>
 </div>
 </section>
@@ -4718,8 +4721,13 @@ function custRenderJob(){
  if(j.fbIntroBody===undefined)j.fbIntroBody=CUST_FB_DEFAULTS.introBody;
  if(j.fbGreeting===undefined)j.fbGreeting=CUST_FB_DEFAULTS.greeting;
  if(j.fbClosing===undefined)j.fbClosing=CUST_FB_DEFAULTS.closing;
- set("cj_fb_email",j.fbEmail);set("cj_fb_company",j.fbCompany||c.name);set("cj_fb_phone",j.fbPhone);
- set("cj_fb_from",j.fbFrom);set("cj_fb_date",j.fbDate||j.date);
+ if(!j.fbCompany)j.fbCompany=c.name||"";
+ if(!j.fbDate)j.fbDate=j.date||"";
+ if(!j.fbFrom)j.fbFrom=CUST_FB_DEFAULTS.from||"";
+ if(!j.fbYourRef)j.fbYourRef=j.site||"";
+ if(!j.fbSubject)j.fbSubject=CUST_FB_DEFAULTS.subject||"";
+ set("cj_fb_email",j.fbEmail||"");set("cj_fb_company",j.fbCompany);set("cj_fb_phone",j.fbPhone||(c.contacts||""));
+ set("cj_fb_from",j.fbFrom);set("cj_fb_date",j.fbDate);
  set("cj_fb_cc_name",j.fbCcName);set("cj_fb_cc_email",j.fbCcEmail);
  set("cj_fb_subject",j.fbSubject);set("cj_fb_busch_ref",j.fbBuschRef);set("cj_fb_your_ref",j.fbYourRef);
  set("cj_fb_greeting",j.fbGreeting);set("cj_fb_intro_head",j.fbIntroHead);set("cj_fb_intro_body",j.fbIntroBody);
@@ -4732,7 +4740,9 @@ var CUST_FB_DEFAULTS={
  introHead:"Introduction to BUSCH Liquid Ring Vacuum Pump Flush chemical",
  introBody:"The de-scaler is a non-toxic, non-corrosive, non-flammable, non-injurious tar oil base solvent, heavily fortified with wetting and penetrating agents used for the rapid removal of water scale, lime and rust deposits found on the water side of any equipment that is water cooled, water heated or water operated, in any manner.\n\nThe de-scaler is biodegradable which allows for expended solution to be disposed of through regular sewer systems with a water flush.\n\nThe solution is non-toxic, non-corrosive, non-flammable and non-injurious to personnel when used as directed at any temperature within operating limits (not to exceed 48°C and used in accordance with SDS and site requirements).\n\nThe solution does not corrode, erode, attack, pit, oxidize or have other effects on metals or materials such as copper, fibre, plastic, iron, steel, rubber or lead, or other materials or metals found in water heated, water-cooled or water operated equipment when used as directed.",
  greeting:"Hi Team\n\nWe thank you for the opportunity presented to BUSCH Vacuum Solutions to perform on-site services, chemically flushing the vacuum pump.\n\nShould you require any further assistance, please contact me.",
- closing:"All the works were completed and everything inspected, found to be within the prescribed fitments and measurements.\n\nBUSCH Vacuum Solutions would like to take the opportunity to thank all involved on site."
+ closing:"All the works were completed and everything inspected, found to be within the prescribed fitments and measurements.\n\nBUSCH Vacuum Solutions would like to take the opportunity to thank all involved on site.",
+ from:"Chris de Wet",
+ subject:"Vacuum pump chem-flush feedback report"
 };
 function custParseISODate(s){
  if(!s||typeof s!=="string")return null;
@@ -5094,59 +5104,94 @@ function custExportJobPDF(){
  });
 }
 var CUST_FB_GROUP_LABELS={pre:"Pre-flush photos",during:"Pump flush in progress",post:"Post-flush photos",additional:"Additional works completed"};
+function custFbResolve(j,c){
+ // Fill blanks from customer + job so the PDF header is never empty when data exists.
+ var o={};
+ o.email=(j.fbEmail||"").trim();
+ o.company=(j.fbCompany||c.name||"").trim();
+ o.phone=(j.fbPhone||c.contacts||"").trim();
+ o.from=(j.fbFrom||CUST_FB_DEFAULTS.from||"").trim();
+ o.date=j.fbDate||j.date||"";
+ o.buschRef=(j.fbBuschRef||"").trim();
+ o.yourRef=(j.fbYourRef||j.site||"").trim();
+ o.subject=(j.fbSubject||CUST_FB_DEFAULTS.subject||"Vacuum pump chem-flush feedback report").trim();
+ o.greeting=(j.fbGreeting!=null&&j.fbGreeting!=="")?j.fbGreeting:CUST_FB_DEFAULTS.greeting;
+ o.introHead=(j.fbIntroHead!=null&&j.fbIntroHead!=="")?j.fbIntroHead:CUST_FB_DEFAULTS.introHead;
+ o.introBody=(j.fbIntroBody!=null&&j.fbIntroBody!=="")?j.fbIntroBody:CUST_FB_DEFAULTS.introBody;
+ o.additional=j.fbAdditional||"";
+ o.closing=(j.fbClosing!=null&&j.fbClosing!=="")?j.fbClosing:CUST_FB_DEFAULTS.closing;
+ return o;
+}
+function custFbEmitPhotoRows(pb,photos,norm,idxs){
+ for(var ii=0;ii<idxs.length;ii+=2){
+  var i0=idxs[ii],cap0=(photos[i0].caption||"").trim()||("Photo "+(i0+1));
+  var row=[{src:norm[i0].src,caption:cap0,w:norm[i0].w,h:norm[i0].h}];
+  if(ii+1<idxs.length){
+   var i1=idxs[ii+1],cap1=(photos[i1].caption||"").trim()||("Photo "+(i1+1));
+   row.push({src:norm[i1].src,caption:cap1,w:norm[i1].w,h:norm[i1].h});
+  }
+  pbPhotoRow(pb,row);
+ }
+}
 function custExportFeedbackPDF(){
  custSaveJob();
  var pair=custFindJob();
  if(!pair)return;
  if(typeof window.jspdf==="undefined"||!window.jspdf.jsPDF){alert("PDF engine not ready.");return;}
  var c=pair.c,j=pair.j;
+ var fb=custFbResolve(j,c);
  var photos=(j.photos||[]).slice();
  var normPromises=[];
  for(var k=0;k<photos.length;k++)normPromises.push(pbNormalizePhoto(photos[k].dataUrl));
  Promise.all(normPromises).then(function(norm){
   var pb=pbCreate(true,"");
-  pbTitle(pb,j.fbSubject||"Vacuum pump chem-flush feedback report");
+  pbTitle(pb,fb.subject);
   pbGap(pb,2);
-  pbPairRow(pb,"Email",j.fbEmail||"—");
-  pbPairRow(pb,"Company",j.fbCompany||c.name||"—","Phone",j.fbPhone||"—");
-  var fbDateP=custParseISODate(j.fbDate||j.date);
-  pbPairRow(pb,"From",j.fbFrom||"—","Date",fbDateP?custFmtDayParts(fbDateP,true):(j.fbDate||j.date||"—"));
+  pbPairRow(pb,"Email",fb.email||"—");
+  pbPairRow(pb,"Company",fb.company||"—","Phone",fb.phone||"—");
+  var fbDateP=custParseISODate(fb.date);
+  pbPairRow(pb,"From",fb.from||"—","Date",fbDateP?custFmtDayParts(fbDateP,true):(fb.date||"—"));
   if(j.fbCcName||j.fbCcEmail)pbPairRow(pb,"CC",j.fbCcName||"—","Email",j.fbCcEmail||"—");
-  pbPairRow(pb,"Busch ref",j.fbBuschRef||"—","Your ref",j.fbYourRef||"—");
+  pbPairRow(pb,"Busch ref",fb.buschRef||"—","Your ref",fb.yourRef||"—");
   pbGap(pb,3);
-  if(j.fbGreeting)pbBox(pb,j.fbGreeting,20);
-  if(j.fbIntroBody){
-   pbSecHead(pb,j.fbIntroHead||"Introduction");
-   pbBox(pb,j.fbIntroBody,20);
+  if(fb.greeting)pbBox(pb,fb.greeting,20);
+  if(fb.introBody){
+   pbSecHead(pb,fb.introHead||"Introduction");
+   pbBox(pb,fb.introBody,20);
   }
   var groupKeys=["pre","during","post"];
+  var used={};
   for(var gi=0;gi<groupKeys.length;gi++){
-   var gk=groupKeys[gi],rowPh=[],idxs=[];
-   for(var i=0;i<photos.length;i++)if(photos[i].group===gk)idxs.push(i);
+   var gk=groupKeys[gi],idxs=[];
+   for(var i=0;i<photos.length;i++)if(photos[i].group===gk){idxs.push(i);used[i]=1;}
    if(!idxs.length)continue;
    pbSecHead(pb,CUST_FB_GROUP_LABELS[gk]);
-   for(var ii=0;ii<idxs.length;ii+=2){
-    var i0=idxs[ii],row=[{src:norm[i0].src,caption:photos[i0].caption||"",w:norm[i0].w,h:norm[i0].h}];
-    if(ii+1<idxs.length){var i1=idxs[ii+1];row.push({src:norm[i1].src,caption:photos[i1].caption||"",w:norm[i1].w,h:norm[i1].h});}
-    pbPhotoRow(pb,row);
-   }
+   custFbEmitPhotoRows(pb,photos,norm,idxs);
   }
-  if(j.fbAdditional){
+  if(fb.additional){
    pbSecHead(pb,"Additional works completed");
-   pbBox(pb,j.fbAdditional,14);
+   pbBox(pb,fb.additional,14);
   }
   var addIdxs=[];
-  for(var ai=0;ai<photos.length;ai++)if(photos[ai].group==="additional")addIdxs.push(ai);
+  for(var ai=0;ai<photos.length;ai++)if(photos[ai].group==="additional"){addIdxs.push(ai);used[ai]=1;}
   if(addIdxs.length){
-   for(var aj=0;aj<addIdxs.length;aj+=2){
-    var a0=addIdxs[aj],rowA=[{src:norm[a0].src,caption:photos[a0].caption||"",w:norm[a0].w,h:norm[a0].h}];
-    if(aj+1<addIdxs.length){var a1=addIdxs[aj+1];rowA.push({src:norm[a1].src,caption:photos[a1].caption||"",w:norm[a1].w,h:norm[a1].h});}
-    pbPhotoRow(pb,rowA);
-   }
+   if(!fb.additional)pbSecHead(pb,CUST_FB_GROUP_LABELS.additional);
+   custFbEmitPhotoRows(pb,photos,norm,addIdxs);
   }
-  if(j.fbClosing)pbBox(pb,j.fbClosing,16);
+  // Ungrouped photos still belong in the report
+  var otherIdxs=[];
+  for(var oi=0;oi<photos.length;oi++)if(!used[oi])otherIdxs.push(oi);
+  if(otherIdxs.length){
+   pbSecHead(pb,"Photos");
+   custFbEmitPhotoRows(pb,photos,norm,otherIdxs);
+  }
+  // Always emit closing (resolved defaults if blank)
+  if(fb.closing){
+   pbGap(pb,4);
+   pbBox(pb,fb.closing,16);
+  }
   pbFinalize(pb);
-  var refBit=custFileSafe(j.fbBuschRef||"");
+  var refBit=custFileSafe(fb.buschRef||"");
   var fname=(refBit?refBit+"_":"")+custFileSafe(c.name)+"_"+(j.date||"nodate")+"_FeedbackReport.pdf";
   pb.doc.save(fname);
  });
