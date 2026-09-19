@@ -51,3 +51,12 @@ Optional drawings live in quote JSON (compressed JPEG data URLs). Demo ships `as
 
 ## First open
 Starts **blank** (no Hydro / LB 0265 A seed). Use **Demo** only to load the layout sample deliberately. **New** clears to blank.
+
+## True blank (v3)
+First open / **New** = empty fields with gray placeholders only (storage key `busch-wa-quote-v3-blank`; old drafts not migrated). **Demo** loads layout sample on purpose. **Insert standard commercial** fills commercial text only when clicked.
+
+## iPhone Safari
+Form controls use **16px** font-size so iOS does not zoom on focus.
+
+## Save / Open
+**Save file** is the orange bar above the Setup/Costing/Preview tabs (thumb-friendly). **Open file** (top) loads a saved JSON quote. Top **Saved** chip is browser autosave only.
