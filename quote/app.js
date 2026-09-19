@@ -2,7 +2,7 @@
 (function () {
   "use strict";
 
-  const STORAGE_KEY = "busch-wa-quote-v1";
+  const STORAGE_KEY = "busch-wa-quote-v2-blank";
   const FX_CACHE_KEY = "busch-wa-fx-cache-v1";
   const APP_VERSION = 1;
 
@@ -1785,6 +1785,7 @@
   }
 
   function loadDemo() {
+    // Layout test only — never runs on first open
     if (!confirm("Load Hydro / LB 0265 A demo seed? This replaces the current quote in the browser."))
       return;
     state = seedDemo();
@@ -1857,10 +1858,10 @@
       window.print();
     };
 
-    // First load
+    // First load: blank quote only. Demo is deliberate (btnDemo) — never auto-seed 26NBQ142 data.
     const had = loadAutosave();
     if (!had) {
-      state = seedDemo();
+      state = blankState();
       persist();
     }
     bindSetup();
