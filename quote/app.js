@@ -1805,6 +1805,11 @@
     document.querySelectorAll("#tabs button").forEach(function (b) {
       b.classList.toggle("active", b.getAttribute("data-tab") === name);
     });
+    try {
+      window.scrollTo({ top: 0, behavior: "instant" in document.documentElement.style ? "instant" : "auto" });
+    } catch (e) {
+      window.scrollTo(0, 0);
+    }
     if (name === "setup") {
       bindSetup();
     } else if (name === "costing") {

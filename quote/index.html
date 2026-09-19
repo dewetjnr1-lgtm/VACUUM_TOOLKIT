@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover">
 <meta name="theme-color" content="#0c0d12">
 <title>Busch WA — Quote &amp; Costing</title>
-<link rel="stylesheet" href="app.css?v=ios16d">
+<link rel="stylesheet" href="app.css?v=ios16e">
 </head>
 <body>
 <header id="topbar">
@@ -18,17 +18,6 @@
   <button type="button" class="btn-icon" id="btnOpen" title="Open a saved quote JSON file">Open quote file</button>
   <input type="file" id="fileOpen" accept="application/json,.json" class="hidden">
 </header>
-
-<!-- Thumb Save — above step tabs -->
-<div id="saveBar" class="save-bar">
-  <button type="button" class="btn-save-file" id="btnSave" title="Download quote JSON file">Save file</button>
-</div>
-
-<nav id="tabs" aria-label="Steps">
-  <button type="button" data-tab="setup" class="active">Setup</button>
-  <button type="button" data-tab="costing">Costing</button>
-  <button type="button" data-tab="preview">Preview</button>
-</nav>
 
 <main>
   <!-- ========== SETUP ========== -->
@@ -146,6 +135,18 @@
     </div>
   </section>
 </main>
+
+<!-- Real page bottom — document flow (scroll to reach; never covers fields) -->
+<footer id="pageBottom" class="page-bottom no-print">
+  <div id="saveBar" class="save-bar">
+    <button type="button" class="btn-save-file" id="btnSave" title="Download quote JSON file">Save file</button>
+  </div>
+  <nav id="tabs" aria-label="Steps">
+    <button type="button" data-tab="setup" class="active">Setup</button>
+    <button type="button" data-tab="costing">Costing</button>
+    <button type="button" data-tab="preview">Preview</button>
+  </nav>
+</footer>
 
 <script src="app.js"></script>
 </body>

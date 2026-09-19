@@ -31,7 +31,7 @@ body{
   color:var(--ink);
   font-size:15px;
   -webkit-font-smoothing:antialiased;
-  padding-bottom:calc(132px + var(--safe-b));
+  padding-bottom:calc(16px + var(--safe-b));
 }
 button{font:inherit;color:inherit;}
 /* iOS Safari: kill focus zoom — ≥16px !important + text-size-adjust + viewport maximum-scale */
@@ -79,41 +79,34 @@ a{color:var(--orange-hi);}
 #topbar .btn-icon:active{opacity:.85;}
 
 
-/* Thumb Save file — above step tabs */
+/* Page bottom chrome — NORMAL FLOW (scroll to reach; never covers content) */
+.page-bottom{
+  max-width:720px;margin:0 auto;
+  padding:16px 12px calc(20px + var(--safe-b));
+  border-top:1px solid var(--border);
+  background:var(--bg);
+}
 .save-bar{
-  position:fixed;left:0;right:0;z-index:45;
-  bottom:calc(60px + var(--safe-b));
-  padding:8px 12px;
-  background:linear-gradient(to top, #0c0d12f2 70%, #0c0d1200);
-  pointer-events:none;
+  position:static;
+  padding:0 0 10px;
+  background:none;
+  pointer-events:auto;
 }
 .save-bar .btn-save-file{
-  pointer-events:auto;
-  display:block;width:100%;max-width:720px;margin:0 auto;
+  display:block;width:100%;
   min-height:var(--tap);
   border-radius:14px;border:none;
   background:var(--orange);color:#111;
   font-size:16px;font-weight:800;letter-spacing:.02em;
-  box-shadow:0 4px 16px rgba(0,0,0,.35);
 }
 .save-bar .btn-save-file:active{transform:scale(.98);opacity:.92;}
 
-
-/* iOS keyboard: hide fixed bottom chrome so it doesn't float mid-screen */
-body.keyboard-open .save-bar,
-body.keyboard-open #tabs{
-  display:none !important;
-}
-body.keyboard-open{
-  padding-bottom:24px;
-}
-
 #tabs{
-  position:fixed;bottom:0;left:0;right:0;z-index:50;
+  position:static;
   display:grid;grid-template-columns:1fr 1fr 1fr;
-  gap:6px;padding:8px 10px calc(8px + var(--safe-b));
-  background:#0c0d12ee;backdrop-filter:blur(8px);
-  border-top:1px solid var(--border);
+  gap:6px;padding:0;
+  background:transparent;
+  border-top:none;
 }
 #tabs button{
   min-height:var(--tap);
@@ -125,6 +118,9 @@ body.keyboard-open{
   background:var(--orange);border-color:var(--orange);color:#111;
 }
 #tabs button:active{transform:scale(.98);}
+
+/* Keyboard open: still fine to dim/hide bottom chrome while typing (optional) */
+body.keyboard-open .page-bottom{opacity:.35;pointer-events:none;}
 
 main{padding:12px 12px 24px;max-width:720px;margin:0 auto;}
 .panel{display:none;}
@@ -256,7 +252,7 @@ details.more .more-body{padding:0 14px 14px;}
 .calc-row .c .v{font-weight:700;margin-top:2px;}
 
 .totals-bar{
-  position:sticky;bottom:calc(132px + var(--safe-b));z-index:30;
+  position:static;z-index:1;
   background:#0c0d12f2;border:1px solid var(--border);border-radius:12px;
   padding:10px 12px;margin-top:12px;
   display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:12px;
@@ -630,7 +626,7 @@ details.more .more-body{padding:0 14px 14px;}
   .paper .sec-h.tap-sec::after{display:none!important;}
 
   body{background:#fff;padding:0;color:#000;}
-  #topbar,#tabs,.save-bar,.staff-banner,.preview-toolbar,.section-ticks,.images-panel,
+  #topbar,#tabs,.save-bar,.page-bottom,.staff-banner,.preview-toolbar,.section-ticks,.images-panel,
   .print-block-msg,.no-print{display:none!important;}
   main{max-width:none;padding:0;margin:0;}
   .panel{display:none!important;}
