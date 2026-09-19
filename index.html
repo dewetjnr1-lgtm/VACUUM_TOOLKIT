@@ -205,6 +205,16 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .lri-copyprev{margin:0 0 10px;}
 .cj-lri-row{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:0 0 12px;}
 .cj-lri-row .cj-lri-note{font-size:13px;color:var(--soft);flex:1 1 180px;margin:0;line-height:1.35;}
+.lri-job-card>summary.lri-job-sum{list-style:none;cursor:pointer;display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 10px;min-height:44px;padding:4px 0;font-weight:800;color:var(--teal);}
+.lri-job-card>summary.lri-job-sum::-webkit-details-marker{display:none;}
+.lri-job-card>summary.lri-job-sum .lri-job-sum-title{font-size:15px;}
+.lri-job-card>summary.lri-job-sum .lri-job-sum-bits{font-size:12.5px;font-weight:600;color:var(--soft);flex:1 1 160px;line-height:1.35;}
+.lri-job-card.lri-from-job>summary.lri-job-sum .lri-job-sum-bits::before{content:"From this job — ";color:var(--teal);font-weight:700;}
+.lri-from-job-hint{font-size:13px;color:var(--soft);margin:0 0 10px;line-height:1.4;}
+.lri-job-card.lri-from-job .lri-job-fields input[readonly]{pointer-events:none;opacity:.72;background:var(--elev2);}
+.lri-job-actions{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 0;}
+#lri_edit_on_job{margin:0 0 10px;}
+
 #lri_rows .tp-vaclink{cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;font-size:13px;color:var(--teal);font-weight:700;margin:0 0 8px;}
 #lri_rows .tp-vaclink .tp-go{float:right;font-weight:600;font-size:12px;color:var(--accent);text-decoration:none;}
 @media print{
@@ -1063,17 +1073,24 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="ar"><b>No nameplate duty figure handy?</b>The "Extra: vacuum performance" heading in each pump block is a link &mdash; tap it to jump straight to the "Deepest Vacuum You Can Pull" calculator, fill in today's seal water temperature and site altitude, then tap the &lsquo;&#8249; Back&rsquo; button at the top to come straight back to this report. Tap "Pull from vacuum calculator" to drop that number into Rated duty vacuum as your comparison point.</div>
 <div class="ar">Everything typed here, including photos, is saved on this phone as you go, so the sheet survives closing the app. Export PDF builds the finished PDF file directly and downloads it &mdash; there's no print screen to fight with, and no browser web-address or date stamped on the page.</div>
 </div>
-<div class="card"><h3>Job details</h3><button class="exbtn" onclick="lriInsertExample()">Insert example</button><button class="exbtn" onclick="lriExportPDF()">Export PDF</button><button class="clrbtn" onclick="lriClear()">Clear this report</button>
+<div class="lri-job-actions"><button class="exbtn" onclick="lriInsertExample()">Insert example</button><button class="exbtn" onclick="lriExportPDF()">Export PDF</button><button class="clrbtn" onclick="lriClear()">Clear this report</button></div>
+<details class="card lri-job-card" id="lri_job_card" open data-lri-from-job="0">
+<summary class="lri-job-sum"><span class="lri-job-sum-title">Job details</span><span class="lri-job-sum-bits" id="lri_job_sum_bits">Client · site · date</span></summary>
+<p class="lri-from-job-hint" id="lri_from_job_hint" hidden>From this job. Edit on the Job page if you need to change it.</p>
+<button type="button" class="clrbtn" id="lri_edit_on_job" hidden onclick="lriEditHeaderOnJob()">Edit header on Job</button>
+<div class="lri-job-fields" id="lri_job_fields">
 <div class="fld"><div class="fh"><label>Your company (shown on the report header)</label></div><div class="ctrl"><input type="text" id="lri_company"></div></div>
 <div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="lri_letterhead"> Print on the Busch letterhead (logo header and company footer, instead of the plain company line)</label></div></div>
 <div class="fld"><div class="fh"><label>Client</label></div><div class="ctrl"><input type="text" id="lri_client"></div></div>
 <div class="fld"><div class="fh"><label>Site</label></div><div class="ctrl"><input type="text" id="lri_site"></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">Site contact</span><div class="ctrl"><input type="text" id="lri_contact"></div></div><div class="mgf"><span class="mlab">Contact phone</span><div class="ctrl"><input type="text" id="lri_contact_ph"></div></div></div>
+<div class="fld"><div class="fh"><label>Contact email</label></div><div class="ctrl"><input type="email" id="lri_contact_em" autocomplete="email"></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">Quote / job reference</span><div class="ctrl"><input type="text" id="lri_ref"></div></div><div class="mgf"><span class="mlab">Customer order / PO No.</span><div class="ctrl"><input type="text" id="lri_po"></div></div></div>
 <div class="fld"><div class="fh"><label>Scope of service</label></div><div class="ctrl"><select id="lri_scope"><option value=""></option><option value="basic">Basic inspection (seals, bearings, borescope)</option><option value="basic_om">Basic inspection + O&amp;M preventative maintenance checks</option><option value="overhaul">Full overhaul (off-site)</option></select></div></div>
 <div class="fld"><div class="fh"><label>Inspection date</label></div><div class="ctrl"><input type="date" id="lri_date"></div></div>
 <div class="fld"><div class="fh"><label>Technician(s)</label></div><div class="ctrl"><input type="text" id="lri_by"></div></div>
 </div>
+</details>
 <div class="card lri-setup" id="lri_setup_card"><h3>Checks for this visit</h3>
 <p class="lri-setup-hint">Tick the sections you will do today. Every pump on this report then shows the same set &mdash; you only choose once.</p>
 <div class="lri-setup-grid" id="lri_setup_grid"></div>
@@ -1162,7 +1179,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="card"><h3>Pump inspection</h3>
 <div class="cj-lri-row">
 <button type="button" class="exbtn" id="cj_lri_btn" onclick="custStartOrOpenLri()">Start pump inspection</button>
-<p class="cj-lri-note" id="cj_lri_note">Opens the inspection report with this customer and site filled in. Linked to this job.</p>
+<p class="cj-lri-note" id="cj_lri_note">Opens the inspection. Client, site, and visit come from this job — you don’t fill them again.</p>
 </div>
 </div>
 <div class="card"><h3>Calculations for this job</h3>
@@ -3239,7 +3256,7 @@ function lriSameLastField(id){
 }
 window.lriSameLastField=lriSameLastField;
 var LRI_KEY="vt_lri1",LRI_RC_KEY="vt_lri_rc";
-var LRI_HEADER=["lri_company","lri_letterhead","lri_client","lri_site","lri_contact","lri_contact_ph","lri_ref","lri_po","lri_scope","lri_date","lri_by","lri_findings","lri_followup","lri_nextdate"];
+var LRI_HEADER=["lri_company","lri_letterhead","lri_client","lri_site","lri_contact","lri_contact_ph","lri_contact_em","lri_ref","lri_po","lri_scope","lri_date","lri_by","lri_findings","lri_followup","lri_nextdate"];
 
 var LRI_SEC_KEY="vt_lri_secs";
 var LRI_LINK_KEY="vt_lri_link";
@@ -3850,6 +3867,7 @@ function lriClear(){
  lriRenderPhotos();
  lriRefreshAllOC();
  try{localStorage.removeItem(LRI_KEY);localStorage.removeItem(LRI_LINK_KEY);}catch(err){}
+ if(typeof lriSetFromJobMode==="function")lriSetFromJobMode(false);
  recalc();
 }
 // Severity ranking for condition values: 0 = fine, 1 = watch, 2 = bad, 3 = worst.
@@ -4411,6 +4429,7 @@ function lriExportPDF(){
   pbTitle(pb,"LIQUID RING VACUUM PUMP INSPECTION REPORT");
   pbPairRow(pb,"Client",rv("lri_client"),"Site",rv("lri_site"));
   pbPairRow(pb,"Site contact",rv("lri_contact"),"Contact phone",rv("lri_contact_ph"));
+  if(rv("lri_contact_em"))pbPairRow(pb,"Contact email",rv("lri_contact_em"));
   pbPairRow(pb,"Quote / job ref",rv("lri_ref"),"Customer order / PO No.",rv("lri_po"));
   pbPairRow(pb,"Scope of service",rSelText("lri_scope"),"Inspection date",rDate("lri_date"));
   pbPairRow(pb,"Technician(s)",rv("lri_by"));
@@ -5153,9 +5172,122 @@ function custUpdateLriButton(){
  if(!btn||!pair)return;
  var linked=custJobHasLri(pair.j);
  btn.textContent=linked?"Open pump inspection":"Start pump inspection";
- if(note)note.textContent=linked
-  ?"Opens the linked inspection report for this job. Back returns here."
-  :"Starts the pump inspection with this customer and site filled in, and links it to this job.";
+ // Desi locked: same clarification whether start or re-open
+ if(note)note.textContent="Opens the inspection. Client, site, and visit come from this job — you don’t fill them again.";
+}
+function lriFmtVisitDate(j){
+ if(!j)return "";
+ var a=j.date||"",b=j.dateEnd||"";
+ if(a&&b&&b!==a)return a+" → "+b;
+ return a||"";
+}
+function lriResolveLinkedPair(){
+ var link=null;
+ if(CUST_RETURN&&CUST_RETURN.calc==="lri"&&CUST_RETURN.custId&&CUST_RETURN.jobId){
+  link={custId:CUST_RETURN.custId,jobId:CUST_RETURN.jobId};
+ }else{
+  link=custLriLinkGet();
+ }
+ if(!link||!link.custId||!link.jobId)return null;
+ var db=CUST_DB&&CUST_DB.customers?CUST_DB.customers:[];
+ var c=null,j=null,i,k;
+ for(i=0;i<db.length;i++){
+  if(db[i].id!==link.custId)continue;
+  c=db[i];
+  var jobs=c.jobs||[];
+  for(k=0;k<jobs.length;k++){if(jobs[k].id===link.jobId){j=jobs[k];break;}}
+  break;
+ }
+ if(!c||!j)return null;
+ return {c:c,j:j};
+}
+function lriSyncHeaderFromJob(c,j){
+ if(!c||!j)return;
+ function setVal(id,v){
+  var e=document.getElementById(id);if(!e)return;
+  e.value=v==null?"":String(v);
+ }
+ setVal("lri_client",c.name||"");
+ var site="";
+ if(j.site)site=j.site;
+ else if(c.sites&&c.sites[0])site=c.sites[0];
+ setVal("lri_site",site);
+ // Job PO fills both ref and PO when the job has a single field
+ setVal("lri_ref",j.po||"");
+ setVal("lri_po",j.po||"");
+ setVal("lri_date",j.date||"");
+ setVal("lri_contact",(c.contactName||"").trim()||((c.contacts||"").trim())||"");
+ setVal("lri_contact_ph",(c.contactPhone||"").trim());
+ setVal("lri_contact_em",(c.contactEmail||"").trim());
+ var co=document.getElementById("lri_company");
+ if(co&&!co.value)co.value="Busch ANZ Pty Ltd";
+}
+function lriUpdateJobSumBits(c,j){
+ var bits=document.getElementById("lri_job_sum_bits");
+ if(!bits)return;
+ if(c&&j){
+  var parts=[];
+  if(c.name)parts.push(c.name);
+  var site=j.site||((c.sites&&c.sites[0])||"");
+  if(site)parts.push(site);
+  var d=lriFmtVisitDate(j);
+  if(d)parts.push(d);
+  else if(j.type)parts.push(j.type);
+  bits.textContent=parts.join(" · ")||"From this job";
+  return;
+ }
+ var client=(document.getElementById("lri_client")||{}).value||"";
+ var site2=(document.getElementById("lri_site")||{}).value||"";
+ var date=(document.getElementById("lri_date")||{}).value||"";
+ var p=[];
+ if(client)p.push(client);if(site2)p.push(site2);if(date)p.push(date);
+ bits.textContent=p.join(" · ")||"Client · site · date";
+}
+function lriSetFromJobMode(on,c,j){
+ var card=document.getElementById("lri_job_card");
+ var hint=document.getElementById("lri_from_job_hint");
+ var edit=document.getElementById("lri_edit_on_job");
+ var fields=document.getElementById("lri_job_fields");
+ if(card){
+  card.classList.toggle("lri-from-job",!!on);
+  card.setAttribute("data-lri-from-job",on?"1":"0");
+  // Collapsed by default when linked; standalone stays open/editable
+  if(on)card.open=false;else card.open=true;
+ }
+ if(hint)hint.hidden=!on;
+ if(edit)edit.hidden=!on;
+ // Lock only fields that come from the job/customer; leave company, scope, tech editable
+ var ids=["lri_client","lri_site","lri_contact","lri_contact_ph","lri_contact_em","lri_ref","lri_po","lri_date"];
+ for(var i=0;i<ids.length;i++){
+  var e=document.getElementById(ids[i]);if(!e)continue;
+  if(on)e.setAttribute("readonly","readonly");else e.removeAttribute("readonly");
+ }
+ if(fields)fields.setAttribute("aria-readonly",on?"true":"false");
+ lriUpdateJobSumBits(on?c:null,on?j:null);
+}
+function lriEditHeaderOnJob(){
+ // Back to the linked job (CUST_RETURN already set when opened from job)
+ if(CUST_RETURN&&CUST_RETURN.calc==="lri"){goBack();return;}
+ var pair=lriResolveLinkedPair();
+ if(pair){
+  CUST_CUR=pair.c.id;CUST_JOB_CUR=pair.j.id;
+  CUST_RETURN=null;
+  show("cust_job");
+  return;
+ }
+ goBack();
+}
+function lriApplyLinkedContext(){
+ var pair=lriResolveLinkedPair();
+ if(!pair){
+  lriSetFromJobMode(false);
+  return false;
+ }
+ // Every open from a job: force-overwrite header from job + customer
+ lriSyncHeaderFromJob(pair.c,pair.j);
+ lriSetFromJobMode(true,pair.c,pair.j);
+ try{lriSave(true);}catch(err){}
+ return true;
 }
 function custStartOrOpenLri(){
  var pair=custFindJob();if(!pair)return;
@@ -5164,30 +5296,16 @@ function custStartOrOpenLri(){
  try{custSaveJob();}catch(err){}
  pair=custFindJob();if(!pair)return;
  c=pair.c;j=pair.j;
- var linked=custJobHasLri(j);
  custMarkJobLri(j,true);
  custPersist(true);
  custLriLinkSet(c.id,j.id);
- // Prefill LRI header from customer + job (do not wipe pump rows if already working)
- function setIf(id,v,force){
-  var e=document.getElementById(id);if(!e)return;
-  if(force||!e.value)e.value=v==null?"":v;
- }
- setIf("lri_client",c.name,!linked);
- var siteBits=[];
- if(j.site)siteBits.push(j.site);
- else if(c.sites&&c.sites[0])siteBits.push(c.sites[0]);
- setIf("lri_site",siteBits.join(" — "),!linked);
- setIf("lri_ref",j.po||"",!linked);
- setIf("lri_po",j.po||"",!linked);
- setIf("lri_date",j.date||"",!linked);
- if(!document.getElementById("lri_company").value){
-  var co=document.getElementById("lri_company");if(co)co.value="Busch ANZ Pty Ltd";
- }
- try{lriSave();}catch(err){}
+ // Always sync LRI header from this job + customer (every open, not first-only)
+ lriSyncHeaderFromJob(c,j);
+ try{lriSave(true);}catch(err){}
  CUST_RETURN={calc:"lri",jobId:j.id,custId:c.id};
  show("lri");
  lriRenderSetup();lriApplySections();
+ lriSetFromJobMode(true,c,j);
 }
 
 function custCalcTitle(id){return TT[id]||id;}
@@ -5875,6 +5993,7 @@ window.custSaveView=custSaveView;window.custSaveJob=custSaveJob;window.custSched
 window.custRemovePhoto=custRemovePhoto;window.custDeleteJob=custDeleteJob;
 window.custExportBackup=custExportBackup;window.custAddCustomer=custAddCustomer;
 window.custPlaceCustomerLogo=custPlaceCustomerLogo;window.custDrawCustomerLogo=custDrawCustomerLogo;window.custExportJobPDF=custExportJobPDF;window.custRenderList=custRenderList;
+window.lriEditHeaderOnJob=lriEditHeaderOnJob;window.lriApplyLinkedContext=lriApplyLinkedContext;window.lriSyncHeaderFromJob=lriSyncHeaderFromJob;
 window.custOpenCalcPicker=custOpenCalcPicker;window.custCloseCalcPicker=custCloseCalcPicker;
 window.custAddJobCalc=custAddJobCalc;window.custRemoveJobCalc=custRemoveJobCalc;window.custOpenJobCalc=custOpenJobCalc;
 
@@ -5893,7 +6012,7 @@ function show(id){
  if(id==="cust")custRenderList();
  if(id==="cust_view")custRenderView();
  if(id==="cust_job")custRenderJob();
- if(id==="lri"){lriSecEnabledInit();lriRenderSetup();lriApplySections();}
+ if(id==="lri"){lriSecEnabledInit();lriRenderSetup();lriApplySections();if(typeof lriApplyLinkedContext==="function")lriApplyLinkedContext();}
  window.scrollTo(0,0);
 }
 
