@@ -57,6 +57,13 @@ h2{font-size:23px;margin:2px 0 10px;font-weight:800;}
 .pgh h2{margin:0;}
 .exbtn{background:var(--accent-bg);color:var(--accent);border:1px solid var(--accent);border-radius:10px;padding:9px 14px;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:4px;}
 .clrbtn{background:none;color:var(--soft);border:1px solid var(--line);border-radius:10px;padding:9px 12px;font-size:13px;cursor:pointer;margin-left:8px;}
+.exbtn,.clrbtn,.exbtn2,.lri-sameprev,.lri-samelast,.vt-next-btn,.q{-webkit-tap-highlight-color:transparent;touch-action:manipulation;transition:transform .08s ease,opacity .08s ease,filter .08s ease;}
+.exbtn:active,.clrbtn:active,.exbtn2:active,.lri-sameprev:active,.lri-samelast:active,.vt-next-btn:active:not(:disabled),.q:active{transform:scale(.97);opacity:.88;filter:brightness(1.1);}
+.bub:active{opacity:.88;}
+@media (hover:hover) and (pointer:fine){
+.exbtn:hover{filter:brightness(1.06);}
+.clrbtn:hover,.exbtn2:hover,.q:hover{filter:brightness(1.08);}
+}
 .cj-calc-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;padding:10px 0;border-bottom:1px solid var(--line);}
 .cj-calc-row:last-child{border-bottom:0;}
 .cj-calc-name{flex:1 1 140px;font-weight:700;font-size:14.5px;}
@@ -323,7 +330,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .lri-checkrow{display:flex;align-items:flex-start;gap:8px;width:100%;}
 .lri-checkrow>.ctrl{flex:1 1 auto;margin-top:0;}
 #lri .pgh,#cust_job .pgh{flex-wrap:wrap;gap:8px 10px;}
-#lri .exbtn,#lri .clrbtn,#cust_job .exbtn,#cust_job .clrbtn{min-height:44px;padding:11px 14px;}
+#lri .exbtn,#lri .clrbtn,#cust .exbtn,#cust .clrbtn,#cust_view .exbtn,#cust_view .clrbtn,#cust_job .exbtn,#cust_job .clrbtn{min-height:44px;padding:11px 14px;}
 #lri_rows details.card>summary{min-height:44px;display:flex;align-items:center;gap:8px;padding:10px 4px;font-weight:800;}
 #lri_rows details.card>summary .lri-sum-st{font-size:12px;font-weight:700;margin-left:auto;padding:3px 8px;border-radius:999px;border:1px solid var(--line);}
 #lri_rows details.card>summary .lri-sum-st.open{color:#C5D3DC;border-color:#4A5A68;}
@@ -1093,9 +1100,10 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <button class="clrbtn" onclick="custAddCustomer()" style="margin:8px 0 16px">Add customer</button>
 </section>
 <section class="page" id="cust_view">
-<div class="pgh"><h2 id="cust_view_title">Customer</h2></div>
+<div class="pgh"><h2 id="cust_view_title">Customer</h2><span id="cv_saved_chip" class="vt-saved-chip">Saved on this device</span></div>
 <p class="sub" id="cust_view_sub"></p>
 <div class="means" id="cust_view_means">Saved on this device &mdash; Export backup on the Customers list copies to a file.</div>
+<div class="note warn" id="cv_warn" style="display:none">Could not save — phone storage may be full. Export a backup or remove photos.</div>
 <div class="card"><h3>Details</h3>
 <div class="fld"><div class="fh"><label>Customer name</label></div><div class="ctrl"><input type="text" id="cv_name" placeholder="e.g. Hancock Iron Ore / Roy Hill"></div></div>
 <div class="fld"><div class="fh"><label>Site label</label></div><div class="ctrl"><input type="text" id="cv_site" placeholder="e.g. Wet plant / desands — belt filters"></div></div>
@@ -4422,6 +4430,7 @@ function vtFlashSaved(id){
  _vtSavedTimers[id]=setTimeout(function(){el.textContent="Saved on this device";el.classList.remove("just");},1500);
 }
 window.vtFlashSaved=vtFlashSaved;
+if(!_vtTouchActiveFix){var _vtTouchActiveFix=1;try{document.addEventListener("touchstart",function(){},{passive:true});}catch(e){}}
 function lriFieldMeaningful(el){
  if(!el||el.disabled)return false;
  if(el.type==="checkbox")return !!el.checked;
@@ -4649,13 +4658,19 @@ function custLoad(){
 }
 function custPersist(quiet){
  var warn=document.getElementById("cj_warn");
+ var warnCv=document.getElementById("cv_warn");
  try{
   localStorage.setItem(CUST_KEY,JSON.stringify(CUST_DB));
   if(warn)warn.style.display="none";
-  if(!quiet&&typeof vtFlashSaved==="function")vtFlashSaved("cj_saved_chip");
+  if(warnCv)warnCv.style.display="none";
+  if(!quiet&&typeof vtFlashSaved==="function"){
+   vtFlashSaved("cj_saved_chip");
+   vtFlashSaved("cv_saved_chip");
+  }
   return true;
  }catch(err){
   if(warn)warn.style.display="block";
+  if(warnCv)warnCv.style.display="block";
   if(!quiet)alert("Could not save — phone storage may be full. Export a backup or remove photos.");
   return false;
  }
@@ -4773,7 +4788,7 @@ function custSaveView(){
   eq.push({tag:parts[0].trim(),notes:(parts[1]||"").trim()});
  }
  c.equipment=eq;
- custPersist();
+ if(!custPersist())return;
  custRenderView();
 }
 function custClearLogo(){
