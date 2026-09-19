@@ -67,6 +67,9 @@ a{color:var(--orange-hi);}
 #topbar .spacer{flex:1;}
 #topbar .save-status{font-size:11px;color:var(--muted);min-width:3.5em;}
 #topbar .save-status.ok{color:var(--green);}
+#topbar .save-status.flash{
+  color:#fff;background:var(--green);border-radius:8px;padding:2px 8px;
+}
 #topbar .btn-icon{
   min-height:var(--tap);min-width:var(--tap);
   background:var(--card);border:1px solid var(--border);border-radius:10px;
@@ -94,6 +97,16 @@ a{color:var(--orange-hi);}
   box-shadow:0 4px 16px rgba(0,0,0,.35);
 }
 .save-bar .btn-save-file:active{transform:scale(.98);opacity:.92;}
+
+
+/* iOS keyboard: hide fixed bottom chrome so it doesn't float mid-screen */
+body.keyboard-open .save-bar,
+body.keyboard-open #tabs{
+  display:none !important;
+}
+body.keyboard-open{
+  padding-bottom:24px;
+}
 
 #tabs{
   position:fixed;bottom:0;left:0;right:0;z-index:50;

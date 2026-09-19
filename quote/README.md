@@ -59,7 +59,11 @@ First open / **New** = empty fields with gray placeholders only (storage key `bu
 Form controls use **16px** font-size so iOS does not zoom on focus.
 
 ## Save / Open
-**Save file** is the orange bar above the Setup/Costing/Preview tabs (thumb-friendly). **Open file** (top) loads a saved JSON quote. Top **Saved** chip is browser autosave only.
+**Save file** is the orange bar above the Setup/Costing/Preview tabs (thumb-friendly). **Open quote file** (top) loads a saved JSON quote. Top **Saved** chip is browser autosave only.
 
 ## Letter sections
 On **Preview**, use **Include on letter** toggles (or tap a paper heading / grey stub) to choose what prints. Unticked sections are off the paper and off Print/PDF.
+
+## iPhone keyboard
+While a field is focused, the **Save file** bar and step tabs hide so they do not float over the form/keyboard.
+Focused fields scroll into view; **Saved** chip flashes after Save file / autosave.

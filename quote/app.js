@@ -605,7 +605,8 @@
       const el = document.getElementById("saveStatus");
       if (el) {
         el.textContent = "Saved";
-        el.classList.add("ok");
+        el.classList.add("ok", "flash");
+        setTimeout(function () { el.classList.remove("flash"); }, 900);
       }
       updateRefPill();
     } catch (e) {
@@ -1882,7 +1883,83 @@
   }
 
   /* ---- Wire DOM ---- */
+
+  /* ---- iOS keyboard: hide Save + tabs while editing ---- */
+  function isEditable(el) {
+    if (!el || el.nodeType !== 1) return false;
+    const tag = (el.tagName || "").toLowerCase();
+    if (tag === "textarea" || tag === "select") return true;
+    if (tag === "input") {
+      const t = (el.type || "text").toLowerCase();
+      return t !== "button" && t !== "submit" && t !== "checkbox" && t !== "radio" && t !== "file" && t !== "hidden";
+    }
+    return !!el.isContentEditable;
+  }
+
+  function setKeyboardOpen(on) {
+    document.body.classList.toggle("keyboard-open", !!on);
+  }
+
+
+  function flashSaved(msg) {
+    const el = document.getElementById("saveStatus");
+    if (!el) return;
+    el.textContent = msg || "Saved";
+    el.classList.add("ok", "flash");
+    setTimeout(function () {
+      el.classList.remove("flash");
+    }, 1200);
+  }
+
+  function wireKeyboardChrome() {
+    let blurTimer = null;
+    document.addEventListener(
+      "focusin",
+      function (e) {
+        if (!isEditable(e.target)) return;
+        if (blurTimer) {
+          clearTimeout(blurTimer);
+          blurTimer = null;
+        }
+        setKeyboardOpen(true);
+        const el = e.target;
+        setTimeout(function () {
+          try {
+            el.scrollIntoView({ block: "center", behavior: "smooth" });
+          } catch (err) {
+            try { el.scrollIntoView(true); } catch (e2) {}
+          }
+        }, 50);
+      },
+      true
+    );
+    document.addEventListener(
+      "focusout",
+      function (e) {
+        if (!isEditable(e.target)) return;
+        if (blurTimer) clearTimeout(blurTimer);
+        blurTimer = setTimeout(function () {
+          blurTimer = null;
+          if (!isEditable(document.activeElement)) setKeyboardOpen(false);
+        }, 80);
+      },
+      true
+    );
+    // Backup: visualViewport shrink ≈ keyboard
+    if (window.visualViewport) {
+      const vv = window.visualViewport;
+      const check = function () {
+        const shrink = window.innerHeight - vv.height > 120;
+        if (shrink && isEditable(document.activeElement)) setKeyboardOpen(true);
+        else if (!shrink && !isEditable(document.activeElement)) setKeyboardOpen(false);
+      };
+      vv.addEventListener("resize", check);
+      vv.addEventListener("scroll", check);
+    }
+  }
+
   function wire() {
+    wireKeyboardChrome();
     document.querySelectorAll("#tabs button").forEach(function (b) {
       b.onclick = function () {
         showTab(b.getAttribute("data-tab"));
@@ -1923,7 +2000,10 @@
       renderCosting();
     };
 
-    document.getElementById("btnSave").onclick = exportJSON;
+    document.getElementById("btnSave").onclick = function () {
+      exportJSON();
+      flashSaved("Saved file");
+    };
     document.getElementById("btnOpen").onclick = function () {
       document.getElementById("fileOpen").click();
     };
