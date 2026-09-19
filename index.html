@@ -5182,6 +5182,21 @@ function custImportBackup(file){
 function custFileSafe(name){
  return String(name||"Customer").replace(/[^a-z0-9]+/gi,"_").replace(/^_|_$/g,"").slice(0,40)||"Customer";
 }
+function custDrawCustomerLogo(pb,c){
+ // Customer logo top-left; Busch letterhead stays top-right via pbCreate(true).
+ if(c&&c.logoDataUrl){
+  try{
+   var fmt=/^data:image\/jpe?g/i.test(c.logoDataUrl)?"JPEG":"PNG";
+   var lw=42,lh=lw*0.35;
+   pb.doc.addImage(c.logoDataUrl,fmt,PB_M,PB_M,lw,lh);
+  }catch(err){}
+ }else{
+  pb.doc.setFont("helvetica","normal");pb.doc.setFontSize(8);
+  pb.doc.setTextColor(120,120,120);
+  pb.doc.text("Customer logo not loaded",PB_M,PB_M+6);
+  pb.doc.setTextColor(0,0,0);
+ }
+}
 function custExportJobPDF(){
  custSaveJob();
  var pair=custFindJob();
@@ -5193,19 +5208,7 @@ function custExportJobPDF(){
  for(var k=0;k<photos.length;k++)normPromises.push(pbNormalizePhoto(photos[k].dataUrl));
  Promise.all(normPromises).then(function(norm){
   var pb=pbCreate(true,"");
-  // Dual logos: Busch (right, via letterhead) + customer (left)
-  if(c.logoDataUrl){
-   try{
-    var fmt=/^data:image\/jpe?g/i.test(c.logoDataUrl)?"JPEG":"PNG";
-    var lw=42,lh=lw*0.35;
-    pb.doc.addImage(c.logoDataUrl,fmt,PB_M,PB_M,lw,lh);
-   }catch(err){}
-  }else{
-   pb.doc.setFont("helvetica","normal");pb.doc.setFontSize(8);
-   pb.doc.setTextColor(120,120,120);
-   pb.doc.text("Customer logo not loaded",PB_M,PB_M+6);
-   pb.doc.setTextColor(0,0,0);
-  }
+  custDrawCustomerLogo(pb,c);
   pbTitle(pb,"Site visit report");
   pbPairRow(pb,"Customer",c.name,"Date",custJobDateLabel(j)||"—");
   pbPairRow(pb,"Site",j.site||((c.sites&&c.sites[0])||"—"),"Visit type",j.type||"—");
@@ -5312,6 +5315,11 @@ function custFbAppendTextSectionHtml(h,title,body){
 function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
  var ticks=fb.ticks||custFbNormalizeTicks(j.fbTicks);
  var h='<div class="cj-fb-letter">';
+ h+='<div class="fb-logos" style="display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 12px">';
+ if(c&&c.logoDataUrl)h+='<img src="'+c.logoDataUrl+'" alt="Customer logo" style="max-width:120px;max-height:48px;object-fit:contain">';
+ else h+='<div style="min-width:110px;min-height:40px;border:1px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:var(--soft);padding:6px">Customer logo not loaded</div>';
+ h+='<div style="font-size:11px;font-weight:800;letter-spacing:.04em;color:var(--soft);text-align:right">BUSCH<br><span style="font-weight:600">letterhead</span></div>';
+ h+='</div>';
  h+='<h4>'+custEsc(fb.subject||"Feedback letter")+'</h4>';
  h+='<div class="fb-grid">';
  h+='<div class="full"><div class="fb-k">Email</div><div class="fb-v">'+custEsc(custFbDash(fb.email))+'</div></div>';
@@ -5417,6 +5425,7 @@ function custExportFeedbackPDF(skipUngroupedWarn){
  for(var k=0;k<photos.length;k++)normPromises.push(pbNormalizePhoto(photos[k].dataUrl));
  Promise.all(normPromises).then(function(norm){
   var pb=pbCreate(true,"");
+  custDrawCustomerLogo(pb,c);
   pbTitle(pb,fb.subject);
   pbGap(pb,2);
   pbPairRow(pb,"Email",fb.email||"—");
@@ -5484,7 +5493,7 @@ window.custOpen=custOpen;window.custOpenJob=custOpenJob;window.custNewJob=custNe
 window.custSaveView=custSaveView;window.custSaveJob=custSaveJob;window.custScheduleAutoSave=custScheduleAutoSave;window.custClearLogo=custClearLogo;
 window.custRemovePhoto=custRemovePhoto;window.custDeleteJob=custDeleteJob;
 window.custExportBackup=custExportBackup;window.custAddCustomer=custAddCustomer;
-window.custExportJobPDF=custExportJobPDF;window.custRenderList=custRenderList;
+window.custDrawCustomerLogo=custDrawCustomerLogo;window.custExportJobPDF=custExportJobPDF;window.custRenderList=custRenderList;
 window.custOpenCalcPicker=custOpenCalcPicker;window.custCloseCalcPicker=custCloseCalcPicker;
 window.custAddJobCalc=custAddJobCalc;window.custRemoveJobCalc=custRemoveJobCalc;window.custOpenJobCalc=custOpenJobCalc;
 
