@@ -251,7 +251,7 @@ td{background:transparent;color:var(--ink);}
 .math code{background:var(--elev2);color:var(--ink);}
 .cj-picker{background:rgba(7,16,24,.72);}
 .cj-picker-panel{background:var(--elev);border:1px solid var(--line);box-shadow:0 -8px 28px rgba(0,0,0,.5);}
-.cj-fb-preview-panel{width:min(640px,100%);max-height:92vh;display:flex;flex-direction:column;padding:0;overflow:hidden;}
+.cj-fb-preview-panel{width:min(640px,100%);max-height:96vh;height:96vh;display:flex;flex-direction:column;padding:0;overflow:hidden;border-radius:14px 14px 0 0;}
 .cj-fb-preview-scroll{overflow:auto;padding:12px 14px 8px;flex:1;-webkit-overflow-scrolling:touch;}
 .cj-fb-preview-actions{display:flex;flex-direction:column;gap:8px;padding:10px 14px 16px;border-top:1px solid var(--line);background:var(--elev);}
 .cj-fb-letter{font-size:13.5px;color:var(--ink);line-height:1.45;}
@@ -1134,9 +1134,9 @@ td{background:transparent;color:var(--ink);}
 <div class="fld"><div class="fh"><label>Additional works completed</label></div><div class="ctrl"><textarea id="cj_fb_additional" rows="3" placeholder="One item per line, e.g. Gland packing changes (DE and NDE)"></textarea></div></div>
 <div class="fld"><div class="fh"><label>Closing</label></div><div class="ctrl"><textarea id="cj_fb_closing" rows="3"></textarea></div></div>
 </div>
-<div class="card cj-pdfs"><h3>PDF</h3>
-<button class="exbtn" style="display:block;width:100%;margin-left:0" onclick="custPreviewFeedbackLetter()">Preview client feedback letter</button>
-<p class="sub" style="margin:4px 0 12px;font-size:12.5px">Check the letter on screen, then Make PDF &mdash; or Close to edit.</p>
+<div class="card cj-pdfs"><h3>Client feedback letter</h3>
+<button class="exbtn" style="display:block;width:100%;margin-left:0" onclick="custPreviewFeedbackLetter()">Preview</button>
+<p class="sub" style="margin:4px 0 12px;font-size:12.5px">Preview &rarr; Make PDF or Close. No extra steps.</p>
 </div>
 <button class="exbtn" style="display:block;width:100%;margin:12px 0 8px" onclick="custSaveJob()">Save on this device</button>
 <p class="sub" style="margin:0 0 12px;font-size:12.5px">Stays on this phone/laptop. <b>Export backup</b> on the Customers list copies to a file.</p>
@@ -5246,7 +5246,6 @@ function custPreviewFeedbackLetter(){
  var fb=custFbResolve(j,c);
  var photos=(j.photos||[]).slice();
  var grouped=custFbGroupedPhotos(photos);
- if(!custFbWarnUngrouped(grouped.ungrouped))return;
  var body=document.getElementById("cj_fb_preview_body");
  var el=document.getElementById("cj_fb_preview");
  if(!body||!el){alert("Preview UI missing.");return;}
