@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c0d12">
+<title>Busch WA — Quote &amp; Costing</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header id="topbar">
+  <div class="brand">BUSCH <span>WA</span> Quote</div>
+  <div class="refpill" id="refPill">—</div>
+  <div class="spacer"></div>
+  <div class="save-status" id="saveStatus" title="Autosave">Saved</div>
+  <button type="button" class="btn-icon" id="btnDemo" title="Load demo">Demo</button>
+  <button type="button" class="btn-icon" id="btnNew" title="New quote">New</button>
+  <button type="button" class="btn-icon" id="btnOpen" title="Open JSON">Open</button>
+  <button type="button" class="btn-icon primary" id="btnSave" title="Save JSON">Save</button>
+  <input type="file" id="fileOpen" accept="application/json,.json" class="hidden">
+</header>
+
+<nav id="tabs" aria-label="Steps">
+  <button type="button" data-tab="setup" class="active">Setup</button>
+  <button type="button" data-tab="costing">Costing</button>
+  <button type="button" data-tab="preview">Preview</button>
+</nav>
+
+<main>
+  <!-- ========== SETUP ========== -->
+  <section class="panel active" id="panel-setup">
+    <div class="staff-banner">Staff only — costing, FX buffer and margins never appear on the customer letter.</div>
+
+    <h2 class="block-title">Quote header</h2>
+    <div class="card">
+      <div class="grid2">
+        <label class="fld"><span>Customer</span><input id="customer" autocomplete="organization"></label>
+        <label class="fld"><span>Attn</span><input id="attn" autocomplete="name"></label>
+        <label class="fld"><span>NBQ</span><input id="nbq" placeholder="26NBQ142"></label>
+        <label class="fld"><span>Rev</span><input id="rev" placeholder="0"></label>
+        <label class="fld"><span>Date</span><input id="quoteDate" type="date"></label>
+        <label class="fld"><span>Default margin %</span><input id="marginPct" type="number" step="0.1"></label>
+      </div>
+    </div>
+
+    <h2 class="block-title">Country of origin → FX</h2>
+    <div class="card">
+      <div class="grid2">
+        <label class="fld"><span>Country of origin</span>
+          <select id="originCountry"></select>
+        </label>
+        <label class="fld"><span>FX buffer (costing only)</span>
+          <input id="fxBuffer" type="number" step="0.01" min="0" max="1">
+        </label>
+        <label class="fld"><span>Manual rate override (AUD per 1 foreign)</span>
+          <input id="manualRate" type="number" step="0.0001" placeholder="Leave blank for live">
+        </label>
+      </div>
+      <div class="fx-strip" id="fxStrip"></div>
+    </div>
+
+    <details class="more">
+      <summary>More — commercial, import defaults, letter text, signature</summary>
+      <div class="more-body">
+        <h2 class="block-title">Contact &amp; subject</h2>
+        <div class="grid2">
+          <label class="fld"><span>Customer email</span><input id="email" type="email"></label>
+          <label class="fld"><span>Customer phone</span><input id="phone"></label>
+          <label class="fld"><span>Your ref</span><input id="yourRef"></label>
+          <label class="fld"><span>Subject</span><input id="subject"></label>
+          <label class="fld"><span>Letter title</span><input id="letterTitle"></label>
+          <label class="fld"><span>Greeting name</span><input id="greetingName" placeholder="David"></label>
+        </div>
+
+        <h2 class="block-title">From / signature</h2>
+        <div class="grid2">
+          <label class="fld"><span>From name</span><input id="fromName"></label>
+          <label class="fld"><span>Title</span><input id="fromTitle"></label>
+          <label class="fld"><span>Mobile</span><input id="fromPhone"></label>
+          <label class="fld"><span>Email</span><input id="fromEmail" type="email"></label>
+          <label class="fld"><span>Office line</span><input id="fromOffice"></label>
+        </div>
+
+        <h2 class="block-title">Import defaults</h2>
+        <div class="grid2">
+          <label class="fld"><span>Boxing %</span><input id="boxingPct" type="number" step="0.1"></label>
+          <label class="fld"><span>Freight %</span><input id="freightPct" type="number" step="0.1"></label>
+          <label class="fld"><span>Clearance %</span><input id="clearancePct" type="number" step="0.1"></label>
+          <label class="fld"><span>Duty %</span><input id="dutyPct" type="number" step="0.1"></label>
+          <label class="fld"><span>Labour rate AUD/h</span><input id="labourRate" type="number" step="1"></label>
+        </div>
+
+        <h2 class="block-title">Commercial presets</h2>
+        <label class="fld"><span>Payment</span><textarea id="commPayment"></textarea></label>
+        <label class="fld"><span>Delivery</span><textarea id="commDelivery"></textarea></label>
+        <label class="fld"><span>Validity</span><textarea id="commValidity"></textarea></label>
+        <label class="fld"><span>Warranty</span><textarea id="commWarranty"></textarea></label>
+        <label class="fld"><span>Excluded</span><textarea id="commExcluded"></textarea></label>
+        <label class="fld"><span>Lead — sea</span><textarea id="commLeadSea"></textarea></label>
+        <label class="fld"><span>Lead — air</span><textarea id="commLeadAir"></textarea></label>
+
+        <h2 class="block-title">Letter body (Word-like)</h2>
+        <label class="fld"><span>Intro paragraph</span><textarea id="introText"></textarea></label>
+        <label class="fld"><span>Item 2 Introduction body</span><textarea id="introExtra"></textarea></label>
+        <label class="fld"><span>Item 3 Unit details (Key: value per line)</span><textarea id="unitDetailsText"></textarea></label>
+        <label class="fld"><span>Item 4 Selection (Key: value per line)</span><textarea id="selectionText"></textarea></label>
+        <label class="fld"><span>Item 5.1 Scope of supply</span><textarea id="scopeSupplyText"></textarea></label>
+        <label class="fld"><span>Scope bullets (one per line)</span><textarea id="scopeBullets"></textarea></label>
+        <label class="fld"><span>Important notes</span><textarea id="importantNotes"></textarea></label>
+        <label class="fld"><span>Tech data (Name|Unit|Value per line)</span><textarea id="techRows"></textarea></label>
+      </div>
+    </details>
+  </section>
+
+  <!-- ========== COSTING ========== -->
+  <section class="panel" id="panel-costing">
+    <div class="staff-banner">Yellow fields are editable. Landed &amp; sell are calculated. Include → letter total · Option → extras · Exclude → off letter.</div>
+    <div class="cost-toolbar">
+      <button type="button" class="add-import" id="btnAddImport">+ Add import</button>
+      <button type="button" class="add-local" id="btnAddLocal">+ Add local</button>
+    </div>
+    <div class="empty-cost" id="costEmpty">
+      <strong>No cost lines yet</strong>
+      Tap Add import (overseas ExW + landed build) or Add local (labour / parts / site).
+    </div>
+    <div id="costList"></div>
+    <div class="totals-bar" id="totalsBar"></div>
+  </section>
+
+  <!-- ========== PREVIEW ========== -->
+  <section class="panel" id="panel-preview">
+    <div class="preview-toolbar no-print">
+      <button type="button" class="primary" id="btnPrint">Print / PDF</button>
+      <span style="font-size:12px;color:var(--muted)">Paper letter — AUD sell only</span>
+    </div>
+    <div class="print-block-msg" id="printBlockMsg"></div>
+    <div class="images-panel no-print" id="imagesPanel"></div>
+    <div class="section-ticks no-print" id="sectionTicks"></div>
+    <div class="paper-wrap">
+      <article class="paper" id="paper" aria-label="Customer offer letter"></article>
+    </div>
+  </section>
+</main>
+
+<script src="app.js"></script>
+</body>
+</html>
