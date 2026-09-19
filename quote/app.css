@@ -27,7 +27,14 @@ body{
   -webkit-font-smoothing:antialiased;
   padding-bottom:calc(72px + var(--safe-b));
 }
-button,input,select,textarea{font:inherit;color:inherit;}
+button{font:inherit;color:inherit;}
+/* iOS Safari: inputs <16px trigger focus zoom — keep controls ≥16px */
+input,select,textarea{
+  font-family:inherit;
+  font-size:16px;
+  line-height:1.25;
+  color:inherit;
+}
 button{cursor:pointer;}
 a{color:var(--orange-hi);}
 
@@ -108,6 +115,7 @@ input.yel,select.yel,textarea.yel{
   background:var(--yellow-input);border:1.5px solid var(--yellow-border);
   border-radius:8px;padding:10px 12px;min-height:44px;color:#fff;
   width:100%;
+  font-size:16px;
 }
 label.fld textarea,textarea.yel{min-height:72px;resize:vertical;}
 label.fld input:focus,label.fld select:focus,label.fld textarea:focus,
@@ -268,9 +276,9 @@ details.more .more-body{padding:0 14px 14px;}
 .img-fields .fld span{font-size:11px;color:var(--muted);}
 .img-fields .fld input[type="text"]{
   width:100%;min-height:44px;border-radius:10px;border:1px solid var(--border);
-  background:var(--bg);color:var(--text);padding:0 12px;font-size:14px;
+  background:var(--bg);color:var(--text);padding:0 12px;font-size:16px;
 }
-.pick-btn input[type="file"]{width:100%;font-size:13px;padding:8px 0;}
+.pick-btn input[type="file"]{width:100%;font-size:16px;padding:8px 0;}
 .seg-row{display:flex;flex-direction:column;gap:6px;}
 .seg-lab{font-size:11px;color:var(--muted);}
 .seg{display:flex;gap:6px;}
