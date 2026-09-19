@@ -331,6 +331,17 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .lri-checkrow>.ctrl{flex:1 1 auto;margin-top:0;}
 #lri .pgh,#cust_job .pgh{flex-wrap:wrap;gap:8px 10px;}
 #lri .exbtn,#lri .clrbtn,#cust .exbtn,#cust .clrbtn,#cust_view .exbtn,#cust_view .clrbtn,#cust_job .exbtn,#cust_job .clrbtn{min-height:44px;padding:11px 14px;}
+#cust_view .cv-wall-hint{margin:0 0 10px;font-size:12.5px;line-height:1.35}
+#cust_view .cv-logo-previews{display:flex;flex-wrap:wrap;gap:10px;margin:8px 0 4px;align-items:stretch}
+#cust_view .cv-logo-mock{flex:1 1 140px;max-width:200px;border-radius:10px;border:1px solid var(--line);padding:10px;min-height:72px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px}
+#cust_view .cv-logo-mock .lab{font-size:11px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--soft)}
+#cust_view .cv-logo-mock img{max-width:150px;max-height:56px;object-fit:contain;display:block}
+#cust_view .cv-logo-mock.paper{background:#fff;border-color:#D0D5D8}
+#cust_view .cv-logo-mock.paper .lab{color:#667788}
+#cust_view .cv-logo-mock.paper .ph{color:#8899AA;font-size:12px;text-align:center;line-height:1.3}
+#cust_view .cv-logo-mock.plate{background:#0C121A}
+#cust_view .cv-logo-mock.plate .ph{color:#9AA8B5;font-size:12px;text-align:center;line-height:1.3}
+
 #lri_rows details.card>summary{min-height:44px;display:flex;align-items:center;gap:8px;padding:10px 4px;font-weight:800;}
 #lri_rows details.card>summary .lri-sum-st{font-size:12px;font-weight:700;margin-left:auto;padding:3px 8px;border-radius:999px;border:1px solid var(--line);}
 #lri_rows details.card>summary .lri-sum-st.open{color:#C5D3DC;border-color:#4A5A68;}
@@ -1107,22 +1118,29 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="card"><h3>Details</h3>
 <div class="fld"><div class="fh"><label>Customer name</label></div><div class="ctrl"><input type="text" id="cv_name" placeholder="e.g. Hancock Iron Ore / Roy Hill"></div></div>
 <div class="fld"><div class="fh"><label>Site label</label></div><div class="ctrl"><input type="text" id="cv_site" placeholder="e.g. Wet plant / desands — belt filters"></div></div>
+<button class="exbtn" onclick="custSaveView()">Save details</button>
+</div>
+<div class="card cv-wall"><h3>For the letter</h3>
+<p class="sub cv-wall-hint">Prints on the Client feedback letter (PDF) — logo letterhead + contact line.</p>
+<div class="fld"><div class="fh"><label>Customer logo (for letterhead)</label></div><div class="ctrl"><input type="file" id="cv_logo" accept="image/*"></div></div>
+<p class="sub" style="margin:0 0 4px;font-size:12.5px">White / light logos show on a dark plate in Preview and PDF so they stay readable on white paper.</p>
+<div class="cv-logo-previews" id="cv_logo_prev"></div>
+<p class="sub cv-logo-paper-cap" style="margin:2px 0 6px;font-size:12px">White paper = how it looks on the printed letter. Dark plate = how the app pads a light logo.</p>
+<div id="cv_logo_warn" class="note warn" style="display:none;margin:6px 0">This logo looks very light — it will sit on a dark plate on the letter so it doesn&rsquo;t vanish on white paper.</div>
+<div id="cv_logo_missing" class="note warn" style="display:none;margin:6px 0">No logo yet — the letter will show an empty dark plate until you add one.</div>
 <div class="fld"><div class="fh"><label>Contact name</label></div><div class="ctrl"><input type="text" id="cv_contact_name" placeholder="e.g. Site contact"></div></div>
 <div class="fld"><div class="fh"><label>Contact phone</label></div><div class="ctrl"><input type="text" id="cv_contact_phone" placeholder="e.g. +61 …"></div></div>
 <div class="fld"><div class="fh"><label>Contact email</label></div><div class="ctrl"><input type="text" id="cv_contact_email" placeholder="e.g. name@customer.com.au"></div></div>
-<div class="fld"><div class="fh"><label>Site notes</label></div><div class="ctrl"><textarea id="cv_notes" rows="4" placeholder="Access, prep, gate, internal — NOT on Client feedback letter."></textarea></div></div>
-<p class="sub" style="margin:0 0 8px;font-size:12.5px">Site notes stay on this device for you — they never print on the Client feedback letter.</p>
-<div class="fld"><div class="fh"><label>Customer logo (for letterhead)</label></div><div class="ctrl"><input type="file" id="cv_logo" accept="image/*"></div></div>
-<p class="sub" style="margin:0 0 4px;font-size:12.5px">White / light logos show on a dark plate in Preview and PDF so they stay readable on white paper.</p>
-<div id="cv_logo_prev" style="margin:8px 0 4px"></div>
-<div id="cv_logo_warn" class="note warn" style="display:none;margin:6px 0">This logo looks very light — it will sit on a dark plate on the letter so it doesn&rsquo;t vanish on white paper.</div>
-<button class="exbtn" onclick="custSaveView()">Save details</button>
+<button class="exbtn" onclick="custSaveView()">Save letter fields</button>
 <button class="clrbtn" onclick="custClearLogo()">Remove logo</button>
 </div>
-<div class="card"><h3>Equipment at this site</h3>
+<div class="card cv-wall"><h3>For you on site</h3>
+<p class="sub cv-wall-hint">Internal only — never printed on the Client feedback letter.</p>
+<div class="fld"><div class="fh"><label>Site notes</label></div><div class="ctrl"><textarea id="cv_notes" rows="4" placeholder="Access, prep, gate, internal — NOT on Client feedback letter."></textarea></div></div>
+<p class="sub" style="margin:0 0 8px;font-size:12.5px">Site notes stay on this device for you — they never print on the Client feedback letter.</p>
+<div class="fld"><div class="fh"><label>Equipment at this site</label></div><div class="ctrl"><textarea id="cv_equip" rows="6" placeholder="FLT 151"></textarea></div></div>
 <p style="font-size:13px;color:var(--soft);margin:0 0 8px">One tag per line. These feed the job pump picker. The Client feedback letter uses the job Equipment text only — not this full site list.</p>
-<div class="fld"><div class="ctrl"><textarea id="cv_equip" rows="6" placeholder="FLT 151"></textarea></div></div>
-<button class="exbtn" onclick="custSaveView()">Save tags</button>
+<button class="exbtn" onclick="custSaveView()">Save site fields</button>
 </div>
 <div class="card"><h3>Jobs / visits</h3>
 <button class="exbtn" onclick="custNewJob()">New job / visit</button>
@@ -4748,7 +4766,7 @@ function custLogoLooksLight(dataUrl,cb){
      lum=0.2126*d[i]+0.7152*d[i+1]+0.0722*d[i+2];
      sum+=lum; n++;
     }
-    cb(n>0 && (sum/n)>210);
+    cb(n>0 && (sum/n)>200);
    }catch(err){cb(false);}
   };
   img.onerror=function(){cb(false);};
@@ -4758,13 +4776,18 @@ function custLogoLooksLight(dataUrl,cb){
 function custRenderLogo(){
  var c=custFind(CUST_CUR);var el=document.getElementById("cv_logo_prev");
  var warn=document.getElementById("cv_logo_warn");
+ var miss=document.getElementById("cv_logo_missing");
  if(!el||!c)return;
  if(c.logoDataUrl){
-  el.innerHTML='<img src="'+c.logoDataUrl+'" alt="Customer logo" style="max-width:180px;max-height:72px;object-fit:contain;border:1px solid var(--line);border-radius:8px;padding:6px;background:#0C121A">';
+  el.innerHTML='<div class="cv-logo-mock paper"><span class="lab">On white paper</span><img src="'+c.logoDataUrl+'" alt="Logo on white paper"></div>'+
+   '<div class="cv-logo-mock plate"><span class="lab">Dark plate (letter)</span><img src="'+c.logoDataUrl+'" alt="Logo on dark plate"></div>';
+  if(miss)miss.style.display="none";
   custLogoLooksLight(c.logoDataUrl,function(light){if(warn)warn.style.display=light?"block":"none";});
  }else{
-  el.innerHTML='<div style="width:160px;height:56px;border:1px dashed var(--line);border-radius:8px;display:flex;align-items:center;justify-content:center;color:var(--soft);font-size:12px;background:var(--elev)">No logo yet — letter shows a dark plate placeholder</div>';
+  el.innerHTML='<div class="cv-logo-mock paper"><span class="lab">On white paper</span><span class="ph">No logo — will vanish / look empty on white</span></div>'+
+   '<div class="cv-logo-mock plate"><span class="lab">Dark plate (letter)</span><span class="ph">Empty plate placeholder until you add a logo</span></div>';
   if(warn)warn.style.display="none";
+  if(miss)miss.style.display="block";
  }
 }
 function custSaveView(){
