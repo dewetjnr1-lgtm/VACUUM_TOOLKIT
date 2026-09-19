@@ -264,8 +264,9 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-letter{font-size:13.5px;color:#333;line-height:1.45;background:#fff;border-radius:8px;padding:16px 16px 10px;border:1px solid #D0D5D8;font-family:Helvetica,Arial,sans-serif;}
 .cj-fb-letter.cj-fb-letter-word{background:#fff;}
 .cj-fb-letter .fb-logos{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;}
-.cj-fb-letter .fb-logo-cust,.cj-fb-letter .fb-logo-busch{max-width:120px;max-height:48px;object-fit:contain;}
-.cj-fb-letter .fb-logo-ph{min-width:110px;min-height:40px;border:1px dashed #C5D0D8;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#8899A6;padding:6px;}
+.cj-fb-letter .fb-logo-cust{max-width:120px;max-height:48px;object-fit:contain;background:#0C121A;padding:8px 10px;border-radius:8px;}
+.cj-fb-letter .fb-logo-busch{max-width:120px;max-height:48px;object-fit:contain;}
+.cj-fb-letter .fb-logo-ph{min-width:110px;min-height:40px;border:1px dashed #2A3B48;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#A8B8C2;padding:6px;background:#0C121A;}
 .cj-fb-letter .fb-letter-title{margin:0 0 12px;font-size:16px;font-weight:800;color:#222;text-align:center;letter-spacing:.01em;}
 .cj-fb-letter .fb-meta{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;margin:0 0 8px;font-size:12.5px;}
 .cj-fb-letter .fb-meta-col{min-width:0;}
@@ -5209,20 +5210,48 @@ function custImportBackup(file){
 function custFileSafe(name){
  return String(name||"Customer").replace(/[^a-z0-9]+/gi,"_").replace(/^_|_$/g,"").slice(0,40)||"Customer";
 }
-function custDrawCustomerLogo(pb,c){
- // Customer logo top-left; Busch letterhead stays top-right via pbCreate(true).
- if(c&&c.logoDataUrl){
-  try{
-   var fmt=/^data:image\/jpe?g/i.test(c.logoDataUrl)?"JPEG":"PNG";
-   var lw=42,lh=lw*0.35;
-   pb.doc.addImage(c.logoDataUrl,fmt,PB_M,PB_M,lw,lh);
-  }catch(err){}
- }else{
-  pb.doc.setFont("helvetica","normal");pb.doc.setFontSize(8);
-  pb.doc.setTextColor(120,120,120);
-  pb.doc.text("Customer logo not loaded",PB_M,PB_M+6);
-  pb.doc.setTextColor(0,0,0);
+function custPlaceCustomerLogo(doc,dataUrl,x,y,maxW,maxH){
+ // White / light logos (e.g. Hancock) need a dark plate on white paper.
+ var pad=1.2, fmt, props, ar, w, h, boxW, boxH;
+ maxW=maxW||36; maxH=maxH||14;
+ if(!dataUrl){
+  doc.setFillColor(18,24,32); doc.setDrawColor(80,90,100); doc.setLineWidth(0.2);
+  doc.roundedRect(x,y,maxW,maxH,1,1,"FD");
+  doc.setFont("helvetica","normal"); doc.setFontSize(7); doc.setTextColor(180,190,200);
+  doc.text("Customer logo",x+2,y+maxH/2+1);
+  doc.setTextColor(0,0,0);
+  return maxH;
  }
+ try{
+  fmt=/^data:image\/jpe?g/i.test(dataUrl)?"JPEG":"PNG";
+  props=doc.getImageProperties(dataUrl);
+  ar=(props.width&&props.height)?(props.width/props.height):(maxW/maxH);
+  w=maxW; h=w/ar;
+  if(h>maxH){h=maxH; w=h*ar;}
+  boxW=w+2*pad; boxH=h+2*pad;
+  doc.setFillColor(12,18,26);
+  doc.roundedRect(x,y,boxW,boxH,1.2,1.2,"F");
+  doc.addImage(dataUrl,fmt,x+pad,y+pad,w,h);
+  return boxH;
+ }catch(err){
+  try{
+   fmt=/^data:image\/jpe?g/i.test(dataUrl)?"JPEG":"PNG";
+   doc.setFillColor(12,18,26);
+   doc.roundedRect(x,y,maxW,maxH,1.2,1.2,"F");
+   doc.addImage(dataUrl,fmt,x+pad,y+pad,maxW-2*pad,maxH-2*pad);
+   return maxH;
+  }catch(err2){
+   doc.setFillColor(18,24,32); doc.roundedRect(x,y,maxW,maxH,1,1,"F");
+   doc.setFont("helvetica","normal"); doc.setFontSize(7); doc.setTextColor(200,120,120);
+   doc.text("Logo failed",x+2,y+maxH/2+1);
+   doc.setTextColor(0,0,0);
+   return maxH;
+  }
+ }
+}
+function custDrawCustomerLogo(pb,c){
+ // Customer logo top-left on dark plate; Busch letterhead top-right via pbCreate(true).
+ custPlaceCustomerLogo(pb.doc, c&&c.logoDataUrl, PB_M, PB_M, 42, 16);
 }
 function custExportJobPDF(){
  custSaveJob();
@@ -5549,15 +5578,10 @@ function custFbLetterMetaLine(L,lab,val,x,y,labW,maxW){
  return lines.length;
 }
 function custFbLetterDrawHeader(L,c,j,fb){
- var logoH=14, logoW=48;
- if(c&&c.logoDataUrl){
-  try{
-   var fmt=/^data:image\/jpe?g/i.test(c.logoDataUrl)?"JPEG":"PNG";
-   L.doc.addImage(c.logoDataUrl,fmt,L.m,L.y,32,12);
-  }catch(e1){}
- }
+ var logoH=14, logoW=48, custH;
+ custH=custPlaceCustomerLogo(L.doc, c&&c.logoDataUrl, L.m, L.y, 38, 16);
  try{L.doc.addImage(LRI_LOGO,"PNG",L.pw-L.m-logoW,L.y,logoW,logoH);}catch(e2){}
- L.y+=logoH+6;
+ L.y+=Math.max(logoH,custH)+6;
  L.doc.setFont("helvetica","bold"); L.doc.setFontSize(14);
  L.doc.setTextColor(40,40,40);
  L.doc.text(CUST_FB_LETTER_TITLE,L.pw/2,L.y,{align:"center"});
@@ -5754,7 +5778,7 @@ window.custOpen=custOpen;window.custOpenJob=custOpenJob;window.custNewJob=custNe
 window.custSaveView=custSaveView;window.custSaveJob=custSaveJob;window.custScheduleAutoSave=custScheduleAutoSave;window.custClearLogo=custClearLogo;
 window.custRemovePhoto=custRemovePhoto;window.custDeleteJob=custDeleteJob;
 window.custExportBackup=custExportBackup;window.custAddCustomer=custAddCustomer;
-window.custDrawCustomerLogo=custDrawCustomerLogo;window.custExportJobPDF=custExportJobPDF;window.custRenderList=custRenderList;
+window.custPlaceCustomerLogo=custPlaceCustomerLogo;window.custDrawCustomerLogo=custDrawCustomerLogo;window.custExportJobPDF=custExportJobPDF;window.custRenderList=custRenderList;
 window.custOpenCalcPicker=custOpenCalcPicker;window.custCloseCalcPicker=custCloseCalcPicker;
 window.custAddJobCalc=custAddJobCalc;window.custRemoveJobCalc=custRemoveJobCalc;window.custOpenJobCalc=custOpenJobCalc;
 
