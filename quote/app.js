@@ -1379,43 +1379,96 @@
     });
   }
 
+  const SECTION_DEFS = [
+    { key: "toc", num: "1", label: "Table of contents" },
+    { key: "intro", num: "2", label: "Introduction" },
+    { key: "unitDetails", num: "3", label: "Unit details and background" },
+    { key: "selection", num: "4", label: "Busch replacement selection" },
+    { key: "scope", num: "5", label: "Scope of work and services (prices)" },
+    { key: "drawing", num: "6", label: "Vacuum pump drawing" },
+    { key: "techData", num: "7", label: "Technical data sheet" },
+    { key: "commercial", num: "8", label: "Commercial" },
+    { key: "terms", num: "9", label: "Terms and conditions" },
+  ];
+
+  function sectionOn(key) {
+    return state.sections[key] !== false;
+  }
+
+  function setSection(key, on) {
+    state.sections[key] = !!on;
+    queueSave();
+    renderPreview();
+  }
+
   function renderSectionTicks() {
     const box = document.getElementById("sectionTicks");
     if (!box) return;
-    const labels = [
-      ["toc", "1. Table of contents"],
-      ["intro", "2. Introduction"],
-      ["unitDetails", "3. Unit details and background"],
-      ["selection", "4. Busch replacement selection"],
-      ["scope", "5. Scope of work and services (prices)"],
-      ["drawing", "6. Vacuum pump drawing"],
-      ["techData", "7. Technical data sheet"],
-      ["commercial", "8. Commercial"],
-      ["terms", "9. Terms and conditions"],
-    ];
     box.innerHTML =
-      "<h3>Letter sections (tick to include)</h3>" +
-      labels
-        .map(function (pair) {
-          const on = state.sections[pair[0]] !== false;
-          return (
-            '<label><input type="checkbox" data-sec="' +
-            pair[0] +
-            '"' +
-            (on ? " checked" : "") +
-            "> " +
-            esc(pair[1]) +
-            "</label>"
-          );
-        })
-        .join("");
-    box.querySelectorAll("input").forEach(function (inp) {
-      inp.onchange = function () {
-        state.sections[inp.getAttribute("data-sec")] = inp.checked;
-        queueSave();
-        renderPreview();
+      "<h3>Include on letter</h3>" +
+      '<p class="hint">Tap Include / Exclude — only Included sections print. You can also tap a heading on the paper.</p>' +
+      SECTION_DEFS.map(function (d) {
+        const on = sectionOn(d.key);
+        return (
+          '<div class="sec-row ' +
+          (on ? "on" : "off") +
+          '" data-sec="' +
+          d.key +
+          '">' +
+          '<div class="sec-lab"><span class="sec-num">' +
+          esc(d.num) +
+          ".</span> " +
+          esc(d.label) +
+          "</div>" +
+          '<button type="button" class="sec-toggle" data-sec="' +
+          d.key +
+          '">' +
+          (on ? "Include" : "Exclude") +
+          "</button></div>"
+        );
+      }).join("");
+    box.querySelectorAll(".sec-row").forEach(function (row) {
+      row.onclick = function (e) {
+        e.preventDefault();
+        const key = row.getAttribute("data-sec");
+        if (!key) return;
+        setSection(key, !sectionOn(key));
       };
     });
+  }
+
+  function wirePaperSectionToggles() {
+    const paper = document.getElementById("paper");
+    if (!paper) return;
+    paper.querySelectorAll("[data-sec-toggle]").forEach(function (el) {
+      el.onclick = function (e) {
+        e.preventDefault();
+        const key = el.getAttribute("data-sec-toggle");
+        if (!key) return;
+        setSection(key, !sectionOn(key));
+      };
+    });
+  }
+
+  function secHeading(key, text) {
+    return (
+      '<div class="sec-h tap-sec" data-sec-toggle="' +
+      key +
+      '">' +
+      esc(text) +
+      "</div>"
+    );
+  }
+
+  function secStub(key, text) {
+    if (sectionOn(key)) return "";
+    return (
+      '<div class="sec-stub no-print" data-sec-toggle="' +
+      key +
+      '">Not included — tap to add: ' +
+      esc(text) +
+      "</div>"
+    );
   }
 
   function renderPreview() {
@@ -1521,8 +1574,9 @@
     if (sec.commercial !== false) tocItems.push(["Item 8", "Commercial"]);
     if (sec.terms !== false) tocItems.push(["Item 9", "Terms and Conditions"]);
 
+    html += secStub("toc", "1. TABLE OF CONTENTS");
     if (sec.toc !== false) {
-      html += '<div class="sec"><div class="sec-h">1. TABLE OF CONTENTS</div>';
+      html += '<div class="sec">' + secHeading("toc", "1. TABLE OF CONTENTS");
       html +=
         '<ul class="toc-list">' +
         tocItems
@@ -1539,26 +1593,30 @@
         "</ul></div>";
     }
 
+    html += secStub("intro", "2. INTRODUCTION");
     if (sec.intro !== false) {
-      html += '<div class="sec"><div class="sec-h">2. INTRODUCTION</div>';
+      html += '<div class="sec">' + secHeading("intro", "2. INTRODUCTION");
       html += "<p>" + esc(L.introExtra || L.introText) + "</p></div>";
     }
 
+    html += secStub("unitDetails", "3. UNIT DETAILS AND BACKGROUND");
     if (sec.unitDetails !== false) {
       html +=
-        '<div class="sec"><div class="sec-h">3. UNIT DETAILS AND BACKGROUND</div>';
+        '<div class="sec">' + secHeading("unitDetails", "3. UNIT DETAILS AND BACKGROUND");
       html +=
         '<div class="scope-title">DATA (FROM NAMEPLATE, RFQ AND ORIGINAL SUPPLY RECORDS):</div>';
       html += '<table class="data-table">' + kvLines(L.unitDetailsText) + "</table></div>";
     }
 
+    html += secStub("selection", "4. BUSCH REPLACEMENT SELECTION");
     if (sec.selection !== false) {
-      html += '<div class="sec"><div class="sec-h">4. BUSCH REPLACEMENT SELECTION</div>';
+      html += '<div class="sec">' + secHeading("selection", "4. BUSCH REPLACEMENT SELECTION");
       html += '<table class="data-table">' + kvLines(L.selectionText) + "</table></div>";
     }
 
+    html += secStub("scope", "5. SCOPE OF WORK AND SERVICES");
     if (sec.scope !== false) {
-      html += '<div class="sec"><div class="sec-h">5. SCOPE OF WORK AND SERVICES</div>';
+      html += '<div class="sec">' + secHeading("scope", "5. SCOPE OF WORK AND SERVICES");
       html +=
         '<div class="scope-title">5.1 SCOPE OF SUPPLY</div>';
       html += "<p>" + esc(L.scopeSupplyText) + "</p>";
@@ -1596,8 +1654,9 @@
       html += "<p>" + esc(L.importantNotes) + "</p></div>";
     }
 
+    html += secStub("drawing", "6. DRAWING");
     if (sec.drawing) {
-      html += '<div class="sec"><div class="sec-h">6. DRAWING</div>';
+      html += '<div class="sec">' + secHeading("drawing", "6. DRAWING");
       const imgs = Array.isArray(state.images)
         ? state.images.filter(function (im) {
             return im && im.src;
@@ -1631,17 +1690,19 @@
       html += "</div>";
     }
 
+    html += secStub("techData", "7. VACUUM PUMP TECHNICAL DATA");
     if (sec.techData !== false) {
       html +=
-        '<div class="sec"><div class="sec-h">7. VACUUM PUMP TECHNICAL DATA</div>';
+        '<div class="sec">' + secHeading("techData", "7. VACUUM PUMP TECHNICAL DATA");
       html +=
         '<table class="data-table"><thead><tr><td></td><td></td><td></td></tr></thead><tbody>' +
         techTable(L.techRows) +
         "</tbody></table></div>";
     }
 
+    html += secStub("commercial", "8. COMMERCIAL");
     if (sec.commercial !== false) {
-      html += '<div class="sec"><div class="sec-h">8. COMMERCIAL</div>';
+      html += '<div class="sec">' + secHeading("commercial", "8. COMMERCIAL");
       html += '<table class="comm-table">';
       // Commercial FX wording — live sell-side rate only, never buffer
       const live =
@@ -1682,9 +1743,10 @@
       html += "</table></div>";
     }
 
+    html += secStub("terms", "9. TERMS AND CONDITIONS");
     if (sec.terms !== false) {
       html +=
-        '<div class="sec"><div class="sec-h">9. TERMS AND CONDITIONS</div><div class="tcs">';
+        '<div class="sec">' + secHeading("terms", "9. TERMS AND CONDITIONS") + '<div class="tcs">';
       html += "<p>" + esc(L.termsSummary) + "</p>";
       html +=
         "<p>Full BUSCH ANZ PTY. LTD. Standard Terms and Conditions of Sale are available on request and form part of this offer.</p>";
@@ -1714,6 +1776,7 @@
     html += "</footer>";
 
     paper.innerHTML = html;
+    wirePaperSectionToggles();
 
     // Hard-wall self-check: ensure forbidden tokens not in Preview DOM
     const forbidden = /\b(landed|margin\s*%|buffered|fx buffer|raw fx|exw aud|line cost|gp\s*\/)\b/i;
@@ -1869,7 +1932,7 @@
       if (f) importJSON(f);
       e.target.value = "";
     };
-
+    
     const btnInsComm = document.getElementById("btnInsertCommercial");
     if (btnInsComm) {
       btnInsComm.onclick = function () {

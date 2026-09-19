@@ -1,4 +1,8 @@
 /* Busch WA Quote & Costing — phone-first, dark + orange (unique v1) */
+html{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
+}
 :root{
   --orange:#FF6A1A;
   --orange-hi:#FF8A47;
@@ -20,6 +24,8 @@
 *{box-sizing:border-box;}
 html,body{margin:0;padding:0;height:100%;}
 body{
+  -webkit-text-size-adjust:100%;
+  text-size-adjust:100%;
   font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
   background:var(--bg);
   color:var(--ink);
@@ -28,11 +34,16 @@ body{
   padding-bottom:calc(132px + var(--safe-b));
 }
 button{font:inherit;color:inherit;}
-/* iOS Safari: inputs <16px trigger focus zoom — keep controls ≥16px */
-input,select,textarea{
-  font-family:inherit;
-  font-size:16px;
-  line-height:1.25;
+/* iOS Safari: kill focus zoom — ≥16px !important + text-size-adjust + viewport maximum-scale */
+input,select,textarea,
+label.fld input,label.fld select,label.fld textarea,
+input.yel,select.yel,textarea.yel,
+.img-fields input,
+.img-fields input[type="text"],
+.pick-btn input[type="file"]{
+  font-family:inherit !important;
+  font-size:16px !important;
+  line-height:1.25 !important;
   color:inherit;
 }
 button{cursor:pointer;}
@@ -135,7 +146,7 @@ input.yel,select.yel,textarea.yel{
   background:var(--yellow-input);border:1.5px solid var(--yellow-border);
   border-radius:8px;padding:10px 12px;min-height:44px;color:#fff;
   width:100%;
-  font-size:16px;
+  font-size:16px !important;
 }
 label.fld textarea,textarea.yel{min-height:72px;resize:vertical;}
 label.fld input:focus,label.fld select:focus,label.fld textarea:focus,
@@ -260,15 +271,57 @@ details.more .more-body{padding:0 14px 14px;}
 .print-block-msg.show{display:block;}
 
 .section-ticks{
-  background:var(--card);border:1px solid var(--border);border-radius:12px;
-  padding:12px;margin-bottom:12px;
+  background:var(--card);border:2px solid var(--orange);
+  border-radius:14px;padding:14px;margin-bottom:14px;
 }
-.section-ticks h3{margin:0 0 8px;font-size:13px;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;}
-.section-ticks label{
-  display:flex;align-items:center;gap:10px;min-height:40px;
-  font-size:13px;padding:2px 0;
+.section-ticks h3{
+  margin:0 0 4px;font-size:15px;font-weight:800;color:#fff;
+  text-transform:none;letter-spacing:0;
 }
-.section-ticks input{width:18px;height:18px;accent-color:var(--orange);}
+.section-ticks .hint{
+  margin:0 0 12px;font-size:13px;color:var(--muted);line-height:1.35;
+}
+.section-ticks .sec-row{
+  display:flex;align-items:center;gap:10px;
+  min-height:52px;padding:8px 10px;margin:6px 0;
+  border-radius:12px;border:1.5px solid var(--border);
+  background:var(--bg2);
+}
+.section-ticks .sec-row.on{border-color:#3a5a3a;background:#152218;}
+.section-ticks .sec-row.off{opacity:.72;border-style:dashed;}
+.section-ticks .sec-lab{
+  flex:1;font-size:15px;font-weight:700;color:var(--ink);line-height:1.25;
+}
+.section-ticks .sec-num{color:var(--orange);margin-right:4px;}
+.section-ticks .sec-toggle{
+  flex-shrink:0;min-height:44px;min-width:96px;padding:0 12px;
+  border-radius:12px;border:1.5px solid var(--border);
+  font-size:14px;font-weight:800;
+  background:var(--card);color:var(--muted);
+}
+.section-ticks .sec-row.on .sec-toggle{
+  background:var(--orange);border-color:var(--orange);color:#111;
+}
+.section-ticks .sec-row.off .sec-toggle{
+  background:#2a2c33;color:#c9cdd3;
+}
+/* Paper heading tap targets (staff preview) */
+.paper .sec-h.tap-sec{
+  cursor:pointer;user-select:none;
+  position:relative;
+}
+.paper .sec-h.tap-sec::after{
+  content:"tap to hide";
+  float:right;font-size:9px;font-weight:600;color:#aaa;
+  text-transform:none;letter-spacing:0;
+}
+.paper .sec-stub{
+  margin:14px 0;padding:10px 12px;
+  border:1.5px dashed #bbb;border-radius:8px;
+  background:#f3f3f3;color:#777;
+  font-size:12px;font-weight:700;cursor:pointer;
+}
+.paper .sec-stub:active{background:#e8e8e8;}
 
 /* Images / drawings panel (staff, Preview chrome) */
 .images-panel{
@@ -296,9 +349,9 @@ details.more .more-body{padding:0 14px 14px;}
 .img-fields .fld span{font-size:11px;color:var(--muted);}
 .img-fields .fld input[type="text"]{
   width:100%;min-height:44px;border-radius:10px;border:1px solid var(--border);
-  background:var(--bg);color:var(--text);padding:0 12px;font-size:16px;
+  background:var(--bg);color:var(--text);padding:0 12px;font-size:16px !important;
 }
-.pick-btn input[type="file"]{width:100%;font-size:16px;padding:8px 0;}
+.pick-btn input[type="file"]{width:100%;font-size:16px !important;padding:8px 0;}
 .seg-row{display:flex;flex-direction:column;gap:6px;}
 .seg-lab{font-size:11px;color:var(--muted);}
 .seg{display:flex;gap:6px;}
@@ -561,6 +614,8 @@ details.more .more-body{padding:0 14px 14px;}
 }
 
 @media print{
+  .paper .sec-h.tap-sec::after{display:none!important;}
+
   body{background:#fff;padding:0;color:#000;}
   #topbar,#tabs,.save-bar,.staff-banner,.preview-toolbar,.section-ticks,.images-panel,
   .print-block-msg,.no-print{display:none!important;}
