@@ -60,3 +60,6 @@ Form controls use **16px** font-size so iOS does not zoom on focus.
 
 ## Save / Open
 **Save file** is the orange bar above the Setup/Costing/Preview tabs (thumb-friendly). **Open file** (top) loads a saved JSON quote. Top **Saved** chip is browser autosave only.
+
+## Letter sections
+On **Preview**, use **Include on letter** toggles (or tap a paper heading / grey stub) to choose what prints. Unticked sections are off the paper and off Print/PDF.
