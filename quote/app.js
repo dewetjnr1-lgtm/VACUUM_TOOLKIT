@@ -2,7 +2,7 @@
 (function () {
   "use strict";
 
-  const STORAGE_KEY = "busch-wa-quote-v2-blank";
+  const STORAGE_KEY = "busch-wa-quote-v3-blank";
   const FX_CACHE_KEY = "busch-wa-fx-cache-v1";
   const APP_VERSION = 1;
 
@@ -106,6 +106,22 @@
   /* ---- State ---- */
   function blankCommercial() {
     return {
+      payment: "",
+      delivery: "",
+      validity: "",
+      warranty: "",
+      excluded: "",
+      specialNotice: "",
+      leadSea: "",
+      leadAir: "",
+      paint: "",
+      general: "",
+    };
+  }
+
+  /** Deliberate insert only — never auto on blank/new */
+  function standardCommercial() {
+    return {
       payment:
         "Stage payments apply: 10% on front-end documents, 30% on castings approval, 50% on shipment, 10% on final documentation. Pending credit approval.",
       delivery: "Ex Works, BUSCH Canning Vale WA. Collection by purchaser.",
@@ -142,21 +158,17 @@
 
   function blankLetter() {
     return {
-      title: "BUSCH LIQUID RING VACUUM PUMP OFFER",
+      title: "",
       greetingName: "",
-      introText:
-        "Further to your above referenced request for quotation, I would like to thank you for the opportunity and confirm our budgetary pricing. Should you require any further assistance, please contact me.",
+      introText: "",
       unitDetailsText: "",
       selectionText: "",
       scopeSupplyText: "",
       scopeBullets: "",
-      testingText:
-        "All vacuum pumps are factory acceptance tested as standard, covering performance, pressure, noise and vibration. Additional testing and certification as agreed is included where stated.",
-      importantNotes:
-        "This is a budgetary offer. Pricing may change if revised specifications are presented. Stage payments apply as set out under Commercial.",
+      testingText: "",
+      importantNotes: "",
       techRows: "",
-      termsSummary:
-        "BUSCH ANZ PTY. LTD. Standard Terms and Conditions of Sale apply. Full terms available on request. Jurisdiction: Victoria, Australia.",
+      termsSummary: "",
     };
   }
 
@@ -169,19 +181,19 @@
         email: "",
         phone: "",
         nbq: "",
-        rev: "0",
-        date: todayISO(),
+        rev: "",
+        date: "",
         yourRef: "",
         subject: "",
-        fromName: "Andre de Wet",
-        fromTitle: "Business Development Manager",
-        fromPhone: "+61 (0) 4 3874 2323",
-        fromEmail: "andre.dewet@busch.com.au",
-        fromOffice: "Busch Australia",
+        fromName: "",
+        fromTitle: "",
+        fromPhone: "",
+        fromEmail: "",
+        fromOffice: "",
       },
       origin: {
-        country: "United Kingdom",
-        currency: "GBP",
+        country: "",
+        currency: "",
         liveRate: null,
         bufferedRate: null,
         rateDate: null,
@@ -205,7 +217,7 @@
       sections: blankSections(),
       items: [],
       images: [],
-      meta: { savedAt: null, name: "Untitled quote" },
+      meta: { savedAt: null, name: "" },
     };
   }
 
@@ -309,6 +321,7 @@
   /* ---- Costing math (staff only) ---- */
   function effectiveFx(state) {
     const o = state.origin;
+    if (!o.currency) return { live: 0, buffered: 0, local: false };
     if (o.currency === "AUD") return { live: 1, buffered: 1, local: true };
     const live = o.manualRate != null && o.manualRate !== "" ? n(o.manualRate) : n(o.liveRate);
     if (!(live > 0)) return { live: 0, buffered: 0, local: false };
@@ -653,6 +666,10 @@
     const sel = document.getElementById("originCountry");
     if (!sel) return;
     sel.innerHTML = "";
+    const blank = document.createElement("option");
+    blank.value = "";
+    blank.textContent = "Select country…";
+    sel.appendChild(blank);
     const favs = COUNTRY_MAP.filter(function (c) {
       return c.fav;
     });
@@ -672,7 +689,7 @@
     }
     addGroup("Favourites", favs);
     addGroup("Other", rest);
-    sel.value = state.origin.country;
+    sel.value = state.origin.country || "";
   }
 
   function bindSetup() {
@@ -1472,7 +1489,7 @@
       '<div class="lh-brand"><img class="lh-logos" src="assets/letterhead-logos.png" alt="Busch Group — Busch Vacuum Solutions &amp; Pfeiffer Vacuum"></div>';
     html += '<div class="lh-rule" aria-hidden="true"></div>';
     html += "</header>";
-    html += '<div class="letter-title">' + esc(L.title || "BUSCH OFFER") + "</div>";
+    html += L.title ? '<div class="letter-title">' + esc(L.title) + "</div>" : '';
 
     html += '<div class="hdr-block">';
     html += '<div class="hdr-grid">';
@@ -1774,9 +1791,10 @@
     reader.readAsText(file);
   }
 
-  function newQuote() {
-    if (!confirm("Start a new blank quote? Unsaved browser edits are in autosave until you overwrite."))
+    function newQuote() {
+    if (!confirm("Start a new blank quote? This clears the current browser draft."))
       return;
+    try { localStorage.removeItem(STORAGE_KEY); } catch (e) {}
     state = blankState();
     persist();
     bindSetup();
@@ -1851,6 +1869,17 @@
       if (f) importJSON(f);
       e.target.value = "";
     };
+    
+    const btnInsComm = document.getElementById("btnInsertCommercial");
+    if (btnInsComm) {
+      btnInsComm.onclick = function () {
+        if (!confirm("Insert standard commercial text into empty/overwrite commercial fields?")) return;
+        state.commercial = standardCommercial();
+        bindSetup();
+        queueSave();
+      };
+    }
+
     document.getElementById("btnNew").onclick = newQuote;
     document.getElementById("btnDemo").onclick = loadDemo;
     document.getElementById("btnPrint").onclick = function () {

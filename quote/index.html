@@ -34,10 +34,10 @@
     <h2 class="block-title">Quote header</h2>
     <div class="card">
       <div class="grid2">
-        <label class="fld"><span>Customer</span><input id="customer" autocomplete="organization"></label>
-        <label class="fld"><span>Attn</span><input id="attn" autocomplete="name"></label>
-        <label class="fld"><span>NBQ</span><input id="nbq" placeholder="26NBQ142"></label>
-        <label class="fld"><span>Rev</span><input id="rev" placeholder="0"></label>
+        <label class="fld"><span>Customer</span><input id="customer" autocomplete="organization" placeholder="Customer / company name"></label>
+        <label class="fld"><span>Attn</span><input id="attn" autocomplete="name" placeholder="Client name / Attn"></label>
+        <label class="fld"><span>NBQ</span><input id="nbq" placeholder="Busch ref (e.g. 26NBQ…)"></label>
+        <label class="fld"><span>Rev</span><input id="rev" placeholder="Rev"></label>
         <label class="fld"><span>Date</span><input id="quoteDate" type="date"></label>
         <label class="fld"><span>Default margin %</span><input id="marginPct" type="number" step="0.1"></label>
       </div>
@@ -64,21 +64,21 @@
       <div class="more-body">
         <h2 class="block-title">Contact &amp; subject</h2>
         <div class="grid2">
-          <label class="fld"><span>Customer email</span><input id="email" type="email"></label>
-          <label class="fld"><span>Customer phone</span><input id="phone"></label>
-          <label class="fld"><span>Your ref</span><input id="yourRef"></label>
-          <label class="fld"><span>Subject</span><input id="subject"></label>
-          <label class="fld"><span>Letter title</span><input id="letterTitle"></label>
-          <label class="fld"><span>Greeting name</span><input id="greetingName" placeholder="David"></label>
+          <label class="fld"><span>Customer email</span><input id="email" type="email" placeholder="Customer email"></label>
+          <label class="fld"><span>Customer phone</span><input id="phone" placeholder="Customer phone"></label>
+          <label class="fld"><span>Your ref</span><input id="yourRef" placeholder="Your ref"></label>
+          <label class="fld"><span>Subject</span><input id="subject" placeholder="Subject"></label>
+          <label class="fld"><span>Letter title</span><input id="letterTitle" placeholder="Letter title (e.g. BUSCH … OFFER)"></label>
+          <label class="fld"><span>Greeting name</span><input id="greetingName" placeholder="Greeting name"></label>
         </div>
 
         <h2 class="block-title">From / signature</h2>
         <div class="grid2">
-          <label class="fld"><span>From name</span><input id="fromName"></label>
-          <label class="fld"><span>Title</span><input id="fromTitle"></label>
-          <label class="fld"><span>Mobile</span><input id="fromPhone"></label>
-          <label class="fld"><span>Email</span><input id="fromEmail" type="email"></label>
-          <label class="fld"><span>Office line</span><input id="fromOffice"></label>
+          <label class="fld"><span>From name</span><input id="fromName" placeholder="From name"></label>
+          <label class="fld"><span>Title</span><input id="fromTitle" placeholder="Title"></label>
+          <label class="fld"><span>Mobile</span><input id="fromPhone" placeholder="Mobile"></label>
+          <label class="fld"><span>Email</span><input id="fromEmail" type="email" placeholder="From email"></label>
+          <label class="fld"><span>Office line</span><input id="fromOffice" placeholder="Office line"></label>
         </div>
 
         <h2 class="block-title">Import defaults</h2>
@@ -91,13 +91,14 @@
         </div>
 
         <h2 class="block-title">Commercial presets</h2>
-        <label class="fld"><span>Payment</span><textarea id="commPayment"></textarea></label>
-        <label class="fld"><span>Delivery</span><textarea id="commDelivery"></textarea></label>
-        <label class="fld"><span>Validity</span><textarea id="commValidity"></textarea></label>
-        <label class="fld"><span>Warranty</span><textarea id="commWarranty"></textarea></label>
-        <label class="fld"><span>Excluded</span><textarea id="commExcluded"></textarea></label>
-        <label class="fld"><span>Lead — sea</span><textarea id="commLeadSea"></textarea></label>
-        <label class="fld"><span>Lead — air</span><textarea id="commLeadAir"></textarea></label>
+        <button type="button" class="btn-icon" id="btnInsertCommercial" style="margin-bottom:10px">Insert standard commercial</button>
+        <label class="fld"><span>Payment</span><textarea id="commPayment" placeholder="Payment terms"></textarea></label>
+        <label class="fld"><span>Delivery</span><textarea id="commDelivery" placeholder="Delivery / Incoterms"></textarea></label>
+        <label class="fld"><span>Validity</span><textarea id="commValidity" placeholder="Validity"></textarea></label>
+        <label class="fld"><span>Warranty</span><textarea id="commWarranty" placeholder="Warranty"></textarea></label>
+        <label class="fld"><span>Excluded</span><textarea id="commExcluded" placeholder="Excluded from offer"></textarea></label>
+        <label class="fld"><span>Lead — sea</span><textarea id="commLeadSea" placeholder="Lead time — sea"></textarea></label>
+        <label class="fld"><span>Lead — air</span><textarea id="commLeadAir" placeholder="Lead time — air"></textarea></label>
 
         <h2 class="block-title">Letter body (Word-like)</h2>
         <label class="fld"><span>Intro paragraph</span><textarea id="introText"></textarea></label>

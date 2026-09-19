@@ -42,3 +42,6 @@ Preview DOM is built from sell totals + letter/commercial text only. Staff calc 
 
 ## First open (2026-09-19)
 **Blank by default.** 26NBQ142 is layout/print reference only — not prefilled. **Demo** button loads Hydro/LB seed deliberately; **New** clears to blank. Storage key bumped to `busch-wa-quote-v2-blank` so old demo autosaves do not return.
+
+## True blank v3 (2026-09-19)
+Empty `blankState` / letter / commercial; gray HTML placeholders; storage `busch-wa-quote-v3-blank`; optional Insert standard commercial. Demo button only for Hydro layout seed.
