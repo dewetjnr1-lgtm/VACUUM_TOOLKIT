@@ -1031,14 +1031,14 @@ td{background:transparent;color:var(--ink);}
 </section>
 <section class="page" id="cust">
 <div class="pgh"><h2>Customers</h2><button class="q" onclick="hp('h_cust')">?</button></div>
-<div class="help" id="h_cust">Customers and jobs stay on <b>this device</b> when you tap Save. Use <b>Backup file</b> to download a JSON copy. Open a site, start a job, add photos, then make a visit summary PDF or chem-flush feedback PDF.</div>
-<p class="sub">Saved on this device &mdash; use Backup to copy elsewhere.</p>
+<div class="help" id="h_cust"><b>Save</b> keeps customers and jobs on <b>this device</b> (this phone or laptop). <b>Export backup</b> downloads a JSON file you can copy elsewhere or Import on another machine. Open a site, start a job, add photos, then make a client feedback letter PDF or visit summary PDF.</div>
+<p class="sub">Saved on this device &mdash; Export backup on this list copies to a file.</p>
 <div class="fld"><div class="fh"><label>Search</label></div><div class="ctrl"><input type="search" id="cust_search" placeholder="Name or site" oninput="custRenderList()"></div></div>
 <div id="cust_list" class="bubs"></div>
-<div class="card"><h3>Backup file</h3>
-<p style="font-size:13px;color:var(--soft);margin:0 0 10px">Downloads a <b>JSON file</b> of customers, jobs and logos (usually to Downloads). This is separate from <b>Save job</b>, which writes only on this device. Import the file on your Mac or work PC to pick up where you left off.</p>
-<button class="exbtn" onclick="custExportBackup()">Export backup file</button>
-<button class="exbtn" onclick="document.getElementById('cust_import').click()">Import backup file</button>
+<div class="card"><h3>Backup</h3>
+<p style="font-size:13px;color:var(--soft);margin:0 0 10px"><b>Export backup</b> downloads a <b>JSON file</b> of customers, jobs and logos (usually to Downloads). That is separate from Save, which only writes on this device. Import the file on your Mac or work PC to pick up where you left off.</p>
+<button class="exbtn" onclick="custExportBackup()">Export backup (all customers → file)</button>
+<button class="exbtn" onclick="document.getElementById('cust_import').click()">Import backup</button>
 <input type="file" id="cust_import" accept="application/json,.json" style="display:none">
 </div>
 <button class="clrbtn" onclick="custAddCustomer()" style="margin:8px 0 16px">Add customer</button>
@@ -1046,7 +1046,7 @@ td{background:transparent;color:var(--ink);}
 <section class="page" id="cust_view">
 <div class="pgh"><h2 id="cust_view_title">Customer</h2></div>
 <p class="sub" id="cust_view_sub"></p>
-<div class="means" id="cust_view_means">Saved on this device &mdash; use Backup to copy elsewhere.</div>
+<div class="means" id="cust_view_means">Saved on this device &mdash; Export backup on the Customers list copies to a file.</div>
 <div class="card"><h3>Details</h3>
 <div class="fld"><div class="fh"><label>Customer name</label></div><div class="ctrl"><input type="text" id="cv_name" placeholder="e.g. Hancock Iron Ore / Roy Hill"></div></div>
 <div class="fld"><div class="fh"><label>Site label</label></div><div class="ctrl"><input type="text" id="cv_site" placeholder="e.g. Wet plant / desands — belt filters"></div></div>
@@ -1077,8 +1077,7 @@ td{background:transparent;color:var(--ink);}
 <div class="fld"><div class="fh"><label>Visit type</label></div><div class="ctrl"><select id="cj_type"><option value="belt-filter vac pumps">Belt-filter vac pumps</option><option value="inspection">Inspection</option><option value="site investigation">Site investigation</option><option value="other">Other</option></select></div></div>
 <div class="fld"><div class="fh"><label>Status</label></div><div class="ctrl"><select id="cj_status"><option value="draft">Draft</option><option value="done">Done</option></select></div></div>
 <div class="fld"><div class="fh"><label>PO / quote ref (optional)</label></div><div class="ctrl"><input type="text" id="cj_po" placeholder="PO or quote number"></div></div>
-<button class="exbtn" onclick="custSaveJob()">Save job</button>
-<p class="sub" style="margin:8px 0 0;font-size:12.5px">Saves on <b>this device</b> (not a file). Use Backup file on the Customers list to download JSON.</p>
+<p class="sub" style="margin:4px 0 0;font-size:12.5px">Auto-saves on <b>this device</b> as you edit.</p>
 </div>
 <div class="card"><h3>Pump inspection</h3>
 <div class="cj-lri-row">
@@ -1101,10 +1100,11 @@ td{background:transparent;color:var(--ink);}
 <div class="card"><h3>Photos</h3>
 <div class="fld"><div class="fh"><label>Add photos</label></div><div class="ctrl"><input type="file" id="cj_photo_input" accept="image/*" multiple></div></div>
 <div class="note warn" id="cj_warn" style="display:none">This phone is low on storage for photos. Export a PDF or backup now, then remove a photo or two and try again.</div>
+<p class="sub" style="margin:8px 2px 4px;font-size:12.5px">Tag photos with a Letter section so they show in the client feedback letter.</p>
 <div id="cj_photos"></div>
 </div>
 <div class="card"><h3>Feedback report</h3>
-<p style="font-size:13px;color:var(--soft);margin:0 0 10px">The Busch client letter format &mdash; used for HIO's chemical flush / descale reports. Tag photos above with a group (Pre-flush, In progress, Post-flush, Additional works) so they land in the right section.</p>
+<p style="font-size:13px;color:var(--soft);margin:0 0 10px">The Busch client letter format &mdash; used for HIO's chemical flush / descale reports. Tag photos above with a Letter section (Pre-flush, In progress, Post-flush, Additional works) so they land in the right place. Fields auto-save on this device.</p>
 <div class="fld"><div class="fh"><label>Recipient email</label></div><div class="ctrl"><input type="text" id="cj_fb_email" placeholder="e.g. rh.operations.processing@royhill.com.au"></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">Company</span><div class="ctrl"><input type="text" id="cj_fb_company" placeholder="e.g. Hancock Iron Ore"></div></div><div class="mgf"><span class="mlab">Phone</span><div class="ctrl"><input type="text" id="cj_fb_phone"></div></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">From</span><div class="ctrl"><input type="text" id="cj_fb_from"></div></div><div class="mgf"><span class="mlab">Date</span><div class="ctrl"><input type="date" id="cj_fb_date"></div></div></div>
@@ -1116,16 +1116,16 @@ td{background:transparent;color:var(--ink);}
 <div class="fld"><div class="fh"><label>Introduction text</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="6"></textarea></div></div>
 <div class="fld"><div class="fh"><label>Additional works completed</label></div><div class="ctrl"><textarea id="cj_fb_additional" rows="3" placeholder="One item per line, e.g. Gland packing changes (DE and NDE)"></textarea></div></div>
 <div class="fld"><div class="fh"><label>Closing</label></div><div class="ctrl"><textarea id="cj_fb_closing" rows="3"></textarea></div></div>
-<button class="exbtn" onclick="custSaveJob()">Save feedback fields</button>
-<p class="sub" style="margin:8px 0 10px;font-size:12.5px">Saves on <b>this device</b> with the job (localStorage). Not a download.</p>
-<button class="exbtn" onclick="custExportFeedbackPDF()">Make chem-flush feedback PDF</button>
-<p class="sub" style="margin:8px 0 0;font-size:12.5px">Client letter for chemical flush / descale (photos by Pre-flush / In progress / Post-flush / Additional).</p>
 </div>
-<div class="card"><h3>Visit summary PDF</h3>
-<p style="font-size:13px;color:var(--soft);margin:0 0 10px">Job/visit summary with findings, calcs and all job photos. Busch logo + customer logo in the header (placeholder if none loaded). <b>Not</b> the chem-flush feedback letter.</p>
-<button class="exbtn" onclick="custExportJobPDF()">Make visit summary PDF</button>
-<button class="clrbtn" onclick="custDeleteJob()">Delete job</button>
+<div class="card cj-pdfs"><h3>PDFs</h3>
+<button class="exbtn" style="display:block;width:100%;margin-left:0" onclick="custExportFeedbackPDF()">Client feedback letter (PDF)</button>
+<p class="sub" style="margin:4px 0 12px;font-size:12.5px">Chem-flush / HIO client letter &mdash; primary on site.</p>
+<button class="clrbtn" style="display:block;width:100%;margin-left:0" onclick="custExportJobPDF()">Visit summary (PDF)</button>
+<p class="sub" style="margin:4px 0 0;font-size:12.5px">Job pack with logos, visit details and all photos.</p>
 </div>
+<button class="exbtn" style="display:block;width:100%;margin:12px 0 8px" onclick="custSaveJob()">Save on this device</button>
+<p class="sub" style="margin:0 0 12px;font-size:12.5px">Stays on this phone/laptop. <b>Export backup</b> on the Customers list copies to a file.</p>
+<button class="clrbtn" style="display:block;width:100%;margin-left:0;margin-bottom:16px" onclick="custDeleteJob()">Delete job</button>
 </section>
 <section class="page" id="cust_royhill">
 <div class="pgh"><h2>Roy Hill</h2></div>
@@ -4776,9 +4776,12 @@ function custJobDateLabel(j){
 }
 function custJobDateSortKey(j){return (j&&j.date)||"";}
 window.custJobDateLabel=custJobDateLabel;
-function custSaveJob(){
+var _custJobSaveTimer=null;
+function custSaveJob(mode){
  var pair=custFindJob();if(!pair)return;
  var j=pair.j;
+ var auto=(mode==="auto");
+ if(_custJobSaveTimer){clearTimeout(_custJobSaveTimer);_custJobSaveTimer=null;}
  // Only update fields still present in the DOM so removed inputs (site/findings) keep stored values.
  function grab(id){var e=document.getElementById(id);return e?e.value:null;}
  var v;
@@ -4810,7 +4813,16 @@ function custSaveJob(){
  v=grab("cj_fb_closing");if(v!==null)j.fbClosing=v||"";
  custSaveJobCaptions();
  custPersist();
- custRenderJob();
+ if(auto){
+  var t=document.getElementById("cj_title");
+  if(t)t.textContent=j.name||((custJobDateLabel(j)||"Job")+" · "+(j.type||"visit"));
+ }else{
+  custRenderJob();
+ }
+}
+function custScheduleAutoSave(){
+ if(_custJobSaveTimer)clearTimeout(_custJobSaveTimer);
+ _custJobSaveTimer=setTimeout(function(){custSaveJob("auto");},350);
 }
 function custSaveJobCaptions(){
  var pair=custFindJob();if(!pair)return;
@@ -4822,14 +4834,14 @@ function custSaveJobCaptions(){
   if(g)photos[i].group=g.value;
  }
 }
-var CUST_PHOTO_GROUP_OPT='<option value="">&mdash; none &mdash;</option><option value="pre">Pre-flush</option><option value="during">In progress</option><option value="post">Post-flush</option><option value="additional">Additional works</option>';
+var CUST_PHOTO_GROUP_OPT='<option value="">&mdash; none (won&rsquo;t appear in letter) &mdash;</option><option value="pre">Pre-flush</option><option value="during">In progress</option><option value="post">Post-flush</option><option value="additional">Additional works</option>';
 function custRenderJobPhotos(){
  var pair=custFindJob();var el=document.getElementById("cj_photos");
  if(!el||!pair)return;
  var photos=pair.j.photos||[],h="",i,p;
  for(i=0;i<photos.length;i++){
   p=photos[i];
-  h+='<div class="rpt-ph"><img src="'+p.dataUrl+'"><div class="mgrid"><div class="mgf"><span class="mlab">Caption</span><div class="ctrl"><input type="text" id="cj_ph'+i+'_cap" placeholder="Caption, e.g. FLT 151 discharge" value="'+custEsc(p.caption||"")+'" onchange="custSaveJob()"></div></div><div class="mgf"><span class="mlab">Feedback report group</span><div class="ctrl"><select id="cj_ph'+i+'_grp" onchange="custSaveJob()">'+CUST_PHOTO_GROUP_OPT+'</select></div></div></div><button class="clrbtn" onclick="custRemovePhoto('+i+')" style="margin:6px 0 0">Remove photo</button></div>';
+  h+='<div class="rpt-ph"><img src="'+p.dataUrl+'"><div class="mgrid"><div class="mgf"><span class="mlab">Caption</span><div class="ctrl"><input type="text" id="cj_ph'+i+'_cap" placeholder="Caption, e.g. FLT 151 discharge" value="'+custEsc(p.caption||"")+'" onchange="custSaveJob(\'auto\')" oninput="custScheduleAutoSave()"></div></div><div class="mgf"><span class="mlab">Letter section (for feedback PDF)</span><div class="ctrl"><select id="cj_ph'+i+'_grp" onchange="custSaveJob(\'auto\')">'+CUST_PHOTO_GROUP_OPT+'</select></div></div></div><button class="clrbtn" onclick="custRemovePhoto('+i+')" style="margin:6px 0 0">Remove photo</button></div>';
  }
  el.innerHTML=h||'<p style="font-size:13px;color:var(--soft);margin:8px 2px">No photos yet.</p>';
  for(i=0;i<photos.length;i++){
@@ -5134,13 +5146,19 @@ function custFbEmitPhotoRows(pb,photos,norm,idxs){
  }
 }
 function custExportFeedbackPDF(){
- custSaveJob();
+ custSaveJob("auto");
  var pair=custFindJob();
  if(!pair)return;
  if(typeof window.jspdf==="undefined"||!window.jspdf.jsPDF){alert("PDF engine not ready.");return;}
  var c=pair.c,j=pair.j;
  var fb=custFbResolve(j,c);
  var photos=(j.photos||[]).slice();
+ var ungrouped=0,gi0;
+ for(gi0=0;gi0<photos.length;gi0++)if(!(photos[gi0].group||"").trim())ungrouped++;
+ if(ungrouped){
+  var msg=ungrouped+(ungrouped===1?" photo":" photos")+" won't appear — Export anyway / Go tag them.\n\nOK = Export anyway (skip untagged).\nCancel = Go tag them.";
+  if(!confirm(msg))return;
+ }
  var normPromises=[];
  for(var k=0;k<photos.length;k++)normPromises.push(pbNormalizePhoto(photos[k].dataUrl));
  Promise.all(normPromises).then(function(norm){
@@ -5151,7 +5169,8 @@ function custExportFeedbackPDF(){
   pbPairRow(pb,"Company",fb.company||"—","Phone",fb.phone||"—");
   var fbDateP=custParseISODate(fb.date);
   pbPairRow(pb,"From",fb.from||"—","Date",fbDateP?custFmtDayParts(fbDateP,true):(fb.date||"—"));
-  if(j.fbCcName||j.fbCcEmail)pbPairRow(pb,"CC",j.fbCcName||"—","Email",j.fbCcEmail||"—");
+  pbPairRow(pb,"CC",j.fbCcName||"—","Email",j.fbCcEmail||"—");
+  pbPairRow(pb,"Subject",fb.subject||"—");
   pbPairRow(pb,"Busch ref",fb.buschRef||"—","Your ref",fb.yourRef||"—");
   pbGap(pb,3);
   if(fb.greeting)pbBox(pb,fb.greeting,20);
@@ -5178,17 +5197,12 @@ function custExportFeedbackPDF(){
    if(!fb.additional)pbSecHead(pb,CUST_FB_GROUP_LABELS.additional);
    custFbEmitPhotoRows(pb,photos,norm,addIdxs);
   }
-  // Ungrouped photos still belong in the report
-  var otherIdxs=[];
-  for(var oi=0;oi<photos.length;oi++)if(!used[oi])otherIdxs.push(oi);
-  if(otherIdxs.length){
-   pbSecHead(pb,"Photos");
-   custFbEmitPhotoRows(pb,photos,norm,otherIdxs);
-  }
+  // Ungrouped photos skipped by default (warned above)
   // Always emit closing (resolved defaults if blank)
-  if(fb.closing){
+  var closeTxt=fb.closing||CUST_FB_DEFAULTS.closing||"";
+  if(closeTxt){
    pbGap(pb,4);
-   pbBox(pb,fb.closing,16);
+   pbBox(pb,closeTxt,16);
   }
   pbFinalize(pb);
   var refBit=custFileSafe(fb.buschRef||"");
@@ -5196,10 +5210,30 @@ function custExportFeedbackPDF(){
   pb.doc.save(fname);
  });
 }
+
+(function custBindJobAutoSave(){
+ var root=document.getElementById("cust_job");
+ if(!root||root.getAttribute("data-autosave-bound"))return;
+ root.setAttribute("data-autosave-bound","1");
+ function isJobField(el){
+  if(!el||!el.id)return false;
+  if(el.type==="file")return false;
+  return el.id.indexOf("cj_")==0;
+ }
+ root.addEventListener("change",function(ev){
+  if(!isJobField(ev.target))return;
+  custSaveJob("auto");
+ });
+ root.addEventListener("input",function(ev){
+  if(!isJobField(ev.target))return;
+  custScheduleAutoSave();
+ });
+})();
+
 window.custExportFeedbackPDF=custExportFeedbackPDF;
 try{custLoad();}catch(err){CUST_DB={version:1,customers:[custSeedRoyHill()]};}
 window.custOpen=custOpen;window.custOpenJob=custOpenJob;window.custNewJob=custNewJob;
-window.custSaveView=custSaveView;window.custSaveJob=custSaveJob;window.custClearLogo=custClearLogo;
+window.custSaveView=custSaveView;window.custSaveJob=custSaveJob;window.custScheduleAutoSave=custScheduleAutoSave;window.custClearLogo=custClearLogo;
 window.custRemovePhoto=custRemovePhoto;window.custDeleteJob=custDeleteJob;
 window.custExportBackup=custExportBackup;window.custAddCustomer=custAddCustomer;
 window.custExportJobPDF=custExportJobPDF;window.custRenderList=custRenderList;
