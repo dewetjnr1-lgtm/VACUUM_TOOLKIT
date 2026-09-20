@@ -25,6 +25,20 @@ body.inpage #backbtn{display:block;}
 .bub.c1 .ic{background:var(--teal-bg);border-color:#2F5570;color:var(--teal);}
 .bub.c2 .ic{background:var(--green-bg);border-color:#2F6A4C;color:var(--green);}
 .bub.c3 .ic{background:var(--accent-bg);border-color:#8A5A35;color:var(--accent);}
+.custlist{display:flex;flex-direction:column;gap:10px;margin:10px 0 4px;}
+.custrow{display:flex;align-items:center;gap:10px;background:var(--elev);border:1px solid var(--line);border-radius:16px;padding:8px 8px 8px 8px;box-shadow:0 2px 10px rgba(0,0,0,.32);}
+.custrow .body{display:flex;align-items:center;gap:12px;flex:1;min-width:0;background:none;border:0;cursor:pointer;padding:5px 6px;font-family:var(--sans);text-align:left;}
+.custrow .body .ic{width:48px;height:48px;border-radius:13px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;background:#143832;border:1px solid #2F6B5E;color:#6EC4B4;overflow:hidden;}
+.custrow .body .ic svg{width:24px;height:24px;}
+.custrow .body .ic img{width:100%;height:100%;object-fit:contain;background:#fff;border-radius:12px;}
+.custrow .body .tx{flex:1;min-width:0;}
+.custrow .body b{font-size:15px;color:var(--ink);display:block;font-weight:700;}
+.custrow .body small{color:var(--soft);font-size:12.5px;line-height:1.3;display:block;margin-top:1px;font-weight:400;}
+.custrow .del{flex:0 0 auto;background:none;border:1px solid var(--line);color:var(--soft);border-radius:11px;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.custrow .del svg{width:18px;height:18px;}
+.custrow .del:active{opacity:.8;background:var(--warn-bg);color:var(--warn);border-color:var(--warn);}
+.cv-head-logo{margin:2px 0 10px;}
+.cv-head-logo img{max-height:52px;max-width:200px;object-fit:contain;background:#fff;border-radius:8px;padding:5px;display:block;}
 .catrow{display:flex;align-items:center;gap:14px;width:100%;background:var(--elev);border:1px solid var(--line);border-radius:16px;padding:13px 14px;margin:12px 0;cursor:pointer;font-family:var(--sans);text-align:left;box-shadow:0 2px 10px rgba(0,0,0,.32);transition:transform .1s;}
 .catrow:active{transform:scale(.98);}
 .catrow .ic{width:56px;height:56px;border-radius:15px;flex:0 0 auto;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);}
@@ -1119,7 +1133,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="help" id="h_cust"><b>Save</b> keeps customers and jobs on <b>this device</b> (this phone or laptop). <b>Export backup</b> downloads a JSON file you can copy elsewhere or Import on another machine. Open a site, start a job, add photos, then make the client feedback letter PDF.</div>
 <p class="sub">Saved on this device &mdash; Export backup on this list copies to a file.</p>
 <div class="fld"><div class="fh"><label>Search</label></div><div class="ctrl"><input type="search" id="cust_search" placeholder="Name or site" oninput="custRenderList()"></div></div>
-<div id="cust_list" class="bubs"></div>
+<div id="cust_list" class="custlist"></div>
 <div class="card"><h3>Backup</h3>
 <p style="font-size:13px;color:var(--soft);margin:0 0 10px"><b>Export backup</b> downloads a <b>JSON file</b> of customers, jobs and logos (usually to Downloads). That is separate from Save, which only writes on this device. Import the file on your Mac or work PC to pick up where you left off.</p>
 <button class="exbtn" onclick="custExportBackup()">Export backup (all customers → file)</button>
@@ -1131,6 +1145,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <section class="page" id="cust_view">
 <div class="pgh"><h2 id="cust_view_title">Customer</h2><span id="cv_saved_chip" class="vt-saved-chip">Saved on this device</span></div>
 <p class="sub" id="cust_view_sub"></p>
+<div id="cv_head_logo" class="cv-head-logo"></div>
 <div class="means" id="cust_view_means">Saved on this device &mdash; Export backup on the Customers list copies to a file.</div>
 <div class="note warn" id="cv_warn" style="display:none">Could not save — phone storage may be full. Export a backup or remove photos.</div>
 <div class="card"><h3>Details</h3>
@@ -1163,6 +1178,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <button class="exbtn" onclick="custNewJob()">New job / visit</button>
 <div id="cv_jobs" class="bubs" style="margin-top:10px"></div>
 </div>
+<button class="clrbtn" style="display:block;width:100%;margin-left:0;margin:12px 0 16px" onclick="custDeleteCustomer(CUST_CUR)">Delete customer</button>
 </section>
 <section class="page" id="cust_job">
 <div class="pgh"><h2 id="cj_title">Job</h2><span id="cj_saved_chip" class="vt-saved-chip">Saved on this device</span></div>
@@ -4688,9 +4704,6 @@ function custLoad(){
  }else{
   CUST_DB=o;
   if(!CUST_DB.version)CUST_DB.version=1;
-  var hasRh=false;
-  for(var i=0;i<CUST_DB.customers.length;i++)if(CUST_DB.customers[i].id==="royhill"){hasRh=true;break;}
-  if(!hasRh&&CUST_DB.customers.length===0){CUST_DB.customers.push(custSeedRoyHill());custPersist(true);}
  }
 }
 function custPersist(quiet){
@@ -4721,15 +4734,22 @@ function custRenderList(){
  var q=((document.getElementById("cust_search")||{}).value||"").toLowerCase().trim();
  var el=document.getElementById("cust_list");
  if(!el)return;
- var h="",i,c,hay,site,nJobs,extra;
+ var h="",i,c,hay,site,nJobs,extra,idSafe,icon;
+ var houseSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V8.2l8-4.2 8 4.2v11.3"/><path d="M9.5 19.5v-6h5v6"/><path d="M4 11.2h16"/></svg>';
  for(i=0;i<CUST_DB.customers.length;i++){
   c=CUST_DB.customers[i];
   hay=(c.name+" "+(c.sites||[]).join(" ")+" "+(c.notes||"")+" "+(c.contactName||"")+" "+(c.contactPhone||"")+" "+(c.contactEmail||"")+" "+(c.contacts||"")).toLowerCase();
   if(q&&hay.indexOf(q)<0)continue;
   site=(c.sites&&c.sites[0])||"";
   nJobs=(c.jobs&&c.jobs.length)||0;
-  extra=site?("<br><small style=\"font-weight:400;opacity:.8\">"+custEsc(site)+" · "+nJobs+" job"+(nJobs===1?"":"s")+"</small>"):"";
-  h+='<button class="bub c4" onclick="custOpen(\''+String(c.id).replace(/'/g,"")+'\')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V8.2l8-4.2 8 4.2v11.3"/><path d="M9.5 19.5v-6h5v6"/><path d="M4 11.2h16"/></svg></span><span>'+custEsc(c.name)+extra+"</span></button>";
+  extra=site?("<small>"+custEsc(site)+" · "+nJobs+" job"+(nJobs===1?"":"s")+"</small>"):("<small>"+nJobs+" job"+(nJobs===1?"":"s")+"</small>");
+  idSafe=String(c.id).replace(/'/g,"");
+  icon=c.logoDataUrl?('<img src="'+c.logoDataUrl+'" alt="">'):houseSvg;
+  h+='<div class="custrow">'
+   +'<button class="body" onclick="custOpen(\''+idSafe+'\')"><span class="ic">'+icon+'</span><span class="tx"><b>'+custEsc(c.name)+'</b>'+extra+'</span></button>'
+   +'<button class="del" onclick="event.stopPropagation();custDeleteCustomer(\''+idSafe+'\')" aria-label="Delete customer" title="Delete customer">'
+   +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>'
+   +'</div>';
  }
  el.innerHTML=h||'<p style="font-size:13px;color:var(--soft);margin:8px 2px">No customers match.</p>';
 }
@@ -4796,6 +4816,8 @@ function custRenderLogo(){
  var c=custFind(CUST_CUR);var el=document.getElementById("cv_logo_prev");
  var warn=document.getElementById("cv_logo_warn");
  var miss=document.getElementById("cv_logo_missing");
+ var head=document.getElementById("cv_head_logo");
+ if(head&&c)head.innerHTML=c.logoDataUrl?('<img src="'+c.logoDataUrl+'" alt="Customer logo">'):"";
  if(!el||!c)return;
  if(c.logoDataUrl){
   el.innerHTML='<div class="cv-logo-mock paper"><span class="lab">On white paper</span><img src="'+c.logoDataUrl+'" alt="Logo on white paper"></div>'+
@@ -5378,6 +5400,17 @@ function custDeleteJob(){
  CUST_JOB_CUR=null;
  custPersist();
  show("cust_view");
+}
+function custDeleteCustomer(id){
+ var c=custFind(id);if(!c)return;
+ var n=(c.jobs&&c.jobs.length)||0;
+ if(!confirm("Delete "+c.name+(n?" and its "+n+" job"+(n===1?"":"s"):"")+"? This removes it from this device — Export backup first if you want a copy."))return;
+ for(var i=0;i<CUST_DB.customers.length;i++){
+  if(CUST_DB.customers[i].id===id){CUST_DB.customers.splice(i,1);break;}
+ }
+ if(CUST_CUR===id)CUST_CUR=null;
+ custPersist();
+ show("cust");
 }
 function custAddCustomer(){
  var name=prompt("Customer name?");
