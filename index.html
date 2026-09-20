@@ -1176,7 +1176,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="card"><h3>Jobs / visits</h3>
 <p class="sub cv-wall-hint">Open a visit to write the Client feedback letter and make the PDF.</p>
 <button class="exbtn" onclick="custNewJob()">New job / visit</button>
-<div id="cv_jobs" class="bubs" style="margin-top:10px"></div>
+<div id="cv_jobs" class="custlist" style="margin-top:10px"></div>
 </div>
 <button class="clrbtn" style="display:block;width:100%;margin-left:0;margin:12px 0 16px" onclick="custDeleteCustomer(CUST_CUR)">Delete customer</button>
 </section>
@@ -4884,7 +4884,8 @@ function custRenderJobs(){
  var c=custFind(CUST_CUR);var el=document.getElementById("cv_jobs");
  if(!el||!c)return;
  var jobs=(c.jobs||[]).slice().sort(function(a,b){return custJobDateSortKey(b).localeCompare(custJobDateSortKey(a));});
- var h="",i,j,extra;
+ var h="",i,j,extra,idSafe;
+ var calSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 3.5v3M16 3.5v3M4 10h16"/></svg>';
  for(i=0;i<jobs.length;i++){
   j=jobs[i];
   var dateType=(custJobDateLabel(j)||"No date")+" · "+(j.type||"visit");
@@ -4894,7 +4895,12 @@ function custRenderJobs(){
   extraBits.push(j.status||"draft");
   if(j.site)extraBits.push(j.site);
   extra=custEsc(extraBits.join(" · "));
-  h+='<button class="bub c4" onclick="custOpenJob(\''+String(j.id).replace(/'/g,"")+'\')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="16" height="14" rx="2"/><path d="M8 3.5v3M16 3.5v3M4 10h16"/></svg></span><span>'+label+'<br><small style="font-weight:400;opacity:.8">'+extra+"</small></span></button>";
+  idSafe=String(j.id).replace(/'/g,"");
+  h+='<div class="custrow">'
+   +'<button class="body" onclick="custOpenJob(\''+idSafe+'\')"><span class="ic">'+calSvg+'</span><span class="tx"><b>'+label+'</b><small>'+extra+'</small></span></button>'
+   +'<button class="del" onclick="event.stopPropagation();custDeleteJobById(\''+idSafe+'\')" aria-label="Delete job" title="Delete job">'
+   +'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16"/><path d="M9 7V4h6v3"/><path d="M6 7l1 13h10l1-13"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></button>'
+   +'</div>';
  }
  el.innerHTML=h||'<p style="font-size:13px;color:var(--soft);margin:8px 2px">No jobs yet — tap New job / visit.</p>';
 }
@@ -5400,6 +5406,17 @@ function custDeleteJob(){
  CUST_JOB_CUR=null;
  custPersist();
  show("cust_view");
+}
+function custDeleteJobById(jobId){
+ var c=custFind(CUST_CUR);if(!c)return;
+ var i,j;
+ for(i=0;i<(c.jobs||[]).length;i++)if(c.jobs[i].id===jobId){j=c.jobs[i];break;}
+ if(!j)return;
+ if(!confirm("Delete \""+(j.name||custJobDateLabel(j)||"this job")+"\" and its photos? This can't be undone."))return;
+ c.jobs.splice(i,1);
+ if(CUST_JOB_CUR===jobId)CUST_JOB_CUR=null;
+ custPersist();
+ custRenderJobs();
 }
 function custDeleteCustomer(id){
  var c=custFind(id);if(!c)return;
