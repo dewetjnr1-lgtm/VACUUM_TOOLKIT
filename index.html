@@ -176,6 +176,8 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .mgf{display:flex;flex-direction:column;min-width:0;}
 .mgf .mlab{font-size:11.5px;font-weight:700;color:var(--soft);text-transform:uppercase;letter-spacing:.02em;margin-bottom:3px;}
 .mgf .ctrl{margin-top:0;flex-wrap:nowrap;}
+.mlab-select{font-size:11.5px;font-weight:700;color:var(--teal);text-transform:uppercase;letter-spacing:.02em;margin-bottom:3px;background:none;border:0;border-bottom:1px dotted var(--teal);padding:0 14px 2px 0;cursor:pointer;-webkit-appearance:none;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236EB3D0' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right center;background-size:12px;}
+.mlab-select:focus{outline:none;border-bottom-color:var(--teal);}
 .mgf .ctrl input[type=number]{flex:1 1 auto;min-width:0;}
 .mgf .ctrl select{flex:1 1 auto;min-width:0;}
 .mgf .ctrl .fu{flex:0 0 auto;}
@@ -3483,9 +3485,9 @@ function lriRowHTML(n){
  return '<details class="card" id="lri_row'+n+'" open><summary>Pump '+n+' <span class="lri-sum-st open" data-lri-sum="'+n+'">Open</span></summary><div class="lripump-body">'+
  (n>1?'<button type="button" class="lri-sameprev" onclick="lriCopyPrevPump('+n+')">Same as previous pump<small>Copies filled checks from Pump '+(n-1)+'. Pump ID/tag is kept.</small></button>':'')+
  '<div class="fld"><div class="fh"><label>Pump ID / tag</label></div><div class="ctrl"><input type="text" id="'+p+'tag" placeholder="e.g. Hogging Vacuum Pump A"></div></div>'+
- '<div class="mgrid"><div class="mgf"><span class="mlab">Manufacturer</span><div class="ctrl"><input type="text" id="'+p+'make" placeholder="OEM, if known"></div></div><div class="mgf"><span class="mlab">Model</span><div class="ctrl"><input type="text" id="'+p+'model"></div></div></div>'+
- '<div class="mgrid"><div class="mgf"><span class="mlab">Serial No.</span><div class="ctrl"><input type="text" id="'+p+'serial"></div></div><div class="mgf"><span class="mlab">Year of manufacture</span><div class="ctrl"><input type="number" id="'+p+'year" placeholder="number"></div></div></div>'+
- '<div class="fld"><div class="fh"><label>Repaired / rebuilt by <span style="font-weight:500;color:var(--soft);text-transform:none;letter-spacing:0">(optional — use this if the nameplate was replaced and you can\'t honestly fill in the original Manufacturer above)</span></label></div><div class="ctrl"><input type="text" id="'+p+'rebuilt_by" placeholder="e.g. Busch — nameplate replaced after repair, original OEM unknown"></div></div>'+
+ '<div class="mgrid"><div class="mgf"><select class="mlab-select" id="'+p+'make_role" title="Choose what this name means before you type it"><option value="make">Manufacturer</option><option value="rebuilt">Repaired / rebuilt by</option></select><div class="ctrl"><input type="text" id="'+p+'make" placeholder="Name — leave blank if you\'d rather not name a competitor"></div></div><div class="mgf"><span class="mlab">Model</span><div class="ctrl"><input type="text" id="'+p+'model"></div></div></div>'+
+ '<p style="font-size:12px;color:var(--soft);margin:2px 0 6px">Switch the dropdown above to &ldquo;Repaired / rebuilt by&rdquo; when the nameplate now shows who repaired the pump (e.g. Busch) rather than who originally built it &mdash; the report will print that label instead of &ldquo;Manufacturer&rdquo;. Leave the name blank if you\'d rather not name it at all.</p>'+
+ '<div class="mgrid"><div class="mgf"><span class="mlab">Serial No.</span><div class="ctrl"><input type="text" id="'+p+'serial"></div></div><div class="mgf"><select class="mlab-select" id="'+p+'year_role" title="Choose what this year means before you type it"><option value="make">Year of manufacture</option><option value="rebuilt">Last repaired</option></select><div class="ctrl"><input type="number" id="'+p+'year" placeholder="year"></div></div></div>'+
  '<div class="fld"><div class="fh"><label>Max working pressure (absolute, nameplate)</label></div><div class="ctrl"><input type="number" id="'+p+'maxp_n" placeholder="number"><select id="'+p+'maxp_u" data-g="pressure" data-du="4"></select><span class="fu">abs</span></div></div>'+
 
  '<details class="lrisec" data-lrisec="seals"><summary class="tp-num">Seals</summary><div class="lrisec-body">'+
@@ -3626,7 +3628,7 @@ var LRI_SEL_FIELDS=["seal_type","seal_cond","seal_sleeve","seal_adj","brg_type",
  "belt_cond","belt_tension","belt_align","belt_groove","belt_guard","cooler_system","cooler_cond","sep_lining","sep_bolts","condition","priority"];
 function lriRowFields(n){
  var p="lri_r"+n+"_";
- var f=[p+"tag",p+"make",p+"model",p+"serial",p+"year",p+"rebuilt_by",p+"maxp_n",p+"maxp_u",
+ var f=[p+"tag",p+"make",p+"make_role",p+"model",p+"serial",p+"year",p+"year_role",p+"maxp_n",p+"maxp_u",
   p+"seal_type",p+"seal_cond",p+"seal_drip_before",p+"seal_drip_after",p+"seal_sleeve",p+"seal_adj",p+"seal_notes",
   p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp",p+"brg_notes",
   p+"bore_corr",p+"bore_cav",p+"bore_abr",p+"bore_notes",
@@ -3959,6 +3961,13 @@ function lriLoad(){
   tc=+savedTq[n]||0;for(m=1;m<=tc;m++)lriAddTorq(n,false);}
  var o={};
  try{o=JSON.parse(localStorage.getItem(LRI_KEY)||"{}")||{};}catch(err){o={};}
+ // One-time migration: an earlier version had a separate "Repaired / rebuilt by" field
+ // (lri_r{n}_rebuilt_by). It's since been folded into make_role/make -- move any value
+ // across so nothing typed there in the meantime gets silently dropped.
+ for(var mn=1;mn<=LRI_ROWCOUNT;mn++){
+  var mp="lri_r"+mn+"_",oldVal=o[mp+"rebuilt_by"];
+  if(oldVal&&!o[mp+"make"]){o[mp+"make"]=oldVal;o[mp+"make_role"]="rebuilt";}
+ }
  var e,j,f;
  for(i=0;i<LRI_HEADER.length;i++){e=document.getElementById(LRI_HEADER[i]);if(!e||o[LRI_HEADER[i]]===undefined)continue;if(e.type==="checkbox")e.checked=!!o[LRI_HEADER[i]];else e.value=o[LRI_HEADER[i]];}
  for(n=1;n<=LRI_ROWCOUNT;n++){
@@ -4426,10 +4435,11 @@ function pbDrawPump(pb,n,normSec){
  // Major boundary only if <40% of page still free (avoid half-blank pages)
  pbMaybeBreakForPump(pb);
  pbSecHead(pb,"Pump: "+tag);
- if(lriAny([p+"make",p+"model",p+"serial",p+"year",p+"rebuilt_by",p+"maxp_n"])){
-  pbPairRow(pb,"Manufacturer",rv(p+"make"),"Model",rv(p+"model"));
-  pbPairRow(pb,"Serial No.",rv(p+"serial"),"Year of manufacture",rv(p+"year"));
-  if(rv(p+"rebuilt_by"))pbNoteRow(pb,"Repaired / rebuilt by: "+rv(p+"rebuilt_by"));
+ if(lriAny([p+"make",p+"model",p+"serial",p+"year",p+"maxp_n"])){
+  var makeLabel=rv(p+"make_role")==="rebuilt"?"Repaired / rebuilt by":"Manufacturer";
+  var yearLabel=rv(p+"year_role")==="rebuilt"?"Last repaired":"Year of manufacture";
+  pbPairRow(pb,makeLabel,rv(p+"make"),"Model",rv(p+"model"));
+  pbPairRow(pb,"Serial No.",rv(p+"serial"),yearLabel,rv(p+"year"));
   if(lriAny([p+"maxp_n"]))pbPairRow(pb,"Max working pressure (abs)",rUnitVal(p+"maxp_n",p+"maxp_u"));
   pbGap(pb,6);
  }
@@ -4639,7 +4649,7 @@ if(!_vtTouchActiveFix){var _vtTouchActiveFix=1;try{document.addEventListener("to
 function vtIsFillable(el){
  if(!el||!el.tagName)return false;
  var tag=el.tagName;
- if(tag==="SELECT")return !el.hasAttribute("data-g");
+ if(tag==="SELECT")return !el.hasAttribute("data-g")&&!el.classList.contains("mlab-select");
  if(tag==="TEXTAREA")return true;
  if(tag==="INPUT"){
   var t=(el.type||"text").toLowerCase();
@@ -4683,7 +4693,7 @@ function lriPumpStatus(n){
   if(el.classList&&el.classList.contains("ocin")&&el.style.display==="none")continue;
   var sec=el.closest("details.lrisec");
   if(sec&&sec.classList.contains("lri-sec-off"))continue;
-  if(el.tagName==="SELECT"&&el.getAttribute("data-g"))continue;
+  if(el.tagName==="SELECT"&&(el.getAttribute("data-g")||el.classList.contains("mlab-select")))continue;
   if(el.type==="file")continue;
   if(lriFieldMeaningful(el))filled++;
  }
