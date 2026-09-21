@@ -136,6 +136,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .ex-card .exmath{font-family:var(--mono);font-size:13.5px;background:var(--elev2);border-radius:8px;padding:9px 10px;margin:8px 0;white-space:pre-wrap;color:var(--ink);}
 .ex-card .exsrc{font-size:11.5px;color:var(--soft);margin-top:8px;}
 .exbtn2{background:none;border:1px solid var(--teal);color:var(--teal);border-radius:20px;padding:5px 12px;font-size:12.5px;font-weight:700;cursor:pointer;margin-top:8px;}
+.exbtn2.lri-sec-saved{border-color:var(--green);color:var(--green);background:var(--green-bg);}
 .animtog{display:block;margin:8px auto 0;}
 .demo-out{font-size:14px;margin-top:10px;}.demo-out b{font-family:var(--mono);color:var(--accent);}
 .glos{font-size:14.5px;margin:10px 0;}.glos b{color:var(--teal);}
@@ -3419,6 +3420,9 @@ function lriSecPhotoHTML(n,sec){
   +'<div id="lri_secphlist_'+key+'" class="lri-secph-list"></div>'
   +'<div class="ctrl"><input type="file" accept="image/*" multiple id="lri_secphinput_'+key+'" onchange="lriSecHandleFiles(\''+key+'\',this.files)"></div></div>';
 }
+function lriSaveSecBtnHTML(){
+ return '<button type="button" class="exbtn2" onclick="lriSaveSection(this)">Save this check</button>';
+}
 function lriSecRenderPhotos(key){
  var el=document.getElementById("lri_secphlist_"+key);
  if(!el)return;
@@ -3475,8 +3479,9 @@ function lriRowHTML(n){
  return '<details class="card" id="lri_row'+n+'" open><summary>Pump '+n+' <span class="lri-sum-st open" data-lri-sum="'+n+'">Open</span></summary><div class="lripump-body">'+
  (n>1?'<button type="button" class="lri-sameprev" onclick="lriCopyPrevPump('+n+')">Same as previous pump<small>Copies filled checks from Pump '+(n-1)+'. Pump ID/tag is kept.</small></button>':'')+
  '<div class="fld"><div class="fh"><label>Pump ID / tag</label></div><div class="ctrl"><input type="text" id="'+p+'tag" placeholder="e.g. Hogging Vacuum Pump A"></div></div>'+
- '<div class="mgrid"><div class="mgf"><span class="mlab">Manufacturer</span><div class="ctrl"><input type="text" id="'+p+'make"></div></div><div class="mgf"><span class="mlab">Model</span><div class="ctrl"><input type="text" id="'+p+'model"></div></div></div>'+
+ '<div class="mgrid"><div class="mgf"><span class="mlab">Manufacturer</span><div class="ctrl"><input type="text" id="'+p+'make" placeholder="OEM, if known"></div></div><div class="mgf"><span class="mlab">Model</span><div class="ctrl"><input type="text" id="'+p+'model"></div></div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Serial No.</span><div class="ctrl"><input type="text" id="'+p+'serial"></div></div><div class="mgf"><span class="mlab">Year of manufacture</span><div class="ctrl"><input type="number" id="'+p+'year" placeholder="number"></div></div></div>'+
+ '<div class="fld"><div class="fh"><label>Repaired / rebuilt by <span style="font-weight:500;color:var(--soft);text-transform:none;letter-spacing:0">(optional — use this if the nameplate was replaced and you can\'t honestly fill in the original Manufacturer above)</span></label></div><div class="ctrl"><input type="text" id="'+p+'rebuilt_by" placeholder="e.g. Busch — nameplate replaced after repair, original OEM unknown"></div></div>'+
  '<div class="fld"><div class="fh"><label>Max working pressure (absolute, nameplate)</label></div><div class="ctrl"><input type="number" id="'+p+'maxp_n" placeholder="number"><select id="'+p+'maxp_u" data-g="pressure" data-du="4"></select><span class="fu">abs</span></div></div>'+
 
  '<details class="lrisec" data-lrisec="seals"><summary class="tp-num">Seals</summary><div class="lrisec-body">'+
@@ -3487,6 +3492,7 @@ function lriRowHTML(n){
  '<div class="mgrid"><div class="mgf"><span class="mlab">Shaft / sleeve under packing</span>'+SB(p+'seal_sleeve',LRI_OPT_COND3,true)+'</div><div class="mgf"><span class="mlab">Follower adjustment left</span>'+SB(p+'seal_adj','<option value=""></option><option value="plenty">Plenty</option><option value="some">Some</option><option value="none">None &mdash; repack due</option>'+LRI_OPT_TAIL,true)+'</div></div>'+
  '<div class="fld"><div class="fh"><label>Seal notes</label></div><div class="ctrl"><textarea id="'+p+'seal_notes" rows="2" placeholder="Leakage rate, seal water flush condition..."></textarea></div></div>'+
  lriSecPhotoHTML(n,"seals")+
+ lriSaveSecBtnHTML()+
  '</div></details>'+
 
  '<details class="lrisec" data-lrisec="bearings"><summary class="tp-num">Bearings</summary><div class="lrisec-body">'+
@@ -3495,6 +3501,7 @@ function lriRowHTML(n){
  '<p id="'+p+'brg_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Housing temperatures compare against ambient in the temperature survey below.</p>'+
  '<div class="fld"><div class="fh"><label>Bearing notes</label></div><div class="ctrl"><textarea id="'+p+'brg_notes" rows="2"></textarea></div></div>'+
  lriSecPhotoHTML(n,"bearings")+
+ lriSaveSecBtnHTML()+
  '</div></details>'+
 
  '<details class="lrisec" data-lrisec="borescope"><summary class="tp-num">Borescope inspection of casing</summary><div class="lrisec-body">'+
@@ -3503,6 +3510,7 @@ function lriRowHTML(n){
  '<div class="mgrid"><div class="mgf"><span class="mlab">Abrasion / erosion damage</span>'+SB(p+'bore_abr',LRI_OPT_SEV,true)+'</div><div class="mgf"></div></div>'+
  '<div class="fld"><div class="fh"><label>Borescope notes / location of damage</label></div><div class="ctrl"><textarea id="'+p+'bore_notes" rows="2"></textarea></div></div>'+
  lriSecPhotoHTML(n,"borescope")+
+ lriSaveSecBtnHTML()+
  '</div></details>'+
 
  '<details class="lrisec" data-lrisec="general"><summary class="tp-num">General &amp; installation</summary><div class="lrisec-body">'+
@@ -3511,6 +3519,7 @@ function lriRowHTML(n){
  '<div class="mgrid"><div class="mgf"><span class="mlab">Inlet strainer / screen</span>'+SB(p+'chk_strainer',LRI_OPT_COND3,true)+'</div><div class="mgf"><span class="mlab">Flexible connections / hoses</span>'+SB(p+'chk_hoses',LRI_OPT_COND3,true)+'</div></div>'+
  '<div class="fld"><div class="fh"><label>Running observations</label></div><div class="ctrl"><textarea id="'+p+'run_obs" rows="2" placeholder="Noise, leaks, anything unusual while running..."></textarea></div></div>'+
  lriSecPhotoHTML(n,"general")+
+ lriSaveSecBtnHTML()+
  '</div></details>'+
 
  '<details class="lrisec" data-lrisec="torque"><summary class="tp-num">Torque settings</summary><div class="lrisec-body">'+
@@ -3535,12 +3544,14 @@ function lriRowHTML(n){
  '<div class="fld"><div class="fh"><label>Belt guard refitted and secure</label></div>'+SB(p+'belt_guard',LRI_OPT_YN,true)+'</div>'+
  '<div class="fld"><div class="fh"><label>Belt drive notes</label></div><div class="ctrl"><textarea id="'+p+'belt_notes" rows="2"></textarea></div></div>'+
  lriSecPhotoHTML(n,"drive")+
+ lriSaveSecBtnHTML()+
  '</div></details>'+
 
  '<details class="lrisec" data-lrisec="cooler"><summary class="tp-num">Seal water cooler</summary><div class="lrisec-body">'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Seal water system</span>'+SB(p+'cooler_system',LRI_OPT_COOLERSYS,false)+'</div><div class="mgf"><span class="mlab">Cooler condition</span>'+SB(p+'cooler_cond',LRI_OPT_COND3,true)+'</div></div>'+
  '<div class="fld"><div class="fh"><label>Cooler comment</label></div><div class="ctrl"><textarea id="'+p+'cooler_notes" rows="2" placeholder="Observations on the cooler and the seal water arrangement..."></textarea></div></div>'+
  lriSecPhotoHTML(n,"cooler")+
+ lriSaveSecBtnHTML()+
  '</div></details>'+
 
  '<details class="lrisec" data-lrisec="separator"><summary class="tp-num">Separator tank</summary><div class="lrisec-body">'+
@@ -3549,6 +3560,7 @@ function lriRowHTML(n){
  '<div class="fld"><div class="fh"><label>System bolts checked, tight and torqued to spec</label></div>'+SB(p+'sep_bolts',LRI_OPT_YN,true)+'</div>'+
  '<div class="fld"><div class="fh"><label>Separator tank notes</label></div><div class="ctrl"><textarea id="'+p+'sep_notes" rows="2"></textarea></div></div>'+
  lriSecPhotoHTML(n,"separator")+
+ lriSaveSecBtnHTML()+
  '</div></details>'+
 
  '<details class="lrisec" data-lrisec="temps"><summary class="tp-num">Extra: temperature survey (&deg;C)</summary><div class="lrisec-body">'+
@@ -3610,7 +3622,7 @@ var LRI_SEL_FIELDS=["seal_type","seal_cond","seal_sleeve","seal_adj","brg_type",
  "belt_cond","belt_tension","belt_align","belt_groove","belt_guard","cooler_system","cooler_cond","sep_lining","sep_bolts","condition","priority"];
 function lriRowFields(n){
  var p="lri_r"+n+"_";
- var f=[p+"tag",p+"make",p+"model",p+"serial",p+"year",p+"maxp_n",p+"maxp_u",
+ var f=[p+"tag",p+"make",p+"model",p+"serial",p+"year",p+"rebuilt_by",p+"maxp_n",p+"maxp_u",
   p+"seal_type",p+"seal_cond",p+"seal_drip_before",p+"seal_drip_after",p+"seal_sleeve",p+"seal_adj",p+"seal_notes",
   p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp",p+"brg_notes",
   p+"bore_corr",p+"bore_cav",p+"bore_abr",p+"bore_notes",
@@ -3666,6 +3678,7 @@ function lriExtraHTML(n,m){
   '<div class="mgrid"><div class="mgf"><span class="mlab">Condition</span>'+lriSelBlock(p+'cond',LRI_OPT_COND)+'</div><div class="mgf"><span class="mlab">Value / reading (optional)</span><div class="ctrl"><input type="text" id="'+p+'value" placeholder="e.g. 45 Nm"></div></div></div>'+
   '<div class="fld"><div class="fh"><label>Notes</label></div><div class="ctrl"><textarea id="'+p+'notes" rows="2"></textarea></div></div>'+
   lriSecPhotoHTML(n,"ex"+m)+
+  lriSaveSecBtnHTML()+
  '</div>';
 }
 function lriExtraFields(n,m){
@@ -3899,6 +3912,16 @@ function lriSaveCaptions(){
 function lriSaveNow(){
  lriSaveCaptions();
  lriSave();
+}
+function lriSaveSection(btn){
+ lriSaveNow();
+ if(!btn)return;
+ if(!btn.getAttribute("data-label"))btn.setAttribute("data-label",btn.textContent);
+ var orig=btn.getAttribute("data-label");
+ btn.textContent="Saved ✓";
+ btn.classList.add("lri-sec-saved");
+ if(btn._lriSecT)clearTimeout(btn._lriSecT);
+ btn._lriSecT=setTimeout(function(){btn.textContent=orig;btn.classList.remove("lri-sec-saved");},1500);
 }
 function lriSave(quiet){
  var o={},i,e,n,j,f,m,ec;
@@ -4396,9 +4419,10 @@ function pbDrawPump(pb,n,normSec){
  // Major boundary only if <40% of page still free (avoid half-blank pages)
  pbMaybeBreakForPump(pb);
  pbSecHead(pb,"Pump: "+tag);
- if(lriAny([p+"make",p+"model",p+"serial",p+"year",p+"maxp_n"])){
+ if(lriAny([p+"make",p+"model",p+"serial",p+"year",p+"rebuilt_by",p+"maxp_n"])){
   pbPairRow(pb,"Manufacturer",rv(p+"make"),"Model",rv(p+"model"));
   pbPairRow(pb,"Serial No.",rv(p+"serial"),"Year of manufacture",rv(p+"year"));
+  if(rv(p+"rebuilt_by"))pbNoteRow(pb,"Repaired / rebuilt by: "+rv(p+"rebuilt_by"));
   if(lriAny([p+"maxp_n"]))pbPairRow(pb,"Max working pressure (abs)",rUnitVal(p+"maxp_n",p+"maxp_u"));
   pbGap(pb,6);
  }
