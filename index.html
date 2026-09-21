@@ -165,6 +165,9 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .ctrl input[type=text]:focus,.ctrl input[type=date]:focus{outline:2px solid var(--teal);border-color:var(--teal);}
 .ctrl textarea{flex:1 1 100%;font-family:var(--sans);font-size:16px;padding:10px;border:1px solid var(--line);border-radius:10px;background:var(--elev);color:var(--ink);resize:vertical;min-height:70px;}
 .ctrl textarea:focus{outline:2px solid var(--teal);border-color:var(--teal);}
+.ctrl input.vt-filled,.ctrl select.vt-filled,.ctrl textarea.vt-filled{border-color:#3f7a5c;background:rgba(92,191,138,.08);}
+.ctrl input.vt-empty,.ctrl select.vt-empty,.ctrl textarea.vt-empty{border-color:#6b5a3a;background:rgba(216,178,107,.05);}
+.ctrl input.vt-filled:focus,.ctrl select.vt-filled:focus,.ctrl textarea.vt-filled:focus,.ctrl input.vt-empty:focus,.ctrl select.vt-empty:focus,.ctrl textarea.vt-empty:focus{outline:2px solid var(--teal);border-color:var(--teal);}
 .tp-num{font-size:13px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.05em;margin:16px 0 4px;}
 .tp-num.tp-link{cursor:pointer;text-decoration:underline;text-decoration-style:dotted;text-underline-offset:3px;}
 .tp-num.tp-link .tp-go{float:right;font-weight:600;text-transform:none;letter-spacing:normal;font-size:12px;color:var(--accent);}
@@ -2888,8 +2891,8 @@ var EX={
   hio_defects:"DE gland drip rate had dropped to almost nothing overnight — nipped up the follower one flat at a time until it came back to 52 drops/min, sustained for 15 minutes before refitting the guard.",
   hio_sup_name:"HIO Supervisor",hio_sup_date:"2026-09-09"}
 };
-function ex(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(e)e.value=m[k];}recalc();}
-function clr(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(!e)continue;if(e.tagName==="SELECT"){var d=e.getAttribute("data-ref");if(d)e.value=d;}else e.value="";}recalc();}
+function ex(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(e){e.value=m[k];if(typeof vtMarkFilled==="function")vtMarkFilled(e);}}recalc();}
+function clr(c){var m=EX[c];for(var k in m){var e=document.getElementById(k);if(!e)continue;if(e.tagName==="SELECT"){var d=e.getAttribute("data-ref");if(d)e.value=d;}else e.value="";if(typeof vtMarkFilled==="function")vtMarkFilled(e);}recalc();}
 function hp(id){var e=document.getElementById(id);if(e)e.classList.toggle("open");}
 window.ex=ex;window.clr=clr;window.hp=hp;window.show=show;
 
@@ -3405,6 +3408,7 @@ function lriCopyPrevPump(n){
  recalc();
  if(typeof lriRefreshPumpStatus==="function")lriRefreshPumpStatus();
  if(typeof vtFlashSaved==="function")vtFlashSaved("lri_saved_chip");
+ vtRefreshFilled(document.getElementById("lri"));
 }
 
 var LRI_ROWCOUNT=0;
@@ -3768,6 +3772,7 @@ function lriInsertExample(){
  lriSaveTorqCounts();
  ex("lri");
  lriRefreshAllOC();
+ vtRefreshFilled(document.getElementById("lri"));
 }
 window.lriAddExtra=lriAddExtra;window.lriRemoveExtra=lriRemoveExtra;window.lriInsertExample=lriInsertExample;
 function lriRowCalc(n){
@@ -3970,6 +3975,7 @@ function lriLoad(){
  lriRefreshAllOC();
  lriSecEnabledInit();lriRenderSetup();lriApplySections();
  if(typeof lriRefreshPumpStatus==="function")lriRefreshPumpStatus();
+ vtRefreshFilled(document.getElementById("lri"));
 }
 function lriClear(){
  if(!confirm("Clear the whole inspection report, including photos?"))return;
@@ -3990,6 +3996,7 @@ function lriClear(){
  try{localStorage.removeItem(LRI_KEY);localStorage.removeItem(LRI_LINK_KEY);}catch(err){}
  if(typeof lriSetFromJobMode==="function")lriSetFromJobMode(false);
  recalc();
+ vtRefreshFilled(document.getElementById("lri"));
 }
 // Severity ranking for condition values: 0 = fine, 1 = watch, 2 = bad, 3 = worst.
 // Used to color the summary table and pick the worst of a pair for a summary cell.
@@ -4625,6 +4632,34 @@ function vtFlashSaved(id){
 }
 window.vtFlashSaved=vtFlashSaved;
 if(!_vtTouchActiveFix){var _vtTouchActiveFix=1;try{document.addEventListener("touchstart",function(){},{passive:true});}catch(e){}}
+// Filled/empty field highlighting: a quick-scan visual so a long checklist or form
+// doesn't need reading line by line to see what's been answered. Skips unit-picker
+// selects (data-g) since those always carry a default value and would always show
+// as "filled" -- that's not a meaningful signal there.
+function vtIsFillable(el){
+ if(!el||!el.tagName)return false;
+ var tag=el.tagName;
+ if(tag==="SELECT")return !el.hasAttribute("data-g");
+ if(tag==="TEXTAREA")return true;
+ if(tag==="INPUT"){
+  var t=(el.type||"text").toLowerCase();
+  return t==="text"||t==="number"||t==="date"||t==="search"||t==="email"||t==="tel";
+ }
+ return false;
+}
+function vtMarkFilled(el){
+ if(!vtIsFillable(el))return;
+ var filled=(el.value||"").toString().trim()!=="";
+ el.classList.toggle("vt-filled",filled);
+ el.classList.toggle("vt-empty",!filled);
+}
+function vtRefreshFilled(root){
+ var els=(root||document).querySelectorAll("input,select,textarea");
+ for(var i=0;i<els.length;i++)vtMarkFilled(els[i]);
+}
+window.vtRefreshFilled=vtRefreshFilled;
+document.addEventListener("input",function(e){vtMarkFilled(e.target);});
+document.addEventListener("change",function(e){vtMarkFilled(e.target);});
 function lriFieldMeaningful(el){
  if(!el||el.disabled)return false;
  if(el.type==="checkbox")return !!el.checked;
@@ -4918,6 +4953,7 @@ function custRenderView(){
  if(eq)eq.value=((c.equipment||[]).map(function(e){return e.tag+(e.notes?" — "+e.notes:"");}).join("\n"));
  custRenderLogo();
  custRenderJobs();
+ vtRefreshFilled(document.getElementById("cust_view"));
 }
 function custMigrateContacts(c){
  if(!c)return;
@@ -5111,6 +5147,7 @@ function custRenderJob(){
  custUpdateLriButton();
  custRenderJobCalcs();
  custRenderJobPhotos();
+ vtRefreshFilled(document.getElementById("cust_job"));
 }
 var CUST_FB_DEFAULTS={
  introHead:"Introduction to BUSCH Liquid Ring Vacuum Pump Flush chemical",
@@ -6397,6 +6434,7 @@ if(custImportInput)custImportInput.addEventListener("change",function(){custImpo
 document.addEventListener("input",recalc);
 document.addEventListener("change",recalc);
 recalc();
+vtRefreshFilled(document);
 
 // Worked examples: real numbers, checked by hand, each one names where it comes from.
 var EX_LAW={
