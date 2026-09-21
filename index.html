@@ -1187,7 +1187,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="fld"><div class="fh"><label>Job name <span style="font-weight:500;color:var(--soft);text-transform:none;letter-spacing:0">(optional — blank uses the date and visit type)</span></label></div><div class="ctrl"><input type="text" id="cj_name" placeholder="e.g. FLT151 gland service"></div></div>
 <div class="fld"><div class="fh"><label>Start date</label></div><div class="ctrl"><input type="date" id="cj_date"></div></div>
 <div class="fld"><div class="fh"><label>End date <span style="font-weight:500;color:var(--soft);text-transform:none;letter-spacing:0">(optional — blank = same day)</span></label></div><div class="ctrl"><input type="date" id="cj_date_end"></div></div>
-<div class="fld"><div class="fh"><label>Visit type</label></div><div class="ctrl"><select id="cj_type"><option value="belt-filter vac pumps">Belt-filter vac pumps</option><option value="inspection">Inspection</option><option value="site investigation">Site investigation</option><option value="other">Other</option></select></div></div>
+<div class="fld"><div class="fh"><label>Visit type</label></div><div class="ctrl"><input type="text" id="cj_type" list="cj_type_list" placeholder="e.g. Belt-filter vac pumps"><datalist id="cj_type_list"><option value="Belt-filter vac pumps"></option><option value="Inspection"></option><option value="Site investigation"></option></datalist></div><p class="sub cv-help">Type anything — pick a suggestion or write your own.</p></div>
 <div class="fld"><div class="fh"><label>Status</label></div><div class="ctrl"><select id="cj_status"><option value="draft">Draft</option><option value="done">Done</option></select></div></div>
 <div class="fld"><div class="fh"><label>PO / quote ref (optional)</label></div><div class="ctrl"><input type="text" id="cj_po" placeholder="PO or quote number"></div></div>
 <p class="sub" style="margin:4px 0 0;font-size:12.5px">Auto-saves on <b>this device</b> as you edit.</p>
@@ -4910,7 +4910,7 @@ function custNewJob(){
  try{nm=prompt("Name this job / visit (optional — leave blank to use the date and type):","")||"";}catch(err){nm="";}
  var today=new Date();
  var mo=today.getMonth()+1,da=today.getDate();var ds=today.getFullYear()+"-"+(mo<10?"0":"")+mo+"-"+(da<10?"0":"")+da;
- var job={id:custUid("job"),name:nm.trim(),date:ds,dateEnd:"",site:(c.sites&&c.sites[0])||"",type:"belt-filter vac pumps",status:"draft",po:"",findings:"",photos:[],calcs:[]};
+ var job={id:custUid("job"),name:nm.trim(),date:ds,dateEnd:"",site:(c.sites&&c.sites[0])||"",type:"Belt-filter vac pumps",status:"draft",po:"",findings:"",photos:[],calcs:[]};
  if(!c.jobs)c.jobs=[];
  c.jobs.unshift(job);
  custPersist();
@@ -4931,7 +4931,7 @@ function custRenderJob(){
  var sub=document.getElementById("cj_sub");if(sub)sub.textContent=c.name+(j.site?" — "+j.site:"");
  var hdr=document.getElementById("hdr_t");if(hdr)hdr.textContent="Job / visit";
  function set(id,v){var e=document.getElementById(id);if(e)e.value=v==null?"":v;}
- set("cj_name",j.name||"");set("cj_date",j.date);set("cj_date_end",j.dateEnd||"");set("cj_site",j.site);set("cj_type",j.type||"other");set("cj_status",j.status||"draft");set("cj_po",j.po);set("cj_findings",j.findings);
+ set("cj_name",j.name||"");set("cj_date",j.date);set("cj_date_end",j.dateEnd||"");set("cj_site",j.site);set("cj_type",j.type==="other"?"":(j.type||""));set("cj_status",j.status||"draft");set("cj_po",j.po);set("cj_findings",j.findings);
  if(!Array.isArray(j.calcs))j.calcs=[];
  if(j.fbIntroHead===undefined)j.fbIntroHead=CUST_FB_DEFAULTS.introHead;
  if(j.fbIntroBody===undefined)j.fbIntroBody=CUST_FB_DEFAULTS.introBody;
@@ -5072,7 +5072,7 @@ function custSaveJob(mode){
  if(!j.dateEnd||j.dateEnd===j.date)j.dateEnd="";
  if(j.dateEnd&&j.date&&j.dateEnd<j.date){var _t=j.date;j.date=j.dateEnd;j.dateEnd=_t;}
  v=grab("cj_site");if(v!==null)j.site=v||"";
- v=grab("cj_type");if(v!==null)j.type=v||"other";
+ v=grab("cj_type");if(v!==null)j.type=v||"";
  v=grab("cj_status");if(v!==null)j.status=v||"draft";
  v=grab("cj_po");if(v!==null)j.po=v||"";
  v=grab("cj_findings");if(v!==null)j.findings=v||"";
