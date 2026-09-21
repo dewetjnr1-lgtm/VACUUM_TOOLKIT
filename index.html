@@ -1087,7 +1087,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="ar"><b>No nameplate duty figure handy?</b>The "Extra: vacuum performance" heading in each pump block is a link &mdash; tap it to jump straight to the "Deepest Vacuum You Can Pull" calculator, fill in today's seal water temperature and site altitude, then tap the &lsquo;&#8249; Back&rsquo; button at the top to come straight back to this report. Tap "Pull from vacuum calculator" to drop that number into Rated duty vacuum as your comparison point.</div>
 <div class="ar">Everything typed here, including photos, is saved on this phone as you go, so the sheet survives closing the app. Export PDF builds the finished PDF file directly and downloads it &mdash; there's no print screen to fight with, and no browser web-address or date stamped on the page.</div>
 </div>
-<div class="lri-job-actions"><button class="exbtn" onclick="lriInsertExample()">Insert example</button><button class="exbtn" onclick="lriExportPDF()">Export PDF</button><button class="clrbtn" onclick="lriClear()">Clear this report</button></div>
+<div class="lri-job-actions"><button class="exbtn" onclick="lriSaveNow()">Save on this device</button><button class="exbtn" onclick="lriInsertExample()">Insert example</button><button class="exbtn" onclick="lriExportPDF()">Export PDF</button><button class="clrbtn" onclick="lriClear()">Clear this report</button></div>
 <details class="card lri-job-card" id="lri_job_card" open data-lri-from-job="0">
 <summary class="lri-job-sum"><span class="lri-job-sum-title">Job details</span><span class="lri-job-sum-bits" id="lri_job_sum_bits">Client · site · date</span></summary>
 <p class="lri-from-job-hint" id="lri_from_job_hint" hidden>From this job. Edit on the Job page if you need to change it.</p>
@@ -1126,6 +1126,8 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="note warn" id="lri_warn" style="display:none">This phone is low on storage for photos. Export the PDF now to keep what you have, then remove a photo or two and try adding more.</div>
 <div id="lri_photos"></div>
 </div>
+<button class="exbtn" style="display:block;width:100%;margin:12px 0 8px" onclick="lriSaveNow()">Save on this device</button>
+<p class="sub" style="margin:0 0 12px;font-size:12.5px">Auto-saves as you type too — this is a checkpoint so you know it's kept.</p>
 <button class="exbtn" onclick="lriExportPDF()" style="margin:6px 0 0">Export PDF</button><button class="clrbtn" onclick="lriClear()" style="margin:6px 0 0">Clear this report</button>
 </section>
 <section class="page" id="cust">
@@ -3406,6 +3408,67 @@ function lriCopyPrevPump(n){
 
 var LRI_ROWCOUNT=0;
 var LRI_PHOTOS=[];
+// Per-check photos: one photo set per fixed section (key "n_seals", "n_bearings", ...)
+// and per "Add your own section" item (key "n_ex1", "n_ex2", ...). Separate from the
+// report-wide LRI_PHOTOS list above; these attach to a specific check so they print
+// right under that check's findings instead of in one shared gallery at the end.
+var LRI_SEC_PHOTOS={};
+function lriSecPhotoHTML(n,sec){
+ var key=n+"_"+sec;
+ return '<div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this check</label></div>'
+  +'<div id="lri_secphlist_'+key+'" class="lri-secph-list"></div>'
+  +'<div class="ctrl"><input type="file" accept="image/*" multiple id="lri_secphinput_'+key+'" onchange="lriSecHandleFiles(\''+key+'\',this.files)"></div></div>';
+}
+function lriSecRenderPhotos(key){
+ var el=document.getElementById("lri_secphlist_"+key);
+ if(!el)return;
+ var arr=LRI_SEC_PHOTOS[key]||[];
+ var h="",i;
+ for(i=0;i<arr.length;i++){
+  h+='<div class="rpt-ph"><img src="'+arr[i].src+'"><div class="ctrl"><input type="text" placeholder="Caption, e.g. Before / After" value="'+pEsc(arr[i].caption)+'" oninput="lriSecPhotoCaption(\''+key+'\','+i+',this.value)"></div><button type="button" class="clrbtn" onclick="lriSecRemovePhoto(\''+key+'\','+i+')" style="margin:6px 0 0">Remove photo</button></div>';
+ }
+ el.innerHTML=h||'<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No photos yet.</p>';
+}
+function lriSecHandleFiles(key,files){
+ var arr=Array.prototype.slice.call(files||[]);
+ arr.forEach(function(file){
+  var reader=new FileReader();
+  reader.onload=function(e){
+   var img=new Image();
+   img.onload=function(){
+    var maxW=1000,scale=Math.min(1,maxW/img.width);
+    var w=Math.round(img.width*scale),h=Math.round(img.height*scale);
+    var canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
+    canvas.getContext("2d").drawImage(img,0,0,w,h);
+    if(!LRI_SEC_PHOTOS[key])LRI_SEC_PHOTOS[key]=[];
+    LRI_SEC_PHOTOS[key].push({src:canvas.toDataURL("image/jpeg",0.72),caption:""});
+    lriSecRenderPhotos(key);
+    lriSave();
+   };
+   img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+ });
+ var input=document.getElementById("lri_secphinput_"+key);
+ if(input)input.value="";
+}
+function lriSecPhotoCaption(key,i,v){
+ if(LRI_SEC_PHOTOS[key]&&LRI_SEC_PHOTOS[key][i]){LRI_SEC_PHOTOS[key][i].caption=v;lriSave(true);}
+}
+function lriSecRemovePhoto(key,i){
+ if(!LRI_SEC_PHOTOS[key])return;
+ LRI_SEC_PHOTOS[key].splice(i,1);
+ lriSecRenderPhotos(key);
+ lriSave();
+}
+function lriRenderAllSecPhotos(){
+ var els=document.querySelectorAll('[id^="lri_secphlist_"]');
+ for(var i=0;i<els.length;i++)lriSecRenderPhotos(els[i].id.replace("lri_secphlist_",""));
+}
+function lriClearSecPhotosForPump(n){
+ var prefix=n+"_";
+ for(var key in LRI_SEC_PHOTOS)if(LRI_SEC_PHOTOS.hasOwnProperty(key)&&key.indexOf(prefix)===0)delete LRI_SEC_PHOTOS[key];
+}
 function lriRowHTML(n){
  var p="lri_r"+n+"_";
  function SB(id,opts,check){return lriSelBlock(id,opts,!!(check&&n>1));}
@@ -3423,6 +3486,7 @@ function lriRowHTML(n){
  '<p id="'+p+'seal_drip_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Gland packing should weep &mdash; about 45 to 60 drops a minute keeps it cool and lubricated. If the flow is too fast to count, just write that (e.g. &lsquo;pouring&rsquo;).</p>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Shaft / sleeve under packing</span>'+SB(p+'seal_sleeve',LRI_OPT_COND3,true)+'</div><div class="mgf"><span class="mlab">Follower adjustment left</span>'+SB(p+'seal_adj','<option value=""></option><option value="plenty">Plenty</option><option value="some">Some</option><option value="none">None &mdash; repack due</option>'+LRI_OPT_TAIL,true)+'</div></div>'+
  '<div class="fld"><div class="fh"><label>Seal notes</label></div><div class="ctrl"><textarea id="'+p+'seal_notes" rows="2" placeholder="Leakage rate, seal water flush condition..."></textarea></div></div>'+
+ lriSecPhotoHTML(n,"seals")+
  '</div></details>'+
 
  '<details class="lrisec" data-lrisec="bearings"><summary class="tp-num">Bearings</summary><div class="lrisec-body">'+
@@ -3430,6 +3494,7 @@ function lriRowHTML(n){
  '<div class="mgrid"><div class="mgf"><span class="mlab">Temp, drive end</span><div class="ctrl"><input type="number" id="'+p+'brg_de_temp" placeholder="number"><span class="fu">&deg;C</span></div></div><div class="mgf"><span class="mlab">Temp, non-drive end</span><div class="ctrl"><input type="number" id="'+p+'brg_nde_temp" placeholder="number"><span class="fu">&deg;C</span></div></div></div>'+
  '<p id="'+p+'brg_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Housing temperatures compare against ambient in the temperature survey below.</p>'+
  '<div class="fld"><div class="fh"><label>Bearing notes</label></div><div class="ctrl"><textarea id="'+p+'brg_notes" rows="2"></textarea></div></div>'+
+ lriSecPhotoHTML(n,"bearings")+
  '</div></details>'+
 
  '<details class="lrisec" data-lrisec="borescope"><summary class="tp-num">Borescope inspection of casing</summary><div class="lrisec-body">'+
@@ -3437,6 +3502,7 @@ function lriRowHTML(n){
  '<div class="mgrid"><div class="mgf"><span class="mlab">Corrosion</span>'+SB(p+'bore_corr',LRI_OPT_SEV,true)+'</div><div class="mgf"><span class="mlab">Cavitation damage</span>'+SB(p+'bore_cav',LRI_OPT_SEV,true)+'</div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Abrasion / erosion damage</span>'+SB(p+'bore_abr',LRI_OPT_SEV,true)+'</div><div class="mgf"></div></div>'+
  '<div class="fld"><div class="fh"><label>Borescope notes / location of damage</label></div><div class="ctrl"><textarea id="'+p+'bore_notes" rows="2"></textarea></div></div>'+
+ lriSecPhotoHTML(n,"borescope")+
  '</div></details>'+
 
  '<details class="lrisec" data-lrisec="general"><summary class="tp-num">General &amp; installation</summary><div class="lrisec-body">'+
@@ -3444,6 +3510,7 @@ function lriRowHTML(n){
  '<div class="mgrid"><div class="mgf"><span class="mlab">All guards fitted and secure</span>'+SB(p+'chk_guards',LRI_OPT_YN,true)+'</div><div class="mgf"></div></div>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Inlet strainer / screen</span>'+SB(p+'chk_strainer',LRI_OPT_COND3,true)+'</div><div class="mgf"><span class="mlab">Flexible connections / hoses</span>'+SB(p+'chk_hoses',LRI_OPT_COND3,true)+'</div></div>'+
  '<div class="fld"><div class="fh"><label>Running observations</label></div><div class="ctrl"><textarea id="'+p+'run_obs" rows="2" placeholder="Noise, leaks, anything unusual while running..."></textarea></div></div>'+
+ lriSecPhotoHTML(n,"general")+
  '</div></details>'+
 
  '<details class="lrisec" data-lrisec="torque"><summary class="tp-num">Torque settings</summary><div class="lrisec-body">'+
@@ -3467,11 +3534,13 @@ function lriRowHTML(n){
  '<p id="'+p+'belt_note" style="font-size:12.5px;color:var(--soft);margin:2px 0 6px">Fill in the span to get a target deflection (rule of thumb: about 16 mm per metre of span under firm thumb pressure).</p>'+
  '<div class="fld"><div class="fh"><label>Belt guard refitted and secure</label></div>'+SB(p+'belt_guard',LRI_OPT_YN,true)+'</div>'+
  '<div class="fld"><div class="fh"><label>Belt drive notes</label></div><div class="ctrl"><textarea id="'+p+'belt_notes" rows="2"></textarea></div></div>'+
+ lriSecPhotoHTML(n,"drive")+
  '</div></details>'+
 
  '<details class="lrisec" data-lrisec="cooler"><summary class="tp-num">Seal water cooler</summary><div class="lrisec-body">'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Seal water system</span>'+SB(p+'cooler_system',LRI_OPT_COOLERSYS,false)+'</div><div class="mgf"><span class="mlab">Cooler condition</span>'+SB(p+'cooler_cond',LRI_OPT_COND3,true)+'</div></div>'+
  '<div class="fld"><div class="fh"><label>Cooler comment</label></div><div class="ctrl"><textarea id="'+p+'cooler_notes" rows="2" placeholder="Observations on the cooler and the seal water arrangement..."></textarea></div></div>'+
+ lriSecPhotoHTML(n,"cooler")+
  '</div></details>'+
 
  '<details class="lrisec" data-lrisec="separator"><summary class="tp-num">Separator tank</summary><div class="lrisec-body">'+
@@ -3479,6 +3548,7 @@ function lriRowHTML(n){
  '<div class="fld"><div class="fh"><label>Internal lining condition</label></div>'+SB(p+'sep_lining',LRI_OPT_LINING,true)+'</div>'+
  '<div class="fld"><div class="fh"><label>System bolts checked, tight and torqued to spec</label></div>'+SB(p+'sep_bolts',LRI_OPT_YN,true)+'</div>'+
  '<div class="fld"><div class="fh"><label>Separator tank notes</label></div><div class="ctrl"><textarea id="'+p+'sep_notes" rows="2"></textarea></div></div>'+
+ lriSecPhotoHTML(n,"separator")+
  '</div></details>'+
 
  '<details class="lrisec" data-lrisec="temps"><summary class="tp-num">Extra: temperature survey (&deg;C)</summary><div class="lrisec-body">'+
@@ -3520,7 +3590,7 @@ function lriRowHTML(n){
  '</div></details>'+
 
  '<details class="lrisec" data-lrisec="extras"><summary class="tp-num">Add your own section</summary><div class="lrisec-body">'+
- '<p style="font-size:12px;color:var(--soft);margin:0 0 6px">Anything you pick up on site that isn\'t covered above &mdash; base plate, oil level, whatever comes up. Give it a name and it appears on the printed report as its own section, exactly like the ones above. Add as many as you need; leave one blank and it simply won\'t print.</p>'+
+ '<p style="font-size:12px;color:var(--soft);margin:0 0 6px">Anything you pick up on site that isn\'t covered above &mdash; base plate, oil level, whatever comes up. Give it a name and it appears on the printed report as its own section, exactly like the ones above, photos included. Add as many photos as you like &mdash; before/after, or however you want to caption them. Add as many sections as you need; leave one blank and it simply won\'t print.</p>'+
  '<div id="lri_r'+n+'_extras"></div>'+
  '<button class="clrbtn" onclick="lriAddExtra('+n+')" style="margin:2px 0 0">Add a section</button> <button class="clrbtn" onclick="lriRemoveExtra('+n+')">Remove last</button>'+
  '</div></details>'+
@@ -3577,6 +3647,7 @@ function lriRemoveRow(){
  if(el)el.remove();
  delete LRI_EXTRA_COUNT[LRI_ROWCOUNT];
  delete LRI_TORQ_COUNT[LRI_ROWCOUNT];
+ lriClearSecPhotosForPump(LRI_ROWCOUNT);
  LRI_ROWCOUNT--;
  try{localStorage.setItem(LRI_RC_KEY,String(LRI_ROWCOUNT));}catch(err){}
  lriSaveTorqCounts();
@@ -3594,6 +3665,7 @@ function lriExtraHTML(n,m){
   '<div class="fld" style="margin-top:0"><div class="ctrl"><input type="text" class="secname" id="'+p+'label" placeholder="Name this section — e.g. Base plate, oil level..."></div></div>'+
   '<div class="mgrid"><div class="mgf"><span class="mlab">Condition</span>'+lriSelBlock(p+'cond',LRI_OPT_COND)+'</div><div class="mgf"><span class="mlab">Value / reading (optional)</span><div class="ctrl"><input type="text" id="'+p+'value" placeholder="e.g. 45 Nm"></div></div></div>'+
   '<div class="fld"><div class="fh"><label>Notes</label></div><div class="ctrl"><textarea id="'+p+'notes" rows="2"></textarea></div></div>'+
+  lriSecPhotoHTML(n,"ex"+m)+
  '</div>';
 }
 function lriExtraFields(n,m){
@@ -3653,6 +3725,7 @@ function lriRemoveExtra(n){
  if(m<=0)return;
  var el=document.getElementById("lri_r"+n+"_ex"+m);
  if(el)el.remove();
+ delete LRI_SEC_PHOTOS[n+"_ex"+m];
  LRI_EXTRA_COUNT[n]=m-1;
  lriSaveExtraCounts();
  recalc();
@@ -3823,6 +3896,10 @@ function lriSaveCaptions(){
   if(e)LRI_PHOTOS[i].caption=e.value;
  }
 }
+function lriSaveNow(){
+ lriSaveCaptions();
+ lriSave();
+}
 function lriSave(quiet){
  var o={},i,e,n,j,f,m,ec;
  for(i=0;i<LRI_HEADER.length;i++){e=document.getElementById(LRI_HEADER[i]);if(!e)continue;o[LRI_HEADER[i]]=e.type==="checkbox"?e.checked:e.value;}
@@ -3834,6 +3911,7 @@ function lriSave(quiet){
   for(m=1;m<=tc;m++){f=lriTorqFields(n,m);for(j=0;j<f.length;j++){e=document.getElementById(f[j]);if(!e)continue;o[f[j]]=e.value;}}
  }
  o.photos=LRI_PHOTOS;
+ o.secPhotos=LRI_SEC_PHOTOS;
  var warn=document.getElementById("lri_warn");
  try{localStorage.setItem(LRI_KEY,JSON.stringify(o));if(warn)warn.style.display="none";if(!quiet&&typeof vtFlashSaved==="function")vtFlashSaved("lri_saved_chip");}
  catch(err){if(warn)warn.style.display="block";}
@@ -3863,7 +3941,9 @@ function lriLoad(){
   for(m=1;m<=tc;m++){f=lriTorqFields(n,m);for(j=0;j<f.length;j++){e=document.getElementById(f[j]);if(!e||o[f[j]]===undefined)continue;e.value=o[f[j]];}}
  }
  LRI_PHOTOS=Array.isArray(o.photos)?o.photos:[];
+ LRI_SEC_PHOTOS=(o.secPhotos&&typeof o.secPhotos==="object")?o.secPhotos:{};
  lriRenderPhotos();
+ lriRenderAllSecPhotos();
  lriRefreshAllOC();
  lriSecEnabledInit();lriRenderSetup();lriApplySections();
  if(typeof lriRefreshPumpStatus==="function")lriRefreshPumpStatus();
@@ -3880,7 +3960,9 @@ function lriClear(){
   for(m=1;m<=tc;m++){f=lriTorqFields(n,m);for(j=0;j<f.length;j++){e=document.getElementById(f[j]);if(!e)continue;e.value="";}}
  }
  LRI_PHOTOS=[];
+ LRI_SEC_PHOTOS={};
  lriRenderPhotos();
+ lriRenderAllSecPhotos();
  lriRefreshAllOC();
  try{localStorage.removeItem(LRI_KEY);localStorage.removeItem(LRI_LINK_KEY);}catch(err){}
  if(typeof lriSetFromJobMode==="function")lriSetFromJobMode(false);
@@ -4299,7 +4381,16 @@ function pbFinalize(pb){
   pbDrawFooter(pb,i,total);
  }
 }
-function pbDrawPump(pb,n){
+function pbDrawSecPhotos(pb,normSec,key){
+ var arr=normSec&&normSec[key];
+ if(!arr||!arr.length)return;
+ for(var i=0;i<arr.length;i+=2){
+  var row=[{src:arr[i].src,caption:arr[i].caption||"Photo",w:arr[i].w,h:arr[i].h}];
+  if(i+1<arr.length)row.push({src:arr[i+1].src,caption:arr[i+1].caption||"Photo",w:arr[i+1].w,h:arr[i+1].h});
+  pbPhotoRow(pb,row);
+ }
+}
+function pbDrawPump(pb,n,normSec){
  var p="lri_r"+n+"_";
  var tag=rv(p+"tag")||("Pump "+n);
  // Major boundary only if <40% of page still free (avoid half-blank pages)
@@ -4326,6 +4417,8 @@ function pbDrawPump(pb,n){
    pbNoteRow(pb,rSpan(p+"brg_note"));
   }
   if(rv(p+"brg_notes"))pbNoteRow(pb,"Bearing notes: "+rv(p+"brg_notes"));
+  pbDrawSecPhotos(pb,normSec,n+"_seals");
+  pbDrawSecPhotos(pb,normSec,n+"_bearings");
   pbGap(pb,6);
  }
  if(lriAny([p+"bore_corr",p+"bore_cav",p+"bore_abr",p+"bore_notes"])){
@@ -4335,6 +4428,7 @@ function pbDrawPump(pb,n){
    corrSev<0?null:PB_SEV_RGB[corrSev],cavSev<0?null:PB_SEV_RGB[cavSev]);
   if(lriAny([p+"bore_abr"]))pbPairRow(pb,"Abrasion / erosion damage",rSelText(p+"bore_abr"),undefined,undefined,abrSev<0?null:PB_SEV_RGB[abrSev]);
   if(rv(p+"bore_notes"))pbNoteRow(pb,"Borescope notes: "+rv(p+"bore_notes"));
+  pbDrawSecPhotos(pb,normSec,n+"_borescope");
   pbGap(pb,6);
  }
  if(lriAny([p+"chk_rotation",p+"chk_footbolts",p+"chk_guards",p+"chk_strainer",p+"chk_hoses",p+"run_obs"])){
@@ -4343,6 +4437,7 @@ function pbDrawPump(pb,n){
   pbPairRow(pb,"All guards fitted & secure",rSelText(p+"chk_guards"),"Inlet strainer / screen",rSelText(p+"chk_strainer"));
   pbPairRow(pb,"Flexible connections / hoses",rSelText(p+"chk_hoses"));
   if(rv(p+"run_obs"))pbNoteRow(pb,"Running observations: "+rv(p+"run_obs"));
+  pbDrawSecPhotos(pb,normSec,n+"_general");
   pbGap(pb,6);
  }
  var tqCount=LRI_TORQ_COUNT[n]||0,tqAnyFilled=false,ti,tqp;
@@ -4375,14 +4470,17 @@ function pbDrawPump(pb,n){
    if(lriAny([p+"belt_span"]))pbNoteRow(pb,rSpan(p+"belt_note"));
    if(rv(p+"belt_notes"))pbNoteRow(pb,"Belt notes: "+rv(p+"belt_notes"));
   }
+  pbDrawSecPhotos(pb,normSec,n+"_drive");
   pbGap(pb,6);
  }
  if(lriAny([p+"cooler_system",p+"cooler_cond",p+"cooler_notes",p+"sep_lining",p+"sep_bolts",p+"sep_notes"])){
   pbHeaderRow(pb,"Seal water cooler & separator tank");
   pbPairRow(pb,"Seal water system",rSelText(p+"cooler_system"),"Cooler condition",rSelText(p+"cooler_cond"));
   if(rv(p+"cooler_notes"))pbNoteRow(pb,"Cooler comment: "+rv(p+"cooler_notes"));
+  pbDrawSecPhotos(pb,normSec,n+"_cooler");
   pbPairRow(pb,"Separator lining",rSelText(p+"sep_lining"),"Separator bolts torqued",rSelText(p+"sep_bolts"));
   if(rv(p+"sep_notes"))pbNoteRow(pb,"Separator notes: "+rv(p+"sep_notes"));
+  pbDrawSecPhotos(pb,normSec,n+"_separator");
   pbGap(pb,6);
  }
  var vibFields=["vib_pde_ax","vib_pde_h","vib_pde_v","vib_pnde_ax","vib_pnde_h","vib_pnde_v","vib_mde_ax","vib_mde_h","vib_mde_v","vib_mnde_ax","vib_mnde_h","vib_mnde_v"];
@@ -4425,6 +4523,7 @@ function pbDrawPump(pb,n){
   pbPairRow(pb,"Condition",rSelText(ep+"cond"),"Value / reading",rv(ep+"value"),
    es<0?null:PB_SEV_RGB[es]);
   if(rv(ep+"notes"))pbNoteRow(pb,"Notes: "+rv(ep+"notes"));
+  pbDrawSecPhotos(pb,normSec,n+"_ex"+ei);
   pbGap(pb,6);
  }
  var condSev=lriSevOf(p+"condition"),prioSev=lriSevOf(p+"priority");
@@ -4440,7 +4539,25 @@ function lriExportPDF(){
  var photos=LRI_PHOTOS.slice();
  var normPromises=[];
  for(var k=0;k<photos.length;k++)normPromises.push(pbNormalizePhoto(photos[k].src));
- Promise.all(normPromises).then(function(norm){
+ var secKeys=Object.keys(LRI_SEC_PHOTOS),secPromiseMap=[],sk,si;
+ for(sk=0;sk<secKeys.length;sk++){
+  var arr=LRI_SEC_PHOTOS[secKeys[sk]]||[];
+  for(si=0;si<arr.length;si++){
+   secPromiseMap.push({key:secKeys[sk],idx:si});
+   normPromises.push(pbNormalizePhoto(arr[si].src));
+  }
+ }
+ var secOffset=photos.length;
+ Promise.all(normPromises).then(function(normAll){
+  var norm=normAll.slice(0,photos.length);
+  var normSec={},mi,m,nrm,cap;
+  for(mi=0;mi<secPromiseMap.length;mi++){
+   m=secPromiseMap[mi];
+   nrm=normAll[secOffset+mi];
+   cap=(LRI_SEC_PHOTOS[m.key][m.idx]||{}).caption||"";
+   if(!normSec[m.key])normSec[m.key]=[];
+   normSec[m.key][m.idx]={src:nrm.src,w:nrm.w,h:nrm.h,caption:cap};
+  }
   var pb=pbCreate(letterheadOn,company);
   pbTitle(pb,"LIQUID RING VACUUM PUMP INSPECTION REPORT");
   pbPairRow(pb,"Client",rv("lri_client"),"Site",rv("lri_site"));
@@ -4455,7 +4572,7 @@ function lriExportPDF(){
   pbSecHead(pb,"Findings & recommendations (overall)");
   pbBox(pb,rv("lri_findings")||"—");
   var n;
-  for(n=1;n<=LRI_ROWCOUNT;n++)pbDrawPump(pb,n);
+  for(n=1;n<=LRI_ROWCOUNT;n++)pbDrawPump(pb,n,normSec);
   if(rv("lri_followup")||rDate("lri_nextdate"))
    pbPairRow(pb,"Follow-up required",rv("lri_followup"),"Next inspection due",rDate("lri_nextdate"));
   if(photos.length){
