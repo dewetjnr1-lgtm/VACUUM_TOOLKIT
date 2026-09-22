@@ -304,11 +304,22 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-live-preview-hint{font-size:11px;color:var(--soft);white-space:nowrap;}
 .cj-live-preview-body{background:#fff;border-radius:8px;padding:8px;}
 .cj-live-preview-body .cj-fb-letter{font-size:11.5px;padding:12px 12px 8px;}
+.cj-live-preview-close{display:none;}
+.cj-mobile-preview-backdrop{display:none;}
+.cj-mobile-preview-fab{display:none;}
 /* Fixed to the viewport, not laid out beside the 720px-centred form — sidesteps
    fighting main's own centering math, which is what broke the earlier flex version. */
 @media (min-width:1500px){
  body.cj-live-open{padding-right:416px;}
  .cj-live-preview-panel.on{display:block;position:fixed;top:66px;right:16px;width:380px;max-height:calc(100vh - 86px);overflow-y:auto;background:var(--elev);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 4px 20px rgba(0,0,0,.45);z-index:40;}
+}
+/* Phone/tablet turned sideways: too narrow for a permanent split, so the preview
+   is a tap-to-open drawer instead — pop it out to check, close it to keep editing. */
+@media (orientation:landscape) and (min-width:560px) and (max-width:1499px){
+ .cj-mobile-preview-fab.on{display:block;position:fixed;bottom:18px;right:18px;z-index:41;background:var(--accent);color:#241505;border:0;border-radius:24px;padding:12px 20px;font-size:14px;font-weight:800;box-shadow:0 4px 16px rgba(0,0,0,.5);cursor:pointer;}
+ .cj-mobile-preview-backdrop.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:38;}
+ .cj-live-preview-panel.peek{display:block;position:fixed;top:0;right:0;bottom:0;width:86%;max-width:420px;max-height:100vh;border-radius:0;overflow-y:auto;background:var(--elev);border-left:1px solid var(--line);box-shadow:-6px 0 24px rgba(0,0,0,.5);z-index:39;padding:14px;}
+ .cj-live-preview-panel.peek .cj-live-preview-close{display:block;background:none;border:1px solid var(--line);color:var(--soft);border-radius:8px;padding:6px 12px;font-size:12.5px;}
 }
 .cj-fb-letter{font-size:13.5px;color:#333;line-height:1.45;background:#fff;border-radius:8px;padding:16px 16px 10px;border:1px solid #D0D5D8;font-family:Helvetica,Arial,sans-serif;}
 .cj-fb-letter.cj-fb-letter-word{background:#fff;}
@@ -1290,8 +1301,10 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 </div>
 </div>
 </div>
+<div class="cj-mobile-preview-backdrop" id="cj_mobile_preview_backdrop" onclick="cjToggleMobilePreview()"></div>
+<button type="button" class="cj-mobile-preview-fab" id="cj_mobile_preview_fab" onclick="cjToggleMobilePreview()">Preview</button>
 <div class="cj-live-preview-panel" id="cj_live_preview_panel">
-<div class="cj-live-preview-head"><b>Live preview</b><span class="cj-live-preview-hint">Updates as you type</span></div>
+<div class="cj-live-preview-head"><b>Live preview</b><span class="cj-live-preview-hint">Updates as you type</span><button type="button" class="cj-live-preview-close" id="cj_live_preview_close" onclick="cjToggleMobilePreview()">Close</button></div>
 <div class="cj-live-preview-body" id="cj_live_preview_body"></div>
 </div>
 </section>
@@ -5387,12 +5400,20 @@ function custSaveJob(mode){
 // calls this on every save; custRenderJob() calls it once on page open.
 function cjRefreshLivePreview(){
  var panel=document.getElementById("cj_live_preview_panel");
+ var fab=document.getElementById("cj_mobile_preview_fab");
  if(!panel)return;
- if(CUR!=="cust_job"){panel.classList.remove("on");document.body.classList.remove("cj-live-open");return;}
+ if(CUR!=="cust_job"){
+  panel.classList.remove("on");
+  document.body.classList.remove("cj-live-open");
+  if(fab)fab.classList.remove("on");
+  cjCloseMobilePreview();
+  return;
+ }
  var pair=custFindJob();
- if(!pair){panel.classList.remove("on");document.body.classList.remove("cj-live-open");return;}
+ if(!pair){panel.classList.remove("on");document.body.classList.remove("cj-live-open");if(fab)fab.classList.remove("on");return;}
  panel.classList.add("on");
  document.body.classList.add("cj-live-open");
+ if(fab)fab.classList.add("on");
  var body=document.getElementById("cj_live_preview_body");
  if(!body)return;
  var c=pair.c,j=pair.j;
@@ -5402,6 +5423,29 @@ function cjRefreshLivePreview(){
  body.innerHTML=custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped);
 }
 window.cjRefreshLivePreview=cjRefreshLivePreview;
+// Phone/tablet in landscape: the panel doubles as a tap-to-open drawer (see the
+// orientation:landscape CSS) via the "peek" class, separate from the desktop "on"
+// state so it stays closed until the technician actually wants to check it.
+function cjCloseMobilePreview(){
+ var panel=document.getElementById("cj_live_preview_panel");
+ var backdrop=document.getElementById("cj_mobile_preview_backdrop");
+ if(panel)panel.classList.remove("peek");
+ if(backdrop)backdrop.classList.remove("show");
+}
+function cjToggleMobilePreview(){
+ var panel=document.getElementById("cj_live_preview_panel");
+ var backdrop=document.getElementById("cj_mobile_preview_backdrop");
+ if(!panel)return;
+ var opening=!panel.classList.contains("peek");
+ if(opening){
+  cjRefreshLivePreview();
+  panel.classList.add("peek");
+  if(backdrop)backdrop.classList.add("show");
+ }else{
+  cjCloseMobilePreview();
+ }
+}
+window.cjToggleMobilePreview=cjToggleMobilePreview;
 function custScheduleAutoSave(){
  if(_custJobSaveTimer)clearTimeout(_custJobSaveTimer);
  _custJobSaveTimer=setTimeout(function(){custSaveJob("auto");},350);
