@@ -1254,25 +1254,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 </div>
 <div class="card"><h3>Feedback report</h3>
 <p style="font-size:13px;color:var(--soft);margin:0 0 10px">Busch client service report. Tick sections to include. Tag photos above with a Letter section so they land in the right place. Auto-saves on this device.</p>
-<h4 style="margin:0 0 4px;font-size:14px;font-weight:800;color:var(--teal)">Sections in this report</h4>
-<p class="cj-fb-secs-hint">Unticked sections won&rsquo;t appear in Preview or PDF. Untick hides the field below.</p>
-<div id="cj_fb_sections">
-<div class="cj-fb-sec" data-tick="exec"><label class="chk"><input type="checkbox" id="cj_fb_tick_exec" onchange="custFbTickChanged(this)"> Exec summary</label><div class="cj-fb-sec-body" id="cj_fb_body_exec"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_greeting" rows="4" placeholder="Executive summary / greeting"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="scope"><label class="chk"><input type="checkbox" id="cj_fb_tick_scope" onchange="custFbTickChanged(this)"> Scope</label><div class="cj-fb-sec-body" id="cj_fb_body_scope"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_scope" rows="3" placeholder="What was requested / scope"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="equipment"><label class="chk"><input type="checkbox" id="cj_fb_tick_equipment" onchange="custFbTickChanged(this)"> Equipment</label><div class="cj-fb-sec-body" id="cj_fb_body_equipment"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_equipment" rows="3" placeholder="Pump tag, system, location"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="method"><label class="chk"><input type="checkbox" id="cj_fb_tick_method" onchange="custFbTickChanged(this)"> Method</label><div class="cj-fb-sec-body" id="cj_fb_body_method"><div class="fld" style="padding-top:0"><div class="fh"><label>Service type</label></div><div class="ctrl"><select id="cj_fb_method_type" onchange="custFbApplyMethod(this.value)"><option value="">— Pick a service type to fill in below —</option><option value="flush">Chemical flush</option><option value="perf">Performance / efficiency testing</option><option value="internal">Internal inspection (fiberscope)</option><option value="bearing">Bearing replacement</option><option value="gland">Gland packing replacement</option><option value="valve">Valve &amp; intercepting plate replacement</option><option value="belt">Drive pulley / V-belt replacement</option><option value="rotable">Rotable spare pump preservation</option><option value="diag">Site inspection / diagnostics</option><option value="clear">Custom — clear and write my own</option></select></div><p class="sub" style="margin:4px 0 0;font-size:12.5px">Fills Heading &amp; Details below from the Busch capability statement &mdash; edit freely after.</p></div><div class="fld"><div class="fh"><label>Heading</label></div><div class="ctrl"><input type="text" id="cj_fb_intro_head"></div></div><div class="fld"><div class="fh"><label>Details</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="5"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="findings"><label class="chk"><input type="checkbox" id="cj_fb_tick_findings" onchange="custFbTickChanged(this)"> Findings</label><div class="cj-fb-sec-body" id="cj_fb_body_findings"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_findings" rows="3" placeholder="As-found condition"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="work"><label class="chk"><input type="checkbox" id="cj_fb_tick_work" onchange="custFbTickChanged(this)"> Work performed</label><div class="cj-fb-sec-body" id="cj_fb_body_work"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_additional" rows="3" placeholder="One item per line, e.g. Gland packing changes (DE and NDE)"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="results"><label class="chk"><input type="checkbox" id="cj_fb_tick_results" onchange="custFbTickChanged(this)"> Results</label><div class="cj-fb-sec-body" id="cj_fb_body_results"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_results" rows="3" placeholder="As-left / outcome"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="photos"><label class="chk"><input type="checkbox" id="cj_fb_tick_photos" onchange="custFbTickChanged(this)"> Photos</label><div class="cj-fb-sec-body" id="cj_fb_body_photos"><p class="sub" style="margin:0;font-size:12.5px">Tag each photo below with which section it belongs to (Scope, Method, Findings, Work performed, Recommendations, etc.) and it prints right under that section's text — pre/during/post-flush stay as their own photo-only sections if you use them.</p></div></div>
-<div class="cj-fb-sec" data-tick="recommendations"><label class="chk"><input type="checkbox" id="cj_fb_tick_recommendations" onchange="custFbTickChanged(this)"> Recommendations</label><div class="cj-fb-sec-body" id="cj_fb_body_recommendations"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_recommendations" rows="4" placeholder="One recommendation per line (numbered in Preview / PDF)"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="closing"><label class="chk"><input type="checkbox" id="cj_fb_tick_closing" onchange="custFbTickChanged(this)"> Closing</label><div class="cj-fb-sec-body" id="cj_fb_body_closing"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_closing" rows="3"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="safety"><label class="chk"><input type="checkbox" id="cj_fb_tick_safety" onchange="custFbTickChanged(this)"> Safety<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_safety" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_safety" rows="2" placeholder="Safety notes"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="parts"><label class="chk"><input type="checkbox" id="cj_fb_tick_parts" onchange="custFbTickChanged(this)"> Parts/materials<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_parts" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_parts" rows="2" placeholder="Parts or materials used"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="outstanding"><label class="chk"><input type="checkbox" id="cj_fb_tick_outstanding" onchange="custFbTickChanged(this)"> Outstanding<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_outstanding" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_outstanding" rows="2" placeholder="Open items"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="nextVisit"><label class="chk"><input type="checkbox" id="cj_fb_tick_nextVisit" onchange="custFbTickChanged(this)"> Next visit<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_nextVisit" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_next_visit" rows="2" placeholder="Suggested next visit / follow-up"></textarea></div></div></div></div>
-</div>
-<div class="cj-fb-letter-hdr">
+<div class="cj-fb-letter-hdr cj-fb-letter-hdr-top">
 <h4>Letter header</h4>
 <div class="fld"><div class="fh"><label>Recipient email</label></div><div class="ctrl"><input type="text" id="cj_fb_email" placeholder="e.g. rh.operations.processing@royhill.com.au"></div></div>
 <p class="sub" style="margin:0 0 8px;font-size:12.5px">Company and phone on the letter come from Customer details (name + contact phone). Recipient email stays here.</p>
@@ -1280,9 +1262,28 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="mgrid"><div class="mgf"><span class="mlab">CC name</span><div class="ctrl"><input type="text" id="cj_fb_cc_name"></div></div><div class="mgf"><span class="mlab">CC email</span><div class="ctrl"><input type="text" id="cj_fb_cc_email"></div></div></div>
 <div class="fld"><div class="fh"><label>Subject</label></div><div class="ctrl"><input type="text" id="cj_fb_subject" placeholder="e.g. Liquid ring vacuum pump chemical flush feedback report"></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">Busch ref</span><div class="ctrl"><input type="text" id="cj_fb_busch_ref" placeholder="e.g. 26NBQ146"></div></div><div class="mgf"><span class="mlab">Your ref</span><div class="ctrl"><input type="text" id="cj_fb_your_ref" placeholder="e.g. DESANDS MODULE VACUUM PUMP FLT 151"></div></div></div>
-
-<div class="fld" style="margin-top:8px"><label class="chk"><input type="checkbox" id="cj_fb_sign_andre" checked onchange="custSaveJob('auto')"> Include André de Wet sign-off</label></div>
+<div class="fld" style="margin-top:8px"><label class="chk"><input type="checkbox" id="cj_fb_sign_chris" checked onchange="custSaveJob('auto')"> Include Chris de Wet sign-off</label></div>
+<div class="fld" style="margin-top:4px"><label class="chk"><input type="checkbox" id="cj_fb_sign_andre" checked onchange="custSaveJob('auto')"> Include André de Wet sign-off</label></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">André phone</span><div class="ctrl"><input type="text" id="cj_fb_andre_phone" placeholder="+61 (0) 4 3874 2323"></div></div><div class="mgf"><span class="mlab">André email</span><div class="ctrl"><input type="text" id="cj_fb_andre_email" placeholder="andre.dewet@busch.com.au"></div></div></div>
+<div class="fld" style="margin-top:4px"><div class="fh"><label>If both are included, who goes first</label></div><div class="ctrl"><select id="cj_fb_sign_order" onchange="custSaveJob('auto')"><option value="andre">André, then Chris</option><option value="chris">Chris, then André</option></select></div></div>
+</div>
+<h4 style="margin:14px 0 4px;font-size:14px;font-weight:800;color:var(--teal)">Sections in this report</h4>
+<p class="cj-fb-secs-hint">Unticked sections won&rsquo;t appear in Preview or PDF. Untick hides the field below.</p>
+<div id="cj_fb_sections">
+<div class="cj-fb-sec" data-tick="exec"><label class="chk"><input type="checkbox" id="cj_fb_tick_exec" onchange="custFbTickChanged(this)"> Exec summary</label><div class="cj-fb-sec-body" id="cj_fb_body_exec"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_greeting" rows="4" placeholder="Executive summary / greeting"></textarea></div></div></div></div>
+<div class="cj-fb-sec" data-tick="scope"><label class="chk"><input type="checkbox" id="cj_fb_tick_scope" onchange="custFbTickChanged(this)"> Scope</label><div class="cj-fb-sec-body" id="cj_fb_body_scope"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_scope" rows="3" placeholder="What was requested / scope"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_scope" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_scope" onchange="custSecHandleFiles('scope',this.files)"></div></div></div></div>
+<div class="cj-fb-sec" data-tick="equipment"><label class="chk"><input type="checkbox" id="cj_fb_tick_equipment" onchange="custFbTickChanged(this)"> Equipment</label><div class="cj-fb-sec-body" id="cj_fb_body_equipment"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_equipment" rows="3" placeholder="Pump tag, system, location"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_equipment" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_equipment" onchange="custSecHandleFiles('equipment',this.files)"></div></div></div></div>
+<div class="cj-fb-sec" data-tick="method"><label class="chk"><input type="checkbox" id="cj_fb_tick_method" onchange="custFbTickChanged(this)"> Method</label><div class="cj-fb-sec-body" id="cj_fb_body_method"><div class="fld" style="padding-top:0"><div class="fh"><label>Service type</label></div><div class="ctrl"><select id="cj_fb_method_type" onchange="custFbApplyMethod(this.value)"><option value="">— Pick a service type to fill in below —</option><option value="flush">Chemical flush</option><option value="perf">Performance / efficiency testing</option><option value="internal">Internal inspection (fiberscope)</option><option value="bearing">Bearing replacement</option><option value="gland">Gland packing replacement</option><option value="valve">Valve &amp; intercepting plate replacement</option><option value="belt">Drive pulley / V-belt replacement</option><option value="rotable">Rotable spare pump preservation</option><option value="diag">Site inspection / diagnostics</option><option value="clear">Custom — clear and write my own</option></select></div><p class="sub" style="margin:4px 0 0;font-size:12.5px">Fills Heading &amp; Details below from the Busch capability statement &mdash; edit freely after.</p></div><div class="fld"><div class="fh"><label>Heading</label></div><div class="ctrl"><input type="text" id="cj_fb_intro_head"></div></div><div class="fld"><div class="fh"><label>Details</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="5"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_method" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_method" onchange="custSecHandleFiles('method',this.files)"></div></div></div></div>
+<div class="cj-fb-sec" data-tick="findings"><label class="chk"><input type="checkbox" id="cj_fb_tick_findings" onchange="custFbTickChanged(this)"> Findings</label><div class="cj-fb-sec-body" id="cj_fb_body_findings"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_findings" rows="3" placeholder="As-found condition"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_findings" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_findings" onchange="custSecHandleFiles('findings',this.files)"></div></div></div></div>
+<div class="cj-fb-sec" data-tick="work"><label class="chk"><input type="checkbox" id="cj_fb_tick_work" onchange="custFbTickChanged(this)"> Work performed</label><div class="cj-fb-sec-body" id="cj_fb_body_work"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_additional" rows="3" placeholder="One item per line, e.g. Gland packing changes (DE and NDE)"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_additional" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_additional" onchange="custSecHandleFiles('additional',this.files)"></div></div></div></div>
+<div class="cj-fb-sec" data-tick="results"><label class="chk"><input type="checkbox" id="cj_fb_tick_results" onchange="custFbTickChanged(this)"> Results</label><div class="cj-fb-sec-body" id="cj_fb_body_results"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_results" rows="3" placeholder="As-left / outcome"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_results" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_results" onchange="custSecHandleFiles('results',this.files)"></div></div></div></div>
+<div class="cj-fb-sec" data-tick="photos"><label class="chk"><input type="checkbox" id="cj_fb_tick_photos" onchange="custFbTickChanged(this)"> Photos</label><div class="cj-fb-sec-body" id="cj_fb_body_photos"><p class="sub" style="margin:0;font-size:12.5px">Tag each photo below with which section it belongs to (Scope, Method, Findings, Work performed, Recommendations, etc.) and it prints right under that section's text — pre/during/post-flush stay as their own photo-only sections if you use them.</p></div></div>
+<div class="cj-fb-sec" data-tick="recommendations"><label class="chk"><input type="checkbox" id="cj_fb_tick_recommendations" onchange="custFbTickChanged(this)"> Recommendations</label><div class="cj-fb-sec-body" id="cj_fb_body_recommendations"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_recommendations" rows="4" placeholder="One recommendation per line (numbered in Preview / PDF)"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_recommendations" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_recommendations" onchange="custSecHandleFiles('recommendations',this.files)"></div></div></div></div>
+<div class="cj-fb-sec" data-tick="closing"><label class="chk"><input type="checkbox" id="cj_fb_tick_closing" onchange="custFbTickChanged(this)"> Closing</label><div class="cj-fb-sec-body" id="cj_fb_body_closing"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_closing" rows="3"></textarea></div></div></div></div>
+<div class="cj-fb-sec" data-tick="safety"><label class="chk"><input type="checkbox" id="cj_fb_tick_safety" onchange="custFbTickChanged(this)"> Safety<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_safety" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_safety" rows="2" placeholder="Safety notes"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_safety" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_safety" onchange="custSecHandleFiles('safety',this.files)"></div></div></div></div>
+<div class="cj-fb-sec" data-tick="parts"><label class="chk"><input type="checkbox" id="cj_fb_tick_parts" onchange="custFbTickChanged(this)"> Parts/materials<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_parts" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_parts" rows="2" placeholder="Parts or materials used"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_parts" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_parts" onchange="custSecHandleFiles('parts',this.files)"></div></div></div></div>
+<div class="cj-fb-sec" data-tick="outstanding"><label class="chk"><input type="checkbox" id="cj_fb_tick_outstanding" onchange="custFbTickChanged(this)"> Outstanding<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_outstanding" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_outstanding" rows="2" placeholder="Open items"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_outstanding" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_outstanding" onchange="custSecHandleFiles('outstanding',this.files)"></div></div></div></div>
+<div class="cj-fb-sec" data-tick="nextVisit"><label class="chk"><input type="checkbox" id="cj_fb_tick_nextVisit" onchange="custFbTickChanged(this)"> Next visit<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_nextVisit" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_next_visit" rows="2" placeholder="Suggested next visit / follow-up"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_nextVisit" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_nextVisit" onchange="custSecHandleFiles('nextVisit',this.files)"></div></div></div></div>
 </div>
 </div>
 <div class="card cj-pdfs"><h3>Client feedback letter</h3>
@@ -5204,15 +5205,20 @@ function custRenderJob(){
  set("cj_fb_results",j.fbResults);set("cj_fb_recommendations",j.fbRecommendations);
  set("cj_fb_safety",j.fbSafety);set("cj_fb_parts",j.fbParts);set("cj_fb_outstanding",j.fbOutstanding);set("cj_fb_next_visit",j.fbNextVisit);
  if(j.fbSignAndre===undefined)j.fbSignAndre=true;
+ if(j.fbSignChris===undefined)j.fbSignChris=true;
+ if(j.fbSignOrder===undefined)j.fbSignOrder="andre";
  if(j.fbAndrePhone===undefined)j.fbAndrePhone="";
  if(j.fbAndreEmail===undefined)j.fbAndreEmail="";
  var andreCb=document.getElementById("cj_fb_sign_andre"); if(andreCb)andreCb.checked=j.fbSignAndre!==false;
+ var chrisCb=document.getElementById("cj_fb_sign_chris"); if(chrisCb)chrisCb.checked=j.fbSignChris!==false;
+ var orderSel=document.getElementById("cj_fb_sign_order"); if(orderSel)orderSel.value=j.fbSignOrder||"andre";
  set("cj_fb_andre_phone",j.fbAndrePhone||""); set("cj_fb_andre_email",j.fbAndreEmail||"");
 
  custFbApplyTicksToUi(j.fbTicks);
  custUpdateLriButton();
  custRenderJobCalcs();
  custRenderJobPhotos();
+ custSecRenderAllPhotos();
  vtRefreshFilled(document.getElementById("cust_job"));
  cjRefreshLivePreview();
 }
@@ -5382,6 +5388,8 @@ function custSaveJob(mode){
  v=grab("cj_fb_outstanding");if(v!==null)j.fbOutstanding=v||"";
  v=grab("cj_fb_next_visit");if(v!==null)j.fbNextVisit=v||"";
  var andreCb2=document.getElementById("cj_fb_sign_andre"); if(andreCb2)j.fbSignAndre=!!andreCb2.checked;
+ var chrisCb2=document.getElementById("cj_fb_sign_chris"); if(chrisCb2)j.fbSignChris=!!chrisCb2.checked;
+ v=grab("cj_fb_sign_order");if(v!==null)j.fbSignOrder=v||"andre";
  v=grab("cj_fb_andre_phone");if(v!==null)j.fbAndrePhone=v||"";
  v=grab("cj_fb_andre_email");if(v!==null)j.fbAndreEmail=v||"";
 
@@ -5395,6 +5403,7 @@ function custSaveJob(mode){
  }else{
   custRenderJob();
  }
+ if(auto)custSecRenderAllPhotos();
  cjRefreshLivePreview();
 }
 // Live preview: a docked panel beside the Job form (wide screens only — see the
@@ -5480,6 +5489,74 @@ var CUST_PHOTO_GROUP_OPT='<option value="">&mdash; none (won&rsquo;t appear in l
  +'<option value="parts">Parts / materials</option>'
  +'<option value="outstanding">Outstanding issues</option>'
  +'<option value="nextVisit">Next visit</option>';
+// Per-section photo widgets: an "Add photo" affordance inside each feedback section
+// (Scope, Findings, Work performed, etc.) rather than only in the shared Photos card.
+// Same underlying pair.j.photos array/group field as that card -- these are just
+// another way to add/caption/remove a photo, filtered to its own section's key.
+var CUST_SEC_PHOTO_KEYS=["scope","equipment","method","findings","additional","results","recommendations","safety","parts","outstanding","nextVisit"];
+var _custSecPhotoTimer=null;
+function custSecPhotoHTML(key){
+ return '<div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div>'
+  +'<div id="cj_secph_'+key+'" class="cj-secph-list"></div>'
+  +'<div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_'+key+'" onchange="custSecHandleFiles(\''+key+'\',this.files)"></div></div>';
+}
+function custSecRenderPhotos(key){
+ var el=document.getElementById("cj_secph_"+key);
+ if(!el)return;
+ var pair=custFindJob();
+ var photos=(pair&&pair.j.photos)||[];
+ var h="",i;
+ for(i=0;i<photos.length;i++){
+  if((photos[i].group||"")!==key)continue;
+  h+='<div class="rpt-ph"><img src="'+photos[i].dataUrl+'"><div class="ctrl"><input type="text" placeholder="Caption" value="'+custEsc(photos[i].caption||"")+'" oninput="custSecPhotoCaption('+i+',this.value)"></div><button type="button" class="clrbtn" onclick="custSecRemovePhotoAt('+i+')" style="margin:6px 0 0">Remove photo</button></div>';
+ }
+ el.innerHTML=h||'<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No photos yet.</p>';
+}
+function custSecRenderAllPhotos(){
+ for(var i=0;i<CUST_SEC_PHOTO_KEYS.length;i++)custSecRenderPhotos(CUST_SEC_PHOTO_KEYS[i]);
+}
+function custSecHandleFiles(key,files){
+ var pair=custFindJob();if(!pair)return;
+ var arr=Array.prototype.slice.call(files||[]);
+ arr.forEach(function(file){
+  var reader=new FileReader();
+  reader.onload=function(e){
+   var img=new Image();
+   img.onload=function(){
+    var maxW=1000,scale=Math.min(1,maxW/img.width);
+    var w=Math.round(img.width*scale),h=Math.round(img.height*scale);
+    var canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
+    canvas.getContext("2d").drawImage(img,0,0,w,h);
+    if(!pair.j.photos)pair.j.photos=[];
+    pair.j.photos.push({dataUrl:canvas.toDataURL("image/jpeg",0.72),caption:"",group:key});
+    if(!custPersist()){pair.j.photos.pop();}
+    custRenderJobPhotos();
+    custSecRenderAllPhotos();
+    cjRefreshLivePreview();
+   };
+   img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+ });
+ var input=document.getElementById("cj_secphinput_"+key);
+ if(input)input.value="";
+}
+function custSecPhotoCaption(idx,val){
+ var pair=custFindJob();if(!pair||!pair.j.photos||!pair.j.photos[idx])return;
+ pair.j.photos[idx].caption=val;
+ if(_custSecPhotoTimer)clearTimeout(_custSecPhotoTimer);
+ _custSecPhotoTimer=setTimeout(function(){custPersist();cjRefreshLivePreview();},350);
+}
+function custSecRemovePhotoAt(idx){
+ var pair=custFindJob();if(!pair)return;
+ custSaveJobCaptions();
+ pair.j.photos.splice(idx,1);
+ custPersist();
+ custRenderJobPhotos();
+ custSecRenderAllPhotos();
+ cjRefreshLivePreview();
+}
+window.custSecHandleFiles=custSecHandleFiles;window.custSecPhotoCaption=custSecPhotoCaption;window.custSecRemovePhotoAt=custSecRemovePhotoAt;
 function custRenderJobPhotos(){
  var pair=custFindJob();var el=document.getElementById("cj_photos");
  if(!el||!pair)return;
@@ -6012,6 +6089,17 @@ function custFbLetterAndreOn(j){
  if(j&&j.fbSignAndre===false) return false;
  return true;
 }
+function custFbLetterChrisOn(j){
+ var cb=document.getElementById("cj_fb_sign_chris");
+ if(cb) return !!cb.checked;
+ if(j&&j.fbSignChris===false) return false;
+ return true;
+}
+function custFbLetterSignOrder(j){
+ var sel=document.getElementById("cj_fb_sign_order");
+ var v=sel?sel.value:(j&&j.fbSignOrder);
+ return v==="chris"?"chris":"andre";
+}
 
 /** Build ordered letter sections. Exec/greeting + closing are body text (not numbered heads). */
 function custFbLetterPlan(fb,grouped){
@@ -6073,16 +6161,19 @@ function custFbLetterPhotosHtml(photos,idxs){
 }
 function custFbLetterSignoffHtml(j){
  var h='<div class="fb-signoff">';
- if(custFbLetterAndreOn(j)){
-  h+='<div class="fb-sign"><b>'+custEsc(j.fbAndreName||CUST_FB_ANDRE_DEFAULTS.name)+'</b><br>'
-    +custEsc(j.fbAndreRole||CUST_FB_ANDRE_DEFAULTS.role)+'<br>'
-    +custEsc(j.fbAndrePhone||CUST_FB_ANDRE_DEFAULTS.phone)+'<br>'
-    +'<span class="fb-em">'+custEsc(j.fbAndreEmail||CUST_FB_ANDRE_DEFAULTS.email)+'</span></div>';
- }
- h+='<div class="fb-sign"><b>'+custEsc(CUST_FB_CHRIS_DEFAULTS.name)+'</b><br>'
+ var andreOn=custFbLetterAndreOn(j),chrisOn=custFbLetterChrisOn(j),order=custFbLetterSignOrder(j);
+ var andreHtml='<div class="fb-sign"><b>'+custEsc(j.fbAndreName||CUST_FB_ANDRE_DEFAULTS.name)+'</b><br>'
+   +custEsc(j.fbAndreRole||CUST_FB_ANDRE_DEFAULTS.role)+'<br>'
+   +custEsc(j.fbAndrePhone||CUST_FB_ANDRE_DEFAULTS.phone)+'<br>'
+   +'<span class="fb-em">'+custEsc(j.fbAndreEmail||CUST_FB_ANDRE_DEFAULTS.email)+'</span></div>';
+ var chrisHtml='<div class="fb-sign"><b>'+custEsc(CUST_FB_CHRIS_DEFAULTS.name)+'</b><br>'
    +custEsc(CUST_FB_CHRIS_DEFAULTS.role)+'<br>'
    +custEsc(CUST_FB_CHRIS_DEFAULTS.phone)+'<br>'
    +'<span class="fb-em">'+custEsc(CUST_FB_CHRIS_DEFAULTS.email)+'</span></div>';
+ var first=order==="chris"?chrisHtml:andreHtml,firstOn=order==="chris"?chrisOn:andreOn;
+ var second=order==="chris"?andreHtml:chrisHtml,secondOn=order==="chris"?andreOn:chrisOn;
+ if(firstOn)h+=first;
+ if(secondOn)h+=second;
  return h+'</div>';
 }
 
@@ -6291,7 +6382,7 @@ function custFbLetterPhotos(L,photos,norm,idxs){
  flush();
 }
 function custFbLetterSignoff(L,j){
- var show=custFbLetterAndreOn(j);
+ var andreOn=custFbLetterAndreOn(j),chrisOn=custFbLetterChrisOn(j),order=custFbLetterSignOrder(j);
  var colW=(L.contentW-8)/2;
  custFbLetterEnsure(L,28);
  function col(x,name,role,phone,email){
@@ -6305,13 +6396,21 @@ function custFbLetterSignoff(L,j){
   L.doc.text(email,x,L.y+14);
   L.doc.setTextColor(0,0,0);
  }
- if(show){
-  col(L.m, j.fbAndreName||CUST_FB_ANDRE_DEFAULTS.name, j.fbAndreRole||CUST_FB_ANDRE_DEFAULTS.role, j.fbAndrePhone||CUST_FB_ANDRE_DEFAULTS.phone, j.fbAndreEmail||CUST_FB_ANDRE_DEFAULTS.email);
-  col(L.m+colW+8, CUST_FB_CHRIS_DEFAULTS.name, CUST_FB_CHRIS_DEFAULTS.role, CUST_FB_CHRIS_DEFAULTS.phone, CUST_FB_CHRIS_DEFAULTS.email);
- }else{
-  col(L.m, CUST_FB_CHRIS_DEFAULTS.name, CUST_FB_CHRIS_DEFAULTS.role, CUST_FB_CHRIS_DEFAULTS.phone, CUST_FB_CHRIS_DEFAULTS.email);
+ function drawAndre(x){col(x, j.fbAndreName||CUST_FB_ANDRE_DEFAULTS.name, j.fbAndreRole||CUST_FB_ANDRE_DEFAULTS.role, j.fbAndrePhone||CUST_FB_ANDRE_DEFAULTS.phone, j.fbAndreEmail||CUST_FB_ANDRE_DEFAULTS.email);}
+ function drawChris(x){col(x, CUST_FB_CHRIS_DEFAULTS.name, CUST_FB_CHRIS_DEFAULTS.role, CUST_FB_CHRIS_DEFAULTS.phone, CUST_FB_CHRIS_DEFAULTS.email);}
+ var firstDraw=order==="chris"?drawChris:drawAndre,firstOn=order==="chris"?chrisOn:andreOn;
+ var secondDraw=order==="chris"?drawAndre:drawChris,secondOn=order==="chris"?andreOn:chrisOn;
+ if(firstOn&&secondOn){
+  firstDraw(L.m);
+  secondDraw(L.m+colW+8);
+  L.y+=22;
+ }else if(firstOn){
+  firstDraw(L.m);
+  L.y+=22;
+ }else if(secondOn){
+  secondDraw(L.m);
+  L.y+=22;
  }
- L.y+=22;
 }
 function custFbLetterDrawFooterAll(L){
  var total=L.doc.getNumberOfPages(), i, imgH, yy;
