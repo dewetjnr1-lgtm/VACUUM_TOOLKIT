@@ -6039,7 +6039,7 @@ function cjToggleMobilePreview(){
 window.cjToggleMobilePreview=cjToggleMobilePreview;
 function custScheduleAutoSave(){
  if(_custJobSaveTimer)clearTimeout(_custJobSaveTimer);
- _custJobSaveTimer=setTimeout(function(){custSaveJob("auto");},350);
+ _custJobSaveTimer=setTimeout(function(){custSaveJob("auto");},1200);
 }
 function custSaveJobCaptions(){
  var pair=custFindJob();if(!pair)return;
