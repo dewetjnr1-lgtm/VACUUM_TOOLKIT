@@ -298,6 +298,18 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-preview-scroll{overflow:auto;padding:12px 14px 16px;flex:1;-webkit-overflow-scrolling:touch;background:#E8EEF2;}
 .cj-fb-preview-actions{display:flex;flex-direction:column;gap:10px;padding:12px 14px 18px;border-top:1px solid var(--line);background:var(--elev);flex:0 0 auto;position:sticky;bottom:0;}
 .cj-fb-preview-actions .exbtn,.cj-fb-preview-actions .clrbtn{min-height:52px;font-size:16.5px;font-weight:800;width:100%;margin:0;display:block;}
+.cj-live-preview-panel{display:none;}
+.cj-live-preview-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;gap:8px;}
+.cj-live-preview-head b{font-size:12.5px;color:var(--teal);text-transform:uppercase;letter-spacing:.04em;}
+.cj-live-preview-hint{font-size:11px;color:var(--soft);white-space:nowrap;}
+.cj-live-preview-body{background:#fff;border-radius:8px;padding:8px;}
+.cj-live-preview-body .cj-fb-letter{font-size:11.5px;padding:12px 12px 8px;}
+@media (min-width:1100px){
+ #cust_job.page.active{max-width:1300px;width:calc(100vw - 32px);margin-left:calc(50% - 50vw + 16px);margin-right:calc(50% - 50vw + 16px);}
+ .cj-job-flex{display:flex;gap:20px;align-items:flex-start;}
+ .cj-job-formcol{flex:1 1 620px;min-width:0;max-width:720px;}
+ .cj-live-preview-panel.on{display:block;flex:1 1 420px;max-width:480px;position:sticky;top:70px;max-height:calc(100vh - 90px);overflow-y:auto;background:var(--elev);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+}
 .cj-fb-letter{font-size:13.5px;color:#333;line-height:1.45;background:#fff;border-radius:8px;padding:16px 16px 10px;border:1px solid #D0D5D8;font-family:Helvetica,Arial,sans-serif;}
 .cj-fb-letter.cj-fb-letter-word{background:#fff;}
 .cj-fb-letter .fb-logos{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;}
@@ -1190,7 +1202,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 </div>
 <button class="clrbtn" style="display:block;width:100%;margin-left:0;margin:12px 0 16px" onclick="custDeleteCustomer(CUST_CUR)">Delete customer</button>
 </section>
-<section class="page" id="cust_job">
+<section class="page" id="cust_job"><div class="cj-job-flex"><div class="cj-job-formcol">
 <div class="pgh"><h2 id="cj_title">Job</h2><span id="cj_saved_chip" class="vt-saved-chip">Saved on this device</span></div>
 <p class="sub" id="cj_sub"></p>
 <div class="card cj-visit"><h3>Visit</h3>
@@ -1276,6 +1288,11 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <button type="button" class="clrbtn" onclick="custCloseFeedbackPreview()">Close</button>
 </div>
 </div>
+</div>
+</div>
+<div class="cj-live-preview-panel" id="cj_live_preview_panel">
+<div class="cj-live-preview-head"><b>Live preview</b><span class="cj-live-preview-hint">Updates as you type</span></div>
+<div class="cj-live-preview-body" id="cj_live_preview_body"></div>
 </div>
 </section>
 <section class="page" id="cust_royhill">
@@ -4820,6 +4837,27 @@ function lriBindStickyScroll(){
   lriScheduleStatus();
  });
 })();
+// Job page: any typing/change anywhere in the form schedules an auto-save, which in
+// turn refreshes the live preview panel (see custSaveJob -> cjRefreshLivePreview).
+// A single delegated listener covers every field, including ones that don't carry
+// their own oninput/onchange attribute.
+(function custJobBindLiveEvents(){
+ var root=document.getElementById("cust_job");
+ if(!root||root.getAttribute("data-live-bound"))return;
+ root.setAttribute("data-live-bound","1");
+ root.addEventListener("input",function(ev){
+  if(!ev.target)return;
+  var t=ev.target;
+  if(t.tagName!=="INPUT"&&t.tagName!=="TEXTAREA"&&t.tagName!=="SELECT")return;
+  custScheduleAutoSave();
+ });
+ root.addEventListener("change",function(ev){
+  if(!ev.target)return;
+  var t=ev.target;
+  if(t.tagName!=="INPUT"&&t.tagName!=="TEXTAREA"&&t.tagName!=="SELECT")return;
+  custScheduleAutoSave();
+ });
+})();
 
 
 window.lriAddRow=lriAddRow;window.lriRemoveRow=lriRemoveRow;window.lriRemovePhoto=lriRemovePhoto;window.lriClear=lriClear;window.lriExportPDF=lriExportPDF;window.lriCopyPrevPump=lriCopyPrevPump;window.lriApplySections=lriApplySections;
@@ -5160,6 +5198,7 @@ function custRenderJob(){
  custRenderJobCalcs();
  custRenderJobPhotos();
  vtRefreshFilled(document.getElementById("cust_job"));
+ cjRefreshLivePreview();
 }
 var CUST_FB_DEFAULTS={
  introHead:"Introduction to BUSCH Liquid Ring Vacuum Pump Flush chemical",
@@ -5340,7 +5379,28 @@ function custSaveJob(mode){
  }else{
   custRenderJob();
  }
+ cjRefreshLivePreview();
 }
+// Live preview: a docked panel beside the Job form (wide screens only — see the
+// min-width:1100px rule on #cust_job) that re-renders the same HTML the Preview
+// modal and PDF use, so a change shows up without an extra click. custSaveJob()
+// calls this on every save; custRenderJob() calls it once on page open.
+function cjRefreshLivePreview(){
+ var panel=document.getElementById("cj_live_preview_panel");
+ if(!panel)return;
+ if(CUR!=="cust_job"){panel.classList.remove("on");return;}
+ var pair=custFindJob();
+ if(!pair){panel.classList.remove("on");return;}
+ panel.classList.add("on");
+ var body=document.getElementById("cj_live_preview_body");
+ if(!body)return;
+ var c=pair.c,j=pair.j;
+ var fb=custFbResolve(j,c);
+ var photos=(j.photos||[]).slice();
+ var grouped=custFbGroupedPhotos(photos);
+ body.innerHTML=custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped);
+}
+window.cjRefreshLivePreview=cjRefreshLivePreview;
 function custScheduleAutoSave(){
  if(_custJobSaveTimer)clearTimeout(_custJobSaveTimer);
  _custJobSaveTimer=setTimeout(function(){custSaveJob("auto");},350);
@@ -5404,6 +5464,7 @@ function custHandlePhotos(files){
     pair.j.photos.push({dataUrl:canvas.toDataURL("image/jpeg",0.72),caption:""});
     if(!custPersist()){pair.j.photos.pop();}
     custRenderJobPhotos();
+    cjRefreshLivePreview();
    };
    img.src=e.target.result;
   };
@@ -5416,6 +5477,7 @@ function custRemovePhoto(i){
  pair.j.photos.splice(i,1);
  custPersist();
  custRenderJobPhotos();
+ cjRefreshLivePreview();
 }
 
 var CUST_CALC_LIST=[
@@ -6336,6 +6398,7 @@ function show(id){
  if(id==="cust")custRenderList();
  if(id==="cust_view")custRenderView();
  if(id==="cust_job")custRenderJob();
+ else cjRefreshLivePreview();
  if(id==="lri"){lriSecEnabledInit();lriRenderSetup();lriApplySections();if(typeof lriApplyLinkedContext==="function")lriApplyLinkedContext();}
  window.scrollTo(0,0);
 }
