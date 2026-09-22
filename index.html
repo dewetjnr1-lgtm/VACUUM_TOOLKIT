@@ -1257,7 +1257,8 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="cj-fb-letter-hdr cj-fb-letter-hdr-top">
 <h4>Letter header</h4>
 <div class="fld"><div class="fh"><label>Recipient email</label></div><div class="ctrl"><input type="text" id="cj_fb_email" placeholder="e.g. rh.operations.processing@royhill.com.au"></div></div>
-<p class="sub" style="margin:0 0 8px;font-size:12.5px">Company and phone on the letter come from Customer details (name + contact phone). Recipient email stays here.</p>
+<div class="fld"><div class="fh"><label>Contact name</label></div><div class="ctrl"><input type="text" id="cj_fb_contact_name" placeholder="e.g. Site contact"></div></div>
+<p class="sub" style="margin:0 0 8px;font-size:12.5px">Company and phone on the letter come from Customer details. Contact name starts from Customer details too, but can be changed here just for this letter.</p>
 <div class="mgrid"><div class="mgf"><span class="mlab">From</span><div class="ctrl"><input type="text" id="cj_fb_from"></div></div><div class="mgf"><span class="mlab">Date</span><div class="ctrl"><input type="date" id="cj_fb_date"></div></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">CC name</span><div class="ctrl"><input type="text" id="cj_fb_cc_name"></div></div><div class="mgf"><span class="mlab">CC email</span><div class="ctrl"><input type="text" id="cj_fb_cc_email"></div></div></div>
 <div class="fld"><div class="fh"><label>Subject</label></div><div class="ctrl"><input type="text" id="cj_fb_subject" placeholder="e.g. Liquid ring vacuum pump chemical flush feedback report"></div></div>
@@ -5195,7 +5196,9 @@ function custRenderJob(){
  if(!j.fbFrom)j.fbFrom=CUST_FB_DEFAULTS.from||"";
  if(!j.fbYourRef)j.fbYourRef=j.site||"";
  if(!j.fbSubject)j.fbSubject=CUST_FB_DEFAULTS.subject||"";
+ if(j.fbContactName===undefined)j.fbContactName=(c&&c.contactName)||"";
  set("cj_fb_email",j.fbEmail||"");
+ set("cj_fb_contact_name",j.fbContactName);
  set("cj_fb_from",j.fbFrom);set("cj_fb_date",j.fbDate);
  set("cj_fb_cc_name",j.fbCcName);set("cj_fb_cc_email",j.fbCcEmail);
  set("cj_fb_subject",j.fbSubject);set("cj_fb_busch_ref",j.fbBuschRef);set("cj_fb_your_ref",j.fbYourRef);
@@ -5366,6 +5369,7 @@ function custSaveJob(mode){
  v=grab("cj_po");if(v!==null)j.po=v||"";
  v=grab("cj_findings");if(v!==null)j.findings=v||"";
  v=grab("cj_fb_email");if(v!==null)j.fbEmail=v||"";
+ v=grab("cj_fb_contact_name");if(v!==null)j.fbContactName=v||"";
  v=grab("cj_fb_from");if(v!==null)j.fbFrom=v||"";
  v=grab("cj_fb_date");if(v!==null)j.fbDate=v||"";
  v=grab("cj_fb_cc_name");if(v!==null)j.fbCcName=v||"";
@@ -6002,7 +6006,7 @@ function custFbResolve(j,c){
  o.email=(j.fbEmail||"").trim();
  o.company=(c&&c.name||"").trim();
  o.phone=((c&&c.contactPhone)||"").trim();
- o.contactName=((c&&c.contactName)||"").trim();
+ o.contactName=(j.fbContactName!=null&&j.fbContactName!=="")?String(j.fbContactName).trim():((c&&c.contactName)||"").trim();
  o.contactEmail=((c&&c.contactEmail)||"").trim();
  o.from=(j.fbFrom||CUST_FB_DEFAULTS.from||"").trim();
  o.date=j.fbDate||j.date||"";
