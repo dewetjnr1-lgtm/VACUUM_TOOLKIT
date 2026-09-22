@@ -317,6 +317,8 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-letter .fb-photos-letter{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 12px;}
 .cj-fb-letter .fb-ph-letter{border:1.5px solid #E85D04;border-radius:2px;overflow:hidden;background:#fff;}
 .cj-fb-letter .fb-ph-letter img{display:block;width:100%;height:120px;object-fit:cover;}
+.cj-fb-letter .fb-ph-letter.full{grid-column:1 / -1;}
+.cj-fb-letter .fb-ph-letter.full img{height:230px;}
 .cj-fb-letter .fb-ph-letter .cap{padding:6px 8px;font-size:11.5px;color:#333;border-bottom:1px solid #E8C9B0;background:#fff;}
 .cj-fb-letter .fb-note{font-size:12px;color:#667788;margin:0 0 10px;}
 .cj-fb-letter .fb-ol,.cj-fb-letter .fb-ul{margin:0 0 12px;padding:0 0 0 1.25em;color:#333;}
@@ -5351,6 +5353,8 @@ function custSaveJobCaptions(){
   if(e)photos[i].caption=e.value;
   var g=document.getElementById("cj_ph"+i+"_grp");
   if(g)photos[i].group=g.value;
+  var sz=document.getElementById("cj_ph"+i+"_size");
+  if(sz)photos[i].size=sz.value;
  }
 }
 var CUST_PHOTO_GROUP_OPT='<option value="">&mdash; none (won&rsquo;t appear in letter) &mdash;</option>'
@@ -5374,12 +5378,14 @@ function custRenderJobPhotos(){
  var photos=pair.j.photos||[],h="",i,p;
  for(i=0;i<photos.length;i++){
   p=photos[i];
-  h+='<div class="rpt-ph"><img src="'+p.dataUrl+'"><div class="mgrid"><div class="mgf"><span class="mlab">Caption</span><div class="ctrl"><input type="text" id="cj_ph'+i+'_cap" placeholder="Caption, e.g. FLT 151 discharge" value="'+custEsc(p.caption||"")+'" onchange="custSaveJob(\'auto\')" oninput="custScheduleAutoSave()"></div></div><div class="mgf"><span class="mlab">Letter section (for feedback PDF)</span><div class="ctrl"><select id="cj_ph'+i+'_grp" onchange="custSaveJob(\'auto\')">'+CUST_PHOTO_GROUP_OPT+'</select></div></div></div><button class="clrbtn" onclick="custRemovePhoto('+i+')" style="margin:6px 0 0">Remove photo</button></div>';
+  h+='<div class="rpt-ph"><img src="'+p.dataUrl+'"><div class="mgrid"><div class="mgf"><span class="mlab">Caption</span><div class="ctrl"><input type="text" id="cj_ph'+i+'_cap" placeholder="Caption, e.g. FLT 151 discharge" value="'+custEsc(p.caption||"")+'" onchange="custSaveJob(\'auto\')" oninput="custScheduleAutoSave()"></div></div><div class="mgf"><span class="mlab">Letter section (for feedback PDF)</span><div class="ctrl"><select id="cj_ph'+i+'_grp" onchange="custSaveJob(\'auto\')">'+CUST_PHOTO_GROUP_OPT+'</select></div></div></div><div class="fld" style="margin-top:6px"><div class="fh"><label>Size in letter</label></div><div class="ctrl"><select id="cj_ph'+i+'_size" onchange="custSaveJob(\'auto\')"><option value="half">Half width &mdash; 2 side by side</option><option value="full">Full width &mdash; on its own row</option></select></div></div><button class="clrbtn" onclick="custRemovePhoto('+i+')" style="margin:6px 0 0">Remove photo</button></div>';
  }
  el.innerHTML=h||'<p style="font-size:13px;color:var(--soft);margin:8px 2px">No photos yet.</p>';
  for(i=0;i<photos.length;i++){
   var s=document.getElementById("cj_ph"+i+"_grp");
   if(s)s.value=photos[i].group||"";
+  var sz=document.getElementById("cj_ph"+i+"_size");
+  if(sz)sz.value=photos[i].size==="full"?"full":"half";
  }
 }
 function custHandlePhotos(files){
@@ -5946,11 +5952,12 @@ function custFbLetterMetaHtml(lab,val){
  return '<div class="fb-meta-row"><span class="fb-lab">'+custEsc(lab)+' :</span> <span class="fb-val">'+custEsc(val||"—")+'</span></div>';
 }
 function custFbLetterPhotosHtml(photos,idxs){
- var h='<div class="fb-photos-letter">',i,ph,cap;
+ var h='<div class="fb-photos-letter">',i,ph,cap,full;
  for(i=0;i<idxs.length;i++){
   ph=photos[idxs[i]]; if(!ph) continue;
   cap=(ph.caption||"").trim()||("Photo "+(idxs[i]+1));
-  h+='<div class="fb-ph-letter"><div class="cap">'+custEsc(cap)+'</div><img src="'+ph.dataUrl+'" alt=""></div>';
+  full=ph.size==="full";
+  h+='<div class="fb-ph-letter'+(full?" full":"")+'"><div class="cap">'+custEsc(cap)+'</div><img src="'+ph.dataUrl+'" alt=""></div>';
  }
  return h+'</div>';
 }
@@ -6122,9 +6129,11 @@ function custFbLetterDrawHeader(L,c,j,fb){
  custFbLetterMetaLine(L,"YOUR REF",fb.yourRef,L.m,L.y,32,L.contentW-34); L.y+=7;
 }
 function custFbLetterPhotos(L,photos,norm,idxs){
- var cellW=(L.contentW-4)/2, maxH=52, capFs=8, capLh=3.2, row=[], i;
+ var halfW=(L.contentW-4)/2, maxHhalf=52, maxHfull=95, capFs=8, capLh=3.2, row=[], rowFull=false, i;
  function flush(){
   if(!row.length) return;
+  var cellW=rowFull?L.contentW:halfW;
+  var maxH=rowFull?maxHfull:maxHhalf;
   var caps=[], heights=[], ci, capLines, imgH, need, x, cell, fmt, iy;
   for(ci=0;ci<row.length;ci++){
    cell=row[ci];
@@ -6155,12 +6164,19 @@ function custFbLetterPhotos(L,photos,norm,idxs){
    L.doc.rect(x,iy,cellW,heights[ci]);
   }
   L.y+=capH+imgBlock+5;
-  row=[];
+  row=[]; rowFull=false;
  }
  for(i=0;i<idxs.length;i++){
   var i0=idxs[i];
-  row.push({src:norm[i0].src,w:norm[i0].w,h:norm[i0].h,cap:(photos[i0].caption||"").trim()||("Photo "+(i0+1))});
-  if(row.length===2) flush();
+  var item={src:norm[i0].src,w:norm[i0].w,h:norm[i0].h,cap:(photos[i0].caption||"").trim()||("Photo "+(i0+1))};
+  if(photos[i0].size==="full"){
+   flush();
+   row=[item]; rowFull=true;
+   flush();
+  }else{
+   row.push(item);
+   if(row.length===2) flush();
+  }
  }
  flush();
 }
