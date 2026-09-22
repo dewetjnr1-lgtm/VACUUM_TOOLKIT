@@ -1232,11 +1232,11 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="cj-fb-sec" data-tick="exec"><label class="chk"><input type="checkbox" id="cj_fb_tick_exec" onchange="custFbTickChanged(this)"> Exec summary</label><div class="cj-fb-sec-body" id="cj_fb_body_exec"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_greeting" rows="4" placeholder="Executive summary / greeting"></textarea></div></div></div></div>
 <div class="cj-fb-sec" data-tick="scope"><label class="chk"><input type="checkbox" id="cj_fb_tick_scope" onchange="custFbTickChanged(this)"> Scope</label><div class="cj-fb-sec-body" id="cj_fb_body_scope"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_scope" rows="3" placeholder="What was requested / scope"></textarea></div></div></div></div>
 <div class="cj-fb-sec" data-tick="equipment"><label class="chk"><input type="checkbox" id="cj_fb_tick_equipment" onchange="custFbTickChanged(this)"> Equipment</label><div class="cj-fb-sec-body" id="cj_fb_body_equipment"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_equipment" rows="3" placeholder="Pump tag, system, location"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="method"><label class="chk"><input type="checkbox" id="cj_fb_tick_method" onchange="custFbTickChanged(this)"> Method</label><div class="cj-fb-sec-body" id="cj_fb_body_method"><div class="fld" style="padding-top:0"><div class="fh"><label>Heading</label></div><div class="ctrl"><input type="text" id="cj_fb_intro_head"></div></div><div class="fld"><div class="fh"><label>Details</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="5"></textarea></div></div></div></div>
+<div class="cj-fb-sec" data-tick="method"><label class="chk"><input type="checkbox" id="cj_fb_tick_method" onchange="custFbTickChanged(this)"> Method</label><div class="cj-fb-sec-body" id="cj_fb_body_method"><div class="fld" style="padding-top:0"><div class="fh"><label>Service type</label></div><div class="ctrl"><select id="cj_fb_method_type" onchange="custFbApplyMethod(this.value)"><option value="">— Pick a service type to fill in below —</option><option value="flush">Chemical flush</option><option value="perf">Performance / efficiency testing</option><option value="internal">Internal inspection (fiberscope)</option><option value="bearing">Bearing replacement</option><option value="gland">Gland packing replacement</option><option value="valve">Valve &amp; intercepting plate replacement</option><option value="belt">Drive pulley / V-belt replacement</option><option value="rotable">Rotable spare pump preservation</option><option value="diag">Site inspection / diagnostics</option><option value="clear">Custom — clear and write my own</option></select></div><p class="sub" style="margin:4px 0 0;font-size:12.5px">Fills Heading &amp; Details below from the Busch capability statement &mdash; edit freely after.</p></div><div class="fld"><div class="fh"><label>Heading</label></div><div class="ctrl"><input type="text" id="cj_fb_intro_head"></div></div><div class="fld"><div class="fh"><label>Details</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="5"></textarea></div></div></div></div>
 <div class="cj-fb-sec" data-tick="findings"><label class="chk"><input type="checkbox" id="cj_fb_tick_findings" onchange="custFbTickChanged(this)"> Findings</label><div class="cj-fb-sec-body" id="cj_fb_body_findings"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_findings" rows="3" placeholder="As-found condition"></textarea></div></div></div></div>
 <div class="cj-fb-sec" data-tick="work"><label class="chk"><input type="checkbox" id="cj_fb_tick_work" onchange="custFbTickChanged(this)"> Work performed</label><div class="cj-fb-sec-body" id="cj_fb_body_work"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_additional" rows="3" placeholder="One item per line, e.g. Gland packing changes (DE and NDE)"></textarea></div></div></div></div>
 <div class="cj-fb-sec" data-tick="results"><label class="chk"><input type="checkbox" id="cj_fb_tick_results" onchange="custFbTickChanged(this)"> Results</label><div class="cj-fb-sec-body" id="cj_fb_body_results"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_results" rows="3" placeholder="As-left / outcome"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="photos"><label class="chk"><input type="checkbox" id="cj_fb_tick_photos" onchange="custFbTickChanged(this)"> Photos</label><div class="cj-fb-sec-body" id="cj_fb_body_photos"><p class="sub" style="margin:0;font-size:12.5px">Uses photos tagged with a Letter section above (Pre-flush, In progress, Post-flush, Additional works).</p></div></div>
+<div class="cj-fb-sec" data-tick="photos"><label class="chk"><input type="checkbox" id="cj_fb_tick_photos" onchange="custFbTickChanged(this)"> Photos</label><div class="cj-fb-sec-body" id="cj_fb_body_photos"><p class="sub" style="margin:0;font-size:12.5px">Tag each photo below with which section it belongs to (Scope, Method, Findings, Work performed, Recommendations, etc.) and it prints right under that section's text — pre/during/post-flush stay as their own photo-only sections if you use them.</p></div></div>
 <div class="cj-fb-sec" data-tick="recommendations"><label class="chk"><input type="checkbox" id="cj_fb_tick_recommendations" onchange="custFbTickChanged(this)"> Recommendations</label><div class="cj-fb-sec-body" id="cj_fb_body_recommendations"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_recommendations" rows="4" placeholder="One recommendation per line (numbered in Preview / PDF)"></textarea></div></div></div></div>
 <div class="cj-fb-sec" data-tick="closing"><label class="chk"><input type="checkbox" id="cj_fb_tick_closing" onchange="custFbTickChanged(this)"> Closing</label><div class="cj-fb-sec-body" id="cj_fb_body_closing"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_closing" rows="3"></textarea></div></div></div></div>
 <div class="cj-fb-sec" data-tick="safety"><label class="chk"><input type="checkbox" id="cj_fb_tick_safety" onchange="custFbTickChanged(this)"> Safety<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_safety" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_safety" rows="2" placeholder="Safety notes"></textarea></div></div></div></div>
@@ -5167,6 +5167,44 @@ var CUST_FB_DEFAULTS={
  from:"Chris de Wet",
  subject:"Vacuum pump chem-flush feedback report"
 };
+// Method presets, adapted from Busch's own Mining Capability Statement so the wording
+// is consistent with what Busch already publishes about each service.
+var CUST_METHOD_PRESETS={
+ flush:{head:CUST_FB_DEFAULTS.introHead,body:CUST_FB_DEFAULTS.introBody},
+ perf:{head:"Liquid Ring Vacuum Pump Performance Testing",
+  body:"Performance testing of the liquid ring vacuum pump was carried out on site and in situ, using the multiple orifice plate method. This allows the current performance to be compared against the original performance data, showing how the pump is performing relative to a new pump."},
+ internal:{head:"Internal Inspection of Liquid Ring Vacuum Pump",
+  body:"A precision flexible fiberscope was used to inspect the internal cavity of the pump, transmitting an image to an external monitor. By manipulating the fiberscope to reach various areas inside the unit, digital images were recorded showing the condition of internal surfaces and critical clearances, helping to pinpoint areas affecting pump performance and service life."},
+ bearing:{head:"Bearing Replacement",
+  body:"Bearings were replaced on the vacuum pump. Busch technicians are experienced in the precision and expertise required for bearing changes on vacuum systems, from selecting the right bearings to precise installation, extending the working life of the pump."},
+ gland:{head:"Gland Packing Replacement",
+  body:"Gland packing was replaced on the vacuum pump. High-quality materials and rigorous procedures were followed to minimise downtime and prevent leaks, keeping the system running at its best."},
+ valve:{head:"Valve & Intercepting Plate Replacement",
+  body:"Valve and/or intercepting plates were replaced on the vacuum pump. These are integral components of pump performance, and replacement was carried out with precision to ensure the system continues to operate at peak efficiency."},
+ belt:{head:"Drive Pulley and V-Belt Replacement",
+  body:"V-belts and/or pump and motor pulleys were replaced as part of routine consumable maintenance on the drive."},
+ rotable:{head:"Rotable Spare Pump Preservation",
+  body:"The spare vacuum pump held in stores was preserved to keep it ready for use, including rotating the shaft and other preservation steps, reducing the risk of faulty bearings or internal rust from prolonged storage."},
+ diag:{head:"Site and Vacuum Pump System Inspection / Diagnostics",
+  body:"An on-site assessment of the vacuum pump and system was carried out, evaluating condition, performance and efficiency. Diagnostic tools and techniques were used to assess pump health, including measuring pressure, temperature and flow rates, and inspecting components for wear, in order to pinpoint any existing or potential problems and provide recommendations."}
+};
+function custFbApplyMethod(key){
+ var head=document.getElementById("cj_fb_intro_head"),body=document.getElementById("cj_fb_intro_body"),sel=document.getElementById("cj_fb_method_type");
+ if(!key){return;}
+ if(key==="clear"){
+  if(head)head.value="";
+  if(body)body.value="";
+ }else{
+  var p=CUST_METHOD_PRESETS[key];
+  if(!p){return;}
+  if(head)head.value=p.head;
+  if(body)body.value=p.body;
+ }
+ if(head&&typeof vtMarkFilled==="function")vtMarkFilled(head);
+ if(body&&typeof vtMarkFilled==="function")vtMarkFilled(body);
+ if(sel)sel.value="";
+ custSaveJob("auto");
+}
 var CUST_FB_TICK_DEFAULTS={exec:true,scope:true,equipment:true,method:true,findings:true,work:true,results:true,photos:true,recommendations:true,closing:true,safety:false,parts:false,outstanding:false,nextVisit:false};
 var CUST_FB_TICK_KEYS=["exec","scope","equipment","method","findings","work","results","photos","recommendations","closing","safety","parts","outstanding","nextVisit"];
 var CUST_FB_SEC_LABELS={exec:"Executive summary",scope:"Scope of work",equipment:"Equipment / system",method:"Method / chemistry",findings:"Findings / condition",work:"Work performed",results:"Results / status",photos:"Photo evidence",recommendations:"Recommendations",closing:"Closing / contacts",safety:"Safety note",parts:"Parts / materials",outstanding:"Outstanding issues",nextVisit:"Next visit"};
@@ -5315,7 +5353,21 @@ function custSaveJobCaptions(){
   if(g)photos[i].group=g.value;
  }
 }
-var CUST_PHOTO_GROUP_OPT='<option value="">&mdash; none (won&rsquo;t appear in letter) &mdash;</option><option value="pre">Pre-flush</option><option value="during">In progress</option><option value="post">Post-flush</option><option value="additional">Additional works</option>';
+var CUST_PHOTO_GROUP_OPT='<option value="">&mdash; none (won&rsquo;t appear in letter) &mdash;</option>'
+ +'<option value="scope">Scope of work</option>'
+ +'<option value="equipment">Equipment / system</option>'
+ +'<option value="method">Method</option>'
+ +'<option value="pre">Pre-flush</option>'
+ +'<option value="during">In progress</option>'
+ +'<option value="post">Post-flush</option>'
+ +'<option value="findings">Findings / condition</option>'
+ +'<option value="additional">Work performed</option>'
+ +'<option value="results">Results / status</option>'
+ +'<option value="recommendations">Recommendations</option>'
+ +'<option value="safety">Safety note</option>'
+ +'<option value="parts">Parts / materials</option>'
+ +'<option value="outstanding">Outstanding issues</option>'
+ +'<option value="nextVisit">Next visit</option>';
 function custRenderJobPhotos(){
  var pair=custFindJob();var el=document.getElementById("cj_photos");
  if(!el||!pair)return;
@@ -5793,8 +5845,10 @@ function custFbEmitPhotoRows(pb,photos,norm,idxs){
  }
 }
 function custFbDash(v){return (v&&String(v).trim())?String(v):"—";}
+var CUST_PHOTO_GROUP_KEYS=["pre","during","post","additional","scope","equipment","method","findings","results","recommendations","safety","parts","outstanding","nextVisit"];
 function custFbGroupedPhotos(photos){
- var out={pre:[],during:[],post:[],additional:[]},ungrouped=0,i,g;
+ var out={},ungrouped=0,i,g;
+ for(i=0;i<CUST_PHOTO_GROUP_KEYS.length;i++)out[CUST_PHOTO_GROUP_KEYS[i]]=[];
  for(i=0;i<photos.length;i++){
   g=(photos[i].group||"").trim();
   if(g&&out[g])out[g].push(i);
@@ -5846,33 +5900,40 @@ function custFbLetterAndreOn(j){
 /** Build ordered letter sections. Exec/greeting + closing are body text (not numbered heads). */
 function custFbLetterPlan(fb,grouped){
  var ticks=fb.ticks||custFbNormalizeTicks(null);
- var by=(grouped&&grouped.by)||{pre:[],during:[],post:[],additional:[]};
+ var by=(grouped&&grouped.by)||{};
+ function idxsFor(key){return by[key]||[];}
  var secs=[],n=0;
  function add(key,title,kind,payload){n++;secs.push({kind:kind,num:n,key:key,title:title,payload:payload});}
+ // A text section also carries any photos tagged to its same key, so a photo prints
+ // right under the section it belongs to instead of only in one shared gallery.
+ function addTextWithPhotos(key,title,tickOn,text){
+  var idxs=idxsFor(key);
+  if(tickOn&&(custFbLetterHas(text)||idxs.length)) add(key,title,"text",{text:text||"",idxs:idxs});
+ }
  if(ticks.exec&&custFbLetterHas(fb.greeting)) secs.push({kind:"greeting",payload:fb.greeting});
- if(ticks.scope&&custFbLetterHas(fb.scope)) add("scope",CUST_FB_LETTER_HEADINGS.scope,"text",fb.scope);
- if(ticks.equipment&&custFbLetterHas(fb.equipment)) add("equipment",CUST_FB_LETTER_HEADINGS.equipment,"text",fb.equipment);
- if(ticks.method&&custFbLetterHas(fb.introBody)) add("method",CUST_FB_LETTER_HEADINGS.method,"text",fb.introBody);
- if(ticks.findings&&custFbLetterHas(fb.findings)) add("findings",CUST_FB_LETTER_HEADINGS.findings,"text",fb.findings);
- if(ticks.results&&custFbLetterHas(fb.results)) add("results",CUST_FB_LETTER_HEADINGS.results,"text",fb.results);
+ addTextWithPhotos("scope",CUST_FB_LETTER_HEADINGS.scope,ticks.scope,fb.scope);
+ addTextWithPhotos("equipment",CUST_FB_LETTER_HEADINGS.equipment,ticks.equipment,fb.equipment);
+ addTextWithPhotos("method",fb.introHead||CUST_FB_LETTER_HEADINGS.method,ticks.method,fb.introBody);
+ addTextWithPhotos("findings",CUST_FB_LETTER_HEADINGS.findings,ticks.findings,fb.findings);
+ addTextWithPhotos("results",CUST_FB_LETTER_HEADINGS.results,ticks.results,fb.results);
  if(ticks.photos){
   ["pre","during","post"].forEach(function(gk){
-   if((by[gk]||[]).length) add(gk,CUST_FB_LETTER_HEADINGS[gk],"photos",by[gk]);
+   if(idxsFor(gk).length) add(gk,CUST_FB_LETTER_HEADINGS[gk],"photos",idxsFor(gk));
   });
  }
- if(ticks.work&&(custFbLetterHas(fb.additional)||(by.additional||[]).length)){
-  add("work",CUST_FB_LETTER_HEADINGS.work,"work",{text:fb.additional||"",idxs:by.additional||[]});
- }else if(ticks.photos&&(by.additional||[]).length){
-  add("work",CUST_FB_LETTER_HEADINGS.work,"photos",by.additional);
+ if(ticks.work&&(custFbLetterHas(fb.additional)||idxsFor("additional").length)){
+  add("work",CUST_FB_LETTER_HEADINGS.work,"work",{text:fb.additional||"",idxs:idxsFor("additional")});
+ }else if(ticks.photos&&idxsFor("additional").length){
+  add("work",CUST_FB_LETTER_HEADINGS.work,"photos",idxsFor("additional"));
  }
  if(ticks.recommendations){
-  var recs=custFbRecLines(fb.recommendations);
-  if(recs.length) add("recommendations",CUST_FB_LETTER_HEADINGS.recommendations,"recs",recs);
+  var recs=custFbRecLines(fb.recommendations),recIdxs=idxsFor("recommendations");
+  if(recs.length||recIdxs.length) add("recommendations",CUST_FB_LETTER_HEADINGS.recommendations,"recs",{lines:recs,idxs:recIdxs});
  }
- if(ticks.safety&&custFbLetterHas(fb.safety)) add("safety",CUST_FB_LETTER_HEADINGS.safety,"text",fb.safety);
- if(ticks.parts&&custFbLetterHas(fb.parts)) add("parts",CUST_FB_LETTER_HEADINGS.parts,"text",fb.parts);
- if(ticks.outstanding&&custFbLetterHas(fb.outstanding)) add("outstanding",CUST_FB_LETTER_HEADINGS.outstanding,"text",fb.outstanding);
- if(ticks.nextVisit&&custFbLetterHas(fb.nextVisit)) add("nextVisit",CUST_FB_LETTER_HEADINGS.nextVisit,"text",fb.nextVisit);
+ addTextWithPhotos("safety",CUST_FB_LETTER_HEADINGS.safety,ticks.safety,fb.safety);
+ addTextWithPhotos("parts",CUST_FB_LETTER_HEADINGS.parts,ticks.parts,fb.parts);
+ addTextWithPhotos("outstanding",CUST_FB_LETTER_HEADINGS.outstanding,ticks.outstanding,fb.outstanding);
+ addTextWithPhotos("nextVisit",CUST_FB_LETTER_HEADINGS.nextVisit,ticks.nextVisit,fb.nextVisit);
  if(ticks.closing){
   var closeTxt=custFbLetterHas(fb.closing)?fb.closing:(CUST_FB_DEFAULTS.closing||"");
   if(custFbLetterHas(closeTxt)) secs.push({kind:"closing",payload:closeTxt});
@@ -5943,11 +6004,16 @@ function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
    h+=custFbLetterSignoffHtml(j);
   }else if(sec.kind==="text"){
    h+='<div class="fb-sec-letter">'+sec.num+'. '+custEsc(sec.title)+'</div>';
-   h+='<div class="fb-body">'+custEsc(sec.payload).replace(/\n/g,"<br>")+'</div>';
+   if(custFbLetterHas(sec.payload.text)) h+='<div class="fb-body">'+custEsc(sec.payload.text).replace(/\n/g,"<br>")+'</div>';
+   if(sec.payload.idxs&&sec.payload.idxs.length) h+=custFbLetterPhotosHtml(photos,sec.payload.idxs);
   }else if(sec.kind==="recs"){
-   h+='<div class="fb-sec-letter">'+sec.num+'. '+custEsc(sec.title)+'</div><ol class="fb-ol">';
-   for(ii=0;ii<sec.payload.length;ii++) h+='<li>'+custEsc(sec.payload[ii])+'</li>';
-   h+='</ol>';
+   h+='<div class="fb-sec-letter">'+sec.num+'. '+custEsc(sec.title)+'</div>';
+   if(sec.payload.lines&&sec.payload.lines.length){
+    h+='<ol class="fb-ol">';
+    for(ii=0;ii<sec.payload.lines.length;ii++) h+='<li>'+custEsc(sec.payload.lines[ii])+'</li>';
+    h+='</ol>';
+   }
+   if(sec.payload.idxs&&sec.payload.idxs.length) h+=custFbLetterPhotosHtml(photos,sec.payload.idxs);
   }else if(sec.kind==="photos"){
    h+='<div class="fb-sec-letter">'+sec.num+'. '+custEsc(sec.title)+'</div>';
    h+=custFbLetterPhotosHtml(photos,sec.payload);
@@ -6167,11 +6233,15 @@ function custExportFeedbackPDF(skipUngroupedWarn){
     custFbLetterSignoff(L,j);
    }else if(sec.kind==="text"){
     custFbLetterSecHead(L,sec.num,sec.title);
-    custFbLetterBodyText(L,sec.payload,{fs:10,lh:4.5,gapAfter:3});
+    if(custFbLetterHas(sec.payload.text))custFbLetterBodyText(L,sec.payload.text,{fs:10,lh:4.5,gapAfter:3});
+    if(sec.payload.idxs&&sec.payload.idxs.length) custFbLetterPhotos(L,photos,norm,sec.payload.idxs);
    }else if(sec.kind==="recs"){
     custFbLetterSecHead(L,sec.num,sec.title);
-    for(li=0;li<sec.payload.length;li++) custFbLetterBodyText(L,(li+1)+". "+sec.payload[li],{fs:10,lh:4.5,gapAfter:1.5});
-    L.y+=2;
+    if(sec.payload.lines&&sec.payload.lines.length){
+     for(li=0;li<sec.payload.lines.length;li++) custFbLetterBodyText(L,(li+1)+". "+sec.payload.lines[li],{fs:10,lh:4.5,gapAfter:1.5});
+     L.y+=2;
+    }
+    if(sec.payload.idxs&&sec.payload.idxs.length) custFbLetterPhotos(L,photos,norm,sec.payload.idxs);
    }else if(sec.kind==="photos"){
     custFbLetterSecHead(L,sec.num,sec.title);
     custFbLetterPhotos(L,photos,norm,sec.payload);
