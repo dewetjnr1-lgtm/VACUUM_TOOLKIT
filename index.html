@@ -303,19 +303,22 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-live-preview-head b{font-size:12.5px;color:var(--teal);text-transform:uppercase;letter-spacing:.04em;}
 .cj-live-preview-hint{font-size:11px;color:var(--soft);white-space:nowrap;}
 .cj-live-preview-body{background:#fff;border-radius:8px;padding:8px;}
-.cj-live-preview-body .cj-fb-letter{font-size:11.5px;padding:12px 12px 8px;}
+.cj-live-preview-body .cj-fb-letter{max-width:760px;margin:0 auto;}
 .cj-live-preview-close{display:none;}
 .cj-mobile-preview-backdrop{display:none;}
 .cj-mobile-preview-fab{display:none;}
-/* Fixed to the viewport, not laid out beside the 720px-centred form — sidesteps
-   fighting main's own centering math, which is what broke the earlier flex version. */
-@media (min-width:1500px){
- body.cj-live-open{padding-right:416px;}
- .cj-live-preview-panel.on{display:block;position:fixed;top:66px;right:16px;width:380px;max-height:calc(100vh - 86px);overflow-y:auto;background:var(--elev);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 4px 20px rgba(0,0,0,.45);z-index:40;}
+/* Fixed to the viewport, not laid out beside the form via flex/grid — sidesteps
+   fighting main's own centering math, which is what broke the earlier version.
+   True half/half: the panel is pinned to the right half of the viewport, and
+   main is allowed to widen and shift into the left half instead of staying
+   capped at its normal 720px, so both sides actually use the space. */
+@media (min-width:1000px){
+ body.cj-live-open main{max-width:calc(50vw - 40px);margin:0 0 0 16px;padding-right:16px;}
+ .cj-live-preview-panel.on{display:block;position:fixed;top:66px;right:0;width:calc(50vw - 8px);max-height:calc(100vh - 76px);overflow-y:auto;background:var(--elev);border-left:1px solid var(--line);border-radius:14px 0 0 14px;padding:16px;box-shadow:-4px 0 20px rgba(0,0,0,.45);z-index:40;}
 }
 /* Phone/tablet turned sideways: too narrow for a permanent split, so the preview
    is a tap-to-open drawer instead — pop it out to check, close it to keep editing. */
-@media (orientation:landscape) and (min-width:560px) and (max-width:1499px){
+@media (orientation:landscape) and (min-width:560px) and (max-width:999px){
  .cj-mobile-preview-fab.on{display:block;position:fixed;bottom:18px;right:18px;z-index:41;background:var(--accent);color:#241505;border:0;border-radius:24px;padding:12px 20px;font-size:14px;font-weight:800;box-shadow:0 4px 16px rgba(0,0,0,.5);cursor:pointer;}
  .cj-mobile-preview-backdrop.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:38;}
  .cj-live-preview-panel.peek{display:block;position:fixed;top:0;right:0;bottom:0;width:86%;max-width:420px;max-height:100vh;border-radius:0;overflow-y:auto;background:var(--elev);border-left:1px solid var(--line);box-shadow:-6px 0 24px rgba(0,0,0,.5);z-index:39;padding:14px;}
