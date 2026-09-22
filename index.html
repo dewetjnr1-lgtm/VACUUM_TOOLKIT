@@ -304,11 +304,11 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-live-preview-hint{font-size:11px;color:var(--soft);white-space:nowrap;}
 .cj-live-preview-body{background:#fff;border-radius:8px;padding:8px;}
 .cj-live-preview-body .cj-fb-letter{font-size:11.5px;padding:12px 12px 8px;}
-@media (min-width:1100px){
- #cust_job.page.active{max-width:1300px;width:calc(100vw - 32px);margin-left:calc(50% - 50vw + 16px);margin-right:calc(50% - 50vw + 16px);}
- .cj-job-flex{display:flex;gap:20px;align-items:flex-start;}
- .cj-job-formcol{flex:1 1 620px;min-width:0;max-width:720px;}
- .cj-live-preview-panel.on{display:block;flex:1 1 420px;max-width:480px;position:sticky;top:70px;max-height:calc(100vh - 90px);overflow-y:auto;background:var(--elev);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 4px 20px rgba(0,0,0,.35);}
+/* Fixed to the viewport, not laid out beside the 720px-centred form — sidesteps
+   fighting main's own centering math, which is what broke the earlier flex version. */
+@media (min-width:1500px){
+ body.cj-live-open{padding-right:416px;}
+ .cj-live-preview-panel.on{display:block;position:fixed;top:66px;right:16px;width:380px;max-height:calc(100vh - 86px);overflow-y:auto;background:var(--elev);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:0 4px 20px rgba(0,0,0,.45);z-index:40;}
 }
 .cj-fb-letter{font-size:13.5px;color:#333;line-height:1.45;background:#fff;border-radius:8px;padding:16px 16px 10px;border:1px solid #D0D5D8;font-family:Helvetica,Arial,sans-serif;}
 .cj-fb-letter.cj-fb-letter-word{background:#fff;}
@@ -5388,10 +5388,11 @@ function custSaveJob(mode){
 function cjRefreshLivePreview(){
  var panel=document.getElementById("cj_live_preview_panel");
  if(!panel)return;
- if(CUR!=="cust_job"){panel.classList.remove("on");return;}
+ if(CUR!=="cust_job"){panel.classList.remove("on");document.body.classList.remove("cj-live-open");return;}
  var pair=custFindJob();
- if(!pair){panel.classList.remove("on");return;}
+ if(!pair){panel.classList.remove("on");document.body.classList.remove("cj-live-open");return;}
  panel.classList.add("on");
+ document.body.classList.add("cj-live-open");
  var body=document.getElementById("cj_live_preview_body");
  if(!body)return;
  var c=pair.c,j=pair.j;
