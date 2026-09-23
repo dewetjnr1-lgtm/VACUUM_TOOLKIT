@@ -372,9 +372,10 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-letter{font-size:13.5px;color:#333;line-height:1.45;background:#fff;border-radius:8px;padding:16px 16px 10px;border:1px solid #D0D5D8;font-family:Helvetica,Arial,sans-serif;}
 .cj-fb-letter.cj-fb-letter-word{background:#fff;}
 .cj-fb-letter .fb-logos{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;}
-.cj-fb-letter .fb-logo-cust{max-width:120px;max-height:48px;object-fit:contain;background:#0C121A;padding:8px 10px;border-radius:8px;}
-.cj-fb-letter .fb-logo-busch{max-width:120px;max-height:48px;object-fit:contain;}
-.cj-fb-letter .fb-logo-ph{min-width:110px;min-height:40px;border:1px dashed #2A3B48;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#A8B8C2;padding:6px;background:#0C121A;}
+.cj-fb-letter .fb-logo-cust{max-width:190px;max-height:76px;object-fit:contain;background:transparent;padding:0;border-radius:0;}
+.cj-fb-letter .fb-logo-cust.fb-logo-on-plate{background:#0C121A;padding:4px;border-radius:5px;}
+.cj-fb-letter .fb-logo-busch{max-width:220px;max-height:68px;object-fit:contain;}
+.cj-fb-letter .fb-logo-ph{min-width:140px;min-height:56px;border:1px dashed #C5CDD3;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#8899AA;padding:4px;background:transparent;}
 .cj-fb-letter .fb-letter-title{margin:0 0 12px;font-size:16px;font-weight:800;color:#222;text-align:center;letter-spacing:.01em;}
 .cj-fb-letter .fb-meta{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;margin:0 0 8px;font-size:12.5px;}
 .cj-fb-letter .fb-meta-col{min-width:0;}
@@ -4895,8 +4896,12 @@ function lriRefreshLivePreview(){
   var fb=custFbResolve(j,c);
   var photos=(j.photos||[]).slice();
   var grouped=custFbGroupedPhotos(photos);
-  if(body)body.innerHTML=custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped);
-  panel.scrollTop=scrollY;
+  function paintLetter(){
+   if(body)body.innerHTML=custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped);
+   if(body)custApplyPreviewLogoPlate(body,c);
+   panel.scrollTop=scrollY;
+  }
+  custEnsureLogoLightFlag(c,paintLetter);
   return;
  }
  if(frame)frame.style.display="";
@@ -5308,6 +5313,48 @@ function custMigrateContacts(c){
   c.contactName=String(c.contacts).trim();
  }
 }
+function custLogoLooksLight(dataUrl,cb){
+ if(!dataUrl){cb(false);return;}
+ try{
+  var img=new Image();
+  img.onload=function(){
+   try{
+    var max=64,scale=Math.min(1,max/Math.max(1,img.width),max/Math.max(1,img.height));
+    var w=Math.max(1,Math.round(img.width*scale)),h=Math.max(1,Math.round(img.height*scale));
+    var canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
+    var ctx=canvas.getContext("2d");
+    ctx.fillStyle="#ffffff";ctx.fillRect(0,0,w,h);
+    ctx.drawImage(img,0,0,w,h);
+    var d=ctx.getImageData(0,0,w,h).data,sum=0,n=0,i,a,lum;
+    for(i=0;i<d.length;i+=4){
+     a=d[i+3]/255; if(a<0.12)continue;
+     lum=0.2126*d[i]+0.7152*d[i+1]+0.0722*d[i+2];
+     sum+=lum; n++;
+    }
+    cb(n>0 && (sum/n)>200);
+   }catch(err){cb(false);}
+  };
+  img.onerror=function(){cb(false);};
+  img.src=dataUrl;
+ }catch(err2){cb(false);}
+}
+function custEnsureLogoLightFlag(c,cb){
+ if(!c||!c.logoDataUrl){if(c)delete c.logoLooksLight; if(cb)cb(false);return;}
+ if(typeof c.logoLooksLight==="boolean"){if(cb)cb(c.logoLooksLight);return;}
+ custLogoLooksLight(c.logoDataUrl,function(light){
+  c.logoLooksLight=!!light;
+  if(cb)cb(c.logoLooksLight);
+ });
+}
+function custApplyPreviewLogoPlate(root,c){
+ if(!root||!c||!c.logoDataUrl)return;
+ var img=root.querySelector(".fb-logo-cust");
+ if(!img)return;
+ custEnsureLogoLightFlag(c,function(light){
+  if(light)img.classList.add("fb-logo-on-plate");
+  else img.classList.remove("fb-logo-on-plate");
+ });
+}
 function custRenderLogo(){
  var c=custFind(CUST_CUR);var el=document.getElementById("cv_logo_prev");
  var miss=document.getElementById("cv_logo_missing");
@@ -5317,9 +5364,11 @@ function custRenderLogo(){
  if(c.logoDataUrl){
   el.innerHTML='<div class="cv-logo-mock paper"><span class="lab">On white paper</span><img src="'+c.logoDataUrl+'" alt="Logo on white paper"></div>';
   if(miss)miss.style.display="none";
+  custEnsureLogoLightFlag(c);
  }else{
   el.innerHTML='<div class="cv-logo-mock paper"><span class="lab">On white paper</span><span class="ph">No logo — will vanish / look empty on white</span></div>';
   if(miss)miss.style.display="block";
+  delete c.logoLooksLight;
  }
 }
 function custSaveView(){
@@ -5349,6 +5398,7 @@ function custSaveView(){
 function custClearLogo(){
  var c=custFind(CUST_CUR);if(!c)return;
  c.logoDataUrl="";
+ delete c.logoLooksLight;
  custPersist();
  custRenderLogo();
 }
@@ -5364,8 +5414,12 @@ function custHandleLogo(file){
    var canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
    canvas.getContext("2d").drawImage(img,0,0,w,h);
    c.logoDataUrl=canvas.toDataURL("image/png");
-   if(!custPersist()){c.logoDataUrl="";}
-   custRenderLogo();
+   delete c.logoLooksLight;
+   custLogoLooksLight(c.logoDataUrl,function(light){
+    c.logoLooksLight=!!light;
+    if(!custPersist()){c.logoDataUrl="";delete c.logoLooksLight;}
+    custRenderLogo();
+   });
   };
   img.src=e.target.result;
  };
@@ -5712,13 +5766,19 @@ function cjRefreshLivePreview(fromDebounce){
   var fb=custFbResolve(j,c);
   var photos=(j.photos||[]).slice();
   var grouped=custFbGroupedPhotos(photos);
-  var htmlLetter=custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped);
-  if(htmlLetter!=null && htmlLetter!==""){
-   _cjLiveLastGood=htmlLetter;
-   body.innerHTML=htmlLetter;
-  }else if(_cjLiveLastGood){
-   body.innerHTML=_cjLiveLastGood;
+  function paintLive(){
+   var htmlLetter=custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped);
+   if(htmlLetter!=null && htmlLetter!==""){
+    _cjLiveLastGood=htmlLetter;
+    body.innerHTML=htmlLetter;
+    custApplyPreviewLogoPlate(body,c);
+   }else if(_cjLiveLastGood){
+    body.innerHTML=_cjLiveLastGood;
+   }
+   panel.scrollTop=scrollY;
   }
+  custEnsureLogoLightFlag(c,paintLive);
+  return;
  }catch(err){
   if(_cjLiveLastGood)body.innerHTML=_cjLiveLastGood;
  }
@@ -6201,10 +6261,13 @@ function custImportBackup(file){
 function custFileSafe(name){
  return String(name||"Customer").replace(/[^a-z0-9]+/gi,"_").replace(/^_|_$/g,"").slice(0,40)||"Customer";
 }
-function custPlaceCustomerLogo(doc,dataUrl,x,y,maxW,maxH){
- // Always plain white paper -- no dark plate behind the logo, ever.
- var fmt, props, ar, w, h;
- maxW=maxW||36; maxH=maxH||14;
+function custPlaceCustomerLogo(doc,dataUrl,x,y,maxW,maxH,opts){
+ // Desi L1/L2: bigger customer mark; thin near-black plate ONLY for light/white logos.
+ opts=opts||{};
+ var fmt, props, ar, w, h, pad, boxW, boxH, usePlate;
+ maxW=maxW||55; maxH=maxH||24;
+ usePlate=!!opts.plate;
+ pad=typeof opts.pad==="number"?opts.pad:1.1;
  if(!dataUrl)return 0;
  try{
   fmt=/^data:image\/jpe?g/i.test(dataUrl)?"JPEG":"PNG";
@@ -6212,11 +6275,24 @@ function custPlaceCustomerLogo(doc,dataUrl,x,y,maxW,maxH){
   ar=(props.width&&props.height)?(props.width/props.height):(maxW/maxH);
   w=maxW; h=w/ar;
   if(h>maxH){h=maxH; w=h*ar;}
+  if(usePlate){
+   boxW=w+2*pad; boxH=h+2*pad;
+   doc.setFillColor(12,18,26);
+   doc.roundedRect(x,y,boxW,boxH,1.2,1.2,"F");
+   doc.addImage(dataUrl,fmt,x+pad,y+pad,w,h);
+   return boxH;
+  }
   doc.addImage(dataUrl,fmt,x,y,w,h);
   return h;
  }catch(err){
   try{
    fmt=/^data:image\/jpe?g/i.test(dataUrl)?"JPEG":"PNG";
+   if(usePlate){
+    doc.setFillColor(12,18,26);
+    doc.roundedRect(x,y,maxW+2*pad,maxH+2*pad,1.2,1.2,"F");
+    doc.addImage(dataUrl,fmt,x+pad,y+pad,maxW,maxH);
+    return maxH+2*pad;
+   }
    doc.addImage(dataUrl,fmt,x,y,maxW,maxH);
    return maxH;
   }catch(err2){
@@ -6225,8 +6301,8 @@ function custPlaceCustomerLogo(doc,dataUrl,x,y,maxW,maxH){
  }
 }
 function custDrawCustomerLogo(pb,c){
- // Customer logo top-left on white paper; Busch letterhead top-right via pbCreate(true).
- custPlaceCustomerLogo(pb.doc, c&&c.logoDataUrl, PB_M, PB_M, 42, 16);
+ // Customer logo top-left; thin plate only when logoLooksLight. Busch via pbCreate(true).
+ custPlaceCustomerLogo(pb.doc, c&&c.logoDataUrl, PB_M, PB_M, 55, 24, {plate:!!(c&&c.logoLooksLight)});
 }
 function custExportJobPDF(){
  // Locked: one customer PDF only — the Client feedback letter. No Visit summary / per-pump PDF from Job.
@@ -6459,8 +6535,10 @@ function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
  var plan=custFbLetterPlan(fb,grouped);
  var h='<div class="cj-fb-letter cj-fb-letter-word">';
  h+='<div class="fb-logos">';
- if(c&&c.logoDataUrl) h+='<img class="fb-logo-cust" src="'+c.logoDataUrl+'" alt="Customer logo">';
- else h+='<div class="fb-logo-ph">Customer logo</div>';
+ if(c&&c.logoDataUrl){
+  var plateCls=(c.logoLooksLight===true)?" fb-logo-on-plate":"";
+  h+='<img class="fb-logo-cust'+plateCls+'" src="'+c.logoDataUrl+'" alt="Customer logo">';
+ }else h+='<div class="fb-logo-ph">Customer logo</div>';
  h+='<img class="fb-logo-busch" src="'+LRI_LOGO+'" alt="Busch">';
  h+='</div>';
  h+='<h4 class="fb-letter-title">'+custEsc(CUST_FB_LETTER_TITLE)+'</h4>';
@@ -6614,8 +6692,9 @@ function custFbLetterMetaLine(L,lab,val,x,y,labW,maxW){
  return lines.length;
 }
 function custFbLetterDrawHeader(L,c,j,fb){
- var logoH=14, logoW=48, custH;
- custH=custPlaceCustomerLogo(L.doc, c&&c.logoDataUrl, L.m, L.y, 38, 16);
+ // Desi L1/L3: customer ~55x24mm, Busch group ~64x15.3mm (natural aspect of LRI_LOGO).
+ var logoW=64, logoH=logoW*120/502, custH;
+ custH=custPlaceCustomerLogo(L.doc, c&&c.logoDataUrl, L.m, L.y, 55, 24, {plate:!!(c&&c.logoLooksLight)});
  try{L.doc.addImage(LRI_LOGO,"PNG",L.pw-L.m-logoW,L.y,logoW,logoH);}catch(e2){}
  L.y+=Math.max(logoH,custH)+6;
  L.doc.setFont("helvetica","bold"); L.doc.setFontSize(14);
@@ -6756,6 +6835,7 @@ function custExportFeedbackPDF(skipUngroupedWarn){
  var photos=(j.photos||[]).slice();
  var grouped=custFbGroupedPhotos(photos);
  if(ticks.photos&&!skipUngroupedWarn&&!custFbWarnUngrouped(grouped.ungrouped))return;
+ custEnsureLogoLightFlag(c,function(){
  var normPromises=[],k;
  for(k=0;k<photos.length;k++) normPromises.push(pbNormalizePhoto(photos[k].dataUrl));
  var pumpPhotosPromise=(ticks.pumpInspection&&fb.hasPumpInspection)?lriNormalizeSecPhotos():Promise.resolve({});
@@ -6803,6 +6883,7 @@ function custExportFeedbackPDF(skipUngroupedWarn){
   L.doc.save(fname);
   custCloseFeedbackPreview();
  });
+ });
 }
 
 function custCloseFeedbackPreview(){
@@ -6825,11 +6906,15 @@ function custPreviewFeedbackLetter(){
  var el=document.getElementById("cj_fb_preview");
  if(!body||!el){alert("Preview UI missing.");return;}
  if(el.parentNode!==document.body)document.body.appendChild(el);
- body.innerHTML=custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped);
- el.classList.add("open");
- el.setAttribute("aria-hidden","false");
- document.body.classList.add("cj-fb-preview-open");
- body.scrollTop=0;
+ function paint(){
+  body.innerHTML=custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped);
+  custApplyPreviewLogoPlate(body,c);
+  el.classList.add("open");
+  el.setAttribute("aria-hidden","false");
+  document.body.classList.add("cj-fb-preview-open");
+  body.scrollTop=0;
+ }
+ custEnsureLogoLightFlag(c,paint);
 }
 function custConfirmFeedbackPDF(){
  custExportFeedbackPDF(true);
@@ -6842,7 +6927,7 @@ window.custOpen=custOpen;window.custOpenJob=custOpenJob;window.custNewJob=custNe
 window.custSaveView=custSaveView;window.custSaveJob=custSaveJob;window.custScheduleAutoSave=custScheduleAutoSave;window.custClearLogo=custClearLogo;
 window.custRemovePhoto=custRemovePhoto;window.custDeleteJob=custDeleteJob;
 window.custExportBackup=custExportBackup;window.custAddCustomer=custAddCustomer;
-window.custPlaceCustomerLogo=custPlaceCustomerLogo;window.custDrawCustomerLogo=custDrawCustomerLogo;window.custExportJobPDF=custExportJobPDF;window.custRenderList=custRenderList;
+window.custLogoLooksLight=custLogoLooksLight;window.custEnsureLogoLightFlag=custEnsureLogoLightFlag;window.custPlaceCustomerLogo=custPlaceCustomerLogo;window.custDrawCustomerLogo=custDrawCustomerLogo;window.custExportJobPDF=custExportJobPDF;window.custRenderList=custRenderList;
 window.lriEditHeaderOnJob=lriEditHeaderOnJob;window.lriApplyLinkedContext=lriApplyLinkedContext;window.lriSyncHeaderFromJob=lriSyncHeaderFromJob;
 window.custOpenCalcPicker=custOpenCalcPicker;window.custCloseCalcPicker=custCloseCalcPicker;
 window.custAddJobCalc=custAddJobCalc;window.custRemoveJobCalc=custRemoveJobCalc;window.custOpenJobCalc=custOpenJobCalc;
