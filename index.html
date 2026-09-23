@@ -314,8 +314,13 @@ body.cj-fb-preview-open{overflow:hidden !important;}
    main is allowed to widen and shift into the left half instead of staying
    capped at its normal 720px, so both sides actually use the space. */
 @media (min-width:1000px){
- body.cj-live-open main{max-width:calc(50vw - 40px);margin:0 0 0 16px;padding-right:16px;}
- .cj-live-preview-panel.on{display:flex;flex-direction:column;position:fixed;top:66px;right:0;width:calc(50vw - 8px);height:calc(100vh - 76px);max-height:calc(100vh - 76px);overflow-y:auto;background:var(--elev);border-left:1px solid var(--line);border-radius:14px 0 0 14px;padding:16px;box-shadow:-4px 0 20px rgba(0,0,0,.45);z-index:40;}
+ /* --cj-live-w is set from JS (window.innerWidth), not vw, so both sides are
+    always exact complements of the same measured number — two independent
+    vw calc()s can drift apart (scrollbar handling, sub-pixel rounding,
+    browser zoom) and that drift is what caused the panel to overlap the
+    form on some real screens. Falls back to vw only before JS has run. */
+ body.cj-live-open main{max-width:var(--cj-live-w,calc(50vw - 40px));margin:0 0 0 16px;padding-right:16px;}
+ .cj-live-preview-panel.on{display:flex;flex-direction:column;position:fixed;top:66px;right:0;width:var(--cj-live-panel-w,calc(50vw - 8px));height:calc(100vh - 76px);max-height:calc(100vh - 76px);overflow-y:auto;background:var(--elev);border-left:1px solid var(--line);border-radius:14px 0 0 14px;padding:16px;box-shadow:-4px 0 20px rgba(0,0,0,.45);z-index:40;}
 }
 /* Phone/tablet turned sideways: too narrow for a permanent split, so the preview
    is a tap-to-open drawer instead — pop it out to check, close it to keep editing. */
@@ -4808,6 +4813,7 @@ function lriRefreshLivePreview(){
  }
  panel.classList.add("on");
  document.body.classList.add("cj-live-open");
+ cjSetLiveSplitWidth();
  if(fab)fab.classList.add("on");
  if(_lriLivePreviewBusy){_lriLivePreviewPending=true;return;}
  _lriLivePreviewBusy=true;
@@ -5570,6 +5576,16 @@ function custSaveJob(mode){
 // min-width:1100px rule on #cust_job) that re-renders the same HTML the Preview
 // modal and PDF use, so a change shows up without an extra click. custSaveJob()
 // calls this on every save; custRenderJob() calls it once on page open.
+function cjSetLiveSplitWidth(){
+ var w=window.innerWidth;
+ if(w<1000)return;
+ var half=Math.round(w/2);
+ document.documentElement.style.setProperty("--cj-live-w",(half-40)+"px");
+ document.documentElement.style.setProperty("--cj-live-panel-w",(half-8)+"px");
+}
+window.addEventListener("resize",function(){
+ if(document.body.classList.contains("cj-live-open"))cjSetLiveSplitWidth();
+});
 function cjRefreshLivePreview(){
  var panel=document.getElementById("cj_live_preview_panel");
  var fab=document.getElementById("cj_mobile_preview_fab");
@@ -5585,6 +5601,7 @@ function cjRefreshLivePreview(){
  if(!pair){panel.classList.remove("on");document.body.classList.remove("cj-live-open");if(fab)fab.classList.remove("on");return;}
  panel.classList.add("on");
  document.body.classList.add("cj-live-open");
+ cjSetLiveSplitWidth();
  if(fab)fab.classList.add("on");
  var body=document.getElementById("cj_live_preview_body");
  if(!body)return;
