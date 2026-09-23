@@ -1172,7 +1172,8 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="cj-mobile-preview-backdrop" id="lri_mobile_preview_backdrop" onclick="lriToggleMobilePreview()"></div>
 <button type="button" class="cj-mobile-preview-fab" id="lri_mobile_preview_fab" onclick="lriToggleMobilePreview()">Preview</button>
 <div class="cj-live-preview-panel" id="lri_live_preview_panel">
-<div class="cj-live-preview-head"><b>Live preview</b><span class="cj-live-preview-hint">Updates as you type</span><button type="button" class="cj-live-preview-close" onclick="lriToggleMobilePreview()">Close</button></div>
+<div class="cj-live-preview-head"><b id="lri_live_preview_label">Live preview</b><span class="cj-live-preview-hint">Updates as you type</span><button type="button" class="cj-live-preview-close" onclick="lriToggleMobilePreview()">Close</button></div>
+<div class="cj-live-preview-body" id="lri_live_preview_body" style="display:none"></div>
 <iframe id="lri_live_preview_frame" class="cj-live-preview-frame" title="Inspection report live preview"></iframe>
 </div>
 </section>
@@ -4785,6 +4786,16 @@ function lriBuildDoc(){
 }
 function lriExportPDF(){
  lriSaveCaptions();
+ // Linked to a job: there is no separate inspection PDF any more — export the
+ // one client feedback letter this section belongs to.
+ var linkedPair=lriResolveLinkedPair();
+ if(linkedPair){
+  var savedCur=CUST_CUR,savedJob=CUST_JOB_CUR;
+  CUST_CUR=linkedPair.c.id;CUST_JOB_CUR=linkedPair.j.id;
+  custExportFeedbackPDF(true);
+  CUST_CUR=savedCur;CUST_JOB_CUR=savedJob;
+  return;
+ }
  lriBuildDoc().then(function(pb){
   var fname=(rv("lri_ref")||"Liquid_Ring_Pump_Inspection").replace(/[^a-z0-9\-_]+/gi,"_")+".pdf";
   pb.doc.save(fname);
@@ -4803,6 +4814,9 @@ function lriScheduleLivePreview(){
 function lriRefreshLivePreview(){
  var panel=document.getElementById("lri_live_preview_panel");
  var fab=document.getElementById("lri_mobile_preview_fab");
+ var frame=document.getElementById("lri_live_preview_frame");
+ var body=document.getElementById("lri_live_preview_body");
+ var label=document.getElementById("lri_live_preview_label");
  if(!panel)return;
  if(CUR!=="lri"){
   panel.classList.remove("on");
@@ -4815,11 +4829,29 @@ function lriRefreshLivePreview(){
  document.body.classList.add("cj-live-open");
  cjSetLiveSplitWidth();
  if(fab)fab.classList.add("on");
+ lriSaveCaptions();
+ // When this inspection is linked to a job, it isn't a separate document —
+ // it's a section of that job's client feedback letter, so the preview here
+ // must show that same letter (the exact HTML the Job page renders), not a
+ // standalone bordered-table PDF. Otherwise it looks like a different report.
+ var linkedPair=lriResolveLinkedPair();
+ if(linkedPair){
+  if(frame)frame.style.display="none";
+  if(body)body.style.display="";
+  if(label)label.textContent="Live preview — client feedback letter";
+  var c=linkedPair.c,j=linkedPair.j;
+  var fb=custFbResolve(j,c);
+  var photos=(j.photos||[]).slice();
+  var grouped=custFbGroupedPhotos(photos);
+  if(body)body.innerHTML=custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped);
+  return;
+ }
+ if(frame)frame.style.display="";
+ if(body)body.style.display="none";
+ if(label)label.textContent="Live preview";
  if(_lriLivePreviewBusy){_lriLivePreviewPending=true;return;}
  _lriLivePreviewBusy=true;
- lriSaveCaptions();
  lriBuildDoc().then(function(pb){
-  var frame=document.getElementById("lri_live_preview_frame");
   var oldUrl=_lriLivePreviewUrl;
   _lriLivePreviewUrl=pb.doc.output("bloburl");
   if(frame)frame.src=_lriLivePreviewUrl;
