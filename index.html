@@ -438,6 +438,22 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-sec .cj-fb-sec-body{margin-top:10px;}
 .cj-fb-sec .cj-fb-sec-body[hidden]{display:none !important;}
 .cj-fb-secs-hint{font-size:12.5px;color:var(--soft);margin:4px 0 10px;}
+.cj-relwrap{margin-top:10px;}
+.cj-ba-row{display:flex;align-items:center;gap:10px;margin:8px 0 6px;flex-wrap:wrap;}
+.cj-ba-row label.chk{font-weight:650;font-size:13.5px;margin:0;display:flex;align-items:center;gap:8px;cursor:pointer;}
+.cj-ba-row label.chk input{width:18px;height:18px;flex:0 0 auto;}
+.cj-relblock{border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0;background:var(--elev);}
+.cj-relblock .cj-rel-head{display:flex;align-items:flex-start;gap:8px;margin:0 0 6px;}
+.cj-relblock .cj-rel-head .ctrl{flex:1;min-width:0;}
+.cj-relblock .cj-ba-sides{display:grid;grid-template-columns:1fr;gap:8px;margin-top:6px;}
+@media(min-width:560px){.cj-relblock .cj-ba-sides{grid-template-columns:1fr 1fr;}}
+.cj-ba-side{border:1px dashed var(--line);border-radius:8px;padding:8px;}
+.cj-ba-side h5{margin:0 0 6px;font-size:12px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--soft);}
+.cj-phblock-title{font-size:12.5px;font-weight:750;margin:0 0 4px;color:var(--ink);}
+.cj-fb-letter .fb-aspect{font-size:11.5px;font-weight:800;color:#333;margin:10px 0 4px;}
+.cj-fb-letter .fb-ba-side{font-size:10.5px;font-weight:800;color:#E85D04;text-transform:uppercase;letter-spacing:.03em;margin:8px 0 4px;}
+.lri-relwrap{margin-top:8px;}
+
 .cj-fb-letter-hdr{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);}
 .cj-fb-letter-hdr h4{margin:0 0 8px;font-size:13px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--soft);}
 
@@ -1333,6 +1349,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="note warn" id="cj_warn" style="display:none">This phone is low on storage for photos. Export a PDF or backup now, then remove a photo or two and try again.</div>
 <p class="sub" style="margin:8px 2px 4px;font-size:12.5px">Tag photos with a Letter section so they show in the client feedback letter.</p>
 <div id="cj_photos"></div>
+<div id="cj_phhost_jobPhotos" class="cj-phhost" data-phkey="jobPhotos"></div>
 </div>
 <div class="card"><h3>Client feedback report</h3>
 <p style="font-size:13px;color:var(--soft);margin:0 0 10px">Client feedback report — edit here. Preview updates as you type.</p>
@@ -1355,21 +1372,21 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <p class="cj-fb-secs-hint">Sections in this report (ticked = Preview + PDF).</p>
 <div id="cj_fb_sections">
 <div class="cj-fb-sec" data-tick="exec"><label class="chk"><input type="checkbox" id="cj_fb_tick_exec" onchange="custFbTickChanged(this)"> Exec summary</label><div class="cj-fb-sec-body" id="cj_fb_body_exec"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_greeting" rows="4" placeholder="Executive summary / greeting"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="scope"><label class="chk"><input type="checkbox" id="cj_fb_tick_scope" onchange="custFbTickChanged(this)"> Scope</label><div class="cj-fb-sec-body" id="cj_fb_body_scope"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_scope" rows="3" placeholder="What was requested / scope"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_scope" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_scope" onchange="custSecHandleFiles('scope',this.files)"></div></div></div></div>
-<div class="cj-fb-sec" data-tick="equipment"><label class="chk"><input type="checkbox" id="cj_fb_tick_equipment" onchange="custFbTickChanged(this)"> Equipment</label><div class="cj-fb-sec-body" id="cj_fb_body_equipment"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_equipment" rows="3" placeholder="Pump tag, system, location"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_equipment" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_equipment" onchange="custSecHandleFiles('equipment',this.files)"></div></div></div></div>
-<div class="cj-fb-sec" data-tick="method"><label class="chk"><input type="checkbox" id="cj_fb_tick_method" onchange="custFbTickChanged(this)"> Method</label><div class="cj-fb-sec-body" id="cj_fb_body_method"><div class="fld" style="padding-top:0"><div class="fh"><label>Service type</label></div><div class="ctrl"><select id="cj_fb_method_type" onchange="custFbApplyMethod(this.value)"><option value="">— Pick a service type to fill in below —</option><option value="flush">Chemical flush</option><option value="perf">Performance / efficiency testing</option><option value="internal">Internal inspection (fiberscope)</option><option value="bearing">Bearing replacement</option><option value="gland">Gland packing replacement</option><option value="valve">Valve &amp; intercepting plate replacement</option><option value="belt">Drive pulley / V-belt replacement</option><option value="rotable">Rotable spare pump preservation</option><option value="diag">Site inspection / diagnostics</option><option value="clear">Custom — clear and write my own</option></select></div><p class="sub" style="margin:4px 0 0;font-size:12.5px">Fills Heading &amp; Details below from the Busch capability statement &mdash; edit freely after.</p></div><div class="fld"><div class="fh"><label>Heading</label></div><div class="ctrl"><input type="text" id="cj_fb_intro_head"></div></div><div class="fld"><div class="fh"><label>Details</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="5"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_method" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_method" onchange="custSecHandleFiles('method',this.files)"></div></div></div></div>
-<div class="cj-fb-sec" data-tick="findings"><label class="chk"><input type="checkbox" id="cj_fb_tick_findings" onchange="custFbTickChanged(this)"> Findings</label><div class="cj-fb-sec-body" id="cj_fb_body_findings"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_findings" rows="3" placeholder="As-found condition"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_findings" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_findings" onchange="custSecHandleFiles('findings',this.files)"></div></div></div></div>
+<div class="cj-fb-sec" data-tick="scope"><label class="chk"><input type="checkbox" id="cj_fb_tick_scope" onchange="custFbTickChanged(this)"> Scope</label><div class="cj-fb-sec-body" id="cj_fb_body_scope"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_scope" rows="3" placeholder="What was requested / scope"></textarea></div></div><div id="cj_phhost_scope" class="cj-phhost" data-phkey="scope"></div></div></div>
+<div class="cj-fb-sec" data-tick="equipment"><label class="chk"><input type="checkbox" id="cj_fb_tick_equipment" onchange="custFbTickChanged(this)"> Equipment</label><div class="cj-fb-sec-body" id="cj_fb_body_equipment"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_equipment" rows="3" placeholder="Pump tag, system, location"></textarea></div></div><div id="cj_phhost_equipment" class="cj-phhost" data-phkey="equipment"></div></div></div>
+<div class="cj-fb-sec" data-tick="method"><label class="chk"><input type="checkbox" id="cj_fb_tick_method" onchange="custFbTickChanged(this)"> Method</label><div class="cj-fb-sec-body" id="cj_fb_body_method"><div class="fld" style="padding-top:0"><div class="fh"><label>Service type</label></div><div class="ctrl"><select id="cj_fb_method_type" onchange="custFbApplyMethod(this.value)"><option value="">— Pick a service type to fill in below —</option><option value="flush">Chemical flush</option><option value="perf">Performance / efficiency testing</option><option value="internal">Internal inspection (fiberscope)</option><option value="bearing">Bearing replacement</option><option value="gland">Gland packing replacement</option><option value="valve">Valve &amp; intercepting plate replacement</option><option value="belt">Drive pulley / V-belt replacement</option><option value="rotable">Rotable spare pump preservation</option><option value="diag">Site inspection / diagnostics</option><option value="clear">Custom — clear and write my own</option></select></div><p class="sub" style="margin:4px 0 0;font-size:12.5px">Fills Heading &amp; Details below from the Busch capability statement &mdash; edit freely after.</p></div><div class="fld"><div class="fh"><label>Heading</label></div><div class="ctrl"><input type="text" id="cj_fb_intro_head"></div></div><div class="fld"><div class="fh"><label>Details</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="5"></textarea></div></div><div id="cj_phhost_method" class="cj-phhost" data-phkey="method"></div></div></div>
+<div class="cj-fb-sec" data-tick="findings"><label class="chk"><input type="checkbox" id="cj_fb_tick_findings" onchange="custFbTickChanged(this)"> Findings</label><div class="cj-fb-sec-body" id="cj_fb_body_findings"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_findings" rows="3" placeholder="As-found condition"></textarea></div></div><div id="cj_phhost_findings" class="cj-phhost" data-phkey="findings"></div></div></div>
 <div class="cj-fb-sec" data-tick="pumpInspection"><label class="chk"><input type="checkbox" id="cj_fb_tick_pumpInspection" onchange="custFbTickChanged(this)"> Pump inspection details</label><div class="cj-fb-sec-body" id="cj_fb_body_pumpInspection"><p class="sub" style="margin:0;font-size:12.5px" id="cj_fb_pump_status">Part of this report — checks and photos go in the letter when this section is ticked. Not a separate report.</p>
 <button type="button" class="exbtn" style="margin-top:8px" onclick="custStartOrOpenLri()">Edit pumps in this report</button></div></div>
-<div class="cj-fb-sec" data-tick="work"><label class="chk"><input type="checkbox" id="cj_fb_tick_work" onchange="custFbTickChanged(this)"> Work performed</label><div class="cj-fb-sec-body" id="cj_fb_body_work"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_additional" rows="3" placeholder="One item per line, e.g. Gland packing changes (DE and NDE)"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_additional" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_additional" onchange="custSecHandleFiles('additional',this.files)"></div></div></div></div>
-<div class="cj-fb-sec" data-tick="results"><label class="chk"><input type="checkbox" id="cj_fb_tick_results" onchange="custFbTickChanged(this)"> Results</label><div class="cj-fb-sec-body" id="cj_fb_body_results"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_results" rows="3" placeholder="As-left / outcome"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_results" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_results" onchange="custSecHandleFiles('results',this.files)"></div></div></div></div>
+<div class="cj-fb-sec" data-tick="work"><label class="chk"><input type="checkbox" id="cj_fb_tick_work" onchange="custFbTickChanged(this)"> Work performed</label><div class="cj-fb-sec-body" id="cj_fb_body_work"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_additional" rows="3" placeholder="One item per line, e.g. Gland packing changes (DE and NDE)"></textarea></div></div><div id="cj_phhost_additional" class="cj-phhost" data-phkey="additional"></div></div></div>
+<div class="cj-fb-sec" data-tick="results"><label class="chk"><input type="checkbox" id="cj_fb_tick_results" onchange="custFbTickChanged(this)"> Results</label><div class="cj-fb-sec-body" id="cj_fb_body_results"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_results" rows="3" placeholder="As-left / outcome"></textarea></div></div><div id="cj_phhost_results" class="cj-phhost" data-phkey="results"></div></div></div>
 <div class="cj-fb-sec" data-tick="photos"><label class="chk"><input type="checkbox" id="cj_fb_tick_photos" onchange="custFbTickChanged(this)"> Photos</label><div class="cj-fb-sec-body" id="cj_fb_body_photos"><p class="sub" style="margin:0;font-size:12.5px">Tag each photo below with which section it belongs to (Scope, Method, Findings, Work performed, Recommendations, etc.) and it prints right under that section's text — pre/during/post-flush stay as their own photo-only sections if you use them.</p></div></div>
-<div class="cj-fb-sec" data-tick="recommendations"><label class="chk"><input type="checkbox" id="cj_fb_tick_recommendations" onchange="custFbTickChanged(this)"> Recommendations</label><div class="cj-fb-sec-body" id="cj_fb_body_recommendations"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_recommendations" rows="4" placeholder="One recommendation per line (numbered in Preview / PDF)"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_recommendations" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_recommendations" onchange="custSecHandleFiles('recommendations',this.files)"></div></div></div></div>
+<div class="cj-fb-sec" data-tick="recommendations"><label class="chk"><input type="checkbox" id="cj_fb_tick_recommendations" onchange="custFbTickChanged(this)"> Recommendations</label><div class="cj-fb-sec-body" id="cj_fb_body_recommendations"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_recommendations" rows="4" placeholder="One recommendation per line (numbered in Preview / PDF)"></textarea></div></div><div id="cj_phhost_recommendations" class="cj-phhost" data-phkey="recommendations"></div></div></div>
 <div class="cj-fb-sec" data-tick="closing"><label class="chk"><input type="checkbox" id="cj_fb_tick_closing" onchange="custFbTickChanged(this)"> Closing</label><div class="cj-fb-sec-body" id="cj_fb_body_closing"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_closing" rows="3"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="safety"><label class="chk"><input type="checkbox" id="cj_fb_tick_safety" onchange="custFbTickChanged(this)"> Safety<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_safety" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_safety" rows="2" placeholder="Safety notes"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_safety" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_safety" onchange="custSecHandleFiles('safety',this.files)"></div></div></div></div>
-<div class="cj-fb-sec" data-tick="parts"><label class="chk"><input type="checkbox" id="cj_fb_tick_parts" onchange="custFbTickChanged(this)"> Parts/materials<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_parts" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_parts" rows="2" placeholder="Parts or materials used"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_parts" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_parts" onchange="custSecHandleFiles('parts',this.files)"></div></div></div></div>
-<div class="cj-fb-sec" data-tick="outstanding"><label class="chk"><input type="checkbox" id="cj_fb_tick_outstanding" onchange="custFbTickChanged(this)"> Outstanding<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_outstanding" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_outstanding" rows="2" placeholder="Open items"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_outstanding" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_outstanding" onchange="custSecHandleFiles('outstanding',this.files)"></div></div></div></div>
-<div class="cj-fb-sec" data-tick="nextVisit"><label class="chk"><input type="checkbox" id="cj_fb_tick_nextVisit" onchange="custFbTickChanged(this)"> Next visit<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_nextVisit" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_next_visit" rows="2" placeholder="Suggested next visit / follow-up"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_nextVisit" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_nextVisit" onchange="custSecHandleFiles('nextVisit',this.files)"></div></div></div></div>
+<div class="cj-fb-sec" data-tick="safety"><label class="chk"><input type="checkbox" id="cj_fb_tick_safety" onchange="custFbTickChanged(this)"> Safety<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_safety" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_safety" rows="2" placeholder="Safety notes"></textarea></div></div><div id="cj_phhost_safety" class="cj-phhost" data-phkey="safety"></div></div></div>
+<div class="cj-fb-sec" data-tick="parts"><label class="chk"><input type="checkbox" id="cj_fb_tick_parts" onchange="custFbTickChanged(this)"> Parts/materials<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_parts" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_parts" rows="2" placeholder="Parts or materials used"></textarea></div></div><div id="cj_phhost_parts" class="cj-phhost" data-phkey="parts"></div></div></div>
+<div class="cj-fb-sec" data-tick="outstanding"><label class="chk"><input type="checkbox" id="cj_fb_tick_outstanding" onchange="custFbTickChanged(this)"> Outstanding<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_outstanding" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_outstanding" rows="2" placeholder="Open items"></textarea></div></div><div id="cj_phhost_outstanding" class="cj-phhost" data-phkey="outstanding"></div></div></div>
+<div class="cj-fb-sec" data-tick="nextVisit"><label class="chk"><input type="checkbox" id="cj_fb_tick_nextVisit" onchange="custFbTickChanged(this)"> Next visit<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_nextVisit" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_next_visit" rows="2" placeholder="Suggested next visit / follow-up"></textarea></div></div><div id="cj_phhost_nextVisit" class="cj-phhost" data-phkey="nextVisit"></div></div></div>
 </div>
 </div>
 <div class="card cj-pdfs"><h3>Client feedback letter</h3>
@@ -3544,27 +3561,116 @@ var LRI_PHOTOS=[];
 // and per "Add your own section" item (key "n_ex1", "n_ex2", ...). Separate from the
 // report-wide LRI_PHOTOS list above; these attach to a specific check so they print
 // right under that check's findings instead of in one shared gallery at the end.
-var LRI_SEC_PHOTOS={};
+var LRI_SEC_PHOTOS={};LRI_SEC_BLOCKS={};
+var LRI_SEC_BLOCKS={};
 function lriSecPhotoHTML(n,sec){
  var key=n+"_"+sec;
- return '<div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this check</label></div>'
-  +'<div id="lri_secphlist_'+key+'" class="lri-secph-list"></div>'
-  +'<div class="ctrl"><input type="file" accept="image/*" multiple id="lri_secphinput_'+key+'" onchange="lriSecHandleFiles(\''+key+'\',this.files)"></div></div>';
+ return '<div id="lri_phhost_'+key+'" class="lri-phhost" data-lrikey="'+key+'"></div>';
 }
 function lriSaveSecBtnHTML(){
  return '<button type="button" class="exbtn2" onclick="lriSaveSection(this)">Save this check</button>';
 }
-function lriSecRenderPhotos(key){
- var el=document.getElementById("lri_secphlist_"+key);
- if(!el)return;
- var arr=LRI_SEC_PHOTOS[key]||[];
- var h="",i;
- for(i=0;i<arr.length;i++){
-  h+='<div class="rpt-ph"><img src="'+arr[i].src+'"><div class="ctrl"><input type="text" placeholder="Caption, e.g. Before / After" value="'+pEsc(arr[i].caption)+'" oninput="lriSecPhotoCaption(\''+key+'\','+i+',this.value)"></div><button type="button" class="clrbtn" onclick="lriSecRemovePhoto(\''+key+'\','+i+')" style="margin:6px 0 0">Remove photo</button></div>';
- }
- el.innerHTML=h||'<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No photos yet.</p>';
+function lriSecBaOn(key){
+ var b=LRI_SEC_BLOCKS[key];
+ return !!(b&&b.ba);
 }
-function lriSecHandleFiles(key,files){
+function lriSecEnsureBlocks(key){
+ if(!LRI_SEC_BLOCKS[key])LRI_SEC_BLOCKS[key]={ba:false,blocks:[]};
+ if(!Array.isArray(LRI_SEC_BLOCKS[key].blocks))LRI_SEC_BLOCKS[key].blocks=[];
+ return LRI_SEC_BLOCKS[key];
+}
+function lriNewRelBlock(){
+ return {id:"b"+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36),label:"",notes:"",ba:false,photos:[]};
+}
+function lriSecPhotoThumb(key,arrName,idx,ph,baOn){
+ var sideAttr=baOn&&ph.side?(' data-side="'+ph.side+'"'):'';
+ return '<div class="rpt-ph"'+sideAttr+'><img src="'+ph.src+'"><div class="ctrl"><input type="text" placeholder="Caption, e.g. Before / After" value="'+pEsc(ph.caption||'')+'" oninput="lriSecPhotoCaption(\''+key+'\',\''+arrName+'\','+idx+',this.value)"></div><button type="button" class="clrbtn" onclick="lriSecRemovePhoto(\''+key+'\',\''+arrName+'\','+idx+')" style="margin:6px 0 0">Remove photo</button></div>';
+}
+function lriSecRenderPhotos(key){
+ var el=document.getElementById("lri_phhost_"+key)||document.getElementById("lri_secphlist_"+key);
+ if(!el)return;
+ var st=lriSecEnsureBlocks(key);
+ var arr=LRI_SEC_PHOTOS[key]||[];
+ var baOn=!!st.ba;
+ var h='<div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this check</label></div>';
+ h+='<div class="cj-ba-row"><label class="chk"><input type="checkbox" '+(baOn?'checked':'')+' onchange="lriSecToggleBa(\''+key+'\',this.checked)"> Before &amp; after</label></div>';
+ if(!baOn){
+  h+='<div id="lri_secphlist_'+key+'" class="lri-secph-list">';
+  if(!arr.length)h+='<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No photos yet.</p>';
+  else for(var i=0;i<arr.length;i++)h+=lriSecPhotoThumb(key,'main',i,arr[i],false);
+  h+='</div><div class="ctrl"><input type="file" accept="image/*" multiple id="lri_secphinput_'+key+'" onchange="lriSecHandleFiles(\''+key+'\',this.files,\'main\',\'\')"></div>';
+ }else{
+  h+='<div class="cj-ba-sides">';
+  h+='<div class="cj-ba-side"><h5>Before</h5><div class="lri-secph-list">';
+  var bi,bc=0;for(bi=0;bi<arr.length;bi++)if((arr[bi].side||'')==='before'){h+=lriSecPhotoThumb(key,'main',bi,arr[bi],true);bc++;}
+  if(!bc)h+='<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No before photos yet.</p>';
+  h+='</div><div class="ctrl"><input type="file" accept="image/*" multiple onchange="lriSecHandleFiles(\''+key+'\',this.files,\'main\',\'before\')"></div></div>';
+  h+='<div class="cj-ba-side"><h5>After</h5><div class="lri-secph-list">';
+  var ai,ac=0;for(ai=0;ai<arr.length;ai++)if((arr[ai].side||'')==='after'){h+=lriSecPhotoThumb(key,'main',ai,arr[ai],true);ac++;}
+  if(!ac)h+='<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No after photos yet.</p>';
+  h+='</div><div class="ctrl"><input type="file" accept="image/*" multiple onchange="lriSecHandleFiles(\''+key+'\',this.files,\'main\',\'after\')"></div></div>';
+  h+='</div>';
+ }
+ h+='</div>';
+ h+='<div class="lri-relwrap"><p class="sub" style="margin:8px 2px 4px;font-size:12.5px">Related blocks for this check (e.g. Packing, then Lantern rings).</p>';
+ for(var b=0;b<st.blocks.length;b++)h+=lriRelBlockHTML(key,b,st.blocks[b]);
+ h+='<button type="button" class="clrbtn" onclick="lriAddRelBlock(\''+key+'\')" style="margin:4px 0 0">Add related block</button></div>';
+ el.innerHTML=h;
+}
+function lriRelBlockHTML(key,bi,blk){
+ var baOn=!!blk.ba;
+ var h='<div class="cj-relblock" data-bi="'+bi+'">';
+ h+='<div class="cj-rel-head"><div class="ctrl"><input type="text" placeholder="Block label — e.g. Packing, Lantern rings" value="'+pEsc(blk.label||'')+'" oninput="lriRelBlockField(\''+key+'\','+bi+',\'label\',this.value)"></div>';
+ h+='<button type="button" class="clrbtn" onclick="lriRemoveRelBlock(\''+key+'\','+bi+')" style="margin:0">Remove</button></div>';
+ h+='<div class="fld" style="margin-top:4px"><div class="fh"><label>Notes</label></div><div class="ctrl"><textarea rows="2" placeholder="Notes for this block" oninput="lriRelBlockField(\''+key+'\','+bi+',\'notes\',this.value)">'+pEsc(blk.notes||'')+'</textarea></div></div>';
+ h+='<div class="cj-ba-row"><label class="chk"><input type="checkbox" '+(baOn?'checked':'')+' onchange="lriRelBlockBa(\''+key+'\','+bi+',this.checked)"> Before &amp; after</label></div>';
+ var photos=blk.photos||[];
+ if(!baOn){
+  h+='<div class="lri-secph-list">';
+  if(!photos.length)h+='<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No photos yet.</p>';
+  else for(var i=0;i<photos.length;i++)h+=lriSecPhotoThumb(key,'block:'+bi,i,photos[i],false);
+  h+='</div><div class="ctrl"><input type="file" accept="image/*" multiple onchange="lriSecHandleFiles(\''+key+'\',this.files,\'block:'+bi+'\',\'\')"></div>';
+ }else{
+  h+='<div class="cj-ba-sides">';
+  h+='<div class="cj-ba-side"><h5>Before</h5><div class="lri-secph-list">';
+  var bc=0;for(var i=0;i<photos.length;i++)if((photos[i].side||'')==='before'){h+=lriSecPhotoThumb(key,'block:'+bi,i,photos[i],true);bc++;}
+  if(!bc)h+='<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No before photos yet.</p>';
+  h+='</div><div class="ctrl"><input type="file" accept="image/*" multiple onchange="lriSecHandleFiles(\''+key+'\',this.files,\'block:'+bi+'\',\'before\')"></div></div>';
+  h+='<div class="cj-ba-side"><h5>After</h5><div class="lri-secph-list">';
+  var ac=0;for(var i=0;i<photos.length;i++)if((photos[i].side||'')==='after'){h+=lriSecPhotoThumb(key,'block:'+bi,i,photos[i],true);ac++;}
+  if(!ac)h+='<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No after photos yet.</p>';
+  h+='</div><div class="ctrl"><input type="file" accept="image/*" multiple onchange="lriSecHandleFiles(\''+key+'\',this.files,\'block:'+bi+'\',\'after\')"></div></div>';
+  h+='</div>';
+ }
+ h+='</div>';
+ return h;
+}
+function lriSecToggleBa(key,on){
+ var st=lriSecEnsureBlocks(key);st.ba=!!on;lriSecRenderPhotos(key);lriSave();
+}
+function lriAddRelBlock(key){
+ var st=lriSecEnsureBlocks(key);st.blocks.push(lriNewRelBlock());lriSecRenderPhotos(key);lriSave();
+}
+function lriRemoveRelBlock(key,bi){
+ var st=lriSecEnsureBlocks(key);if(bi<0||bi>=st.blocks.length)return;st.blocks.splice(bi,1);lriSecRenderPhotos(key);lriSave();
+}
+function lriRelBlockField(key,bi,field,val){
+ var st=lriSecEnsureBlocks(key);if(!st.blocks[bi])return;st.blocks[bi][field]=val;lriSave(true);
+}
+function lriRelBlockBa(key,bi,on){
+ var st=lriSecEnsureBlocks(key);if(!st.blocks[bi])return;st.blocks[bi].ba=!!on;lriSecRenderPhotos(key);lriSave();
+}
+function lriSecGetPhotoArr(key,arrName){
+ if(arrName==='main'){if(!LRI_SEC_PHOTOS[key])LRI_SEC_PHOTOS[key]=[];return LRI_SEC_PHOTOS[key];}
+ if(arrName.indexOf('block:')===0){
+  var bi=+arrName.slice(6);var st=lriSecEnsureBlocks(key);if(!st.blocks[bi])return null;
+  if(!st.blocks[bi].photos)st.blocks[bi].photos=[];return st.blocks[bi].photos;
+ }
+ return null;
+}
+function lriSecHandleFiles(key,files,arrName,side){
+ arrName=arrName||'main';side=side||'';
+ var target=lriSecGetPhotoArr(key,arrName);if(!target)return;
  var arr=Array.prototype.slice.call(files||[]);
  arr.forEach(function(file){
   var reader=new FileReader();
@@ -3575,8 +3681,9 @@ function lriSecHandleFiles(key,files){
     var w=Math.round(img.width*scale),h=Math.round(img.height*scale);
     var canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
     canvas.getContext("2d").drawImage(img,0,0,w,h);
-    if(!LRI_SEC_PHOTOS[key])LRI_SEC_PHOTOS[key]=[];
-    LRI_SEC_PHOTOS[key].push({src:canvas.toDataURL("image/jpeg",0.72),caption:""});
+    var ph={src:canvas.toDataURL("image/jpeg",0.72),caption:""};
+    if(side)ph.side=side;
+    target.push(ph);
     lriSecRenderPhotos(key);
     lriSave();
    };
@@ -3584,26 +3691,28 @@ function lriSecHandleFiles(key,files){
   };
   reader.readAsDataURL(file);
  });
- var input=document.getElementById("lri_secphinput_"+key);
- if(input)input.value="";
 }
-function lriSecPhotoCaption(key,i,v){
- if(LRI_SEC_PHOTOS[key]&&LRI_SEC_PHOTOS[key][i]){LRI_SEC_PHOTOS[key][i].caption=v;lriSave(true);}
+function lriSecPhotoCaption(key,arrName,i,v){
+ var target=lriSecGetPhotoArr(key,arrName);if(!target||!target[i])return;target[i].caption=v;lriSave(true);
 }
-function lriSecRemovePhoto(key,i){
- if(!LRI_SEC_PHOTOS[key])return;
- LRI_SEC_PHOTOS[key].splice(i,1);
- lriSecRenderPhotos(key);
- lriSave();
+function lriSecRemovePhoto(key,arrName,i){
+ var target=lriSecGetPhotoArr(key,arrName);if(!target)return;target.splice(i,1);lriSecRenderPhotos(key);lriSave();
 }
 function lriRenderAllSecPhotos(){
- var els=document.querySelectorAll('[id^="lri_secphlist_"]');
- for(var i=0;i<els.length;i++)lriSecRenderPhotos(els[i].id.replace("lri_secphlist_",""));
+ var els=document.querySelectorAll('[id^="lri_phhost_"],[id^="lri_secphlist_"]');
+ var seen={},i,id,key;
+ for(i=0;i<els.length;i++){
+  id=els[i].id;
+  key=id.indexOf("lri_phhost_")==0?id.replace("lri_phhost_",""):id.replace("lri_secphlist_","");
+  if(seen[key])continue;seen[key]=1;lriSecRenderPhotos(key);
+ }
 }
 function lriClearSecPhotosForPump(n){
  var prefix=n+"_";
  for(var key in LRI_SEC_PHOTOS)if(LRI_SEC_PHOTOS.hasOwnProperty(key)&&key.indexOf(prefix)===0)delete LRI_SEC_PHOTOS[key];
+ for(var key2 in LRI_SEC_BLOCKS)if(LRI_SEC_BLOCKS.hasOwnProperty(key2)&&key2.indexOf(prefix)===0)delete LRI_SEC_BLOCKS[key2];
 }
+window.lriSecHandleFiles=lriSecHandleFiles;window.lriSecPhotoCaption=lriSecPhotoCaption;window.lriSecRemovePhoto=lriSecRemovePhoto;window.lriSecToggleBa=lriSecToggleBa;window.lriAddRelBlock=lriAddRelBlock;window.lriRemoveRelBlock=lriRemoveRelBlock;window.lriRelBlockField=lriRelBlockField;window.lriRelBlockBa=lriRelBlockBa;
 function lriRowHTML(n){
  var p="lri_r"+n+"_";
  function SB(id,opts,check){return lriSelBlock(id,opts,!!(check&&n>1));}
@@ -4067,6 +4176,7 @@ function lriSave(quiet){
  }
  o.photos=LRI_PHOTOS;
  o.secPhotos=LRI_SEC_PHOTOS;
+ o.secBlocks=LRI_SEC_BLOCKS;
  var warn=document.getElementById("lri_warn");
  try{localStorage.setItem(LRI_KEY,JSON.stringify(o));if(warn)warn.style.display="none";if(!quiet&&typeof vtFlashSaved==="function")vtFlashSaved("lri_saved_chip");}
  catch(err){if(warn)warn.style.display="block";}
@@ -4105,6 +4215,7 @@ function lriLoad(){
  }
  LRI_PHOTOS=Array.isArray(o.photos)?o.photos:[];
  LRI_SEC_PHOTOS=(o.secPhotos&&typeof o.secPhotos==="object")?o.secPhotos:{};
+ LRI_SEC_BLOCKS=(o.secBlocks&&typeof o.secBlocks==="object")?o.secBlocks:{};
  lriRenderPhotos();
  lriRenderAllSecPhotos();
  lriRefreshAllOC();
@@ -4124,7 +4235,7 @@ function lriClear(){
   for(m=1;m<=tc;m++){f=lriTorqFields(n,m);for(j=0;j<f.length;j++){e=document.getElementById(f[j]);if(!e)continue;e.value="";}}
  }
  LRI_PHOTOS=[];
- LRI_SEC_PHOTOS={};
+ LRI_SEC_PHOTOS={};LRI_SEC_BLOCKS={};
  lriRenderPhotos();
  lriRenderAllSecPhotos();
  lriRefreshAllOC();
@@ -4546,13 +4657,54 @@ function pbFinalize(pb){
   pbDrawFooter(pb,i,total);
  }
 }
-function pbDrawSecPhotos(pb,normSec,key){
- var arr=normSec&&normSec[key];
+function pbDrawSecPhotoList(pb,arr){
  if(!arr||!arr.length)return;
  for(var i=0;i<arr.length;i+=2){
   var row=[{src:arr[i].src,caption:arr[i].caption||"Photo",w:arr[i].w,h:arr[i].h}];
   if(i+1<arr.length)row.push({src:arr[i+1].src,caption:arr[i+1].caption||"Photo",w:arr[i+1].w,h:arr[i+1].h});
   pbPhotoRow(pb,row);
+ }
+}
+function pbDrawSecPhotos(pb,normSec,key){
+ var arr=normSec&&normSec[key];
+ var st=LRI_SEC_BLOCKS[key];
+ var baOn=!!(st&&st.ba);
+ if(arr&&arr.length){
+  if(!baOn)pbDrawSecPhotoList(pb,arr);
+  else{
+   var before=[],after=[],other=[],i;
+   for(i=0;i<arr.length;i++){
+    if((arr[i].side||"")==="before")before.push(arr[i]);
+    else if((arr[i].side||"")==="after")after.push(arr[i]);
+    else other.push(arr[i]);
+   }
+   if(before.length){pbHeaderRow(pb,"Before");pbDrawSecPhotoList(pb,before);}
+   if(after.length){pbHeaderRow(pb,"After");pbDrawSecPhotoList(pb,after);}
+   if(other.length)pbDrawSecPhotoList(pb,other);
+  }
+ }
+ if(st&&st.blocks&&st.blocks.length){
+  var b,blk,photos,raw,norm;
+  for(b=0;b<st.blocks.length;b++){
+   blk=st.blocks[b];
+   photos=blk.photos||[];
+   if(!(blk.label||"").trim()&&!(blk.notes||"").trim()&&!photos.length)continue;
+   if((blk.label||"").trim())pbHeaderRow(pb,blk.label.trim());
+   if((blk.notes||"").trim())pbNoteRow(pb,blk.notes);
+   // Block photos are not in normSec; draw via data URLs with nominal size
+   raw=photos.map(function(ph){return {src:ph.src,caption:ph.caption||"Photo",w:1000,h:750,side:ph.side||""};});
+   if(blk.ba){
+    before=[];after=[];other=[];
+    for(i=0;i<raw.length;i++){
+     if(raw[i].side==="before")before.push(raw[i]);
+     else if(raw[i].side==="after")after.push(raw[i]);
+     else other.push(raw[i]);
+    }
+    if(before.length){pbHeaderRow(pb,"Before");pbDrawSecPhotoList(pb,before);}
+    if(after.length){pbHeaderRow(pb,"After");pbDrawSecPhotoList(pb,after);}
+    if(other.length)pbDrawSecPhotoList(pb,other);
+   }else pbDrawSecPhotoList(pb,raw);
+  }
  }
 }
 function pbDrawPump(pb,n,normSec){
@@ -4720,7 +4872,7 @@ function lriNormalizeSecPhotos(){
    nrm=normAll[mi];
    cap=(LRI_SEC_PHOTOS[m.key][m.idx]||{}).caption||"";
    if(!normSec[m.key])normSec[m.key]=[];
-   normSec[m.key][m.idx]={src:nrm.src,w:nrm.w,h:nrm.h,caption:cap};
+   normSec[m.key][m.idx]={src:nrm.src,w:nrm.w,h:nrm.h,caption:cap,side:(LRI_SEC_PHOTOS[m.key][m.idx]||{}).side||""};
   }
   return normSec;
  });
@@ -4744,6 +4896,8 @@ function lriPumpBlocks(n){
  if(idLines.length)push("text",idLines.join("\n"));
  function section(title,key,fieldChecks,lineBuilder,notesId,notesLabel){
   var hasPhotos=((LRI_SEC_PHOTOS[key]||[]).length>0);
+  var stBlk=LRI_SEC_BLOCKS[key];
+  if(stBlk&&stBlk.blocks){for(var _bi=0;_bi<stBlk.blocks.length;_bi++){var _bp=stBlk.blocks[_bi];if((_bp.label||"").trim()||(_bp.notes||"").trim()||(_bp.photos&&_bp.photos.length)){hasPhotos=true;break;}}}
   if(!lriAny(fieldChecks)&&!(notesId&&rv(notesId))&&!hasPhotos)return;
   var lines=lineBuilder();
   if(notesId&&rv(notesId))lines.push((notesLabel||"Notes")+": "+rv(notesId));
@@ -5897,29 +6051,169 @@ var CUST_PHOTO_GROUP_OPT='<option value="">&mdash; none (won&rsquo;t appear in l
 // Same underlying pair.j.photos array/group field as that card -- these are just
 // another way to add/caption/remove a photo, filtered to its own section's key.
 var CUST_SEC_PHOTO_KEYS=["scope","equipment","method","findings","additional","results","recommendations","safety","parts","outstanding","nextVisit"];
+var CUST_REL_HOST_KEYS=CUST_SEC_PHOTO_KEYS.concat(["jobPhotos"]);
 var _custSecPhotoTimer=null;
+function custNewRelBlock(){
+ return {id:"b"+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36),label:"",notes:"",ba:false,photos:[]};
+}
+function custEnsureSecMeta(j,key){
+ if(!j.photoBa||typeof j.photoBa!=="object")j.photoBa={};
+ if(j.photoBa[key]===undefined)j.photoBa[key]=false;
+ if(!j.secBlocks||typeof j.secBlocks!=="object")j.secBlocks={};
+ if(!Array.isArray(j.secBlocks[key]))j.secBlocks[key]=[];
+ return j;
+}
 function custSecPhotoHTML(key){
- return '<div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div>'
-  +'<div id="cj_secph_'+key+'" class="cj-secph-list"></div>'
-  +'<div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_'+key+'" onchange="custSecHandleFiles(\''+key+'\',this.files)"></div></div>';
+ return '<div id="cj_phhost_'+key+'" class="cj-phhost" data-phkey="'+key+'"></div>';
+}
+function custSecPhotoThumb(globalIdx,ph){
+ return '<div class="rpt-ph"><img src="'+ph.dataUrl+'"><div class="ctrl"><input type="text" placeholder="Caption" value="'+custEsc(ph.caption||"")+'" oninput="custSecPhotoCaption('+globalIdx+',this.value)"></div><button type="button" class="clrbtn" onclick="custSecRemovePhotoAt('+globalIdx+')" style="margin:6px 0 0">Remove photo</button></div>';
+}
+function custBlockPhotoThumb(key,bi,pi,ph){
+ return '<div class="rpt-ph"><img src="'+ph.dataUrl+'"><div class="ctrl"><input type="text" placeholder="Caption" value="'+custEsc(ph.caption||"")+'" oninput="custRelBlockPhotoCap(\''+key+'\','+bi+','+pi+',this.value)"></div><button type="button" class="clrbtn" onclick="custRelBlockPhotoRemove(\''+key+'\','+bi+','+pi+')" style="margin:6px 0 0">Remove photo</button></div>';
+}
+function custRenderRelBlocks(key,blocks){
+ var h='',b,blk,baOn,photos,i,bc,ac;
+ for(b=0;b<blocks.length;b++){
+  blk=blocks[b];baOn=!!blk.ba;photos=blk.photos||[];
+  h+='<div class="cj-relblock">';
+  h+='<div class="cj-rel-head"><div class="ctrl"><input type="text" placeholder="Block label — e.g. Packing, Lantern rings" value="'+custEsc(blk.label||"")+'" oninput="custRelBlockField(\''+key+'\','+b+',\'label\',this.value)"></div>';
+  h+='<button type="button" class="clrbtn" onclick="custRemoveRelBlock(\''+key+'\','+b+')" style="margin:0">Remove</button></div>';
+  h+='<div class="fld" style="margin-top:4px"><div class="fh"><label>Notes</label></div><div class="ctrl"><textarea rows="2" placeholder="Notes for this block" oninput="custRelBlockField(\''+key+'\','+b+',\'notes\',this.value)">'+custEsc(blk.notes||"")+'</textarea></div></div>';
+  h+='<div class="cj-ba-row"><label class="chk"><input type="checkbox" '+(baOn?"checked":"")+' onchange="custRelBlockBa(\''+key+'\','+b+',this.checked)"> Before &amp; after</label></div>';
+  if(!baOn){
+   h+='<div class="cj-secph-list">';
+   if(!photos.length)h+='<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No photos yet.</p>';
+   else for(i=0;i<photos.length;i++)h+=custBlockPhotoThumb(key,b,i,photos[i]);
+   h+='</div><div class="ctrl"><input type="file" accept="image/*" multiple onchange="custRelBlockHandleFiles(\''+key+'\','+b+',this.files,\'\')"></div>';
+  }else{
+   h+='<div class="cj-ba-sides">';
+   h+='<div class="cj-ba-side"><h5>Before</h5><div class="cj-secph-list">';
+   bc=0;for(i=0;i<photos.length;i++)if((photos[i].side||"")==="before"){h+=custBlockPhotoThumb(key,b,i,photos[i]);bc++;}
+   if(!bc)h+='<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No before photos yet.</p>';
+   h+='</div><div class="ctrl"><input type="file" accept="image/*" multiple onchange="custRelBlockHandleFiles(\''+key+'\','+b+',this.files,\'before\')"></div></div>';
+   h+='<div class="cj-ba-side"><h5>After</h5><div class="cj-secph-list">';
+   ac=0;for(i=0;i<photos.length;i++)if((photos[i].side||"")==="after"){h+=custBlockPhotoThumb(key,b,i,photos[i]);ac++;}
+   if(!ac)h+='<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No after photos yet.</p>';
+   h+='</div><div class="ctrl"><input type="file" accept="image/*" multiple onchange="custRelBlockHandleFiles(\''+key+'\','+b+',this.files,\'after\')"></div></div>';
+   h+='</div>';
+  }
+  h+='</div>';
+ }
+ return h;
 }
 function custSecRenderPhotos(key){
- var el=document.getElementById("cj_secph_"+key);
- if(!el)return;
- var pair=custFindJob();
- var photos=(pair&&pair.j.photos)||[];
- var h="",i;
- for(i=0;i<photos.length;i++){
-  if((photos[i].group||"")!==key)continue;
-  h+='<div class="rpt-ph"><img src="'+photos[i].dataUrl+'"><div class="ctrl"><input type="text" placeholder="Caption" value="'+custEsc(photos[i].caption||"")+'" oninput="custSecPhotoCaption('+i+',this.value)"></div><button type="button" class="clrbtn" onclick="custSecRemovePhotoAt('+i+')" style="margin:6px 0 0">Remove photo</button></div>';
+ var el=document.getElementById("cj_phhost_"+key);
+ if(!el){
+  // legacy list-only host
+  el=document.getElementById("cj_secph_"+key);
+  if(!el)return;
  }
- el.innerHTML=h||'<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No photos yet.</p>';
+ var pair=custFindJob();
+ if(!pair){el.innerHTML="";return;}
+ var j=custEnsureSecMeta(pair.j,key);
+ var photos=j.photos||[];
+ var baOn=!!j.photoBa[key];
+ var isJob=key==="jobPhotos";
+ var h="";
+ if(!isJob){
+  h+='<div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div>';
+  h+='<div class="cj-ba-row"><label class="chk"><input type="checkbox" '+(baOn?"checked":"")+' onchange="custSecToggleBa(\''+key+'\',this.checked)"> Before &amp; after</label></div>';
+  if(!baOn){
+   h+='<div id="cj_secph_'+key+'" class="cj-secph-list">';
+   var any=false,i;
+   for(i=0;i<photos.length;i++){
+    if((photos[i].group||"")!==key)continue;
+    any=true;h+=custSecPhotoThumb(i,photos[i]);
+   }
+   if(!any)h+='<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No photos yet.</p>';
+   h+='</div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_'+key+'" onchange="custSecHandleFiles(\''+key+'\',this.files,\'\')"></div>';
+  }else{
+   h+='<div class="cj-ba-sides">';
+   h+='<div class="cj-ba-side"><h5>Before</h5><div class="cj-secph-list">';
+   var bc=0;for(i=0;i<photos.length;i++)if((photos[i].group||"")===key&&(photos[i].side||"")==="before"){h+=custSecPhotoThumb(i,photos[i]);bc++;}
+   if(!bc)h+='<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No before photos yet.</p>';
+   h+='</div><div class="ctrl"><input type="file" accept="image/*" multiple onchange="custSecHandleFiles(\''+key+'\',this.files,\'before\')"></div></div>';
+   h+='<div class="cj-ba-side"><h5>After</h5><div class="cj-secph-list">';
+   var ac=0;for(i=0;i<photos.length;i++)if((photos[i].group||"")===key&&(photos[i].side||"")==="after"){h+=custSecPhotoThumb(i,photos[i]);ac++;}
+   if(!ac)h+='<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No after photos yet.</p>';
+   h+='</div><div class="ctrl"><input type="file" accept="image/*" multiple onchange="custSecHandleFiles(\''+key+'\',this.files,\'after\')"></div></div>';
+   h+='</div>';
+  }
+  h+='</div>';
+ }
+ h+='<div class="cj-relwrap"><p class="sub" style="margin:8px 2px 4px;font-size:12.5px">Related blocks'+(isJob?' for this visit':' for this section')+' (e.g. Packing, then Lantern rings).</p>';
+ h+=custRenderRelBlocks(key,j.secBlocks[key]||[]);
+ h+='<button type="button" class="clrbtn" onclick="custAddRelBlock(\''+key+'\')" style="margin:4px 0 0">Add related block</button></div>';
+ el.innerHTML=h;
 }
 function custSecRenderAllPhotos(){
- for(var i=0;i<CUST_SEC_PHOTO_KEYS.length;i++)custSecRenderPhotos(CUST_SEC_PHOTO_KEYS[i]);
+ for(var i=0;i<CUST_REL_HOST_KEYS.length;i++)custSecRenderPhotos(CUST_REL_HOST_KEYS[i]);
 }
-function custSecHandleFiles(key,files){
+function custSecToggleBa(key,on){
  var pair=custFindJob();if(!pair)return;
+ custEnsureSecMeta(pair.j,key);pair.j.photoBa[key]=!!on;custPersist();custSecRenderPhotos(key);cjRefreshLivePreview();
+}
+function custAddRelBlock(key){
+ var pair=custFindJob();if(!pair)return;
+ custEnsureSecMeta(pair.j,key);pair.j.secBlocks[key].push(custNewRelBlock());custPersist();custSecRenderPhotos(key);cjRefreshLivePreview();
+}
+function custRemoveRelBlock(key,bi){
+ var pair=custFindJob();if(!pair)return;
+ custEnsureSecMeta(pair.j,key);pair.j.secBlocks[key].splice(bi,1);custPersist();custSecRenderPhotos(key);cjRefreshLivePreview();
+}
+function custRelBlockField(key,bi,field,val){
+ var pair=custFindJob();if(!pair)return;
+ custEnsureSecMeta(pair.j,key);if(!pair.j.secBlocks[key][bi])return;
+ pair.j.secBlocks[key][bi][field]=val;
+ if(_custSecPhotoTimer)clearTimeout(_custSecPhotoTimer);
+ _custSecPhotoTimer=setTimeout(function(){custPersist();cjRefreshLivePreview();},350);
+}
+function custRelBlockBa(key,bi,on){
+ var pair=custFindJob();if(!pair)return;
+ custEnsureSecMeta(pair.j,key);if(!pair.j.secBlocks[key][bi])return;
+ pair.j.secBlocks[key][bi].ba=!!on;custPersist();custSecRenderPhotos(key);cjRefreshLivePreview();
+}
+function custRelBlockHandleFiles(key,bi,files,side){
+ var pair=custFindJob();if(!pair)return;
+ custEnsureSecMeta(pair.j,key);var blk=pair.j.secBlocks[key][bi];if(!blk)return;
+ if(!blk.photos)blk.photos=[];
+ var arr=Array.prototype.slice.call(files||[]);
+ arr.forEach(function(file){
+  var reader=new FileReader();
+  reader.onload=function(e){
+   var img=new Image();
+   img.onload=function(){
+    var maxW=1000,scale=Math.min(1,maxW/img.width);
+    var w=Math.round(img.width*scale),h=Math.round(img.height*scale);
+    var canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
+    canvas.getContext("2d").drawImage(img,0,0,w,h);
+    var ph={dataUrl:canvas.toDataURL("image/jpeg",0.72),caption:""};
+    if(side)ph.side=side;
+    blk.photos.push(ph);
+    if(!custPersist()){blk.photos.pop();}
+    custSecRenderPhotos(key);cjRefreshLivePreview();
+   };
+   img.src=e.target.result;
+  };
+  reader.readAsDataURL(file);
+ });
+}
+function custRelBlockPhotoCap(key,bi,pi,val){
+ var pair=custFindJob();if(!pair)return;
+ custEnsureSecMeta(pair.j,key);var blk=pair.j.secBlocks[key][bi];if(!blk||!blk.photos||!blk.photos[pi])return;
+ blk.photos[pi].caption=val;
+ if(_custSecPhotoTimer)clearTimeout(_custSecPhotoTimer);
+ _custSecPhotoTimer=setTimeout(function(){custPersist();cjRefreshLivePreview();},350);
+}
+function custRelBlockPhotoRemove(key,bi,pi){
+ var pair=custFindJob();if(!pair)return;
+ custEnsureSecMeta(pair.j,key);var blk=pair.j.secBlocks[key][bi];if(!blk||!blk.photos)return;
+ blk.photos.splice(pi,1);custPersist();custSecRenderPhotos(key);cjRefreshLivePreview();
+}
+function custSecHandleFiles(key,files,side){
+ var pair=custFindJob();if(!pair)return;
+ side=side||"";
  var arr=Array.prototype.slice.call(files||[]);
  arr.forEach(function(file){
   var reader=new FileReader();
@@ -5931,7 +6225,9 @@ function custSecHandleFiles(key,files){
     var canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
     canvas.getContext("2d").drawImage(img,0,0,w,h);
     if(!pair.j.photos)pair.j.photos=[];
-    pair.j.photos.push({dataUrl:canvas.toDataURL("image/jpeg",0.72),caption:"",group:key});
+    var ph={dataUrl:canvas.toDataURL("image/jpeg",0.72),caption:"",group:key};
+    if(side)ph.side=side;
+    pair.j.photos.push(ph);
     if(!custPersist()){pair.j.photos.pop();}
     custRenderJobPhotos();
     custSecRenderAllPhotos();
@@ -5960,6 +6256,10 @@ function custSecRemovePhotoAt(idx){
  cjRefreshLivePreview();
 }
 window.custSecHandleFiles=custSecHandleFiles;window.custSecPhotoCaption=custSecPhotoCaption;window.custSecRemovePhotoAt=custSecRemovePhotoAt;
+window.custSecToggleBa=custSecToggleBa;window.custAddRelBlock=custAddRelBlock;window.custRemoveRelBlock=custRemoveRelBlock;
+window.custRelBlockField=custRelBlockField;window.custRelBlockBa=custRelBlockBa;window.custRelBlockHandleFiles=custRelBlockHandleFiles;
+window.custRelBlockPhotoCap=custRelBlockPhotoCap;window.custRelBlockPhotoRemove=custRelBlockPhotoRemove;
+
 function custRenderJobPhotos(){
  var pair=custFindJob();var el=document.getElementById("cj_photos");
  if(!el||!pair)return;
@@ -6477,17 +6777,18 @@ function custFbLetterSignOrder(j){
 }
 
 /** Build ordered letter sections. Exec/greeting + closing are body text (not numbered heads). */
-function custFbLetterPlan(fb,grouped){
+function custFbLetterPlan(fb,grouped,j){
  var ticks=fb.ticks||custFbNormalizeTicks(null);
  var by=(grouped&&grouped.by)||{};
  function idxsFor(key){return by[key]||[];}
+ function hasBlocks(key){return custFbRelBlocksFor(j,key).length>0;}
  var secs=[],n=0;
  function add(key,title,kind,payload){n++;secs.push({kind:kind,num:n,key:key,title:title,payload:payload});}
  // A text section also carries any photos tagged to its same key, so a photo prints
  // right under the section it belongs to instead of only in one shared gallery.
  function addTextWithPhotos(key,title,tickOn,text){
   var idxs=idxsFor(key);
-  if(tickOn&&(custFbLetterHas(text)||idxs.length)) add(key,title,"text",{text:text||"",idxs:idxs});
+  if(tickOn&&(custFbLetterHas(text)||idxs.length||hasBlocks(key))) add(key,title,"text",{text:text||"",idxs:idxs});
  }
  if(ticks.exec&&custFbLetterHas(fb.greeting)) secs.push({kind:"greeting",payload:fb.greeting});
  addTextWithPhotos("scope",CUST_FB_LETTER_HEADINGS.scope,ticks.scope,fb.scope);
@@ -6503,14 +6804,14 @@ function custFbLetterPlan(fb,grouped){
    if(idxsFor(gk).length) add(gk,CUST_FB_LETTER_HEADINGS[gk],"photos",idxsFor(gk));
   });
  }
- if(ticks.work&&(custFbLetterHas(fb.additional)||idxsFor("additional").length)){
+ if(ticks.work&&(custFbLetterHas(fb.additional)||idxsFor("additional").length||hasBlocks("additional"))){
   add("work",CUST_FB_LETTER_HEADINGS.work,"work",{text:fb.additional||"",idxs:idxsFor("additional")});
  }else if(ticks.photos&&idxsFor("additional").length){
   add("work",CUST_FB_LETTER_HEADINGS.work,"photos",idxsFor("additional"));
  }
  if(ticks.recommendations){
   var recs=custFbRecLines(fb.recommendations),recIdxs=idxsFor("recommendations");
-  if(recs.length||recIdxs.length) add("recommendations",CUST_FB_LETTER_HEADINGS.recommendations,"recs",{lines:recs,idxs:recIdxs});
+  if(recs.length||recIdxs.length||hasBlocks("recommendations")) add("recommendations",CUST_FB_LETTER_HEADINGS.recommendations,"recs",{lines:recs,idxs:recIdxs});
  }
  addTextWithPhotos("safety",CUST_FB_LETTER_HEADINGS.safety,ticks.safety,fb.safety);
  addTextWithPhotos("parts",CUST_FB_LETTER_HEADINGS.parts,ticks.parts,fb.parts);
@@ -6527,6 +6828,75 @@ function custFbLetterPlan(fb,grouped){
 function custFbLetterMetaHtml(lab,val){
  return '<div class="fb-meta-row"><span class="fb-lab">'+custEsc(lab)+' :</span> <span class="fb-val">'+custEsc(val||"—")+'</span></div>';
 }
+
+function custFbPhotosForSection(photos,idxs,sectionKey,j){
+ var baOn=!!(j&&j.photoBa&&j.photoBa[sectionKey]);
+ if(!baOn) return {mode:"flat",idxs:idxs||[]};
+ var before=[],after=[],other=[],i,ix,ph;
+ for(i=0;i<(idxs||[]).length;i++){
+  ix=idxs[i];ph=photos[ix];if(!ph)continue;
+  if((ph.side||"")==="before")before.push(ix);
+  else if((ph.side||"")==="after")after.push(ix);
+  else other.push(ix);
+ }
+ return {mode:"ba",before:before,after:after,other:other};
+}
+function custFbRelBlocksFor(j,key){
+ if(!j||!j.secBlocks||!Array.isArray(j.secBlocks[key]))return [];
+ return j.secBlocks[key].filter(function(blk){
+  if(!blk)return false;
+  if((blk.label||"").trim())return true;
+  if((blk.notes||"").trim())return true;
+  if(blk.photos&&blk.photos.length)return true;
+  return false;
+ });
+}
+function custFbLetterBaPhotosHtml(photos,pack){
+ var h="";
+ if(pack.mode==="flat"){
+  if(pack.idxs&&pack.idxs.length)h+=custFbLetterPhotosHtml(photos,pack.idxs);
+  return h;
+ }
+ if(pack.before&&pack.before.length){h+='<div class="fb-ba-side">Before</div>';h+=custFbLetterPhotosHtml(photos,pack.before);}
+ if(pack.after&&pack.after.length){h+='<div class="fb-ba-side">After</div>';h+=custFbLetterPhotosHtml(photos,pack.after);}
+ if(pack.other&&pack.other.length)h+=custFbLetterPhotosHtml(photos,pack.other);
+ return h;
+}
+function custFbLetterBlockPhotosHtml(blk){
+ var photos=blk.photos||[],h="",i,ph,cap;
+ function emit(list,title){
+  if(!list.length)return;
+  if(title)h+='<div class="fb-ba-side">'+custEsc(title)+'</div>';
+  h+='<div class="fb-photos-letter">';
+  for(i=0;i<list.length;i++){
+   ph=list[i];cap=(ph.caption||"").trim()||("Photo "+(i+1));
+   h+='<div class="fb-ph-letter"><div class="cap">'+custEsc(cap)+'</div><img src="'+ph.dataUrl+'" alt=""></div>';
+  }
+  h+='</div>';
+ }
+ if(blk.ba){
+  var before=[],after=[],other=[];
+  for(i=0;i<photos.length;i++){
+   if((photos[i].side||"")==="before")before.push(photos[i]);
+   else if((photos[i].side||"")==="after")after.push(photos[i]);
+   else other.push(photos[i]);
+  }
+  emit(before,"Before");emit(after,"After");emit(other,"");
+ }else{
+  emit(photos,"");
+ }
+ return h;
+}
+function custFbLetterRelBlocksHtml(j,key){
+ var blocks=custFbRelBlocksFor(j,key),h="",b,blk;
+ for(b=0;b<blocks.length;b++){
+  blk=blocks[b];
+  if((blk.label||"").trim())h+='<div class="fb-aspect">'+custEsc(blk.label.trim())+'</div>';
+  if((blk.notes||"").trim())h+='<div class="fb-body">'+custEsc(blk.notes).replace(/\n/g,"<br>")+'</div>';
+  h+=custFbLetterBlockPhotosHtml(blk);
+ }
+ return h;
+}
 function custFbLetterPhotosHtml(photos,idxs){
  var h='<div class="fb-photos-letter">',i,ph,cap,full;
  for(i=0;i<idxs.length;i++){
@@ -6536,6 +6906,55 @@ function custFbLetterPhotosHtml(photos,idxs){
   h+='<div class="fb-ph-letter'+(full?" full":"")+'"><div class="cap">'+custEsc(cap)+'</div><img src="'+ph.dataUrl+'" alt=""></div>';
  }
  return h+'</div>';
+}
+
+function custFbLetterPumpSecHtml(key,normSec){
+ var h="",arr=(normSec&&normSec[key])||[],st=LRI_SEC_BLOCKS[key],baOn=!!(st&&st.ba),i;
+ function listHtml(list){
+  if(!list||!list.length)return "";
+  var out='<div class="fb-photos-letter">',ph,cap,ii;
+  for(ii=0;ii<list.length;ii++){
+   ph=list[ii];cap=(ph.caption||"").trim()||("Photo "+(ii+1));
+   out+='<div class="fb-ph-letter"><div class="cap">'+custEsc(cap)+'</div><img src="'+(ph.src||ph.dataUrl)+'" alt=""></div>';
+  }
+  return out+'</div>';
+ }
+ if(arr.length){
+  if(!baOn)h+=listHtml(arr);
+  else{
+   var before=[],after=[],other=[];
+   for(i=0;i<arr.length;i++){
+    if((arr[i].side||"")==="before")before.push(arr[i]);
+    else if((arr[i].side||"")==="after")after.push(arr[i]);
+    else other.push(arr[i]);
+   }
+   if(before.length){h+='<div class="fb-ba-side">Before</div>';h+=listHtml(before);}
+   if(after.length){h+='<div class="fb-ba-side">After</div>';h+=listHtml(after);}
+   if(other.length)h+=listHtml(other);
+  }
+ }
+ if(st&&st.blocks){
+  var b,blk,photos,raw;
+  for(b=0;b<st.blocks.length;b++){
+   blk=st.blocks[b];photos=blk.photos||[];
+   if(!(blk.label||"").trim()&&!(blk.notes||"").trim()&&!photos.length)continue;
+   if((blk.label||"").trim())h+='<div class="fb-aspect">'+custEsc(blk.label.trim())+'</div>';
+   if((blk.notes||"").trim())h+='<div class="fb-body">'+custEsc(blk.notes).replace(/\n/g,"<br>")+'</div>';
+   raw=photos.map(function(ph){return {src:ph.src,caption:ph.caption,side:ph.side||""};});
+   if(blk.ba){
+    before=[];after=[];other=[];
+    for(i=0;i<raw.length;i++){
+     if(raw[i].side==="before")before.push(raw[i]);
+     else if(raw[i].side==="after")after.push(raw[i]);
+     else other.push(raw[i]);
+    }
+    if(before.length){h+='<div class="fb-ba-side">Before</div>';h+=listHtml(before);}
+    if(after.length){h+='<div class="fb-ba-side">After</div>';h+=listHtml(after);}
+    if(other.length)h+=listHtml(other);
+   }else h+=listHtml(raw);
+  }
+ }
+ return h;
 }
 function custFbLetterPumpPhotosHtml(arr){
  var h='<div class="fb-photos-letter">',i,ph,cap;
@@ -6557,8 +6976,7 @@ function custFbLetterPumpsHtml(normSec){
    if(b.kind==="sub")h+='<div class="'+(i===0?"fb-pump-tag":"fb-pump-sub")+'">'+custEsc(b.text)+'</div>';
    else if(b.kind==="text")h+='<div class="fb-body">'+custEsc(b.text).replace(/\n/g,"<br>")+'</div>';
    else if(b.kind==="photos"){
-    var arr=normSec[b.key];
-    if(arr&&arr.length)h+=custFbLetterPumpPhotosHtml(arr);
+    h+=custFbLetterPumpSecHtml(b.key,normSec);
    }
   }
  }
@@ -6584,7 +7002,7 @@ function custFbLetterSignoffHtml(j){
 
 function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
  var ticks=fb.ticks||custFbNormalizeTicks(j.fbTicks);
- var plan=custFbLetterPlan(fb,grouped);
+ var plan=custFbLetterPlan(fb,grouped,j);
  var h='<div class="cj-fb-letter cj-fb-letter-word">';
  h+='<div class="fb-logos">';
  if(c&&c.logoDataUrl){
@@ -6620,7 +7038,8 @@ function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
   }else if(sec.kind==="text"){
    h+='<div class="fb-sec-letter">'+sec.num+'. '+custEsc(sec.title)+'</div>';
    if(custFbLetterHas(sec.payload.text)) h+='<div class="fb-body">'+custEsc(sec.payload.text).replace(/\n/g,"<br>")+'</div>';
-   if(sec.payload.idxs&&sec.payload.idxs.length) h+=custFbLetterPhotosHtml(photos,sec.payload.idxs);
+   h+=custFbLetterBaPhotosHtml(photos,custFbPhotosForSection(photos,sec.payload.idxs,sec.key,j));
+   h+=custFbLetterRelBlocksHtml(j,sec.key);
   }else if(sec.kind==="recs"){
    h+='<div class="fb-sec-letter">'+sec.num+'. '+custEsc(sec.title)+'</div>';
    if(sec.payload.lines&&sec.payload.lines.length){
@@ -6628,10 +7047,12 @@ function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
     for(ii=0;ii<sec.payload.lines.length;ii++) h+='<li>'+custEsc(sec.payload.lines[ii])+'</li>';
     h+='</ol>';
    }
-   if(sec.payload.idxs&&sec.payload.idxs.length) h+=custFbLetterPhotosHtml(photos,sec.payload.idxs);
+   h+=custFbLetterBaPhotosHtml(photos,custFbPhotosForSection(photos,sec.payload.idxs,sec.key,j));
+   h+=custFbLetterRelBlocksHtml(j,sec.key);
   }else if(sec.kind==="photos"){
    h+='<div class="fb-sec-letter">'+sec.num+'. '+custEsc(sec.title)+'</div>';
-   h+=custFbLetterPhotosHtml(photos,sec.payload);
+   h+=custFbLetterBaPhotosHtml(photos,custFbPhotosForSection(photos,sec.payload,sec.key,j));
+   h+=custFbLetterRelBlocksHtml(j,sec.key);
   }else if(sec.kind==="pumps"){
    h+='<div class="fb-sec-letter">'+sec.num+'. '+custEsc(sec.title)+'</div>';
    h+=custFbLetterPumpsHtml(LRI_SEC_PHOTOS);
@@ -6643,9 +7064,12 @@ function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
     for(ii=0;ii<lines.length;ii++) h+='<li>'+custEsc(lines[ii].replace(/^[-•*]\s*/,""))+'</li>';
     h+='</ul>';
    }
-   if(sec.payload.idxs&&sec.payload.idxs.length) h+=custFbLetterPhotosHtml(photos,sec.payload.idxs);
+   h+=custFbLetterBaPhotosHtml(photos,custFbPhotosForSection(photos,sec.payload.idxs,"additional",j));
+   h+=custFbLetterRelBlocksHtml(j,"additional");
   }
  }
+ // Visit-level related blocks from the Photos card (omit empties inside helper)
+ h+=custFbLetterRelBlocksHtml(j,"jobPhotos");
  if(ticks.photos&&grouped&&grouped.ungrouped) h+='<p class="fb-note">'+grouped.ungrouped+' untagged photo(s) skipped — tag a Letter section to include them.</p>';
  h+='<div class="fb-letter-footer"><img src="'+CUST_FB_LETTER_FOOTER_IMG+'" alt="Busch ANZ"><div class="fb-foot-tag">Busch - All over the World in Industry</div><div class="fb-foot-web">www.buschvacuum.com.au</div></div>';
  h+='</div>';
@@ -6715,6 +7139,50 @@ function custFbLetterSubHead(L,text,big){
 // and mixing the two styles in one document would look like two reports stitched
 // together, not one). Reads lriPumpBlocks(n) so the field list can't drift from the
 // standalone report's logic.
+
+function custFbLetterPumpSecPdf(L,key,normSec){
+ var arr=(normSec&&normSec[key])||[],st=LRI_SEC_BLOCKS[key],baOn=!!(st&&st.ba);
+ function toPseudo(photos){
+  return photos.map(function(ph,i){return {dataUrl:ph.src||ph.dataUrl,caption:ph.caption||"",size:"half",side:ph.side||""};});
+ }
+ function drawPseudo(list,title){
+  if(!list.length)return;
+  if(title)custFbLetterSubHead(L,title,false);
+  var fake=toPseudo(list),norm=list.map(function(ph){return {src:ph.src||ph.dataUrl,w:ph.w||1000,h:ph.h||750};});
+  var idxs=[];for(var i=0;i<fake.length;i++)idxs.push(i);
+  custFbLetterPhotos(L,fake,norm,idxs);
+ }
+ if(arr.length){
+  if(!baOn)drawPseudo(arr,"");
+  else{
+   var before=[],after=[],other=[],i;
+   for(i=0;i<arr.length;i++){
+    if((arr[i].side||"")==="before")before.push(arr[i]);
+    else if((arr[i].side||"")==="after")after.push(arr[i]);
+    else other.push(arr[i]);
+   }
+   drawPseudo(before,"Before");drawPseudo(after,"After");drawPseudo(other,"");
+  }
+ }
+ if(st&&st.blocks){
+  var b,blk,photos;
+  for(b=0;b<st.blocks.length;b++){
+   blk=st.blocks[b];photos=blk.photos||[];
+   if(!(blk.label||"").trim()&&!(blk.notes||"").trim()&&!photos.length)continue;
+   if((blk.label||"").trim())custFbLetterSubHead(L,blk.label.trim(),true);
+   if((blk.notes||"").trim())custFbLetterBodyText(L,blk.notes,{fs:10,lh:4.5,gapAfter:3});
+   if(blk.ba){
+    before=[];after=[];other=[];
+    for(i=0;i<photos.length;i++){
+     if((photos[i].side||"")==="before")before.push(photos[i]);
+     else if((photos[i].side||"")==="after")after.push(photos[i]);
+     else other.push(photos[i]);
+    }
+    drawPseudo(before,"Before");drawPseudo(after,"After");drawPseudo(other,"");
+   }else drawPseudo(photos,"");
+  }
+ }
+}
 function custFbLetterDrawPumps(L,normSec){
  var n,blocks,i,b;
  for(n=1;n<=LRI_ROWCOUNT;n++){
@@ -6723,13 +7191,7 @@ function custFbLetterDrawPumps(L,normSec){
    b=blocks[i];
    if(b.kind==="sub")custFbLetterSubHead(L,b.text,i===0);
    else if(b.kind==="text")custFbLetterBodyText(L,b.text,{fs:9.5,lh:4.2,gapAfter:1.5});
-   else if(b.kind==="photos"){
-    var arr=normSec[b.key];
-    if(arr&&arr.length){
-     var idxs=[];for(var k=0;k<arr.length;k++)idxs.push(k);
-     custFbLetterPhotos(L,arr,arr,idxs);
-    }
-   }
+   else if(b.kind==="photos"){ custFbLetterPumpSecPdf(L,b.key,normSec); }
   }
   L.y+=3;
  }
@@ -6771,6 +7233,70 @@ function custFbLetterDrawHeader(L,c,j,fb){
  custFbLetterMetaLine(L,"SUBJECT",fb.subject,L.m,L.y,32,L.contentW-34); L.y+=5.2;
  custFbLetterMetaLine(L,"BUSCH REF",fb.buschRef,L.m,L.y,32,L.contentW-34); L.y+=5.2;
  custFbLetterMetaLine(L,"YOUR REF",fb.yourRef,L.m,L.y,32,L.contentW-34); L.y+=7;
+}
+
+function custFbLetterPhotosBa(L,photos,norm,idxs,sectionKey,j){
+ var pack=custFbPhotosForSection(photos,idxs,sectionKey,j);
+ if(pack.mode==="flat"){
+  if(pack.idxs&&pack.idxs.length)custFbLetterPhotos(L,photos,norm,pack.idxs);
+  return;
+ }
+ if(pack.before&&pack.before.length){custFbLetterSubHead(L,"Before",false);custFbLetterPhotos(L,photos,norm,pack.before);}
+ if(pack.after&&pack.after.length){custFbLetterSubHead(L,"After",false);custFbLetterPhotos(L,photos,norm,pack.after);}
+ if(pack.other&&pack.other.length)custFbLetterPhotos(L,photos,norm,pack.other);
+}
+function custFbLetterRelBlocksPdf(L,j,key){
+ var blocks=custFbRelBlocksFor(j,key),b,blk,photos,i,before,after,other,ph,item,normOne;
+ for(b=0;b<blocks.length;b++){
+  blk=blocks[b];
+  if((blk.label||"").trim())custFbLetterSubHead(L,blk.label.trim(),true);
+  if((blk.notes||"").trim())custFbLetterBodyText(L,blk.notes,{fs:10,lh:4.5,gapAfter:3});
+  photos=blk.photos||[];
+  function drawList(list,title){
+   if(!list.length)return;
+   if(title)custFbLetterSubHead(L,title,false);
+   var halfW=(L.contentW-4)/2,maxHhalf=52,row=[],ci;
+   function flush(){
+    if(!row.length)return;
+    var caps=[],heights=[],capFs=8,capLh=3.2,cellW=halfW,maxH=maxHhalf,capLines,imgH,need,x,iy,fmt;
+    for(ci=0;ci<row.length;ci++){
+     L.doc.setFont("helvetica","normal");L.doc.setFontSize(capFs);
+     capLines=L.doc.splitTextToSize(row[ci].cap,cellW-2);caps.push(capLines);
+     imgH=Math.min(maxH,cellW*(row[ci].h/Math.max(1,row[ci].w)));heights.push(imgH);
+    }
+    var capH=Math.max(caps[0].length,(caps[1]?caps[1].length:0))*capLh+2;
+    var imgBlock=Math.max.apply(null,heights);
+    need=capH+imgBlock+6;
+    custFbLetterEnsure(L,Math.min(need,40));
+    if(L.y+need>L.bottom)custFbLetterNewPage(L);
+    for(ci=0;ci<row.length;ci++){
+     x=L.m+ci*(cellW+4);
+     L.doc.setDrawColor(80,80,80);L.doc.setLineWidth(0.2);L.doc.rect(x,L.y,cellW,capH);
+     L.doc.setFont("helvetica","normal");L.doc.setFontSize(capFs);
+     L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);L.doc.text(caps[ci],x+1,L.y+capLh+0.5);
+     iy=L.y+capH+1.2;
+     try{fmt=/^data:image\/jpe?g/i.test(row[ci].src)?"JPEG":"PNG";L.doc.addImage(row[ci].src,fmt,x,iy,cellW,heights[ci]);}catch(err){}
+     L.doc.setDrawColor(L.orange[0],L.orange[1],L.orange[2]);L.doc.setLineWidth(0.4);L.doc.rect(x,iy,cellW,heights[ci]);
+    }
+    L.y+=capH+imgBlock+5;row=[];
+   }
+   for(i=0;i<list.length;i++){
+    ph=list[i];
+    item={src:ph.dataUrl,w:1000,h:750,cap:(ph.caption||"").trim()||("Photo "+(i+1))};
+    row.push(item);if(row.length===2)flush();
+   }
+   flush();
+  }
+  if(blk.ba){
+   before=[];after=[];other=[];
+   for(i=0;i<photos.length;i++){
+    if((photos[i].side||"")==="before")before.push(photos[i]);
+    else if((photos[i].side||"")==="after")after.push(photos[i]);
+    else other.push(photos[i]);
+   }
+   drawList(before,"Before");drawList(after,"After");drawList(other,"");
+  }else drawList(photos,"");
+ }
 }
 function custFbLetterPhotos(L,photos,norm,idxs){
  var halfW=(L.contentW-4)/2, maxHhalf=52, maxHfull=95, capFs=8, capLh=3.2, row=[], rowFull=false, i;
@@ -6895,7 +7421,7 @@ function custExportFeedbackPDF(skipUngroupedWarn){
   var norm=both[0],normSec=both[1];
   var L=custFbLetterCreate();
   custFbLetterDrawHeader(L,c,j,fb);
-  var plan=custFbLetterPlan(fb,grouped), si, sec, li, lines;
+  var plan=custFbLetterPlan(fb,grouped,j), si, sec, li, lines;
   for(si=0;si<plan.length;si++){
    sec=plan[si];
    if(sec.kind==="greeting"||sec.kind==="closing"){
@@ -6905,17 +7431,20 @@ function custExportFeedbackPDF(skipUngroupedWarn){
    }else if(sec.kind==="text"){
     custFbLetterSecHead(L,sec.num,sec.title);
     if(custFbLetterHas(sec.payload.text))custFbLetterBodyText(L,sec.payload.text,{fs:10,lh:4.5,gapAfter:3});
-    if(sec.payload.idxs&&sec.payload.idxs.length) custFbLetterPhotos(L,photos,norm,sec.payload.idxs);
+    custFbLetterPhotosBa(L,photos,norm,sec.payload.idxs,sec.key,j);
+    custFbLetterRelBlocksPdf(L,j,sec.key);
    }else if(sec.kind==="recs"){
     custFbLetterSecHead(L,sec.num,sec.title);
     if(sec.payload.lines&&sec.payload.lines.length){
      for(li=0;li<sec.payload.lines.length;li++) custFbLetterBodyText(L,(li+1)+". "+sec.payload.lines[li],{fs:10,lh:4.5,gapAfter:1.5});
      L.y+=2;
     }
-    if(sec.payload.idxs&&sec.payload.idxs.length) custFbLetterPhotos(L,photos,norm,sec.payload.idxs);
+    custFbLetterPhotosBa(L,photos,norm,sec.payload.idxs,sec.key,j);
+    custFbLetterRelBlocksPdf(L,j,sec.key);
    }else if(sec.kind==="photos"){
     custFbLetterSecHead(L,sec.num,sec.title);
-    custFbLetterPhotos(L,photos,norm,sec.payload);
+    custFbLetterPhotosBa(L,photos,norm,sec.payload,sec.key,j);
+    custFbLetterRelBlocksPdf(L,j,sec.key);
    }else if(sec.kind==="pumps"){
     custFbLetterSecHead(L,sec.num,sec.title);
     custFbLetterDrawPumps(L,normSec);
@@ -6926,9 +7455,11 @@ function custExportFeedbackPDF(skipUngroupedWarn){
      for(li=0;li<lines.length;li++) custFbLetterBodyText(L,"•  "+lines[li].replace(/^[-•*]\s*/,""),{fs:10,lh:4.5,gapAfter:1.2});
      L.y+=2;
     }
-    if(sec.payload.idxs&&sec.payload.idxs.length) custFbLetterPhotos(L,photos,norm,sec.payload.idxs);
+    custFbLetterPhotosBa(L,photos,norm,sec.payload.idxs,"additional",j);
+    custFbLetterRelBlocksPdf(L,j,"additional");
    }
   }
+  custFbLetterRelBlocksPdf(L,j,"jobPhotos");
   custFbLetterDrawFooterAll(L);
   var refBit=custFileSafe(fb.buschRef||"");
   var fname=(refBit?refBit+"_":"")+custFileSafe(c.name)+"_"+(j.date||"nodate")+"_FeedbackReport.pdf";
