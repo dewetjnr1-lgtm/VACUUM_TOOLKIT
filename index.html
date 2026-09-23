@@ -416,12 +416,12 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-letter .fb-sec-letter{font-size:12.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#E85D04;margin:16px 0 6px;padding-bottom:3px;border-bottom:1.5px solid #E85D04;}
 .cj-fb-letter .fb-pump-tag{font-size:12px;font-weight:800;color:#333;margin:14px 0 4px;}
 .cj-fb-letter .fb-pump-sub{font-size:10.5px;font-weight:800;color:#E85D04;text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px;}
-.cj-fb-letter .fb-photos-letter{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 12px;}
-.cj-fb-letter .fb-ph-letter{border:1.5px solid #E85D04;border-radius:2px;overflow:hidden;background:#fff;}
-.cj-fb-letter .fb-ph-letter img{display:block;width:100%;height:120px;object-fit:cover;}
+.cj-fb-letter .fb-photos-letter{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 12px;align-items:start;}
+.cj-fb-letter .fb-ph-letter{border:none;border-radius:0;overflow:visible;background:transparent;display:flex;flex-direction:column;gap:0;}
+.cj-fb-letter .fb-ph-letter img{display:block;width:100%;height:auto;max-height:180px;object-fit:contain;object-position:center;background:#f4f4f4;border:1.5px solid #E85D04;border-radius:2px;}
 .cj-fb-letter .fb-ph-letter.full{grid-column:1 / -1;}
-.cj-fb-letter .fb-ph-letter.full img{height:230px;}
-.cj-fb-letter .fb-ph-letter .cap{padding:6px 8px;font-size:11.5px;color:#333;border-bottom:1px solid #E8C9B0;background:#fff;}
+.cj-fb-letter .fb-ph-letter.full img{max-height:280px;}
+.cj-fb-letter .fb-ph-letter .cap{order:2;padding:6px 8px;font-size:11.5px;color:#333;border:1px solid #D0D5D8;border-top:none;background:#fff;margin:0;}
 .cj-fb-letter .fb-note{font-size:12px;color:#667788;margin:0 0 10px;}
 .cj-fb-letter .fb-ol,.cj-fb-letter .fb-ul{margin:0 0 12px;padding:0 0 0 1.25em;color:#333;}
 .cj-fb-letter .fb-ol li,.cj-fb-letter .fb-ul li{margin:0 0 4px;}
@@ -3668,28 +3668,49 @@ function lriSecGetPhotoArr(key,arrName){
  }
  return null;
 }
-function lriSecHandleFiles(key,files,arrName,side){
- arrName=arrName||'main';side=side||'';
- var target=lriSecGetPhotoArr(key,arrName);if(!target)return;
- var arr=Array.prototype.slice.call(files||[]);
- arr.forEach(function(file){
+
+// BA FAIL fix: clone File blobs + finish ALL reads before persist/render so a
+// mid-batch DOM rebuild cannot abort the FileList (was keeping only the last file).
+function vtReadImageFiles(files, onEach, onAll){
+ var list=Array.prototype.slice.call(files||[]);
+ if(!list.length){if(onAll)onAll(0);return;}
+ var blobs=list.map(function(f){try{return f.slice(0,f.size,f.type||"application/octet-stream");}catch(err){return f;}});
+ var pending=blobs.length,ok=0;
+ function tick(){pending--;if(pending<=0&&onAll)onAll(ok);}
+ blobs.forEach(function(blob){
   var reader=new FileReader();
   reader.onload=function(e){
    var img=new Image();
    img.onload=function(){
-    var maxW=1000,scale=Math.min(1,maxW/img.width);
-    var w=Math.round(img.width*scale),h=Math.round(img.height*scale);
-    var canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
-    canvas.getContext("2d").drawImage(img,0,0,w,h);
-    var ph={src:canvas.toDataURL("image/jpeg",0.72),caption:""};
-    if(side)ph.side=side;
-    target.push(ph);
-    lriSecRenderPhotos(key);
-    lriSave();
+    try{
+     var maxW=1000,scale=Math.min(1,maxW/Math.max(1,img.width));
+     var w=Math.round(img.width*scale),h=Math.round(img.height*scale);
+     var canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
+     canvas.getContext("2d").drawImage(img,0,0,w,h);
+     onEach(canvas.toDataURL("image/jpeg",0.72));
+     ok++;
+    }catch(err){}
+    tick();
    };
+   img.onerror=tick;
    img.src=e.target.result;
   };
-  reader.readAsDataURL(file);
+  reader.onerror=tick;
+  reader.readAsDataURL(blob);
+ });
+}
+function lriSecHandleFiles(key,files,arrName,side){
+ arrName=arrName||'main';side=side||'';
+ var target=lriSecGetPhotoArr(key,arrName);if(!target)return;
+ var startLen=target.length;
+ vtReadImageFiles(files,function(dataUrl){
+  var ph={src:dataUrl,caption:""};
+  if(side)ph.side=side;
+  target.push(ph);
+ },function(ok){
+  if(!ok){target.length=startLen;return;}
+  lriSecRenderPhotos(key);
+  lriSave();
  });
 }
 function lriSecPhotoCaption(key,arrName,i,v){
@@ -6178,25 +6199,16 @@ function custRelBlockHandleFiles(key,bi,files,side){
  var pair=custFindJob();if(!pair)return;
  custEnsureSecMeta(pair.j,key);var blk=pair.j.secBlocks[key][bi];if(!blk)return;
  if(!blk.photos)blk.photos=[];
- var arr=Array.prototype.slice.call(files||[]);
- arr.forEach(function(file){
-  var reader=new FileReader();
-  reader.onload=function(e){
-   var img=new Image();
-   img.onload=function(){
-    var maxW=1000,scale=Math.min(1,maxW/img.width);
-    var w=Math.round(img.width*scale),h=Math.round(img.height*scale);
-    var canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
-    canvas.getContext("2d").drawImage(img,0,0,w,h);
-    var ph={dataUrl:canvas.toDataURL("image/jpeg",0.72),caption:""};
-    if(side)ph.side=side;
-    blk.photos.push(ph);
-    if(!custPersist()){blk.photos.pop();}
-    custSecRenderPhotos(key);cjRefreshLivePreview();
-   };
-   img.src=e.target.result;
-  };
-  reader.readAsDataURL(file);
+ side=side||"";
+ var startLen=blk.photos.length;
+ vtReadImageFiles(files,function(dataUrl){
+  var ph={dataUrl:dataUrl,caption:""};
+  if(side)ph.side=side;
+  blk.photos.push(ph);
+ },function(ok){
+  if(!ok){blk.photos.length=startLen;return;}
+  if(!custPersist()){blk.photos.length=startLen;return;}
+  custSecRenderPhotos(key);cjRefreshLivePreview();
  });
 }
 function custRelBlockPhotoCap(key,bi,pi,val){
@@ -6214,31 +6226,19 @@ function custRelBlockPhotoRemove(key,bi,pi){
 function custSecHandleFiles(key,files,side){
  var pair=custFindJob();if(!pair)return;
  side=side||"";
- var arr=Array.prototype.slice.call(files||[]);
- arr.forEach(function(file){
-  var reader=new FileReader();
-  reader.onload=function(e){
-   var img=new Image();
-   img.onload=function(){
-    var maxW=1000,scale=Math.min(1,maxW/img.width);
-    var w=Math.round(img.width*scale),h=Math.round(img.height*scale);
-    var canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
-    canvas.getContext("2d").drawImage(img,0,0,w,h);
-    if(!pair.j.photos)pair.j.photos=[];
-    var ph={dataUrl:canvas.toDataURL("image/jpeg",0.72),caption:"",group:key};
-    if(side)ph.side=side;
-    pair.j.photos.push(ph);
-    if(!custPersist()){pair.j.photos.pop();}
-    custRenderJobPhotos();
-    custSecRenderAllPhotos();
-    cjRefreshLivePreview();
-   };
-   img.src=e.target.result;
-  };
-  reader.readAsDataURL(file);
+ if(!pair.j.photos)pair.j.photos=[];
+ var startLen=pair.j.photos.length;
+ vtReadImageFiles(files,function(dataUrl){
+  var ph={dataUrl:dataUrl,caption:"",group:key};
+  if(side)ph.side=side;
+  pair.j.photos.push(ph);
+ },function(ok){
+  if(!ok){pair.j.photos.length=startLen;return;}
+  if(!custPersist()){pair.j.photos.length=startLen;return;}
+  custRenderJobPhotos();
+  custSecRenderAllPhotos();
+  cjRefreshLivePreview();
  });
- var input=document.getElementById("cj_secphinput_"+key);
- if(input)input.value="";
 }
 function custSecPhotoCaption(idx,val){
  var pair=custFindJob();if(!pair||!pair.j.photos||!pair.j.photos[idx])return;
@@ -6870,7 +6870,7 @@ function custFbLetterBlockPhotosHtml(blk){
   h+='<div class="fb-photos-letter">';
   for(i=0;i<list.length;i++){
    ph=list[i];cap=(ph.caption||"").trim()||("Photo "+(i+1));
-   h+='<div class="fb-ph-letter"><div class="cap">'+custEsc(cap)+'</div><img src="'+ph.dataUrl+'" alt=""></div>';
+   h+='<div class="fb-ph-letter"><img src="'+ph.dataUrl+'" alt=""><div class="cap">'+custEsc(cap)+'</div></div>';
   }
   h+='</div>';
  }
@@ -6903,7 +6903,7 @@ function custFbLetterPhotosHtml(photos,idxs){
   ph=photos[idxs[i]]; if(!ph) continue;
   cap=(ph.caption||"").trim()||("Photo "+(idxs[i]+1));
   full=ph.size==="full";
-  h+='<div class="fb-ph-letter'+(full?" full":"")+'"><div class="cap">'+custEsc(cap)+'</div><img src="'+ph.dataUrl+'" alt=""></div>';
+  h+='<div class="fb-ph-letter'+(full?" full":"")+'"><img src="'+ph.dataUrl+'" alt=""><div class="cap">'+custEsc(cap)+'</div></div>';
  }
  return h+'</div>';
 }
@@ -6915,7 +6915,7 @@ function custFbLetterPumpSecHtml(key,normSec){
   var out='<div class="fb-photos-letter">',ph,cap,ii;
   for(ii=0;ii<list.length;ii++){
    ph=list[ii];cap=(ph.caption||"").trim()||("Photo "+(ii+1));
-   out+='<div class="fb-ph-letter"><div class="cap">'+custEsc(cap)+'</div><img src="'+(ph.src||ph.dataUrl)+'" alt=""></div>';
+   out+='<div class="fb-ph-letter"><img src="'+(ph.src||ph.dataUrl)+'" alt=""><div class="cap">'+custEsc(cap)+'</div></div>';
   }
   return out+'</div>';
  }
@@ -6961,7 +6961,7 @@ function custFbLetterPumpPhotosHtml(arr){
  for(i=0;i<(arr||[]).length;i++){
   ph=arr[i];
   cap=(ph.caption||"").trim()||("Photo "+(i+1));
-  h+='<div class="fb-ph-letter"><div class="cap">'+custEsc(cap)+'</div><img src="'+ph.src+'" alt=""></div>';
+  h+='<div class="fb-ph-letter"><img src="'+ph.src+'" alt=""><div class="cap">'+custEsc(cap)+'</div></div>';
  }
  return h+'</div>';
 }
@@ -7255,7 +7255,7 @@ function custFbLetterRelBlocksPdf(L,j,key){
   function drawList(list,title){
    if(!list.length)return;
    if(title)custFbLetterSubHead(L,title,false);
-   var halfW=(L.contentW-4)/2,maxHhalf=52,row=[],ci;
+   var halfW=(L.contentW-4)/2,maxHhalf=62,row=[],ci;
    function flush(){
     if(!row.length)return;
     var caps=[],heights=[],capFs=8,capLh=3.2,cellW=halfW,maxH=maxHhalf,capLines,imgH,need,x,iy,fmt;
@@ -7271,14 +7271,15 @@ function custFbLetterRelBlocksPdf(L,j,key){
     if(L.y+need>L.bottom)custFbLetterNewPage(L);
     for(ci=0;ci<row.length;ci++){
      x=L.m+ci*(cellW+4);
-     L.doc.setDrawColor(80,80,80);L.doc.setLineWidth(0.2);L.doc.rect(x,L.y,cellW,capH);
-     L.doc.setFont("helvetica","normal");L.doc.setFontSize(capFs);
-     L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);L.doc.text(caps[ci],x+1,L.y+capLh+0.5);
-     iy=L.y+capH+1.2;
+     iy=L.y;
      try{fmt=/^data:image\/jpe?g/i.test(row[ci].src)?"JPEG":"PNG";L.doc.addImage(row[ci].src,fmt,x,iy,cellW,heights[ci]);}catch(err){}
      L.doc.setDrawColor(L.orange[0],L.orange[1],L.orange[2]);L.doc.setLineWidth(0.4);L.doc.rect(x,iy,cellW,heights[ci]);
+     var cy=iy+heights[ci];
+     L.doc.setDrawColor(80,80,80);L.doc.setLineWidth(0.2);L.doc.rect(x,cy,cellW,capH);
+     L.doc.setFont("helvetica","normal");L.doc.setFontSize(capFs);
+     L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);L.doc.text(caps[ci],x+1,cy+capLh+0.5);
     }
-    L.y+=capH+imgBlock+5;row=[];
+    L.y+=imgBlock+capH+5;row=[];
    }
    for(i=0;i<list.length;i++){
     ph=list[i];
@@ -7299,7 +7300,7 @@ function custFbLetterRelBlocksPdf(L,j,key){
  }
 }
 function custFbLetterPhotos(L,photos,norm,idxs){
- var halfW=(L.contentW-4)/2, maxHhalf=52, maxHfull=95, capFs=8, capLh=3.2, row=[], rowFull=false, i;
+ var halfW=(L.contentW-4)/2, maxHhalf=62, maxHfull=110, capFs=8, capLh=3.2, row=[], rowFull=false, i;
  function flush(){
   if(!row.length) return;
   var cellW=rowFull?L.contentW:halfW;
@@ -7320,20 +7321,21 @@ function custFbLetterPhotos(L,photos,norm,idxs){
   if(L.y+need>L.bottom) custFbLetterNewPage(L);
   for(ci=0;ci<row.length;ci++){
    cell=row[ci]; x=L.m+ci*(cellW+4);
-   L.doc.setDrawColor(80,80,80); L.doc.setLineWidth(0.2);
-   L.doc.rect(x,L.y,cellW,capH);
-   L.doc.setFont("helvetica","normal"); L.doc.setFontSize(capFs);
-   L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);
-   L.doc.text(caps[ci],x+1,L.y+capLh+0.5);
-   iy=L.y+capH+1.2;
+   iy=L.y;
    try{
     fmt=/^data:image\/jpe?g/i.test(cell.src)?"JPEG":"PNG";
     L.doc.addImage(cell.src,fmt,x,iy,cellW,heights[ci]);
    }catch(err){}
    L.doc.setDrawColor(L.orange[0],L.orange[1],L.orange[2]); L.doc.setLineWidth(0.4);
    L.doc.rect(x,iy,cellW,heights[ci]);
+   var cy=iy+heights[ci];
+   L.doc.setDrawColor(80,80,80); L.doc.setLineWidth(0.2);
+   L.doc.rect(x,cy,cellW,capH);
+   L.doc.setFont("helvetica","normal"); L.doc.setFontSize(capFs);
+   L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);
+   L.doc.text(caps[ci],x+1,cy+capLh+0.5);
   }
-  L.y+=capH+imgBlock+5;
+  L.y+=imgBlock+capH+5;
   row=[]; rowFull=false;
  }
  for(i=0;i<idxs.length;i++){
