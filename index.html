@@ -304,6 +304,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-live-preview-hint{font-size:11px;color:var(--soft);white-space:nowrap;}
 .cj-live-preview-body{background:#fff;border-radius:8px;padding:8px;}
 .cj-live-preview-body .cj-fb-letter{max-width:760px;margin:0 auto;}
+.cj-live-preview-frame{flex:1 1 auto;width:100%;border:0;border-radius:8px;background:#fff;min-height:280px;}
 .cj-live-preview-close{display:none;}
 .cj-mobile-preview-backdrop{display:none;}
 .cj-mobile-preview-fab{display:none;}
@@ -314,14 +315,14 @@ body.cj-fb-preview-open{overflow:hidden !important;}
    capped at its normal 720px, so both sides actually use the space. */
 @media (min-width:1000px){
  body.cj-live-open main{max-width:calc(50vw - 40px);margin:0 0 0 16px;padding-right:16px;}
- .cj-live-preview-panel.on{display:block;position:fixed;top:66px;right:0;width:calc(50vw - 8px);max-height:calc(100vh - 76px);overflow-y:auto;background:var(--elev);border-left:1px solid var(--line);border-radius:14px 0 0 14px;padding:16px;box-shadow:-4px 0 20px rgba(0,0,0,.45);z-index:40;}
+ .cj-live-preview-panel.on{display:flex;flex-direction:column;position:fixed;top:66px;right:0;width:calc(50vw - 8px);height:calc(100vh - 76px);max-height:calc(100vh - 76px);overflow-y:auto;background:var(--elev);border-left:1px solid var(--line);border-radius:14px 0 0 14px;padding:16px;box-shadow:-4px 0 20px rgba(0,0,0,.45);z-index:40;}
 }
 /* Phone/tablet turned sideways: too narrow for a permanent split, so the preview
    is a tap-to-open drawer instead — pop it out to check, close it to keep editing. */
 @media (orientation:landscape) and (min-width:560px) and (max-width:999px){
  .cj-mobile-preview-fab.on{display:block;position:fixed;bottom:18px;right:18px;z-index:41;background:var(--accent);color:#241505;border:0;border-radius:24px;padding:12px 20px;font-size:14px;font-weight:800;box-shadow:0 4px 16px rgba(0,0,0,.5);cursor:pointer;}
  .cj-mobile-preview-backdrop.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:38;}
- .cj-live-preview-panel.peek{display:block;position:fixed;top:0;right:0;bottom:0;width:86%;max-width:420px;max-height:100vh;border-radius:0;overflow-y:auto;background:var(--elev);border-left:1px solid var(--line);box-shadow:-6px 0 24px rgba(0,0,0,.5);z-index:39;padding:14px;}
+ .cj-live-preview-panel.peek{display:flex;flex-direction:column;position:fixed;top:0;right:0;bottom:0;width:86%;max-width:420px;height:100vh;max-height:100vh;border-radius:0;overflow-y:auto;background:var(--elev);border-left:1px solid var(--line);box-shadow:-6px 0 24px rgba(0,0,0,.5);z-index:39;padding:14px;}
  .cj-live-preview-panel.peek .cj-live-preview-close{display:block;background:none;border:1px solid var(--line);color:var(--soft);border-radius:8px;padding:6px 12px;font-size:12.5px;}
 }
 .cj-fb-letter{font-size:13.5px;color:#333;line-height:1.45;background:#fff;border-radius:8px;padding:16px 16px 10px;border:1px solid #D0D5D8;font-family:Helvetica,Arial,sans-serif;}
@@ -340,6 +341,8 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-letter .fb-refs{margin:0 0 14px;font-size:12.5px;}
 .cj-fb-letter .fb-body{white-space:pre-wrap;color:#333;margin:0 0 12px;font-size:13px;line-height:1.5;}
 .cj-fb-letter .fb-sec-letter{font-size:12.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#E85D04;margin:16px 0 6px;padding-bottom:3px;border-bottom:1.5px solid #E85D04;}
+.cj-fb-letter .fb-pump-tag{font-size:12px;font-weight:800;color:#333;margin:14px 0 4px;}
+.cj-fb-letter .fb-pump-sub{font-size:10.5px;font-weight:800;color:#E85D04;text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px;}
 .cj-fb-letter .fb-photos-letter{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 12px;}
 .cj-fb-letter .fb-ph-letter{border:1.5px solid #E85D04;border-radius:2px;overflow:hidden;background:#fff;}
 .cj-fb-letter .fb-ph-letter img{display:block;width:100%;height:120px;object-fit:cover;}
@@ -1161,6 +1164,12 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <button class="exbtn" style="display:block;width:100%;margin:12px 0 8px" onclick="lriSaveNow()">Save on this device</button>
 <p class="sub" style="margin:0 0 12px;font-size:12.5px">Auto-saves as you type too — this is a checkpoint so you know it's kept.</p>
 <button class="exbtn" onclick="lriExportPDF()" style="margin:6px 0 0">Export PDF</button><button class="clrbtn" onclick="lriClear()" style="margin:6px 0 0">Clear this report</button>
+<div class="cj-mobile-preview-backdrop" id="lri_mobile_preview_backdrop" onclick="lriToggleMobilePreview()"></div>
+<button type="button" class="cj-mobile-preview-fab" id="lri_mobile_preview_fab" onclick="lriToggleMobilePreview()">Preview</button>
+<div class="cj-live-preview-panel" id="lri_live_preview_panel">
+<div class="cj-live-preview-head"><b>Live preview</b><span class="cj-live-preview-hint">Updates as you type</span><button type="button" class="cj-live-preview-close" onclick="lriToggleMobilePreview()">Close</button></div>
+<iframe id="lri_live_preview_frame" class="cj-live-preview-frame" title="Inspection report live preview"></iframe>
+</div>
 </section>
 <section class="page" id="cust">
 <div class="pgh"><h2>Customers</h2><button class="q" onclick="hp('h_cust')">?</button></div>
@@ -1271,6 +1280,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="cj-fb-sec" data-tick="equipment"><label class="chk"><input type="checkbox" id="cj_fb_tick_equipment" onchange="custFbTickChanged(this)"> Equipment</label><div class="cj-fb-sec-body" id="cj_fb_body_equipment"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_equipment" rows="3" placeholder="Pump tag, system, location"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_equipment" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_equipment" onchange="custSecHandleFiles('equipment',this.files)"></div></div></div></div>
 <div class="cj-fb-sec" data-tick="method"><label class="chk"><input type="checkbox" id="cj_fb_tick_method" onchange="custFbTickChanged(this)"> Method</label><div class="cj-fb-sec-body" id="cj_fb_body_method"><div class="fld" style="padding-top:0"><div class="fh"><label>Service type</label></div><div class="ctrl"><select id="cj_fb_method_type" onchange="custFbApplyMethod(this.value)"><option value="">— Pick a service type to fill in below —</option><option value="flush">Chemical flush</option><option value="perf">Performance / efficiency testing</option><option value="internal">Internal inspection (fiberscope)</option><option value="bearing">Bearing replacement</option><option value="gland">Gland packing replacement</option><option value="valve">Valve &amp; intercepting plate replacement</option><option value="belt">Drive pulley / V-belt replacement</option><option value="rotable">Rotable spare pump preservation</option><option value="diag">Site inspection / diagnostics</option><option value="clear">Custom — clear and write my own</option></select></div><p class="sub" style="margin:4px 0 0;font-size:12.5px">Fills Heading &amp; Details below from the Busch capability statement &mdash; edit freely after.</p></div><div class="fld"><div class="fh"><label>Heading</label></div><div class="ctrl"><input type="text" id="cj_fb_intro_head"></div></div><div class="fld"><div class="fh"><label>Details</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="5"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_method" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_method" onchange="custSecHandleFiles('method',this.files)"></div></div></div></div>
 <div class="cj-fb-sec" data-tick="findings"><label class="chk"><input type="checkbox" id="cj_fb_tick_findings" onchange="custFbTickChanged(this)"> Findings</label><div class="cj-fb-sec-body" id="cj_fb_body_findings"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_findings" rows="3" placeholder="As-found condition"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_findings" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_findings" onchange="custSecHandleFiles('findings',this.files)"></div></div></div></div>
+<div class="cj-fb-sec" data-tick="pumpInspection"><label class="chk"><input type="checkbox" id="cj_fb_tick_pumpInspection" onchange="custFbTickChanged(this)"> Pump inspection details</label><div class="cj-fb-sec-body" id="cj_fb_body_pumpInspection"><p class="sub" style="margin:0;font-size:12.5px" id="cj_fb_pump_status">Pulled in automatically from the linked Pump Inspection Report — every pump, every check, every photo. Edit the pump data on that page; untick here to leave it out of this letter.</p></div></div>
 <div class="cj-fb-sec" data-tick="work"><label class="chk"><input type="checkbox" id="cj_fb_tick_work" onchange="custFbTickChanged(this)"> Work performed</label><div class="cj-fb-sec-body" id="cj_fb_body_work"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_additional" rows="3" placeholder="One item per line, e.g. Gland packing changes (DE and NDE)"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_additional" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_additional" onchange="custSecHandleFiles('additional',this.files)"></div></div></div></div>
 <div class="cj-fb-sec" data-tick="results"><label class="chk"><input type="checkbox" id="cj_fb_tick_results" onchange="custFbTickChanged(this)"> Results</label><div class="cj-fb-sec-body" id="cj_fb_body_results"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_results" rows="3" placeholder="As-left / outcome"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_results" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_results" onchange="custSecHandleFiles('results',this.files)"></div></div></div></div>
 <div class="cj-fb-sec" data-tick="photos"><label class="chk"><input type="checkbox" id="cj_fb_tick_photos" onchange="custFbTickChanged(this)"> Photos</label><div class="cj-fb-sec-body" id="cj_fb_body_photos"><p class="sub" style="margin:0;font-size:12.5px">Tag each photo below with which section it belongs to (Scope, Method, Findings, Work performed, Recommendations, etc.) and it prints right under that section's text — pre/during/post-flush stay as their own photo-only sections if you use them.</p></div></div>
@@ -3977,6 +3987,7 @@ function lriSave(quiet){
  var warn=document.getElementById("lri_warn");
  try{localStorage.setItem(LRI_KEY,JSON.stringify(o));if(warn)warn.style.display="none";if(!quiet&&typeof vtFlashSaved==="function")vtFlashSaved("lri_saved_chip");}
  catch(err){if(warn)warn.style.display="block";}
+ lriScheduleLivePreview();
 }
 function lriLoad(){
  var rc=2;
@@ -4475,7 +4486,7 @@ function pbDrawPump(pb,n,normSec){
   if(lriAny([p+"maxp_n"]))pbPairRow(pb,"Max working pressure (abs)",rUnitVal(p+"maxp_n",p+"maxp_u"));
   pbGap(pb,6);
  }
- if(lriAny([p+"seal_type",p+"seal_cond",p+"seal_drip_before",p+"seal_drip_after",p+"seal_sleeve",p+"seal_adj",p+"seal_notes",p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp",p+"brg_notes"])){
+ if(lriAny([p+"seal_type",p+"seal_cond",p+"seal_drip_before",p+"seal_drip_after",p+"seal_sleeve",p+"seal_adj",p+"seal_notes",p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp",p+"brg_notes"])||(LRI_SEC_PHOTOS[n+"_seals"]||[]).length||(LRI_SEC_PHOTOS[n+"_bearings"]||[]).length){
   pbHeaderRow(pb,"Seals & bearings");
   pbPairRow(pb,"Seal type",rSelText(p+"seal_type"),"Seal condition",rSelText(p+"seal_cond"));
   if(lriAny([p+"seal_drip_before",p+"seal_drip_after"]))
@@ -4494,7 +4505,7 @@ function pbDrawPump(pb,n,normSec){
   pbDrawSecPhotos(pb,normSec,n+"_bearings");
   pbGap(pb,6);
  }
- if(lriAny([p+"bore_corr",p+"bore_cav",p+"bore_abr",p+"bore_notes"])){
+ if(lriAny([p+"bore_corr",p+"bore_cav",p+"bore_abr",p+"bore_notes"])||(LRI_SEC_PHOTOS[n+"_borescope"]||[]).length){
   var corrSev=lriSevOf(p+"bore_corr"),cavSev=lriSevOf(p+"bore_cav"),abrSev=lriSevOf(p+"bore_abr");
   pbHeaderRow(pb,"Borescope inspection of casing");
   pbPairRow(pb,"Corrosion",rSelText(p+"bore_corr"),"Cavitation damage",rSelText(p+"bore_cav"),
@@ -4504,7 +4515,7 @@ function pbDrawPump(pb,n,normSec){
   pbDrawSecPhotos(pb,normSec,n+"_borescope");
   pbGap(pb,6);
  }
- if(lriAny([p+"chk_rotation",p+"chk_footbolts",p+"chk_guards",p+"chk_strainer",p+"chk_hoses",p+"run_obs"])){
+ if(lriAny([p+"chk_rotation",p+"chk_footbolts",p+"chk_guards",p+"chk_strainer",p+"chk_hoses",p+"run_obs"])||(LRI_SEC_PHOTOS[n+"_general"]||[]).length){
   pbHeaderRow(pb,"General & installation");
   pbPairRow(pb,"Rotation direction correct",rSelText(p+"chk_rotation"),"Foot & hold-down bolts tight",rSelText(p+"chk_footbolts"));
   pbPairRow(pb,"All guards fitted & secure",rSelText(p+"chk_guards"),"Inlet strainer / screen",rSelText(p+"chk_strainer"));
@@ -4527,7 +4538,7 @@ function pbDrawPump(pb,n,normSec){
   }
   pbGap(pb,6);
  }
- if(lriAny([p+"drive_type",p+"coup_cond",p+"coup_align",p+"coup_bolts",p+"coup_notes",p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_span",p+"belt_defl_before",p+"belt_defl_after",p+"belt_guard",p+"belt_notes"])){
+ if(lriAny([p+"drive_type",p+"coup_cond",p+"coup_align",p+"coup_bolts",p+"coup_notes",p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_span",p+"belt_defl_before",p+"belt_defl_after",p+"belt_guard",p+"belt_notes"])||(LRI_SEC_PHOTOS[n+"_drive"]||[]).length){
   var driveTxt=rSelText(p+"drive_type");
   pbHeaderRow(pb,"Drive"+(driveTxt?": "+driveTxt:""));
   if(lriAny([p+"coup_cond",p+"coup_align",p+"coup_bolts",p+"coup_notes"])){
@@ -4546,7 +4557,7 @@ function pbDrawPump(pb,n,normSec){
   pbDrawSecPhotos(pb,normSec,n+"_drive");
   pbGap(pb,6);
  }
- if(lriAny([p+"cooler_system",p+"cooler_cond",p+"cooler_notes",p+"sep_lining",p+"sep_bolts",p+"sep_notes"])){
+ if(lriAny([p+"cooler_system",p+"cooler_cond",p+"cooler_notes",p+"sep_lining",p+"sep_bolts",p+"sep_notes"])||(LRI_SEC_PHOTOS[n+"_cooler"]||[]).length||(LRI_SEC_PHOTOS[n+"_separator"]||[]).length){
   pbHeaderRow(pb,"Seal water cooler & separator tank");
   pbPairRow(pb,"Seal water system",rSelText(p+"cooler_system"),"Cooler condition",rSelText(p+"cooler_cond"));
   if(rv(p+"cooler_notes"))pbNoteRow(pb,"Cooler comment: "+rv(p+"cooler_notes"));
@@ -4605,14 +4616,13 @@ function pbDrawPump(pb,n,normSec){
  pbBox(pb,rv(p+"corrective")||"No corrective action noted.");
  pbGap(pb,4);
 }
-function lriExportPDF(){
- lriSaveCaptions();
- var letterheadOn=lriLetterheadOn();
- var company=rv("lri_company");
- var photos=LRI_PHOTOS.slice();
- var normPromises=[];
- for(var k=0;k<photos.length;k++)normPromises.push(pbNormalizePhoto(photos[k].src));
- var secKeys=Object.keys(LRI_SEC_PHOTOS),secPromiseMap=[],sk,si;
+// Builds the inspection report doc (shared by the download button and the live
+// preview) and resolves to the finished pb, unsaved -- caller decides what to do
+// with it (save to disk, or read out a blob URL for an embedded viewer).
+// Shared by the standalone report and the Client feedback letter's embedded pump
+// section -- both need the same normalized {key: [{src,w,h,caption}]} lookup.
+function lriNormalizeSecPhotos(){
+ var secKeys=Object.keys(LRI_SEC_PHOTOS),secPromiseMap=[],sk,si,normPromises=[];
  for(sk=0;sk<secKeys.length;sk++){
   var arr=LRI_SEC_PHOTOS[secKeys[sk]]||[];
   for(si=0;si<arr.length;si++){
@@ -4620,17 +4630,124 @@ function lriExportPDF(){
    normPromises.push(pbNormalizePhoto(arr[si].src));
   }
  }
- var secOffset=photos.length;
- Promise.all(normPromises).then(function(normAll){
-  var norm=normAll.slice(0,photos.length);
+ return Promise.all(normPromises).then(function(normAll){
   var normSec={},mi,m,nrm,cap;
   for(mi=0;mi<secPromiseMap.length;mi++){
    m=secPromiseMap[mi];
-   nrm=normAll[secOffset+mi];
+   nrm=normAll[mi];
    cap=(LRI_SEC_PHOTOS[m.key][m.idx]||{}).caption||"";
    if(!normSec[m.key])normSec[m.key]=[];
    normSec[m.key][m.idx]={src:nrm.src,w:nrm.w,h:nrm.h,caption:cap};
   }
+  return normSec;
+ });
+}
+// Neutral description of one pump's content -- read once here, walked by both the
+// PDF renderer and the HTML preview renderer, so the "which fields, in what order"
+// logic exists in exactly one place. Each block is {kind:"sub"|"text"|"photos", ...}.
+// kind:"photos" keys match LRI_SEC_PHOTOS keys 1:1, so nothing is ever pulled twice.
+function lriPumpBlocks(n){
+ var p="lri_r"+n+"_";
+ var blocks=[];
+ function push(kind,text,key){blocks.push({kind:kind,text:text,key:key});}
+ var tag=rv(p+"tag")||("Pump "+n);
+ push("sub",tag);
+ var idLines=[];
+ if(rv(p+"make")){idLines.push((rv(p+"make_role")==="rebuilt"?"Repaired / rebuilt by":"Manufacturer")+": "+rv(p+"make"));}
+ if(rv(p+"model"))idLines.push("Model: "+rv(p+"model"));
+ if(rv(p+"serial"))idLines.push("Serial No.: "+rv(p+"serial"));
+ if(rv(p+"year"))idLines.push((rv(p+"year_role")==="rebuilt"?"Last repaired":"Year of manufacture")+": "+rv(p+"year"));
+ if(lriAny([p+"maxp_n"]))idLines.push("Max working pressure (abs): "+rUnitVal(p+"maxp_n",p+"maxp_u"));
+ if(idLines.length)push("text",idLines.join("\n"));
+ function section(title,key,fieldChecks,lineBuilder,notesId,notesLabel){
+  var hasPhotos=((LRI_SEC_PHOTOS[key]||[]).length>0);
+  if(!lriAny(fieldChecks)&&!(notesId&&rv(notesId))&&!hasPhotos)return;
+  var lines=lineBuilder();
+  if(notesId&&rv(notesId))lines.push((notesLabel||"Notes")+": "+rv(notesId));
+  if(lines.length){push("sub",title);push("text",lines.join("\n"));}
+  else push("sub",title);
+  push("photos",null,key);
+ }
+ section("Seals",n+"_seals",[p+"seal_type",p+"seal_cond",p+"seal_drip_before",p+"seal_drip_after",p+"seal_sleeve",p+"seal_adj"],function(){
+  var l=[];
+  if(rv(p+"seal_type")||rv(p+"seal_cond"))l.push("Type: "+(rSelText(p+"seal_type")||"—")+" · Condition: "+(rSelText(p+"seal_cond")||"—"));
+  if(lriAny([p+"seal_drip_before",p+"seal_drip_after"]))l.push("Drip rate as found / after adjustment: "+(rv(p+"seal_drip_before")||"—")+" / "+(rv(p+"seal_drip_after")||"—")+" drops/min");
+  if(lriAny([p+"seal_sleeve",p+"seal_adj"]))l.push("Shaft/sleeve: "+(rSelText(p+"seal_sleeve")||"—")+" · Follower adjustment left: "+(rSelText(p+"seal_adj")||"—"));
+  return l;
+ },p+"seal_notes");
+ section("Bearings",n+"_bearings",[p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp"],function(){
+  var l=[];
+  if(rv(p+"brg_type")||rv(p+"brg_cond"))l.push("Type: "+(rSelText(p+"brg_type")||"—")+" · Condition: "+(rSelText(p+"brg_cond")||"—"));
+  if(lriAny([p+"brg_de_temp",p+"brg_nde_temp"]))l.push("Temp DE/NDE: "+(rNum(p+"brg_de_temp","°C")||"—")+" / "+(rNum(p+"brg_nde_temp","°C")||"—"));
+  return l;
+ },p+"brg_notes");
+ section("Borescope inspection of casing",n+"_borescope",[p+"bore_corr",p+"bore_cav",p+"bore_abr"],function(){
+  var l=[];
+  l.push("Corrosion: "+(rSelText(p+"bore_corr")||"—")+" · Cavitation: "+(rSelText(p+"bore_cav")||"—")+" · Abrasion/erosion: "+(rSelText(p+"bore_abr")||"—"));
+  return l;
+ },p+"bore_notes");
+ section("General & installation",n+"_general",[p+"chk_rotation",p+"chk_footbolts",p+"chk_guards",p+"chk_strainer",p+"chk_hoses"],function(){
+  var l=[];
+  l.push("Rotation: "+(rSelText(p+"chk_rotation")||"—")+" · Foot/hold-down bolts: "+(rSelText(p+"chk_footbolts")||"—")+" · Guards: "+(rSelText(p+"chk_guards")||"—"));
+  if(lriAny([p+"chk_strainer",p+"chk_hoses"]))l.push("Inlet strainer: "+(rSelText(p+"chk_strainer")||"—")+" · Flexible connections/hoses: "+(rSelText(p+"chk_hoses")||"—"));
+  return l;
+ },p+"run_obs","Running observations");
+ var tc=LRI_TORQ_COUNT[n]||0,tqLines=[],ti,tqp;
+ for(ti=1;ti<=tc;ti++){
+  tqp="lri_r"+n+"_tq"+ti+"_";
+  if(!lriAny([tqp+"name",tqp+"val",tqp+"cond",tqp+"notes"]))continue;
+  tqLines.push((rv(tqp+"name")||"Torque item")+": "+(rv(tqp+"val")||"—")+" · Condition: "+(rSelText(tqp+"cond")||"—")+(rv(tqp+"notes")?" — "+rv(tqp+"notes"):""));
+ }
+ if(tqLines.length){push("sub","Torque settings");push("text",tqLines.join("\n"));}
+ section("Drive: coupling or V-belts",n+"_drive",[p+"drive_type",p+"coup_cond",p+"coup_align",p+"coup_bolts",p+"coup_notes",p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_guard",p+"belt_notes"],function(){
+  var l=[],driveTxt=rSelText(p+"drive_type");
+  if(driveTxt)l.push("Drive type: "+driveTxt);
+  if(lriAny([p+"coup_cond",p+"coup_align",p+"coup_bolts"]))l.push("Coupling condition: "+(rSelText(p+"coup_cond")||"—")+" · Alignment: "+(rSelText(p+"coup_align")||"—")+" · Bolts torqued: "+(rSelText(p+"coup_bolts")||"—"));
+  if(rv(p+"coup_notes"))l.push("Coupling notes: "+rv(p+"coup_notes"));
+  if(lriAny([p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_guard"]))
+   l.push("Belts: "+(rv(p+"belt_profile")||"—")+" · Condition: "+(rSelText(p+"belt_cond")||"—")+" · Tension: "+(rSelText(p+"belt_tension")||"—")+" · Alignment: "+(rSelText(p+"belt_align")||"—")+" · Groove wear: "+(rSelText(p+"belt_groove")||"—")+" · Guard refitted: "+(rSelText(p+"belt_guard")||"—"));
+  if(rv(p+"belt_notes"))l.push("Belt notes: "+rv(p+"belt_notes"));
+  return l;
+ },null);
+ section("Seal water cooler",n+"_cooler",[p+"cooler_system",p+"cooler_cond"],function(){
+  var l=[];
+  l.push("System: "+(rSelText(p+"cooler_system")||"—")+" · Condition: "+(rSelText(p+"cooler_cond")||"—"));
+  return l;
+ },p+"cooler_notes","Cooler comment");
+ section("Separator tank",n+"_separator",[p+"sep_lining",p+"sep_bolts"],function(){
+  var l=[];
+  l.push("Internal lining: "+(rSelText(p+"sep_lining")||"—")+" · Bolts torqued: "+(rSelText(p+"sep_bolts")||"—"));
+  return l;
+ },p+"sep_notes");
+ var ec=LRI_EXTRA_COUNT[n]||0,ei;
+ for(ei=1;ei<=ec;ei++){
+  var ep="lri_r"+n+"_ex"+ei+"_";
+  if(!rv(ep+"label")&&!rv(ep+"cond")&&!rv(ep+"value")&&!rv(ep+"notes")&&!((LRI_SEC_PHOTOS[n+"_ex"+ei]||[]).length))continue;
+  var exLines=[];
+  if(rv(ep+"cond")||rv(ep+"value"))exLines.push("Condition: "+(rSelText(ep+"cond")||"—")+" · Value/reading: "+(rv(ep+"value")||"—"));
+  if(rv(ep+"notes"))exLines.push("Notes: "+rv(ep+"notes"));
+  push("sub",rv(ep+"label")||"Additional section");
+  if(exLines.length)push("text",exLines.join("\n"));
+  push("photos",null,n+"_ex"+ei);
+ }
+ var condSev=rSelText(p+"condition"),prioSev=rSelText(p+"priority");
+ if(condSev||prioSev||rv(p+"corrective")){
+  push("sub","Overall");
+  var ovLines=[];
+  ovLines.push("Overall condition: "+(condSev||"—")+" · Action priority: "+(prioSev||"—"));
+  if(rv(p+"corrective"))ovLines.push("Corrective action: "+rv(p+"corrective"));
+  push("text",ovLines.join("\n"));
+ }
+ return blocks;
+}
+function lriBuildDoc(){
+ var letterheadOn=lriLetterheadOn();
+ var company=rv("lri_company");
+ var photos=LRI_PHOTOS.slice();
+ var normPromises=[];
+ for(var k=0;k<photos.length;k++)normPromises.push(pbNormalizePhoto(photos[k].src));
+ return Promise.all([Promise.all(normPromises),lriNormalizeSecPhotos()]).then(function(both){
+  var norm=both[0],normSec=both[1];
   var pb=pbCreate(letterheadOn,company);
   pbTitle(pb,"LIQUID RING VACUUM PUMP INSPECTION REPORT");
   pbPairRow(pb,"Client",rv("lri_client"),"Site",rv("lri_site"));
@@ -4658,10 +4775,76 @@ function lriExportPDF(){
   }
   pbSignoff(pb,rv("lri_by"),rDate("lri_date"));
   pbFinalize(pb);
+  return pb;
+ });
+}
+function lriExportPDF(){
+ lriSaveCaptions();
+ lriBuildDoc().then(function(pb){
   var fname=(rv("lri_ref")||"Liquid_Ring_Pump_Inspection").replace(/[^a-z0-9\-_]+/gi,"_")+".pdf";
   pb.doc.save(fname);
  });
 }
+// Live preview: the actual generated PDF, rendered into an embedded viewer, rather
+// than a hand-built HTML mirror of it -- this report's layout (many pumps, many
+// sections each) is complex enough that reusing the real, tested PDF output is far
+// less risky than maintaining a second copy of its structure. Debounced since a
+// rebuild re-normalizes every photo, which isn't cheap to redo on every keystroke.
+var _lriLivePreviewTimer=null,_lriLivePreviewUrl=null,_lriLivePreviewBusy=false,_lriLivePreviewPending=false;
+function lriScheduleLivePreview(){
+ if(_lriLivePreviewTimer)clearTimeout(_lriLivePreviewTimer);
+ _lriLivePreviewTimer=setTimeout(lriRefreshLivePreview,700);
+}
+function lriRefreshLivePreview(){
+ var panel=document.getElementById("lri_live_preview_panel");
+ var fab=document.getElementById("lri_mobile_preview_fab");
+ if(!panel)return;
+ if(CUR!=="lri"){
+  panel.classList.remove("on");
+  document.body.classList.remove("cj-live-open");
+  if(fab)fab.classList.remove("on");
+  lriCloseMobilePreview();
+  return;
+ }
+ panel.classList.add("on");
+ document.body.classList.add("cj-live-open");
+ if(fab)fab.classList.add("on");
+ if(_lriLivePreviewBusy){_lriLivePreviewPending=true;return;}
+ _lriLivePreviewBusy=true;
+ lriSaveCaptions();
+ lriBuildDoc().then(function(pb){
+  var frame=document.getElementById("lri_live_preview_frame");
+  var oldUrl=_lriLivePreviewUrl;
+  _lriLivePreviewUrl=pb.doc.output("bloburl");
+  if(frame)frame.src=_lriLivePreviewUrl;
+  if(oldUrl){try{URL.revokeObjectURL(oldUrl);}catch(e){}}
+  _lriLivePreviewBusy=false;
+  if(_lriLivePreviewPending){_lriLivePreviewPending=false;lriScheduleLivePreview();}
+ }).catch(function(){
+  _lriLivePreviewBusy=false;
+ });
+}
+window.lriRefreshLivePreview=lriRefreshLivePreview;
+function lriCloseMobilePreview(){
+ var panel=document.getElementById("lri_live_preview_panel");
+ var backdrop=document.getElementById("lri_mobile_preview_backdrop");
+ if(panel)panel.classList.remove("peek");
+ if(backdrop)backdrop.classList.remove("show");
+}
+function lriToggleMobilePreview(){
+ var panel=document.getElementById("lri_live_preview_panel");
+ var backdrop=document.getElementById("lri_mobile_preview_backdrop");
+ if(!panel)return;
+ var opening=!panel.classList.contains("peek");
+ if(opening){
+  lriRefreshLivePreview();
+  panel.classList.add("peek");
+  if(backdrop)backdrop.classList.add("show");
+ }else{
+  lriCloseMobilePreview();
+ }
+}
+window.lriToggleMobilePreview=lriToggleMobilePreview;
 
 // --- LRI polish (locked brief): Open/Mid/Done strip, Next incomplete, sticky pump, saved chip ---
 var LRI_STATUS_T={open:"Open",mid:"Mid",done:"Done"};
@@ -5187,6 +5370,14 @@ function custRenderJob(){
  custRenderJobCalcs();
  custRenderJobPhotos();
  custSecRenderAllPhotos();
+ var pumpStatus=document.getElementById("cj_fb_pump_status");
+ if(pumpStatus){
+  var lriLink=custLriLinkGet();
+  var linked=!!(lriLink&&lriLink.jobId===j.id&&LRI_ROWCOUNT>0);
+  pumpStatus.textContent=linked
+   ?"Pulled in automatically from the linked Pump Inspection Report ("+LRI_ROWCOUNT+" pump"+(LRI_ROWCOUNT===1?"":"s")+") — every check and photo. Edit the pump data on that page; untick here to leave it out of this letter."
+   :"No pump inspection is currently linked to this job — open “Pump inspection” above to start or attach one. Nothing prints here until it's linked.";
+ }
  vtRefreshFilled(document.getElementById("cust_job"));
  cjRefreshLivePreview();
 }
@@ -5236,9 +5427,9 @@ function custFbApplyMethod(key){
  if(sel)sel.value="";
  custSaveJob("auto");
 }
-var CUST_FB_TICK_DEFAULTS={exec:true,scope:true,equipment:true,method:true,findings:true,work:true,results:true,photos:true,recommendations:true,closing:true,safety:false,parts:false,outstanding:false,nextVisit:false};
-var CUST_FB_TICK_KEYS=["exec","scope","equipment","method","findings","work","results","photos","recommendations","closing","safety","parts","outstanding","nextVisit"];
-var CUST_FB_SEC_LABELS={exec:"Executive summary",scope:"Scope of work",equipment:"Equipment / system",method:"Method / chemistry",findings:"Findings / condition",work:"Work performed",results:"Results / status",photos:"Photo evidence",recommendations:"Recommendations",closing:"Closing / contacts",safety:"Safety note",parts:"Parts / materials",outstanding:"Outstanding issues",nextVisit:"Next visit"};
+var CUST_FB_TICK_DEFAULTS={exec:true,scope:true,equipment:true,method:true,findings:true,pumpInspection:true,work:true,results:true,photos:true,recommendations:true,closing:true,safety:false,parts:false,outstanding:false,nextVisit:false};
+var CUST_FB_TICK_KEYS=["exec","scope","equipment","method","findings","pumpInspection","work","results","photos","recommendations","closing","safety","parts","outstanding","nextVisit"];
+var CUST_FB_SEC_LABELS={exec:"Executive summary",scope:"Scope of work",equipment:"Equipment / system",method:"Method / chemistry",findings:"Findings / condition",pumpInspection:"Pump inspection details",work:"Work performed",results:"Results / status",photos:"Photo evidence",recommendations:"Recommendations",closing:"Closing / contacts",safety:"Safety note",parts:"Parts / materials",outstanding:"Outstanding issues",nextVisit:"Next visit"};
 function custFbNormalizeTicks(t){
  var out={},k;
  for(k=0;k<CUST_FB_TICK_KEYS.length;k++){
@@ -5976,6 +6167,11 @@ function custFbResolve(j,c){
  o.parts=j.fbParts||"";
  o.outstanding=j.fbOutstanding||"";
  o.nextVisit=j.fbNextVisit||"";
+ // Only true when the pump data currently loaded (LRI is a single global slot, not
+ // per-job) actually belongs to this job -- never show one job's letter with a
+ // different job's pump inspection just because both were flagged "has LRI" once.
+ var lriLink=custLriLinkGet();
+ o.hasPumpInspection=!!(lriLink&&lriLink.jobId===j.id&&LRI_ROWCOUNT>0);
  o.ticks=custFbNormalizeTicks(j.fbTicks);
  return o;
 }
@@ -6024,6 +6220,7 @@ var CUST_FB_LETTER_HEADINGS={
  scope:"SCOPE OF WORK",
  equipment:"EQUIPMENT / SYSTEM",
  findings:"FINDINGS / CONDITION",
+ pumpInspection:"PUMP INSPECTION DETAILS",
  results:"RESULTS / STATUS",
  recommendations:"RECOMMENDATIONS",
  safety:"SAFETY NOTE",
@@ -6072,6 +6269,9 @@ function custFbLetterPlan(fb,grouped){
  addTextWithPhotos("equipment",CUST_FB_LETTER_HEADINGS.equipment,ticks.equipment,fb.equipment);
  addTextWithPhotos("method",fb.introHead||CUST_FB_LETTER_HEADINGS.method,ticks.method,fb.introBody);
  addTextWithPhotos("findings",CUST_FB_LETTER_HEADINGS.findings,ticks.findings,fb.findings);
+ if(ticks.pumpInspection&&fb.hasPumpInspection){
+  add("pumpInspection",CUST_FB_LETTER_HEADINGS.pumpInspection,"pumps",null);
+ }
  addTextWithPhotos("results",CUST_FB_LETTER_HEADINGS.results,ticks.results,fb.results);
  if(ticks.photos){
   ["pre","during","post"].forEach(function(gk){
@@ -6111,6 +6311,33 @@ function custFbLetterPhotosHtml(photos,idxs){
   h+='<div class="fb-ph-letter'+(full?" full":"")+'"><div class="cap">'+custEsc(cap)+'</div><img src="'+ph.dataUrl+'" alt=""></div>';
  }
  return h+'</div>';
+}
+function custFbLetterPumpPhotosHtml(arr){
+ var h='<div class="fb-photos-letter">',i,ph,cap;
+ for(i=0;i<(arr||[]).length;i++){
+  ph=arr[i];
+  cap=(ph.caption||"").trim()||("Photo "+(i+1));
+  h+='<div class="fb-ph-letter"><div class="cap">'+custEsc(cap)+'</div><img src="'+ph.src+'" alt=""></div>';
+ }
+ return h+'</div>';
+}
+// HTML mirror of custFbLetterDrawPumps -- same lriPumpBlocks(n) data, same plain
+// paragraph style as the rest of the letter, for the on-screen live preview.
+function custFbLetterPumpsHtml(normSec){
+ var h="",n,blocks,i,b;
+ for(n=1;n<=LRI_ROWCOUNT;n++){
+  blocks=lriPumpBlocks(n);
+  for(i=0;i<blocks.length;i++){
+   b=blocks[i];
+   if(b.kind==="sub")h+='<div class="'+(i===0?"fb-pump-tag":"fb-pump-sub")+'">'+custEsc(b.text)+'</div>';
+   else if(b.kind==="text")h+='<div class="fb-body">'+custEsc(b.text).replace(/\n/g,"<br>")+'</div>';
+   else if(b.kind==="photos"){
+    var arr=normSec[b.key];
+    if(arr&&arr.length)h+=custFbLetterPumpPhotosHtml(arr);
+   }
+  }
+ }
+ return h;
 }
 function custFbLetterSignoffHtml(j){
  var h='<div class="fb-signoff">';
@@ -6178,6 +6405,9 @@ function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
   }else if(sec.kind==="photos"){
    h+='<div class="fb-sec-letter">'+sec.num+'. '+custEsc(sec.title)+'</div>';
    h+=custFbLetterPhotosHtml(photos,sec.payload);
+  }else if(sec.kind==="pumps"){
+   h+='<div class="fb-sec-letter">'+sec.num+'. '+custEsc(sec.title)+'</div>';
+   h+=custFbLetterPumpsHtml(LRI_SEC_PHOTOS);
   }else if(sec.kind==="work"){
    h+='<div class="fb-sec-letter">'+sec.num+'. '+custEsc(sec.title)+'</div>';
    if(custFbLetterHas(sec.payload.text)){
@@ -6244,6 +6474,38 @@ function custFbLetterSecHead(L,num,title){
  L.doc.line(L.m,L.y,L.pw-L.m,L.y);
  L.y+=3.5;
  L.doc.setTextColor(0,0,0);
+}
+function custFbLetterSubHead(L,text,big){
+ custFbLetterEnsure(L,8);
+ L.doc.setFont("helvetica","bold"); L.doc.setFontSize(big?9.5:9);
+ L.doc.setTextColor(big?40:L.orange[0],big?40:L.orange[1],big?40:L.orange[2]);
+ L.doc.text(String(text||""),L.m,L.y+3.5);
+ L.y+=big?6.5:5.5;
+ L.doc.setTextColor(0,0,0);
+}
+// Draws every pump's content into the SAME letter document, in the letter's own
+// plain-paragraph style (no bordered tables -- that's the standalone report's look,
+// and mixing the two styles in one document would look like two reports stitched
+// together, not one). Reads lriPumpBlocks(n) so the field list can't drift from the
+// standalone report's logic.
+function custFbLetterDrawPumps(L,normSec){
+ var n,blocks,i,b;
+ for(n=1;n<=LRI_ROWCOUNT;n++){
+  blocks=lriPumpBlocks(n);
+  for(i=0;i<blocks.length;i++){
+   b=blocks[i];
+   if(b.kind==="sub")custFbLetterSubHead(L,b.text,i===0);
+   else if(b.kind==="text")custFbLetterBodyText(L,b.text,{fs:9.5,lh:4.2,gapAfter:1.5});
+   else if(b.kind==="photos"){
+    var arr=normSec[b.key];
+    if(arr&&arr.length){
+     var idxs=[];for(var k=0;k<arr.length;k++)idxs.push(k);
+     custFbLetterPhotos(L,arr,arr,idxs);
+    }
+   }
+  }
+  L.y+=3;
+ }
 }
 function custFbLetterMetaLine(L,lab,val,x,y,labW,maxW){
  L.doc.setFont("helvetica","bold"); L.doc.setFontSize(9);
@@ -6399,7 +6661,9 @@ function custExportFeedbackPDF(skipUngroupedWarn){
  if(ticks.photos&&!skipUngroupedWarn&&!custFbWarnUngrouped(grouped.ungrouped))return;
  var normPromises=[],k;
  for(k=0;k<photos.length;k++) normPromises.push(pbNormalizePhoto(photos[k].dataUrl));
- Promise.all(normPromises).then(function(norm){
+ var pumpPhotosPromise=(ticks.pumpInspection&&fb.hasPumpInspection)?lriNormalizeSecPhotos():Promise.resolve({});
+ Promise.all([Promise.all(normPromises),pumpPhotosPromise]).then(function(both){
+  var norm=both[0],normSec=both[1];
   var L=custFbLetterCreate();
   custFbLetterDrawHeader(L,c,j,fb);
   var plan=custFbLetterPlan(fb,grouped), si, sec, li, lines;
@@ -6423,6 +6687,9 @@ function custExportFeedbackPDF(skipUngroupedWarn){
    }else if(sec.kind==="photos"){
     custFbLetterSecHead(L,sec.num,sec.title);
     custFbLetterPhotos(L,photos,norm,sec.payload);
+   }else if(sec.kind==="pumps"){
+    custFbLetterSecHead(L,sec.num,sec.title);
+    custFbLetterDrawPumps(L,normSec);
    }else if(sec.kind==="work"){
     custFbLetterSecHead(L,sec.num,sec.title);
     if(custFbLetterHas(sec.payload.text)){
@@ -6500,6 +6767,7 @@ function show(id){
  if(id==="cust_job")custRenderJob();
  else cjRefreshLivePreview();
  if(id==="lri"){lriSecEnabledInit();lriRenderSetup();lriApplySections();if(typeof lriApplyLinkedContext==="function")lriApplyLinkedContext();}
+ lriRefreshLivePreview();
  window.scrollTo(0,0);
 }
 
