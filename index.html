@@ -231,6 +231,9 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .lri-job-card>summary.lri-job-sum .lri-job-sum-bits{font-size:12.5px;font-weight:600;color:var(--soft);flex:1 1 160px;line-height:1.35;}
 .lri-job-card.lri-from-job>summary.lri-job-sum .lri-job-sum-bits::before{content:"From this job — ";color:var(--teal);font-weight:700;}
 .lri-from-job-hint{font-size:13px;color:var(--soft);margin:0 0 10px;line-height:1.4;}
+#lri.lri-linked-from-job .lri-standalone-only{display:none!important;}
+#lri.lri-linked-from-job .lri-from-job-only{display:block!important;}
+
 .lri-job-card.lri-from-job .lri-job-fields input[readonly]{pointer-events:none;opacity:.72;background:var(--elev2);}
 .lri-job-actions{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0 0;}
 #lri_edit_on_job{margin:0 0 10px;}
@@ -1127,11 +1130,11 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="ar"><b>No nameplate duty figure handy?</b>The "Extra: vacuum performance" heading in each pump block is a link &mdash; tap it to jump straight to the "Deepest Vacuum You Can Pull" calculator, fill in today's seal water temperature and site altitude, then tap the &lsquo;&#8249; Back&rsquo; button at the top to come straight back to this report. Tap "Pull from vacuum calculator" to drop that number into Rated duty vacuum as your comparison point.</div>
 <div class="ar">Everything typed here, including photos, is saved on this phone as you go, so the sheet survives closing the app. Export PDF builds the finished PDF file directly and downloads it &mdash; there's no print screen to fight with, and no browser web-address or date stamped on the page.</div>
 </div>
-<div class="lri-job-actions"><button class="exbtn" onclick="lriSaveNow()">Save on this device</button><button class="exbtn" onclick="lriInsertExample()">Insert example</button><button class="exbtn" onclick="lriExportPDF()">Export PDF</button><button class="clrbtn" onclick="lriClear()">Clear this report</button></div>
+<div class="lri-job-actions"><button class="exbtn" onclick="lriSaveNow()">Save on this device</button><button class="exbtn" onclick="lriInsertExample()">Insert example</button><button class="exbtn lri-standalone-only" onclick="lriExportPDF()">Export PDF</button><button class="clrbtn lri-standalone-only" onclick="lriClear()">Clear this report</button></div>
 <details class="card lri-job-card" id="lri_job_card" open data-lri-from-job="0">
 <summary class="lri-job-sum"><span class="lri-job-sum-title">Job details</span><span class="lri-job-sum-bits" id="lri_job_sum_bits">Client · site · date</span></summary>
-<p class="lri-from-job-hint" id="lri_from_job_hint" hidden>From this job. Edit on the Job page if you need to change it.</p>
-<button type="button" class="clrbtn" id="lri_edit_on_job" hidden onclick="lriEditHeaderOnJob()">Edit header on Job</button>
+<p class="lri-from-job-hint" id="lri_from_job_hint" hidden>From this job. Back returns to the report.</p>
+<button type="button" class="clrbtn" id="lri_edit_on_job" hidden onclick="lriEditHeaderOnJob()">Back to Job</button>
 <div class="lri-job-fields" id="lri_job_fields">
 <div class="fld"><div class="fh"><label>Your company (shown on the report header)</label></div><div class="ctrl"><input type="text" id="lri_company"></div></div>
 <div class="fld"><div class="ctrl"><label class="chk"><input type="checkbox" id="lri_letterhead"> Print on the Busch letterhead (logo header and company footer, instead of the plain company line)</label></div></div>
@@ -1168,11 +1171,13 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 </div>
 <button class="exbtn" style="display:block;width:100%;margin:12px 0 8px" onclick="lriSaveNow()">Save on this device</button>
 <p class="sub" style="margin:0 0 12px;font-size:12.5px">Auto-saves as you type too — this is a checkpoint so you know it's kept.</p>
-<button class="exbtn" onclick="lriExportPDF()" style="margin:6px 0 0">Export PDF</button><button class="clrbtn" onclick="lriClear()" style="margin:6px 0 0">Clear this report</button>
+<button class="exbtn lri-standalone-only" onclick="lriExportPDF()" style="margin:6px 0 0">Export PDF</button><button class="clrbtn lri-standalone-only" onclick="lriClear()" style="margin:6px 0 0">Clear this report</button>
+<p class="sub lri-from-job-only" hidden style="margin:8px 2px 12px;font-size:12.5px">Pump checks here feed the Client feedback letter. Use <b>Back</b> to return to the report, then Make PDF.</p>
 <div class="cj-mobile-preview-backdrop" id="lri_mobile_preview_backdrop" onclick="lriToggleMobilePreview()"></div>
-<button type="button" class="cj-mobile-preview-fab" id="lri_mobile_preview_fab" onclick="lriToggleMobilePreview()">Preview</button>
+<button type="button" class="cj-mobile-preview-fab" id="lri_mobile_preview_fab" onclick="lriToggleMobilePreview()" title="Preview (on screen) — does not download. Make PDF when ready.">Preview</button>
 <div class="cj-live-preview-panel" id="lri_live_preview_panel">
 <div class="cj-live-preview-head"><b id="lri_live_preview_label">Live preview</b><span class="cj-live-preview-hint">Updates as you type</span><button type="button" class="cj-live-preview-close" onclick="lriToggleMobilePreview()">Close</button></div>
+<p class="sub cj-live-preview-phone-hint" style="margin:0;padding:0 12px 8px;font-size:12px;color:var(--soft)">Preview (on screen) — does not download. Make PDF when ready.</p>
 <div class="cj-live-preview-body" id="lri_live_preview_body" style="display:none"></div>
 <iframe id="lri_live_preview_frame" class="cj-live-preview-frame" title="Inspection report live preview"></iframe>
 </div>
@@ -1238,14 +1243,14 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="fld"><div class="fh"><label>PO / quote ref (optional)</label></div><div class="ctrl"><input type="text" id="cj_po" placeholder="PO or quote number"></div></div>
 <p class="sub" style="margin:4px 0 0;font-size:12.5px">Auto-saves on <b>this device</b> as you edit.</p>
 </div>
-<div class="card"><h3>Pump inspection</h3>
+<div class="card"><h3>Pumps in this report</h3>
 <div class="cj-lri-row">
-<button type="button" class="exbtn" id="cj_lri_btn" onclick="custStartOrOpenLri()">Start pump inspection</button>
-<p class="cj-lri-note" id="cj_lri_note">Opens the inspection. Client, site, and visit come from this job — you don’t fill them again.</p>
+<button type="button" class="exbtn" id="cj_lri_btn" onclick="custStartOrOpenLri()">Edit pumps in this report</button>
+<p class="cj-lri-note" id="cj_lri_note">Part of this report — checks and photos go in the letter when this section is ticked. Not a separate report.</p>
 </div>
 </div>
 <div class="card"><h3>Calculations for this job</h3>
-<p style="font-size:13px;color:var(--soft);margin:0 0 10px">Attach Tools or On-Site Checks calculators used on this visit. Open jumps to that calculator; Back returns here.</p>
+<p style="font-size:13px;color:var(--soft);margin:0 0 10px"><b>Site procedure / calc — not on letter.</b> Attach Tools or On-Site Checks used on this visit. Open jumps to that calculator; Back returns here.</p>
 <div id="cj_calcs"></div>
 <button class="exbtn" type="button" onclick="custOpenCalcPicker()">Add a calculation</button>
 </div>
@@ -1262,8 +1267,9 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <p class="sub" style="margin:8px 2px 4px;font-size:12.5px">Tag photos with a Letter section so they show in the client feedback letter.</p>
 <div id="cj_photos"></div>
 </div>
-<div class="card"><h3>Feedback report</h3>
-<p style="font-size:13px;color:var(--soft);margin:0 0 10px">Busch client service report. Tick sections to include. Tag photos above with a Letter section so they land in the right place. Auto-saves on this device.</p>
+<div class="card"><h3>Client feedback report</h3>
+<p style="font-size:13px;color:var(--soft);margin:0 0 10px">Client feedback report — edit here. Preview updates as you type.</p>
+<p style="font-size:12.5px;color:var(--soft);margin:0 0 10px">Tick sections to include. Tag photos above with a Letter section so they land in the right place. Auto-saves on this device.</p>
 <div class="cj-fb-letter-hdr cj-fb-letter-hdr-top">
 <h4>Letter header</h4>
 <div class="fld"><div class="fh"><label>Recipient email</label></div><div class="ctrl"><input type="text" id="cj_fb_email" placeholder="e.g. rh.operations.processing@royhill.com.au"></div></div>
@@ -1279,14 +1285,15 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="fld" style="margin-top:4px"><div class="fh"><label>If both are included, who goes first</label></div><div class="ctrl"><select id="cj_fb_sign_order" onchange="custSaveJob('auto')"><option value="andre">André, then Chris</option><option value="chris">Chris, then André</option></select></div></div>
 </div>
 <h4 style="margin:14px 0 4px;font-size:14px;font-weight:800;color:var(--teal)">Sections in this report</h4>
-<p class="cj-fb-secs-hint">Unticked sections won&rsquo;t appear in Preview or PDF. Untick hides the field below.</p>
+<p class="cj-fb-secs-hint">Sections in this report (ticked = Preview + PDF).</p>
 <div id="cj_fb_sections">
 <div class="cj-fb-sec" data-tick="exec"><label class="chk"><input type="checkbox" id="cj_fb_tick_exec" onchange="custFbTickChanged(this)"> Exec summary</label><div class="cj-fb-sec-body" id="cj_fb_body_exec"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_greeting" rows="4" placeholder="Executive summary / greeting"></textarea></div></div></div></div>
 <div class="cj-fb-sec" data-tick="scope"><label class="chk"><input type="checkbox" id="cj_fb_tick_scope" onchange="custFbTickChanged(this)"> Scope</label><div class="cj-fb-sec-body" id="cj_fb_body_scope"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_scope" rows="3" placeholder="What was requested / scope"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_scope" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_scope" onchange="custSecHandleFiles('scope',this.files)"></div></div></div></div>
 <div class="cj-fb-sec" data-tick="equipment"><label class="chk"><input type="checkbox" id="cj_fb_tick_equipment" onchange="custFbTickChanged(this)"> Equipment</label><div class="cj-fb-sec-body" id="cj_fb_body_equipment"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_equipment" rows="3" placeholder="Pump tag, system, location"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_equipment" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_equipment" onchange="custSecHandleFiles('equipment',this.files)"></div></div></div></div>
 <div class="cj-fb-sec" data-tick="method"><label class="chk"><input type="checkbox" id="cj_fb_tick_method" onchange="custFbTickChanged(this)"> Method</label><div class="cj-fb-sec-body" id="cj_fb_body_method"><div class="fld" style="padding-top:0"><div class="fh"><label>Service type</label></div><div class="ctrl"><select id="cj_fb_method_type" onchange="custFbApplyMethod(this.value)"><option value="">— Pick a service type to fill in below —</option><option value="flush">Chemical flush</option><option value="perf">Performance / efficiency testing</option><option value="internal">Internal inspection (fiberscope)</option><option value="bearing">Bearing replacement</option><option value="gland">Gland packing replacement</option><option value="valve">Valve &amp; intercepting plate replacement</option><option value="belt">Drive pulley / V-belt replacement</option><option value="rotable">Rotable spare pump preservation</option><option value="diag">Site inspection / diagnostics</option><option value="clear">Custom — clear and write my own</option></select></div><p class="sub" style="margin:4px 0 0;font-size:12.5px">Fills Heading &amp; Details below from the Busch capability statement &mdash; edit freely after.</p></div><div class="fld"><div class="fh"><label>Heading</label></div><div class="ctrl"><input type="text" id="cj_fb_intro_head"></div></div><div class="fld"><div class="fh"><label>Details</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="5"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_method" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_method" onchange="custSecHandleFiles('method',this.files)"></div></div></div></div>
 <div class="cj-fb-sec" data-tick="findings"><label class="chk"><input type="checkbox" id="cj_fb_tick_findings" onchange="custFbTickChanged(this)"> Findings</label><div class="cj-fb-sec-body" id="cj_fb_body_findings"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_findings" rows="3" placeholder="As-found condition"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_findings" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_findings" onchange="custSecHandleFiles('findings',this.files)"></div></div></div></div>
-<div class="cj-fb-sec" data-tick="pumpInspection"><label class="chk"><input type="checkbox" id="cj_fb_tick_pumpInspection" onchange="custFbTickChanged(this)"> Pump inspection details</label><div class="cj-fb-sec-body" id="cj_fb_body_pumpInspection"><p class="sub" style="margin:0;font-size:12.5px" id="cj_fb_pump_status">Pulled in automatically from the linked Pump Inspection Report — every pump, every check, every photo. Edit the pump data on that page; untick here to leave it out of this letter.</p></div></div>
+<div class="cj-fb-sec" data-tick="pumpInspection"><label class="chk"><input type="checkbox" id="cj_fb_tick_pumpInspection" onchange="custFbTickChanged(this)"> Pump inspection details</label><div class="cj-fb-sec-body" id="cj_fb_body_pumpInspection"><p class="sub" style="margin:0;font-size:12.5px" id="cj_fb_pump_status">Part of this report — checks and photos go in the letter when this section is ticked. Not a separate report.</p>
+<button type="button" class="exbtn" style="margin-top:8px" onclick="custStartOrOpenLri()">Edit pumps in this report</button></div></div>
 <div class="cj-fb-sec" data-tick="work"><label class="chk"><input type="checkbox" id="cj_fb_tick_work" onchange="custFbTickChanged(this)"> Work performed</label><div class="cj-fb-sec-body" id="cj_fb_body_work"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_additional" rows="3" placeholder="One item per line, e.g. Gland packing changes (DE and NDE)"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_additional" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_additional" onchange="custSecHandleFiles('additional',this.files)"></div></div></div></div>
 <div class="cj-fb-sec" data-tick="results"><label class="chk"><input type="checkbox" id="cj_fb_tick_results" onchange="custFbTickChanged(this)"> Results</label><div class="cj-fb-sec-body" id="cj_fb_body_results"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_results" rows="3" placeholder="As-left / outcome"></textarea></div></div><div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div><div id="cj_secph_results" class="cj-secph-list"></div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_results" onchange="custSecHandleFiles('results',this.files)"></div></div></div></div>
 <div class="cj-fb-sec" data-tick="photos"><label class="chk"><input type="checkbox" id="cj_fb_tick_photos" onchange="custFbTickChanged(this)"> Photos</label><div class="cj-fb-sec-body" id="cj_fb_body_photos"><p class="sub" style="margin:0;font-size:12.5px">Tag each photo below with which section it belongs to (Scope, Method, Findings, Work performed, Recommendations, etc.) and it prints right under that section's text — pre/during/post-flush stay as their own photo-only sections if you use them.</p></div></div>
@@ -1300,7 +1307,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 </div>
 <div class="card cj-pdfs"><h3>Client feedback letter</h3>
 <button class="exbtn" style="display:block;width:100%;margin-left:0" onclick="custPreviewFeedbackLetter()">Preview</button>
-<p class="sub" style="margin:4px 0 12px;font-size:12.5px">Preview &rarr; Make PDF or Close. No extra steps.</p>
+<p class="sub" style="margin:4px 0 12px;font-size:12.5px">Preview (on screen) — does not download. Make PDF when ready.</p>
 </div>
 <button class="exbtn" style="display:block;width:100%;margin:12px 0 8px" onclick="custSaveJob()">Save on this device</button>
 <p class="sub" style="margin:0 0 12px;font-size:12.5px">Stays on this phone/laptop. <b>Export backup</b> on the Customers list copies to a file.</p>
@@ -1308,7 +1315,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div id="cj_fb_preview" class="cj-fb-preview-overlay" aria-hidden="true">
 <div class="cj-fb-preview-panel" role="dialog" aria-labelledby="cj_fb_preview_title">
 <div class="cj-fb-preview-head"><b id="cj_fb_preview_title">Preview — Client feedback letter</b><button type="button" class="clrbtn" onclick="custCloseFeedbackPreview()" style="margin:0;min-height:40px">Close</button></div>
-<div class="cj-fb-preview-banner">This is a preview — nothing downloaded yet.</div>
+<div class="cj-fb-preview-banner">Preview (on screen) — does not download. Make PDF when ready.</div>
 <div class="cj-fb-preview-scroll" id="cj_fb_preview_body"></div>
 <div class="cj-fb-preview-actions">
 <button type="button" class="exbtn" onclick="custConfirmFeedbackPDF()">Make PDF</button>
@@ -1318,9 +1325,10 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 </div>
 </div>
 <div class="cj-mobile-preview-backdrop" id="cj_mobile_preview_backdrop" onclick="cjToggleMobilePreview()"></div>
-<button type="button" class="cj-mobile-preview-fab" id="cj_mobile_preview_fab" onclick="cjToggleMobilePreview()">Preview</button>
+<button type="button" class="cj-mobile-preview-fab" id="cj_mobile_preview_fab" onclick="cjToggleMobilePreview()" title="Preview (on screen) — does not download. Make PDF when ready.">Preview</button>
 <div class="cj-live-preview-panel" id="cj_live_preview_panel">
 <div class="cj-live-preview-head"><b>Live preview</b><span class="cj-live-preview-hint">Updates as you type</span><button type="button" class="cj-live-preview-close" id="cj_live_preview_close" onclick="cjToggleMobilePreview()">Close</button></div>
+<p class="sub cj-live-preview-phone-hint" style="margin:0;padding:0 12px 8px;font-size:12px;color:var(--soft)">Preview (on screen) — does not download. Make PDF when ready.</p>
 <div class="cj-live-preview-body" id="cj_live_preview_body"></div>
 </div>
 </section>
@@ -1329,6 +1337,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <p class="sub">Opening Roy Hill&hellip;</p>
 </section>
 <section class="page" id="hio"><div class="pgh"><h2>HIO Checklist</h2><button class="q" onclick="hp('ab_hio')">?</button></div>
+<p class="sub" style="margin:0 12px 10px;font-size:13px;color:var(--soft)"><b>Site procedure (not on letter).</b> Site paperwork for this visit — it does not print on the Client feedback letter.</p>
 <div class="about" id="ab_hio">
 <div class="ar"><b>What it is</b>Hancock Iron Ore's own paperwork for a belt-filter vacuum pump job (FLT151&ndash;FLT551 class): the SAP Preventative Maintenance Instruction (impeller clearance, scale buildup, seal/bearing condition, drip rate, vacuum pressure) plus the gland service &amp; commissioning work instruction OP-WIN-15873, on one sheet.</div>
 <div class="ar"><b>Why it matters</b>The paper version has two hold points &mdash; barricading inspected at Step 8, drip rate confirmed sustainable at Step 11 &mdash; before which work must stop for a HIO supervisor. This keeps both readings and both sign-offs together.</div>
@@ -5096,7 +5105,7 @@ function lriBindStickyScroll(){
 
 window.lriAddRow=lriAddRow;window.lriRemoveRow=lriRemoveRow;window.lriRemovePhoto=lriRemovePhoto;window.lriClear=lriClear;window.lriExportPDF=lriExportPDF;window.lriCopyPrevPump=lriCopyPrevPump;window.lriApplySections=lriApplySections;
 
-var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the Gas Laws",learn_intro:"What a Gas Really Is",learn_boyle:"Boyle's Law",learn_charles:"Charles's Law",learn_gl:"Gay-Lussac's Law",learn_combined:"The Combined Gas Law",learn_ideal:"The Ideal Gas Law",learn_dalton:"Dalton's Law",fc:"Normal / Actual Flow",vac:"Vacuum Pump Sizing",cmp:"Compressor Sizing",pc:"Conveying Sizing",mp:"Which Machine",vap:"Vapour & Wet Gas",pd:"Pump-down Time",lk:"Leak Check",pl:"Pipe Loss",pw:"Power & Motor Current",cv:"Unit Converter",ref:"Reference Tables",orf:"Orifice Sizing",hl:"Heat Load, Water",mw:"Cooling Tower Make-up",cw:"Conveying Step-by-Step",cat_learn:"Play and Learn",cat_size:"Tools",cat_site:"On-Site Checks",ts:"Find the Fault",ps:"Pre-separator Sizing",lr:"Inside a Liquid Ring Pump",dt:"Discharge Temperature",ck:"Commissioning Checklist",bp:"Belt & Pulley Speed",af:"Speed Change Effect",learn_fan:"Speed and the Fan Laws",learn_heat:"How Heat Load Works",learn_cav:"Why Seal Water Stays Cool",pt:"Production Test vs Factory Curve",lft:"Liquid Ring Pump Field Test Sheet",bf:"Belt Filter Pump Sizing",mav:"Deepest Vacuum You Can Pull",dl:"Drop-Leg Height Check",vl:"Vacuum Line Loss",rpt:"Site Investigation Report",lri:"Liquid Ring Pump Inspection Report",cust:"Customers",cust_view:"Customer",cust_job:"Job / visit",cust_royhill:"Roy Hill",hio:"HIO Checklist"};
+var TT={home:"Vacuum & Compressor Toolkit",learn:"Learn the Gas Laws",learn_intro:"What a Gas Really Is",learn_boyle:"Boyle's Law",learn_charles:"Charles's Law",learn_gl:"Gay-Lussac's Law",learn_combined:"The Combined Gas Law",learn_ideal:"The Ideal Gas Law",learn_dalton:"Dalton's Law",fc:"Normal / Actual Flow",vac:"Vacuum Pump Sizing",cmp:"Compressor Sizing",pc:"Conveying Sizing",mp:"Which Machine",vap:"Vapour & Wet Gas",pd:"Pump-down Time",lk:"Leak Check",pl:"Pipe Loss",pw:"Power & Motor Current",cv:"Unit Converter",ref:"Reference Tables",orf:"Orifice Sizing",hl:"Heat Load, Water",mw:"Cooling Tower Make-up",cw:"Conveying Step-by-Step",cat_learn:"Play and Learn",cat_size:"Tools",cat_site:"On-Site Checks",ts:"Find the Fault",ps:"Pre-separator Sizing",lr:"Inside a Liquid Ring Pump",dt:"Discharge Temperature",ck:"Commissioning Checklist",bp:"Belt & Pulley Speed",af:"Speed Change Effect",learn_fan:"Speed and the Fan Laws",learn_heat:"How Heat Load Works",learn_cav:"Why Seal Water Stays Cool",pt:"Production Test vs Factory Curve",lft:"Liquid Ring Pump Field Test Sheet",bf:"Belt Filter Pump Sizing",mav:"Deepest Vacuum You Can Pull",dl:"Drop-Leg Height Check",vl:"Vacuum Line Loss",rpt:"Site Investigation Report",lri:"Liquid Ring Pump Inspection Report",cust:"Customers",cust_view:"Customer",cust_job:"Job / visit",cust_royhill:"Roy Hill",hio:"HIO Checklist (not on letter)"};
 var PARENT={learn:"cat_learn",learn_intro:"learn",learn_boyle:"learn",learn_charles:"learn",learn_gl:"learn",learn_combined:"learn",learn_ideal:"learn",learn_dalton:"learn",cv:"cat_learn",ref:"cat_learn",fc:"cat_size",vac:"cat_size",cmp:"cat_size",pc:"cat_size",cw:"cat_size",mp:"cat_size",vap:"cat_size",orf:"cat_size",hl:"cat_size",mw:"cat_size",pd:"cat_site",lk:"cat_site",pl:"cat_site",pw:"cat_site",ts:"cat_site",ps:"cat_size",lr:"cat_learn",dt:"cat_size",ck:"cat_site",bp:"cat_site",af:"cat_size",learn_fan:"cat_learn",learn_heat:"cat_learn",learn_cav:"cat_learn",pt:"cat_site",lft:"cat_site",bf:"cat_size",mav:"cat_size",dl:"cat_size",vl:"cat_size",rpt:"cat_site",lri:"cust",cust:"home",cust_view:"cust",cust_job:"cust_view",cust_royhill:"cust",hio:"cust_job"};
 var CUR="home";
 var LRI_RETURN=null;
@@ -5413,8 +5422,8 @@ function custRenderJob(){
   var lriLink=custLriLinkGet();
   var linked=!!(lriLink&&lriLink.jobId===j.id&&LRI_ROWCOUNT>0);
   pumpStatus.textContent=linked
-   ?"Pulled in automatically from the linked Pump Inspection Report ("+LRI_ROWCOUNT+" pump"+(LRI_ROWCOUNT===1?"":"s")+") — every check and photo. Edit the pump data on that page; untick here to leave it out of this letter."
-   :"No pump inspection is currently linked to this job — open “Pump inspection” above to start or attach one. Nothing prints here until it's linked.";
+   ?"Part of this report — "+LRI_ROWCOUNT+" pump"+(LRI_ROWCOUNT===1?"":"s")+" (checks and photos go in the letter when this section is ticked). Not a separate report."
+   :"Part of this report — checks and photos go in the letter when this section is ticked. Not a separate report. Use Edit pumps in this report to add checks.";
  }
  vtRefreshFilled(document.getElementById("cust_job"));
  cjRefreshLivePreview();
@@ -5840,10 +5849,9 @@ function custUpdateLriButton(){
  var btn=document.getElementById("cj_lri_btn");
  var note=document.getElementById("cj_lri_note");
  if(!btn||!pair)return;
- var linked=custJobHasLri(pair.j);
- btn.textContent=linked?"Open pump inspection":"Start pump inspection";
- // Desi locked: same clarification whether start or re-open
- if(note)note.textContent="Opens the inspection. Client, site, and visit come from this job — you don’t fill them again.";
+ // Desi locked: always "Edit pumps in this report" (never a separate inspection product)
+ btn.textContent="Edit pumps in this report";
+ if(note)note.textContent="Part of this report — checks and photos go in the letter when this section is ticked. Not a separate report.";
 }
 function lriFmtVisitDate(j){
  if(!j)return "";
@@ -5918,14 +5926,25 @@ function lriSetFromJobMode(on,c,j){
  var hint=document.getElementById("lri_from_job_hint");
  var edit=document.getElementById("lri_edit_on_job");
  var fields=document.getElementById("lri_job_fields");
+ // Desi locked: detail page is "Pump inspection (this report)" when opened from Job
+ var h2=document.querySelector('#lri .pgh h2');
+ if(h2)h2.textContent=on?"Pump inspection (this report)":"Liquid Ring Pump Inspection Report";
+ var lriPage=document.getElementById("lri");
+ if(lriPage)lriPage.classList.toggle("lri-linked-from-job",!!on);
  if(card){
   card.classList.toggle("lri-from-job",!!on);
   card.setAttribute("data-lri-from-job",on?"1":"0");
   // Collapsed by default when linked; standalone stays open/editable
   if(on)card.open=false;else card.open=true;
  }
- if(hint)hint.hidden=!on;
- if(edit)edit.hidden=!on;
+ if(hint){
+  hint.hidden=!on;
+  if(on)hint.textContent="From this job. Back returns to the report.";
+ }
+ if(edit){
+  edit.hidden=!on;
+  if(on)edit.textContent="Back to Job";
+ }
  // Lock only fields that come from the job/customer; leave company, scope, tech editable
  var ids=["lri_client","lri_site","lri_contact","lri_contact_ph","lri_contact_em","lri_ref","lri_po","lri_date"];
  for(var i=0;i<ids.length;i++){
@@ -5986,7 +6005,7 @@ function custRenderJobCalcs(){
  var calcs=custEnsureJobCalcs(pair.j),h="",i,id;
  for(i=0;i<calcs.length;i++){
   id=calcs[i];
-  h+='<div class="cj-calc-row"><span class="cj-calc-name">'+custEsc(custCalcTitle(id))+'</span>'+
+  h+='<div class="cj-calc-row"><span class="cj-calc-name">'+custEsc(custCalcTitle(id))+(id==='hio'?' — not on letter':'')+'</span>'+
    '<button type="button" class="exbtn" onclick="custOpenJobCalc(\''+String(id).replace(/'/g,"")+'\')">Open</button>'+
    '<button type="button" class="clrbtn" onclick="custRemoveJobCalc(\''+String(id).replace(/'/g,"")+'\')">Remove</button></div>';
  }
