@@ -311,38 +311,66 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-live-make-pdf{margin:0 6px 0 auto;min-height:36px;padding:6px 12px;font-size:13px;white-space:nowrap;}.cj-live-preview-close{display:none;}
 .cj-mobile-preview-backdrop{display:none;}
 .cj-mobile-preview-fab{display:none;}
-/* Job live preview layout (Desi/Russel) — Quack D1 harden:
-   Wide (≥1000px): REAL CSS grid siblings — form col 1 | letter col 2.
-   Neither column is position:fixed/absolute over the other. No overlay.
-   Phone: Preview FAB + peek drawer (fixed OK); same letter HTML as wide.
+/* Job live preview layout — DESI_STICKY_PREVIEW_LOCK (2026-09-23):
+   Wide (≥1000px): true 50/50 grid; TWO independent scroll tracks.
+   Job shell height-capped to viewport; left form scrolls alone; right
+   preview stays in pane (fixed-in-pane height) and scrolls inside.
+   Never page-sticky (main/body overflow-x:clip breaks sticky → empty navy).
+   Never fixed/absolute overlay over the form (old D1 fail).
+   Phone: Preview FAB + peek drawer unchanged (max-width:999px).
    FAB/backdrop live OUTSIDE .cj-job-flex so they never steal grid cells. */
 .cj-job-flex,.lri-live-flex{display:block;}
 .cj-job-formcol,.lri-live-formcol{min-width:0;position:relative;z-index:1;}
 .cj-live-preview-panel{display:none;position:relative;left:auto;right:auto;top:auto;bottom:auto;inset:auto;}
 @media (min-width:1000px){
- body.cj-live-open main{max-width:none;width:100%;margin:0;padding:18px 16px 100px;}
+ /* Lock page scroll so only the two columns scroll */
+ html:has(body.cj-live-open),body.cj-live-open{overflow:hidden;height:100%;height:100dvh;}
+ body.cj-live-open main{
+  max-width:none;width:100%;margin:0;
+  padding:12px 16px;
+  height:calc(100vh - 64px);height:calc(100dvh - 64px);
+  max-height:calc(100vh - 64px);max-height:calc(100dvh - 64px);
+  overflow:hidden;box-sizing:border-box;
+ }
+ body.cj-live-open main > .page.active{
+  display:flex;flex-direction:column;
+  height:100%;max-height:100%;min-height:0;overflow:hidden;
+ }
  body.cj-live-open .cj-job-flex,
  body.cj-live-open .lri-live-flex{
   display:grid !important;
   grid-template-columns:minmax(0,1fr) minmax(0,1fr);
   gap:16px;
-  align-items:start;
+  align-items:stretch;
+  flex:1 1 auto;
+  min-height:0;height:100%;max-height:100%;
+  overflow:hidden;
  }
  body.cj-live-open .cj-job-formcol,
- body.cj-live-open .lri-live-formcol{grid-column:1;min-width:0;max-width:none;overflow:visible;}
+ body.cj-live-open .lri-live-formcol{
+  grid-column:1;min-width:0;max-width:none;
+  align-self:stretch;min-height:0;height:100%;max-height:100%;
+  overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;
+ }
  body.cj-live-open .cj-live-preview-panel.on{
   grid-column:2;
   display:flex !important;
   flex-direction:column;
-  position:sticky !important; /* never fixed/absolute on wide */
-  top:66px;left:auto !important;right:auto !important;bottom:auto !important;inset:auto !important;
+  position:relative !important; /* fixed-in-pane via height fill — not sticky/fixed overlay */
+  top:auto !important;left:auto !important;right:auto !important;bottom:auto !important;inset:auto !important;
   width:auto !important;max-width:none;
-  height:calc(100vh - 76px);max-height:calc(100vh - 76px);
-  overflow-y:auto;
+  align-self:stretch;min-height:0;height:100%;max-height:100%;
+  overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;
   background:var(--elev);border:1px solid var(--line);border-radius:14px;padding:16px;
   box-shadow:4px 4px 16px rgba(0,0,0,.28); /* shadow only to the right — no bleed over Visit */
   z-index:1; /* below form stacking; cannot cover Visit fields */
  }
+ body.cj-live-open .cj-live-preview-panel.on .cj-live-preview-head{flex:0 0 auto;}
+ body.cj-live-open .cj-live-preview-panel.on .cj-live-preview-body,
+ body.cj-live-open .cj-live-preview-panel.on .cj-live-preview-frame{
+  flex:1 1 auto;min-height:0;width:100%;
+ }
+ body.cj-live-open .cj-live-preview-panel.on .cj-live-preview-frame{height:100%;}
  .cj-live-preview-phone-hint{display:none;}
  .cj-mobile-preview-fab,.cj-mobile-preview-backdrop{display:none !important;} /* never on wide */
 }
