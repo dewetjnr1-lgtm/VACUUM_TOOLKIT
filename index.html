@@ -418,6 +418,13 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-letter .fb-sec-letter{font-size:12.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#E85D04;margin:16px 0 6px;padding-bottom:3px;border-bottom:1.5px solid #E85D04;}
 .cj-fb-letter .fb-pump-tag{font-size:12px;font-weight:800;color:#333;margin:14px 0 4px;}
 .cj-fb-letter .fb-pump-sub{font-size:10.5px;font-weight:800;color:#E85D04;text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px;}
+.cj-fb-letter .fb-pump-table{width:100%;border-collapse:separate;border-spacing:0;margin:3px 0 10px;border:1px solid #F0C29B;border-radius:9px;overflow:hidden;font-size:12px;box-shadow:0 1px 3px rgba(232,93,4,.08);}
+.cj-fb-letter .fb-pump-table tr:nth-child(odd) td{background:#FFF7F0;}
+.cj-fb-letter .fb-pump-table tr:nth-child(even) td{background:#fff;}
+.cj-fb-letter .fb-pump-table td{padding:6px 11px;border-bottom:1px solid #F6DEC7;vertical-align:top;line-height:1.4;}
+.cj-fb-letter .fb-pump-table tr:last-child td{border-bottom:none;}
+.cj-fb-letter .fb-pt-lab{font-weight:700;color:#B5480A;width:38%;white-space:nowrap;}
+.cj-fb-letter .fb-pt-val{color:#333;}
 .cj-fb-letter .fb-photos-letter{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 12px;align-items:start;}
 .cj-fb-letter .fb-ph-letter{border:none;border-radius:0;overflow:visible;background:transparent;display:flex;flex-direction:column;gap:6px;}
 .cj-fb-letter .fb-ph-frame{border:1.5px solid #E85D04;border-radius:2px;background:#f4f4f4;overflow:hidden;line-height:0;display:inline-flex;align-self:center;max-width:100%;}
@@ -4928,16 +4935,16 @@ function lriPumpBlocks(n){
  if(rv(p+"serial"))idLines.push("Serial No.: "+rv(p+"serial"));
  if(rv(p+"year"))idLines.push((rv(p+"year_role")==="rebuilt"?"Last repaired":"Year of manufacture")+": "+rv(p+"year"));
  if(lriAny([p+"maxp_n"]))idLines.push("Max working pressure (abs): "+rUnitVal(p+"maxp_n",p+"maxp_u"));
- if(idLines.length)push("text",idLines.join("\n"));
+ if(idLines.length)push("rows",idLines.join("\n"));
  function section(title,key,fieldChecks,lineBuilder,notesId,notesLabel){
   var hasPhotos=((LRI_SEC_PHOTOS[key]||[]).length>0);
   var stBlk=LRI_SEC_BLOCKS[key];
   if(stBlk&&stBlk.blocks){for(var _bi=0;_bi<stBlk.blocks.length;_bi++){var _bp=stBlk.blocks[_bi];if((_bp.label||"").trim()||(_bp.notes||"").trim()||(_bp.photos&&_bp.photos.length)){hasPhotos=true;break;}}}
   if(!lriAny(fieldChecks)&&!(notesId&&rv(notesId))&&!hasPhotos)return;
   var lines=lineBuilder();
-  if(notesId&&rv(notesId))lines.push((notesLabel||"Notes")+": "+rv(notesId));
-  if(lines.length){push("sub",title);push("text",lines.join("\n"));}
-  else push("sub",title);
+  push("sub",title);
+  if(lines.length)push("rows",lines.join("\n"));
+  if(notesId&&rv(notesId))push("text",(notesLabel||"Notes")+": "+rv(notesId));
   push("photos",null,key);
  }
  section("Seals",n+"_seals",[p+"seal_type",p+"seal_cond",p+"seal_drip_before",p+"seal_drip_after",p+"seal_sleeve",p+"seal_adj"],function(){
@@ -4970,7 +4977,7 @@ function lriPumpBlocks(n){
   if(!lriAny([tqp+"name",tqp+"val",tqp+"cond",tqp+"notes"]))continue;
   tqLines.push((rv(tqp+"name")||"Torque item")+": "+(rv(tqp+"val")||"—")+" · Condition: "+(rSelText(tqp+"cond")||"—")+(rv(tqp+"notes")?" — "+rv(tqp+"notes"):""));
  }
- if(tqLines.length){push("sub","Torque settings");push("text",tqLines.join("\n"));}
+ if(tqLines.length){push("sub","Torque settings");push("rows",tqLines.join("\n"));}
  section("Drive: coupling or V-belts",n+"_drive",[p+"drive_type",p+"coup_cond",p+"coup_align",p+"coup_bolts",p+"coup_notes",p+"belt_profile",p+"belt_cond",p+"belt_tension",p+"belt_align",p+"belt_groove",p+"belt_guard",p+"belt_notes"],function(){
   var l=[],driveTxt=rSelText(p+"drive_type");
   if(driveTxt)l.push("Drive type: "+driveTxt);
@@ -4997,18 +5004,16 @@ function lriPumpBlocks(n){
   if(!rv(ep+"label")&&!rv(ep+"cond")&&!rv(ep+"value")&&!rv(ep+"notes")&&!((LRI_SEC_PHOTOS[n+"_ex"+ei]||[]).length))continue;
   var exLines=[];
   if(rv(ep+"cond")||rv(ep+"value"))exLines.push("Condition: "+(rSelText(ep+"cond")||"—")+" · Value/reading: "+(rv(ep+"value")||"—"));
-  if(rv(ep+"notes"))exLines.push("Notes: "+rv(ep+"notes"));
   push("sub",rv(ep+"label")||"Additional section");
-  if(exLines.length)push("text",exLines.join("\n"));
+  if(exLines.length)push("rows",exLines.join("\n"));
+  if(rv(ep+"notes"))push("text","Notes: "+rv(ep+"notes"));
   push("photos",null,n+"_ex"+ei);
  }
  var condSev=rSelText(p+"condition"),prioSev=rSelText(p+"priority");
  if(condSev||prioSev||rv(p+"corrective")){
   push("sub","Overall");
-  var ovLines=[];
-  ovLines.push("Overall condition: "+(condSev||"—")+" · Action priority: "+(prioSev||"—"));
-  if(rv(p+"corrective"))ovLines.push("Corrective action: "+rv(p+"corrective"));
-  push("text",ovLines.join("\n"));
+  push("rows","Overall condition: "+(condSev||"—")+" · Action priority: "+(prioSev||"—"));
+  if(rv(p+"corrective"))push("text","Corrective action: "+rv(p+"corrective"));
  }
  return blocks;
 }
@@ -6999,6 +7004,23 @@ function custFbLetterPumpPhotosHtml(arr){
 }
 // HTML mirror of custFbLetterDrawPumps -- same lriPumpBlocks(n) data, same plain
 // paragraph style as the rest of the letter, for the on-screen live preview.
+// "rows" blocks are short structured spec/check lines ("Label: value · Label:
+// value") -- these render as a tinted, rounded-corner table. Free-text notes
+// stay "text" blocks (plain paragraphs) so a long write-up isn't squeezed
+// into a table cell.
+function custFbLetterRowsHtml(text){
+ var lines=String(text||"").split("\n"),h='<table class="fb-pump-table"><tbody>',i,cells,ci,m;
+ for(i=0;i<lines.length;i++){
+  if(!lines[i])continue;
+  cells=lines[i].split(" · ");
+  for(ci=0;ci<cells.length;ci++){
+   m=cells[ci].match(/^([^:]+):\s?(.*)$/);
+   if(m)h+='<tr><td class="fb-pt-lab">'+custEsc(m[1])+'</td><td class="fb-pt-val">'+custEsc(m[2]||"—")+'</td></tr>';
+   else h+='<tr><td class="fb-pt-val" colspan="2">'+custEsc(cells[ci])+'</td></tr>';
+  }
+ }
+ return h+'</tbody></table>';
+}
 function custFbLetterPumpsHtml(normSec){
  var h="",n,blocks,i,b;
  for(n=1;n<=LRI_ROWCOUNT;n++){
@@ -7006,6 +7028,7 @@ function custFbLetterPumpsHtml(normSec){
   for(i=0;i<blocks.length;i++){
    b=blocks[i];
    if(b.kind==="sub")h+='<div class="'+(i===0?"fb-pump-tag":"fb-pump-sub")+'">'+custEsc(b.text)+'</div>';
+   else if(b.kind==="rows")h+=custFbLetterRowsHtml(b.text);
    else if(b.kind==="text")h+='<div class="fb-body">'+custEsc(b.text).replace(/\n/g,"<br>")+'</div>';
    else if(b.kind==="photos"){
     h+=custFbLetterPumpSecHtml(b.key,normSec);
@@ -7215,6 +7238,50 @@ function custFbLetterPumpSecPdf(L,key,normSec){
   }
  }
 }
+// PDF mirror of custFbLetterRowsHtml: a tinted, rounded-corner table for the
+// same "rows" blocks the preview draws as a table, so Preview stays == PDF.
+function custFbLetterRowsPdf(L,text){
+ var lines=String(text||"").split("\n").filter(function(x){return x;});
+ if(!lines.length)return;
+ var rows=[],i,cells,ci,m;
+ for(i=0;i<lines.length;i++){
+  cells=lines[i].split(" · ");
+  for(ci=0;ci<cells.length;ci++){
+   m=cells[ci].match(/^([^:]+):\s?(.*)$/);
+   if(m)rows.push({lab:m[1],val:m[2]||"—"});
+   else rows.push({lab:null,val:cells[ci]});
+  }
+ }
+ var labW=L.contentW*0.36,padX=3,padY=2.6,fs=9,lh=4,valLines,rh,ri;
+ L.doc.setFont("helvetica","normal"); L.doc.setFontSize(fs);
+ for(ri=0;ri<rows.length;ri++){
+  valLines=L.doc.splitTextToSize(rows[ri].val,(rows[ri].lab?L.contentW-labW:L.contentW)-2*padX);
+  rows[ri].lines=valLines;
+  rows[ri].h=Math.max(lh,valLines.length*lh)+padY*2;
+ }
+ var totalH=rows.reduce(function(s,r){return s+r.h;},0);
+ if(L.y+totalH+4>L.bottom) custFbLetterNewPage(L);
+ var x0=L.m,y0=L.y,w=L.contentW,ry=y0;
+ L.doc.setFillColor(255,247,240); L.doc.setDrawColor(240,194,155); L.doc.setLineWidth(0.3);
+ L.doc.roundedRect(x0,y0,w,totalH,2.2,2.2,"FD");
+ for(ri=0;ri<rows.length;ri++){
+  rh=rows[ri].h;
+  if(ri>0){L.doc.setDrawColor(246,222,199);L.doc.setLineWidth(0.2);L.doc.line(x0+2,ry,x0+w-2,ry);}
+  var ty=ry+padY+lh-1.2;
+  if(rows[ri].lab){
+   L.doc.setFont("helvetica","bold"); L.doc.setFontSize(fs); L.doc.setTextColor(181,72,10);
+   L.doc.text(rows[ri].lab,x0+padX,ty);
+   L.doc.setFont("helvetica","normal"); L.doc.setTextColor(51,51,51);
+   L.doc.text(rows[ri].lines,x0+padX+labW,ty);
+  }else{
+   L.doc.setFont("helvetica","normal"); L.doc.setTextColor(51,51,51);
+   L.doc.text(rows[ri].lines,x0+padX,ty);
+  }
+  ry+=rh;
+ }
+ L.doc.setTextColor(0,0,0);
+ L.y=y0+totalH+4;
+}
 function custFbLetterDrawPumps(L,normSec){
  var n,blocks,i,b;
  for(n=1;n<=LRI_ROWCOUNT;n++){
@@ -7222,6 +7289,7 @@ function custFbLetterDrawPumps(L,normSec){
   for(i=0;i<blocks.length;i++){
    b=blocks[i];
    if(b.kind==="sub")custFbLetterSubHead(L,b.text,i===0);
+   else if(b.kind==="rows")custFbLetterRowsPdf(L,b.text);
    else if(b.kind==="text")custFbLetterBodyText(L,b.text,{fs:9.5,lh:4.2,gapAfter:1.5});
    else if(b.kind==="photos"){ custFbLetterPumpSecPdf(L,b.key,normSec); }
   }
