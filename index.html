@@ -5923,10 +5923,10 @@ function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
  h+=custFbLetterMetaHtml("COMPANY",fb.company);
  if(fb.contactName) h+=custFbLetterMetaHtml("CONTACT",fb.contactName);
  h+=custFbLetterMetaHtml("FROM",fb.from);
- h+=custFbLetterMetaHtml("CC",j.fbCcName);
  h+='</div><div class="fb-meta-col">';
  h+=custFbLetterMetaHtml("PHONE",fb.phone);
  h+=custFbLetterMetaHtml("DATE",custFbDateLabel(fb));
+ h+=custFbLetterMetaHtml("CC",j.fbCcName);
  h+=custFbLetterMetaHtml("EMAIL",j.fbCcEmail);
  h+='</div></div>';
  h+='<div class="fb-meta-rule"></div><div class="fb-refs">';
@@ -6042,8 +6042,8 @@ function custFbLetterDrawHeader(L,c,j,fb){
  var y0=L.y, labW=28, mid=L.pw/2+2, maxL=L.pw/2-L.m-labW-4, maxR=L.pw-L.m-mid-labW;
  var left=[["EMAIL",fb.email],["COMPANY",fb.company]];
  if(fb.contactName) left.push(["CONTACT",fb.contactName]);
- left.push(["FROM",fb.from],["CC",j.fbCcName]);
- var right=[["PHONE",fb.phone],["DATE",custFbDateLabel(fb)],["EMAIL",j.fbCcEmail]];
+ left.push(["FROM",fb.from]);
+ var right=[["PHONE",fb.phone],["DATE",custFbDateLabel(fb)],["CC",j.fbCcName],["EMAIL",j.fbCcEmail]];
  var i;
  for(i=0;i<left.length;i++) custFbLetterMetaLine(L,left[i][0],left[i][1],L.m,y0+i*5.2,labW,maxL);
  for(i=0;i<right.length;i++) custFbLetterMetaLine(L,right[i][0],right[i][1],mid,y0+i*5.2,labW,maxR);
