@@ -1327,31 +1327,6 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="fld"><div class="fh"><label>PO / quote ref (optional)</label></div><div class="ctrl"><input type="text" id="cj_po" placeholder="PO or quote number"></div></div>
 <p class="sub" style="margin:4px 0 0;font-size:12.5px">Auto-saves on <b>this device</b> as you edit.</p>
 </div>
-<div class="card"><h3>Pumps in this report</h3>
-<div class="cj-lri-row">
-<button type="button" class="exbtn" id="cj_lri_btn" onclick="custStartOrOpenLri()">Edit pumps in this report</button>
-<p class="cj-lri-note" id="cj_lri_note">Part of this report — checks and photos go in the letter when this section is ticked. Not a separate report.</p>
-</div>
-</div>
-<div class="card"><h3>Calculations for this job</h3>
-<p style="font-size:13px;color:var(--soft);margin:0 0 10px"><b>Site procedure (not on letter).</b> Attach Tools or On-Site Checks used on this visit. Open jumps to that calculator; Back returns here.</p>
-<div id="cj_calcs"></div>
-<button class="exbtn" type="button" onclick="custOpenCalcPicker()">Add a calculation</button>
-</div>
-<div id="cj_calc_picker" class="cj-picker" style="display:none" aria-hidden="true">
-<div class="cj-picker-panel">
-<div class="cj-picker-head"><b>Add a calculation</b><button type="button" class="clrbtn" onclick="custCloseCalcPicker()" style="margin:0">Close</button></div>
-<p class="sub" style="margin:0 0 4px">Tools and On-Site Checks</p>
-<div id="cj_calc_picker_list"></div>
-</div>
-</div>
-<div class="card"><h3>Photos</h3>
-<div class="fld"><div class="fh"><label>Add photos</label></div><div class="ctrl"><input type="file" id="cj_photo_input" accept="image/*" multiple></div></div>
-<div class="note warn" id="cj_warn" style="display:none">This phone is low on storage for photos. Export a PDF or backup now, then remove a photo or two and try again.</div>
-<p class="sub" style="margin:8px 2px 4px;font-size:12.5px">Tag photos with a Letter section so they show in the client feedback letter.</p>
-<div id="cj_photos"></div>
-<div id="cj_phhost_jobPhotos" class="cj-phhost" data-phkey="jobPhotos"></div>
-</div>
 <div class="card"><h3>Client feedback report</h3>
 <p style="font-size:13px;color:var(--soft);margin:0 0 10px">Client feedback report — edit here. Preview updates as you type.</p>
 <p style="font-size:12.5px;color:var(--soft);margin:0 0 10px">Tick sections to include. Tag photos above with a Letter section so they land in the right place. Auto-saves on this device.</p>
@@ -1389,6 +1364,31 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="cj-fb-sec" data-tick="outstanding"><label class="chk"><input type="checkbox" id="cj_fb_tick_outstanding" onchange="custFbTickChanged(this)"> Outstanding<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_outstanding" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_outstanding" rows="2" placeholder="Open items"></textarea></div></div><div id="cj_phhost_outstanding" class="cj-phhost" data-phkey="outstanding"></div></div></div>
 <div class="cj-fb-sec" data-tick="nextVisit"><label class="chk"><input type="checkbox" id="cj_fb_tick_nextVisit" onchange="custFbTickChanged(this)"> Next visit<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_nextVisit" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_next_visit" rows="2" placeholder="Suggested next visit / follow-up"></textarea></div></div><div id="cj_phhost_nextVisit" class="cj-phhost" data-phkey="nextVisit"></div></div></div>
 </div>
+</div>
+<div class="card"><h3>Pumps in this report</h3>
+<div class="cj-lri-row">
+<button type="button" class="exbtn" id="cj_lri_btn" onclick="custStartOrOpenLri()">Edit pumps in this report</button>
+<p class="cj-lri-note" id="cj_lri_note">Part of this report — checks and photos go in the letter when this section is ticked. Not a separate report.</p>
+</div>
+</div>
+<div class="card"><h3>Calculations for this job</h3>
+<p style="font-size:13px;color:var(--soft);margin:0 0 10px"><b>Site procedure (not on letter).</b> Attach Tools or On-Site Checks used on this visit. Open jumps to that calculator; Back returns here.</p>
+<div id="cj_calcs"></div>
+<button class="exbtn" type="button" onclick="custOpenCalcPicker()">Add a calculation</button>
+</div>
+<div id="cj_calc_picker" class="cj-picker" style="display:none" aria-hidden="true">
+<div class="cj-picker-panel">
+<div class="cj-picker-head"><b>Add a calculation</b><button type="button" class="clrbtn" onclick="custCloseCalcPicker()" style="margin:0">Close</button></div>
+<p class="sub" style="margin:0 0 4px">Tools and On-Site Checks</p>
+<div id="cj_calc_picker_list"></div>
+</div>
+</div>
+<div class="card"><h3>Photos</h3>
+<div class="fld"><div class="fh"><label>Add photos</label></div><div class="ctrl"><input type="file" id="cj_photo_input" accept="image/*" multiple></div></div>
+<div class="note warn" id="cj_warn" style="display:none">This phone is low on storage for photos. Export a PDF or backup now, then remove a photo or two and try again.</div>
+<p class="sub" style="margin:8px 2px 4px;font-size:12.5px">Tag photos with a Letter section so they show in the client feedback letter.</p>
+<div id="cj_photos"></div>
+<div id="cj_phhost_jobPhotos" class="cj-phhost" data-phkey="jobPhotos"></div>
 </div>
 <div class="card cj-pdfs"><h3>Client feedback letter</h3>
 <button class="exbtn" style="display:block;width:100%;margin-left:0" onclick="custPreviewFeedbackLetter()">Preview</button>
