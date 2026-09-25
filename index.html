@@ -1363,21 +1363,15 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="cj-fb-sec" data-tick="findings"><label class="chk"><input type="checkbox" id="cj_fb_tick_findings" onchange="custFbTickChanged(this)"> Findings</label><div class="cj-fb-sec-body" id="cj_fb_body_findings"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_findings" rows="3" placeholder="As-found condition"></textarea></div></div><div id="cj_phhost_findings" class="cj-phhost" data-phkey="findings"></div></div></div>
 <div class="cj-fb-sec" data-tick="pumpInspection"><label class="chk"><input type="checkbox" id="cj_fb_tick_pumpInspection" onchange="custFbTickChanged(this)"> Pump inspection details</label><div class="cj-fb-sec-body" id="cj_fb_body_pumpInspection"><p class="sub" style="margin:0;font-size:12.5px" id="cj_fb_pump_status">Part of this report — checks and photos go in the letter when this section is ticked. Not a separate report.</p>
 <button type="button" class="exbtn" style="margin-top:8px" onclick="custStartOrOpenLri()">Edit pumps in this report</button></div></div>
-<div class="cj-fb-sec" data-tick="work"><label class="chk"><input type="checkbox" id="cj_fb_tick_work" onchange="custFbTickChanged(this)"> Work performed</label><div class="cj-fb-sec-body" id="cj_fb_body_work"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_additional" rows="3" placeholder="One item per line, e.g. Gland packing changes (DE and NDE)"></textarea></div></div><div id="cj_phhost_additional" class="cj-phhost" data-phkey="additional"></div></div></div>
 <div class="cj-fb-sec" data-tick="results"><label class="chk"><input type="checkbox" id="cj_fb_tick_results" onchange="custFbTickChanged(this)"> Results</label><div class="cj-fb-sec-body" id="cj_fb_body_results"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_results" rows="3" placeholder="As-left / outcome"></textarea></div></div><div id="cj_phhost_results" class="cj-phhost" data-phkey="results"></div></div></div>
 <div class="cj-fb-sec" data-tick="photos"><label class="chk"><input type="checkbox" id="cj_fb_tick_photos" onchange="custFbTickChanged(this)"> Photos</label><div class="cj-fb-sec-body" id="cj_fb_body_photos"><p class="sub" style="margin:0;font-size:12.5px">Tag each photo below with which section it belongs to (Scope, Method, Findings, Work performed, Recommendations, etc.) and it prints right under that section's text — pre/during/post-flush stay as their own photo-only sections if you use them.</p></div></div>
+<div class="cj-fb-sec" data-tick="work"><label class="chk"><input type="checkbox" id="cj_fb_tick_work" onchange="custFbTickChanged(this)"> Work performed</label><div class="cj-fb-sec-body" id="cj_fb_body_work"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_additional" rows="3" placeholder="One item per line, e.g. Gland packing changes (DE and NDE)"></textarea></div></div><div id="cj_phhost_additional" class="cj-phhost" data-phkey="additional"></div></div></div>
 <div class="cj-fb-sec" data-tick="recommendations"><label class="chk"><input type="checkbox" id="cj_fb_tick_recommendations" onchange="custFbTickChanged(this)"> Recommendations</label><div class="cj-fb-sec-body" id="cj_fb_body_recommendations"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_recommendations" rows="4" placeholder="One recommendation per line (numbered in Preview / PDF)"></textarea></div></div><div id="cj_phhost_recommendations" class="cj-phhost" data-phkey="recommendations"></div></div></div>
-<div class="cj-fb-sec" data-tick="closing"><label class="chk"><input type="checkbox" id="cj_fb_tick_closing" onchange="custFbTickChanged(this)"> Closing</label><div class="cj-fb-sec-body" id="cj_fb_body_closing"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_closing" rows="3"></textarea></div></div></div></div>
 <div class="cj-fb-sec" data-tick="safety"><label class="chk"><input type="checkbox" id="cj_fb_tick_safety" onchange="custFbTickChanged(this)"> Safety<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_safety" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_safety" rows="2" placeholder="Safety notes"></textarea></div></div><div id="cj_phhost_safety" class="cj-phhost" data-phkey="safety"></div></div></div>
 <div class="cj-fb-sec" data-tick="parts"><label class="chk"><input type="checkbox" id="cj_fb_tick_parts" onchange="custFbTickChanged(this)"> Parts/materials<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_parts" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_parts" rows="2" placeholder="Parts or materials used"></textarea></div></div><div id="cj_phhost_parts" class="cj-phhost" data-phkey="parts"></div></div></div>
 <div class="cj-fb-sec" data-tick="outstanding"><label class="chk"><input type="checkbox" id="cj_fb_tick_outstanding" onchange="custFbTickChanged(this)"> Outstanding<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_outstanding" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_outstanding" rows="2" placeholder="Open items"></textarea></div></div><div id="cj_phhost_outstanding" class="cj-phhost" data-phkey="outstanding"></div></div></div>
 <div class="cj-fb-sec" data-tick="nextVisit"><label class="chk"><input type="checkbox" id="cj_fb_tick_nextVisit" onchange="custFbTickChanged(this)"> Next visit<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_nextVisit" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_next_visit" rows="2" placeholder="Suggested next visit / follow-up"></textarea></div></div><div id="cj_phhost_nextVisit" class="cj-phhost" data-phkey="nextVisit"></div></div></div>
-</div>
-</div>
-<div class="card"><h3>Pumps in this report</h3>
-<div class="cj-lri-row">
-<button type="button" class="exbtn" id="cj_lri_btn" onclick="custStartOrOpenLri()">Edit pumps in this report</button>
-<p class="cj-lri-note" id="cj_lri_note">Part of this report — checks and photos go in the letter when this section is ticked. Not a separate report.</p>
+<div class="cj-fb-sec" data-tick="closing"><label class="chk"><input type="checkbox" id="cj_fb_tick_closing" onchange="custFbTickChanged(this)"> Closing</label><div class="cj-fb-sec-body" id="cj_fb_body_closing"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_closing" rows="3"></textarea></div></div></div></div>
 </div>
 </div>
 <div class="card"><h3>Calculations for this job</h3>
@@ -5764,7 +5758,6 @@ function custRenderJob(){
  set("cj_fb_andre_phone",j.fbAndrePhone||""); set("cj_fb_andre_email",j.fbAndreEmail||"");
 
  custFbApplyTicksToUi(j.fbTicks);
- custUpdateLriButton();
  custRenderJobCalcs();
  custRenderJobPhotos();
  custSecRenderAllPhotos();
@@ -5825,9 +5818,9 @@ function custFbApplyMethod(key){
  if(sel)sel.value="";
  custSaveJob("auto");
 }
-var CUST_FB_TICK_DEFAULTS={exec:true,scope:true,equipment:true,method:true,findings:true,pumpInspection:true,work:true,results:true,photos:true,recommendations:true,closing:true,safety:false,parts:false,outstanding:false,nextVisit:false};
-var CUST_FB_TICK_KEYS=["exec","scope","equipment","method","findings","pumpInspection","work","results","photos","recommendations","closing","safety","parts","outstanding","nextVisit"];
-var CUST_FB_SEC_LABELS={exec:"Executive summary",scope:"Scope of work",equipment:"Equipment / system",method:"Method / chemistry",findings:"Findings / condition",pumpInspection:"Pump inspection details",work:"Work performed",results:"Results / status",photos:"Photo evidence",recommendations:"Recommendations",closing:"Closing / contacts",safety:"Safety note",parts:"Parts / materials",outstanding:"Outstanding issues",nextVisit:"Next visit"};
+var CUST_FB_TICK_DEFAULTS={exec:true,scope:true,equipment:true,method:true,findings:true,pumpInspection:true,results:true,photos:true,work:true,recommendations:true,safety:false,parts:false,outstanding:false,nextVisit:false,closing:true};
+var CUST_FB_TICK_KEYS=["exec","scope","equipment","method","findings","pumpInspection","results","photos","work","recommendations","safety","parts","outstanding","nextVisit","closing"];
+var CUST_FB_SEC_LABELS={exec:"Executive summary",scope:"Scope of work",equipment:"Equipment / system",method:"Method / chemistry",findings:"Findings / condition",pumpInspection:"Pump inspection details",results:"Results / status",photos:"Photo evidence",work:"Work performed",recommendations:"Recommendations",safety:"Safety note",parts:"Parts / materials",outstanding:"Outstanding issues",nextVisit:"Next visit",closing:"Closing / contacts"};
 function custFbNormalizeTicks(t){
  var out={},k;
  for(k=0;k<CUST_FB_TICK_KEYS.length;k++){
@@ -6366,15 +6359,6 @@ function custMarkJobLri(j,on){
  if(on){j.lri=true;j.lriLinked=true;}
  else{delete j.lri;delete j.lriLinked;}
 }
-function custUpdateLriButton(){
- var pair=custFindJob();
- var btn=document.getElementById("cj_lri_btn");
- var note=document.getElementById("cj_lri_note");
- if(!btn||!pair)return;
- // Desi locked: always "Edit pumps in this report" (never a separate inspection product)
- btn.textContent="Edit pumps in this report";
- if(note)note.textContent="Part of this report — checks and photos go in the letter when this section is ticked. Not a separate report.";
-}
 function lriFmtVisitDate(j){
  if(!j)return "";
  var a=j.date||"",b=j.dateEnd||"";
@@ -6865,6 +6849,28 @@ function custFbLetterPlan(fb,grouped,j){
 function custFbLetterMetaHtml(lab,val){
  return '<div class="fb-meta-row"><span class="fb-lab">'+custEsc(lab)+' :</span> <span class="fb-val">'+custEsc(val||"—")+'</span></div>';
 }
+// Single source of truth for the letter header's meta rows, shared by the HTML
+// preview and the PDF so they can never drift apart. A row that has nothing
+// in it is left out entirely (no "—" placeholder) instead of always printing
+// every label, and CC name/email — two fields on the Job form — collapse into
+// one CC row instead of a second, confusingly-labelled "EMAIL" row.
+function custFbLetterMetaRows(fb,j){
+ var left=[],right=[],refs=[];
+ function add(arr,lab,val){val=(val==null?"":String(val).trim());if(val)arr.push([lab,val]);}
+ add(left,"EMAIL",fb.email);
+ add(left,"COMPANY",fb.company);
+ add(left,"CONTACT",fb.contactName);
+ add(left,"FROM",fb.from);
+ add(right,"PHONE",fb.phone);
+ add(right,"DATE",custFbDateLabel(fb));
+ var ccName=((j&&j.fbCcName)||"").trim(), ccEmail=((j&&j.fbCcEmail)||"").trim();
+ var ccParts=[]; if(ccName)ccParts.push(ccName); if(ccEmail)ccParts.push(ccEmail);
+ if(ccParts.length) right.push(["CC",ccParts.join(" · ")]);
+ add(refs,"SUBJECT",fb.subject);
+ add(refs,"BUSCH REF",fb.buschRef);
+ add(refs,"YOUR REF",fb.yourRef);
+ return {left:left,right:right,refs:refs};
+}
 
 function custFbPhotosForSection(photos,idxs,sectionKey,j){
  var baOn=!!(j&&j.photoBa&&j.photoBa[sectionKey]);
@@ -7067,22 +7073,17 @@ function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
  h+='<img class="fb-logo-busch" src="'+LRI_LOGO+'" alt="Busch">';
  h+='</div>';
  h+='<h4 class="fb-letter-title">'+custEsc(CUST_FB_LETTER_TITLE)+'</h4>';
+ var metaRows=custFbLetterMetaRows(fb,j),mi;
  h+='<div class="fb-meta"><div class="fb-meta-col">';
- h+=custFbLetterMetaHtml("EMAIL",fb.email);
- h+=custFbLetterMetaHtml("COMPANY",fb.company);
- if(fb.contactName) h+=custFbLetterMetaHtml("CONTACT",fb.contactName);
- h+=custFbLetterMetaHtml("FROM",fb.from);
+ for(mi=0;mi<metaRows.left.length;mi++) h+=custFbLetterMetaHtml(metaRows.left[mi][0],metaRows.left[mi][1]);
  h+='</div><div class="fb-meta-col">';
- h+=custFbLetterMetaHtml("PHONE",fb.phone);
- h+=custFbLetterMetaHtml("DATE",custFbDateLabel(fb));
- h+=custFbLetterMetaHtml("CC",j.fbCcName);
- h+=custFbLetterMetaHtml("EMAIL",j.fbCcEmail);
+ for(mi=0;mi<metaRows.right.length;mi++) h+=custFbLetterMetaHtml(metaRows.right[mi][0],metaRows.right[mi][1]);
  h+='</div></div>';
- h+='<div class="fb-meta-rule"></div><div class="fb-refs">';
- h+=custFbLetterMetaHtml("SUBJECT",fb.subject);
- h+=custFbLetterMetaHtml("BUSCH REF",fb.buschRef);
- h+=custFbLetterMetaHtml("YOUR REF",fb.yourRef);
- h+='</div>';
+ if(metaRows.refs.length){
+  h+='<div class="fb-meta-rule"></div><div class="fb-refs">';
+  for(mi=0;mi<metaRows.refs.length;mi++) h+=custFbLetterMetaHtml(metaRows.refs[mi][0],metaRows.refs[mi][1]);
+  h+='</div>';
+ }
  var si,sec,ii,lines;
  for(si=0;si<plan.length;si++){
   sec=plan[si];
@@ -7319,20 +7320,18 @@ function custFbLetterDrawHeader(L,c,j,fb){
  L.doc.line(L.m,L.y,L.pw-L.m,L.y);
  L.y+=6;
  var y0=L.y, labW=28, mid=L.pw/2+2, maxL=L.pw/2-L.m-labW-4, maxR=L.pw-L.m-mid-labW;
- var left=[["EMAIL",fb.email],["COMPANY",fb.company]];
- if(fb.contactName) left.push(["CONTACT",fb.contactName]);
- left.push(["FROM",fb.from]);
- var right=[["PHONE",fb.phone],["DATE",custFbDateLabel(fb)],["CC",j.fbCcName],["EMAIL",j.fbCcEmail]];
+ var metaRows=custFbLetterMetaRows(fb,j), left=metaRows.left, right=metaRows.right, refs=metaRows.refs;
  var i;
  for(i=0;i<left.length;i++) custFbLetterMetaLine(L,left[i][0],left[i][1],L.m,y0+i*5.2,labW,maxL);
  for(i=0;i<right.length;i++) custFbLetterMetaLine(L,right[i][0],right[i][1],mid,y0+i*5.2,labW,maxR);
  L.y=y0+Math.max(left.length,right.length)*5.2+2;
- L.doc.setDrawColor(160,160,160); L.doc.setLineWidth(0.25);
- L.doc.line(L.m,L.y,L.pw-L.m,L.y);
- L.y+=5.5;
- custFbLetterMetaLine(L,"SUBJECT",fb.subject,L.m,L.y,32,L.contentW-34); L.y+=5.2;
- custFbLetterMetaLine(L,"BUSCH REF",fb.buschRef,L.m,L.y,32,L.contentW-34); L.y+=5.2;
- custFbLetterMetaLine(L,"YOUR REF",fb.yourRef,L.m,L.y,32,L.contentW-34); L.y+=7;
+ if(left.length||right.length){
+  L.doc.setDrawColor(160,160,160); L.doc.setLineWidth(0.25);
+  L.doc.line(L.m,L.y,L.pw-L.m,L.y);
+  L.y+=5.5;
+ }
+ for(i=0;i<refs.length;i++){ custFbLetterMetaLine(L,refs[i][0],refs[i][1],L.m,L.y,32,L.contentW-34); L.y+=5.2; }
+ if(refs.length) L.y+=1.8;
 }
 
 function custFbLetterPhotosBa(L,photos,norm,idxs,sectionKey,j){
