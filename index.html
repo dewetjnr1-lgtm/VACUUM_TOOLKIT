@@ -1349,9 +1349,6 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="mgrid"><div class="mgf"><span class="mlab">CC name</span><div class="ctrl"><input type="text" id="cj_fb_cc_name"></div></div><div class="mgf"><span class="mlab">CC email</span><div class="ctrl"><input type="text" id="cj_fb_cc_email"></div></div></div>
 <div class="fld"><div class="fh"><label>Subject</label></div><div class="ctrl"><input type="text" id="cj_fb_subject" placeholder="e.g. Liquid ring vacuum pump chemical flush feedback report"></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">Busch ref</span><div class="ctrl"><input type="text" id="cj_fb_busch_ref" placeholder="e.g. 26NBQ146"></div></div><div class="mgf"><span class="mlab">Your ref</span><div class="ctrl"><input type="text" id="cj_fb_your_ref" placeholder="e.g. DESANDS MODULE VACUUM PUMP FLT 151"></div></div></div>
-<div class="fld" style="margin-top:8px"><label class="chk"><input type="checkbox" id="cj_fb_sign_chris" checked onchange="custSaveJob('auto')"> Include Chris de Wet sign-off</label></div>
-<div class="fld" style="margin-top:4px"><label class="chk"><input type="checkbox" id="cj_fb_sign_andre" checked onchange="custSaveJob('auto')"> Include André de Wet sign-off</label></div>
-<div class="fld" style="margin-top:4px"><div class="fh"><label>If both are included, who goes first</label></div><div class="ctrl"><select id="cj_fb_sign_order" onchange="custSaveJob('auto')"><option value="andre">André, then Chris</option><option value="chris">Chris, then André</option></select></div></div>
 </div>
 <h4 style="margin:14px 0 4px;font-size:14px;font-weight:800;color:var(--teal)">Sections in this report</h4>
 <p class="cj-fb-secs-hint">Sections in this report (ticked = Preview + PDF).</p>
@@ -1372,6 +1369,11 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="cj-fb-sec" data-tick="outstanding"><label class="chk"><input type="checkbox" id="cj_fb_tick_outstanding" onchange="custFbTickChanged(this)"> Outstanding<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_outstanding" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_outstanding" rows="2" placeholder="Open items"></textarea></div></div><div id="cj_phhost_outstanding" class="cj-phhost" data-phkey="outstanding"></div></div></div>
 <div class="cj-fb-sec" data-tick="nextVisit"><label class="chk"><input type="checkbox" id="cj_fb_tick_nextVisit" onchange="custFbTickChanged(this)"> Next visit<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_nextVisit" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_next_visit" rows="2" placeholder="Suggested next visit / follow-up"></textarea></div></div><div id="cj_phhost_nextVisit" class="cj-phhost" data-phkey="nextVisit"></div></div></div>
 <div class="cj-fb-sec" data-tick="closing"><label class="chk"><input type="checkbox" id="cj_fb_tick_closing" onchange="custFbTickChanged(this)"> Closing</label><div class="cj-fb-sec-body" id="cj_fb_body_closing"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_closing" rows="3"></textarea></div></div></div></div>
+<div class="cj-fb-sec cj-fb-sec-signoff"><label class="chk" style="font-weight:800"><span style="pointer-events:none">Sign-off <span style="font-weight:500;color:var(--soft)">(always last, after Closing)</span></span></label><div class="cj-fb-sec-body">
+<div class="fld"><label class="chk"><input type="checkbox" id="cj_fb_sign_chris" checked onchange="custSaveJob('auto')"> Include Chris de Wet sign-off</label></div>
+<div class="fld" style="margin-top:4px"><label class="chk"><input type="checkbox" id="cj_fb_sign_andre" checked onchange="custSaveJob('auto')"> Include André de Wet sign-off</label></div>
+<div class="fld" style="margin-top:4px"><div class="fh"><label>If both are included, who goes first</label></div><div class="ctrl"><select id="cj_fb_sign_order" onchange="custSaveJob('auto')"><option value="andre">André, then Chris</option><option value="chris">Chris, then André</option></select></div></div>
+</div></div>
 </div>
 </div>
 <div class="card"><h3>Calculations for this job</h3>
