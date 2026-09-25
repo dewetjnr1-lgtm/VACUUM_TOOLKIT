@@ -205,7 +205,7 @@ td:first-child{text-align:left;font-family:var(--sans);}
 .exitem input.secname{width:100%;border:none;border-bottom:1px dashed var(--line);background:transparent;font-size:13px;font-weight:800;color:var(--teal);text-transform:uppercase;letter-spacing:.05em;padding:2px 0 6px;font-family:var(--sans);}
 .exitem input.secname:focus{outline:none;border-bottom-color:var(--teal);}
 .exitem input.secname::placeholder{color:var(--soft);text-transform:none;font-weight:600;letter-spacing:normal;}
-.rpt-ph img{width:100%;border-radius:8px;display:block;margin-bottom:8px;}
+.rpt-ph img{width:100%;max-height:220px;object-fit:contain;background:#0c121a;border-radius:8px;display:block;margin-bottom:8px;}
 .ctrl label.chk{display:flex;align-items:center;gap:9px;font-size:14.5px;color:var(--ink);width:100%;}
 .ctrl label.chk input{width:19px;height:19px;flex:0 0 auto;}
 .ocin{width:100%;box-sizing:border-box;margin-top:6px;font-family:var(--sans);font-size:14px;padding:9px;border:1px dashed var(--accent);border-radius:9px;background:var(--elev);color:var(--ink);}
@@ -451,6 +451,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-secs-hint{font-size:12.5px;color:var(--soft);margin:4px 0 10px;}
 .cj-relwrap{margin-top:10px;}
 .cj-ba-row{display:flex;align-items:center;gap:10px;margin:8px 0 6px;flex-wrap:wrap;}
+.cj-photo-row{display:flex;align-items:center;gap:16px;margin:8px 0 6px;flex-wrap:wrap;}
 .cj-ba-row label.chk{font-weight:650;font-size:13.5px;margin:0;display:flex;align-items:center;gap:8px;cursor:pointer;}
 .cj-ba-row label.chk input{width:18px;height:18px;flex:0 0 auto;}
 .cj-relblock{border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0;background:var(--elev);}
@@ -5355,16 +5356,23 @@ function lriBindStickyScroll(){
  var root=document.getElementById("cust_job");
  if(!root||root.getAttribute("data-live-bound"))return;
  root.setAttribute("data-live-bound","1");
+ // Photo/block captions (.cj-noauto) already persist themselves and refresh the
+ // live preview on their own debounce (custSecPhotoCaption / custRelBlockPhotoCap) —
+ // if this generic listener also scheduled a save for them, custSaveJob("auto")
+ // would rebuild that whole photo list (custSecRenderAllPhotos) mid-keystroke,
+ // replacing the input the user is typing into and silently dropping focus.
  root.addEventListener("input",function(ev){
   if(!ev.target)return;
   var t=ev.target;
   if(t.tagName!=="INPUT"&&t.tagName!=="TEXTAREA"&&t.tagName!=="SELECT")return;
+  if(t.classList.contains("cj-noauto"))return;
   custScheduleAutoSave();
  });
  root.addEventListener("change",function(ev){
   if(!ev.target)return;
   var t=ev.target;
   if(t.tagName!=="INPUT"&&t.tagName!=="TEXTAREA"&&t.tagName!=="SELECT")return;
+  if(t.classList.contains("cj-noauto"))return;
   custScheduleAutoSave();
  });
 })();
@@ -6146,19 +6154,19 @@ function custSecPhotoHTML(key){
  return '<div id="cj_phhost_'+key+'" class="cj-phhost" data-phkey="'+key+'"></div>';
 }
 function custSecPhotoThumb(globalIdx,ph){
- return '<div class="rpt-ph"><img src="'+ph.dataUrl+'"><div class="ctrl"><input type="text" placeholder="Caption" value="'+custEsc(ph.caption||"")+'" oninput="custSecPhotoCaption('+globalIdx+',this.value)"></div><button type="button" class="clrbtn" onclick="custSecRemovePhotoAt('+globalIdx+')" style="margin:6px 0 0">Remove photo</button></div>';
+ return '<div class="rpt-ph"><img src="'+ph.dataUrl+'"><div class="ctrl"><input type="text" class="cj-noauto" placeholder="Caption" value="'+custEsc(ph.caption||"")+'" oninput="custSecPhotoCaption('+globalIdx+',this.value)"></div><button type="button" class="clrbtn" onclick="custSecRemovePhotoAt('+globalIdx+')" style="margin:6px 0 0">Remove photo</button></div>';
 }
 function custBlockPhotoThumb(key,bi,pi,ph){
- return '<div class="rpt-ph"><img src="'+ph.dataUrl+'"><div class="ctrl"><input type="text" placeholder="Caption" value="'+custEsc(ph.caption||"")+'" oninput="custRelBlockPhotoCap(\''+key+'\','+bi+','+pi+',this.value)"></div><button type="button" class="clrbtn" onclick="custRelBlockPhotoRemove(\''+key+'\','+bi+','+pi+')" style="margin:6px 0 0">Remove photo</button></div>';
+ return '<div class="rpt-ph"><img src="'+ph.dataUrl+'"><div class="ctrl"><input type="text" class="cj-noauto" placeholder="Caption" value="'+custEsc(ph.caption||"")+'" oninput="custRelBlockPhotoCap(\''+key+'\','+bi+','+pi+',this.value)"></div><button type="button" class="clrbtn" onclick="custRelBlockPhotoRemove(\''+key+'\','+bi+','+pi+')" style="margin:6px 0 0">Remove photo</button></div>';
 }
 function custRenderRelBlocks(key,blocks){
  var h='',b,blk,baOn,photos,i,bc,ac;
  for(b=0;b<blocks.length;b++){
   blk=blocks[b];baOn=!!blk.ba;photos=blk.photos||[];
   h+='<div class="cj-relblock">';
-  h+='<div class="cj-rel-head"><div class="ctrl"><input type="text" placeholder="Block label — e.g. Packing, Lantern rings" value="'+custEsc(blk.label||"")+'" oninput="custRelBlockField(\''+key+'\','+b+',\'label\',this.value)"></div>';
+  h+='<div class="cj-rel-head"><div class="ctrl"><input type="text" class="cj-noauto" placeholder="Block label — e.g. Packing, Lantern rings" value="'+custEsc(blk.label||"")+'" oninput="custRelBlockField(\''+key+'\','+b+',\'label\',this.value)"></div>';
   h+='<button type="button" class="clrbtn" onclick="custRemoveRelBlock(\''+key+'\','+b+')" style="margin:0">Remove</button></div>';
-  h+='<div class="fld" style="margin-top:4px"><div class="fh"><label>Notes</label></div><div class="ctrl"><textarea rows="2" placeholder="Notes for this block" oninput="custRelBlockField(\''+key+'\','+b+',\'notes\',this.value)">'+custEsc(blk.notes||"")+'</textarea></div></div>';
+  h+='<div class="fld" style="margin-top:4px"><div class="fh"><label>Notes</label></div><div class="ctrl"><textarea class="cj-noauto" rows="2" placeholder="Notes for this block" oninput="custRelBlockField(\''+key+'\','+b+',\'notes\',this.value)">'+custEsc(blk.notes||"")+'</textarea></div></div>';
   h+='<div class="cj-ba-row"><label class="chk"><input type="checkbox" '+(baOn?"checked":"")+' onchange="custRelBlockBa(\''+key+'\','+b+',this.checked)"> Before &amp; after</label></div>';
   if(!baOn){
    h+='<div class="cj-secph-list">';
@@ -6197,8 +6205,8 @@ function custSecRenderPhotos(key){
  var h="";
  if(!isJob){
   h+='<div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div>';
-  h+='<div class="cj-ba-row"><label class="chk"><input type="checkbox" '+(baOn?"checked":"")+' onchange="custSecToggleBa(\''+key+'\',this.checked)"> Before &amp; after</label></div>';
   if(!baOn){
+   h+='<div class="cj-photo-row"><label class="chk" style="display:flex;align-items:center;gap:6px;width:auto;flex:0 0 auto"><input type="checkbox" onchange="custSecToggleBa(\''+key+'\',this.checked)"> Before &amp; after</label><input type="file" accept="image/*" multiple id="cj_secphinput_'+key+'" onchange="custSecHandleFiles(\''+key+'\',this.files,\'\')"></div>';
    h+='<div id="cj_secph_'+key+'" class="cj-secph-list">';
    var any=false,i;
    for(i=0;i<photos.length;i++){
@@ -6206,8 +6214,9 @@ function custSecRenderPhotos(key){
     any=true;h+=custSecPhotoThumb(i,photos[i]);
    }
    if(!any)h+='<p style="font-size:12.5px;color:var(--soft);margin:4px 2px">No photos yet.</p>';
-   h+='</div><div class="ctrl"><input type="file" accept="image/*" multiple id="cj_secphinput_'+key+'" onchange="custSecHandleFiles(\''+key+'\',this.files,\'\')"></div>';
+   h+='</div>';
   }else{
+   h+='<div class="cj-ba-row"><label class="chk" style="display:flex;align-items:center;gap:6px;width:auto;flex:0 0 auto"><input type="checkbox" checked onchange="custSecToggleBa(\''+key+'\',this.checked)"> Before &amp; after</label></div>';
    h+='<div class="cj-ba-sides">';
    h+='<div class="cj-ba-side"><h5>Before</h5><div class="cj-secph-list">';
    var bc=0;for(i=0;i<photos.length;i++)if((photos[i].group||"")===key&&(photos[i].side||"")==="before"){h+=custSecPhotoThumb(i,photos[i]);bc++;}
