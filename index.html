@@ -5991,7 +5991,7 @@ window.cjRescaleLivePreview=cjRescaleLivePreview;
 var _cjLiveTimer=null,_cjLiveLastGood="";
 function cjScheduleLivePreview(){
  if(_cjLiveTimer)clearTimeout(_cjLiveTimer);
- _cjLiveTimer=setTimeout(function(){cjRefreshLivePreview(true);},400);
+ _cjLiveTimer=setTimeout(function(){cjRefreshLivePreview(true);},120);
 }
 function cjRefreshLivePreview(fromDebounce){
  var panel=document.getElementById("cj_live_preview_panel");
@@ -6068,7 +6068,7 @@ function cjToggleMobilePreview(){
 window.cjToggleMobilePreview=cjToggleMobilePreview;
 function custScheduleAutoSave(){
  if(_custJobSaveTimer)clearTimeout(_custJobSaveTimer);
- _custJobSaveTimer=setTimeout(function(){custSaveJob("auto");},1200);
+ _custJobSaveTimer=setTimeout(function(){custSaveJob("auto");},350);
 }
 function custSaveJobCaptions(){
  var pair=custFindJob();if(!pair)return;
