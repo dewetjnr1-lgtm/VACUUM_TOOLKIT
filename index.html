@@ -1354,7 +1354,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <p class="cj-fb-secs-hint">Sections in this report (ticked = Preview + PDF).</p>
 <div id="cj_fb_sections">
 <div class="cj-fb-sec" data-tick="exec"><label class="chk"><input type="checkbox" id="cj_fb_tick_exec" onchange="custFbTickChanged(this)"> Exec summary</label><div class="cj-fb-sec-body" id="cj_fb_body_exec"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_greeting" rows="4" placeholder="Executive summary / greeting"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="method"><label class="chk"><input type="checkbox" id="cj_fb_tick_method" onchange="custFbTickChanged(this)"> Method</label><div class="cj-fb-sec-body" id="cj_fb_body_method"><div class="fld" style="padding-top:0"><div class="fh"><label>Service type</label></div><div class="ctrl"><select id="cj_fb_method_type" onchange="custFbApplyMethod(this.value)"><option value="">— Pick a service type to fill in below —</option><option value="flush">Chemical flush</option><option value="perf">Performance / efficiency testing</option><option value="internal">Internal inspection (fiberscope)</option><option value="bearing">Bearing replacement</option><option value="gland">Gland packing replacement</option><option value="valve">Valve &amp; intercepting plate replacement</option><option value="belt">Drive pulley / V-belt replacement</option><option value="rotable">Rotable spare pump preservation</option><option value="diag">Site inspection / diagnostics</option><option value="clear">Custom — clear and write my own</option></select></div><p class="sub" style="margin:4px 0 0;font-size:12.5px">Fills Heading &amp; Details below from the Busch capability statement &mdash; edit freely after.</p></div><div class="fld"><div class="fh"><label>Heading</label></div><div class="ctrl"><input type="text" id="cj_fb_intro_head"></div></div><div class="fld"><div class="fh"><label>Details</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="5"></textarea></div></div><div id="cj_phhost_method" class="cj-phhost" data-phkey="method"></div></div></div>
+<div class="cj-fb-sec" data-tick="method"><label class="chk"><input type="checkbox" id="cj_fb_tick_method" onchange="custFbTickChanged(this)"> Method</label><div class="cj-fb-sec-body" id="cj_fb_body_method"><div class="fld" style="padding-top:0"><div class="fh"><label>Service type(s)</label></div><div class="ctrl" id="cj_fb_method_types" style="display:flex;flex-direction:column;gap:2px"><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="flush" onchange="custFbMethodChanged()"> Chemical flush</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="perf" onchange="custFbMethodChanged()"> Performance / efficiency testing</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="internal" onchange="custFbMethodChanged()"> Internal inspection (fiberscope)</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="bearing" onchange="custFbMethodChanged()"> Bearing replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="gland" onchange="custFbMethodChanged()"> Gland packing replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="valve" onchange="custFbMethodChanged()"> Valve &amp; intercepting plate replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="belt" onchange="custFbMethodChanged()"> Drive pulley / V-belt replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="rotable" onchange="custFbMethodChanged()"> Rotable spare pump preservation</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="diag" onchange="custFbMethodChanged()"> Site inspection / diagnostics</label></div><p class="sub" style="margin:4px 0 0;font-size:12.5px">Tick all that apply — fills Heading &amp; Details below from the Busch capability statement. Edit freely after; re-ticking rebuilds Heading &amp; Details from scratch.</p><button type="button" class="clrbtn" style="margin-top:6px" onclick="custFbMethodClearAll()">Clear all / write my own</button></div><div class="fld"><div class="fh"><label>Heading</label></div><div class="ctrl"><input type="text" id="cj_fb_intro_head"></div></div><div class="fld"><div class="fh"><label>Details</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="5"></textarea></div></div><div id="cj_phhost_method" class="cj-phhost" data-phkey="method"></div></div></div>
 <div class="cj-fb-sec" data-tick="scope"><label class="chk"><input type="checkbox" id="cj_fb_tick_scope" onchange="custFbTickChanged(this)"> Scope</label><div class="cj-fb-sec-body" id="cj_fb_body_scope"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_scope" rows="3" placeholder="What was requested / scope"></textarea></div></div><div id="cj_phhost_scope" class="cj-phhost" data-phkey="scope"></div></div></div>
 <div class="cj-fb-sec" data-tick="equipment"><label class="chk"><input type="checkbox" id="cj_fb_tick_equipment" onchange="custFbTickChanged(this)"> Equipment</label><div class="cj-fb-sec-body" id="cj_fb_body_equipment"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_equipment" rows="3" placeholder="Pump tag, system, location"></textarea></div></div><div id="cj_phhost_equipment" class="cj-phhost" data-phkey="equipment"></div></div></div>
 <div class="cj-fb-sec" data-tick="findings"><label class="chk"><input type="checkbox" id="cj_fb_tick_findings" onchange="custFbTickChanged(this)"> Findings</label><div class="cj-fb-sec-body" id="cj_fb_body_findings"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_findings" rows="3" placeholder="As-found condition"></textarea></div></div><div id="cj_phhost_findings" class="cj-phhost" data-phkey="findings"></div></div></div>
@@ -5745,6 +5745,10 @@ function custRenderJob(){
  set("cj_fb_cc_name",j.fbCcName);set("cj_fb_cc_email",j.fbCcEmail);
  set("cj_fb_subject",j.fbSubject);set("cj_fb_busch_ref",j.fbBuschRef);set("cj_fb_your_ref",j.fbYourRef);
  set("cj_fb_greeting",j.fbGreeting);set("cj_fb_intro_head",j.fbIntroHead);set("cj_fb_intro_body",j.fbIntroBody);
+ (function(){
+  var mkeys=j.fbMethodKeys||[],boxes=document.querySelectorAll("#cj_fb_method_types .cj-fb-method-cb");
+  for(var mi=0;mi<boxes.length;mi++)boxes[mi].checked=mkeys.indexOf(boxes[mi].value)>-1;
+ })();
  set("cj_fb_additional",j.fbAdditional);set("cj_fb_closing",j.fbClosing);
  set("cj_fb_scope",j.fbScope);set("cj_fb_equipment",j.fbEquipment);set("cj_fb_findings",j.fbFindings);
  set("cj_fb_results",j.fbResults);set("cj_fb_recommendations",j.fbRecommendations);
@@ -5803,21 +5807,38 @@ var CUST_METHOD_PRESETS={
  diag:{head:"Site and Vacuum Pump System Inspection / Diagnostics",
   body:"An on-site assessment of the vacuum pump and system was carried out, evaluating condition, performance and efficiency. Diagnostic tools and techniques were used to assess pump health, including measuring pressure, temperature and flow rates, and inspecting components for wear, in order to pinpoint any existing or potential problems and provide recommendations."}
 };
-function custFbApplyMethod(key){
- var head=document.getElementById("cj_fb_intro_head"),body=document.getElementById("cj_fb_intro_body"),sel=document.getElementById("cj_fb_method_type");
- if(!key){return;}
- if(key==="clear"){
-  if(head)head.value="";
-  if(body)body.value="";
- }else{
-  var p=CUST_METHOD_PRESETS[key];
-  if(!p){return;}
+// Rebuilds Heading & Details from whichever service-type boxes are ticked,
+// in the fixed order above (not tick order) — a single tick reads exactly
+// like the old one-at-a-time picker, several stack into labelled paragraphs.
+function custFbMethodChanged(){
+ var boxes=document.querySelectorAll("#cj_fb_method_types .cj-fb-method-cb"),i,keys=[];
+ for(i=0;i<boxes.length;i++)if(boxes[i].checked)keys.push(boxes[i].value);
+ var head=document.getElementById("cj_fb_intro_head"),body=document.getElementById("cj_fb_intro_body");
+ if(keys.length===0){/* leave whatever's there — nothing ticked isn't "clear" */}
+ else if(keys.length===1){
+  var p=CUST_METHOD_PRESETS[keys[0]];
   if(head)head.value=p.head;
   if(body)body.value=p.body;
+ }else{
+  var heads=[],bodies=[],k,pr;
+  for(i=0;i<keys.length;i++){
+   k=keys[i];pr=CUST_METHOD_PRESETS[k];if(!pr)continue;
+   heads.push(pr.head);
+   bodies.push(pr.head+":\n"+pr.body);
+  }
+  if(head)head.value=heads.join(" & ");
+  if(body)body.value=bodies.join("\n\n");
  }
  if(head&&typeof vtMarkFilled==="function")vtMarkFilled(head);
  if(body&&typeof vtMarkFilled==="function")vtMarkFilled(body);
- if(sel)sel.value="";
+ custSaveJob("auto");
+}
+function custFbMethodClearAll(){
+ var boxes=document.querySelectorAll("#cj_fb_method_types .cj-fb-method-cb"),i;
+ for(i=0;i<boxes.length;i++)boxes[i].checked=false;
+ var head=document.getElementById("cj_fb_intro_head"),body=document.getElementById("cj_fb_intro_body");
+ if(head)head.value="";
+ if(body)body.value="";
  custSaveJob("auto");
 }
 var CUST_FB_TICK_DEFAULTS={exec:true,method:true,scope:true,equipment:true,findings:true,pumpInspection:true,results:true,photos:true,work:true,recommendations:true,safety:false,parts:false,outstanding:false,nextVisit:false,closing:true};
@@ -5929,6 +5950,11 @@ function custSaveJob(mode){
  v=grab("cj_fb_greeting");if(v!==null)j.fbGreeting=v||"";
  v=grab("cj_fb_intro_head");if(v!==null)j.fbIntroHead=v||"";
  v=grab("cj_fb_intro_body");if(v!==null)j.fbIntroBody=v||"";
+ var methodBoxes=document.querySelectorAll("#cj_fb_method_types .cj-fb-method-cb");
+ if(methodBoxes.length){
+  j.fbMethodKeys=[];
+  for(var mi=0;mi<methodBoxes.length;mi++)if(methodBoxes[mi].checked)j.fbMethodKeys.push(methodBoxes[mi].value);
+ }
  v=grab("cj_fb_additional");if(v!==null)j.fbAdditional=v||"";
  v=grab("cj_fb_closing");if(v!==null)j.fbClosing=v||"";
  v=grab("cj_fb_scope");if(v!==null)j.fbScope=v||"";
