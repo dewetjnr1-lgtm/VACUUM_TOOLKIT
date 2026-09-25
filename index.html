@@ -407,7 +407,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-letter .fb-logo-busch{width:220px;height:auto;max-width:220px;max-height:68px;object-fit:contain;}
 .cj-fb-letter .fb-logo-ph{min-width:140px;min-height:56px;border:1px dashed #C5CDD3;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#8899AA;padding:4px;background:transparent;}
 .cj-fb-letter .fb-letter-title{margin:0 0 12px;font-size:16px;font-weight:800;color:#222;text-align:center;letter-spacing:.01em;}
-.cj-fb-letter .fb-meta{display:grid;grid-template-columns:1fr 1fr;gap:4px 14px;margin:0 0 8px;font-size:12.5px;}
+.cj-fb-letter .fb-meta{display:grid;grid-template-columns:1.2fr 1fr;gap:4px 30px;margin:0 0 8px;font-size:12.5px;}
 .cj-fb-letter .fb-meta-col{min-width:0;}
 .cj-fb-letter .fb-meta-row{margin:0 0 3px;}
 .cj-fb-letter .fb-lab{font-weight:800;text-transform:uppercase;letter-spacing:.03em;color:#333;font-size:11.5px;}
@@ -452,6 +452,11 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-relwrap{margin-top:10px;}
 .cj-ba-row{display:flex;align-items:center;gap:10px;margin:8px 0 6px;flex-wrap:wrap;}
 .cj-photo-row{display:flex;align-items:center;gap:16px;margin:8px 0 6px;flex-wrap:wrap;}
+.cj-header-order-list{display:flex;flex-direction:column;gap:4px;margin-top:4px;}
+.cj-header-order-row{display:flex;align-items:center;justify-content:space-between;background:var(--elev2);border:1px solid var(--line);border-radius:8px;padding:5px 8px;font-size:13px;color:var(--ink);}
+.cj-header-order-btns{display:flex;gap:4px;}
+.cj-header-order-btns button{min-width:26px;padding:2px 6px;font-size:13px;border-radius:6px;border:1px solid var(--line);background:var(--elev);color:var(--ink);cursor:pointer;}
+.cj-header-order-btns button:disabled{opacity:.35;cursor:default;}
 .cj-ba-row label.chk{font-weight:650;font-size:13.5px;margin:0;display:flex;align-items:center;gap:8px;cursor:pointer;}
 .cj-ba-row label.chk input{width:18px;height:18px;flex:0 0 auto;}
 .cj-relblock{border:1px solid var(--line);border-radius:10px;padding:10px;margin:8px 0;background:var(--elev);}
@@ -1348,6 +1353,8 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <p class="sub" style="margin:0 0 8px;font-size:12.5px">Company and phone on the letter come from Customer details. Contact name starts from Customer details too, but can be changed here just for this letter.</p>
 <div class="mgrid"><div class="mgf"><span class="mlab">From</span><div class="ctrl"><input type="text" id="cj_fb_from"></div></div><div class="mgf"><span class="mlab">Date</span><div class="ctrl"><input type="date" id="cj_fb_date"></div></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">CC name</span><div class="ctrl"><input type="text" id="cj_fb_cc_name"></div></div><div class="mgf"><span class="mlab">CC email</span><div class="ctrl"><input type="text" id="cj_fb_cc_email"></div></div></div>
+<p class="sub" style="margin:10px 0 2px;font-size:12.5px">Order these print top-to-bottom in each column — use the arrows to rearrange.</p>
+<div class="mgrid" id="cj_fb_header_order"></div>
 <div class="fld"><div class="fh"><label>Subject</label></div><div class="ctrl"><input type="text" id="cj_fb_subject" placeholder="e.g. Liquid ring vacuum pump chemical flush feedback report"></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">Busch ref</span><div class="ctrl"><input type="text" id="cj_fb_busch_ref" placeholder="e.g. 26NBQ146"></div></div><div class="mgf"><span class="mlab">Your ref</span><div class="ctrl"><input type="text" id="cj_fb_your_ref" placeholder="e.g. DESANDS MODULE VACUUM PUMP FLT 151"></div></div></div>
 </div>
@@ -5772,6 +5779,7 @@ function custRenderJob(){
  set("cj_fb_andre_phone",j.fbAndrePhone||""); set("cj_fb_andre_email",j.fbAndreEmail||"");
 
  custFbApplyTicksToUi(j.fbTicks);
+ custRenderFbHeaderOrder();
  custRenderJobCalcs();
  custRenderJobPhotos();
  custSecRenderAllPhotos();
@@ -6886,23 +6894,78 @@ function custFbLetterPlan(fb,grouped,j){
 function custFbLetterMetaHtml(lab,val){
  return '<div class="fb-meta-row"><span class="fb-lab">'+custEsc(lab)+' :</span> <span class="fb-val">'+custEsc(val||"—")+'</span></div>';
 }
+// Which fields can print in each column, and their default top-to-bottom order.
+// custFbHeaderOrder() lets a job override the order within each column (not
+// which column a field is in — that stays fixed left/right).
+var CUST_FB_HEADER_LEFT_DEFAULT=["email","company","contact","from"];
+var CUST_FB_HEADER_RIGHT_DEFAULT=["phone","date","cc"];
+var CUST_FB_HEADER_FIELD_LABELS={email:"Email",company:"Company",contact:"Contact",from:"From",phone:"Phone",date:"Date",cc:"CC"};
+function custFbHeaderOrder(j,side){
+ var def=side==="right"?CUST_FB_HEADER_RIGHT_DEFAULT:CUST_FB_HEADER_LEFT_DEFAULT;
+ var stored=j&&(side==="right"?j.fbHeaderRightOrder:j.fbHeaderLeftOrder);
+ if(!Array.isArray(stored)||!stored.length)return def.slice();
+ // Guard against a stale order missing/duplicating keys (e.g. after an app
+ // update) by keeping only known keys, then appending any the user's order
+ // left out, so nothing silently disappears from the header.
+ var out=stored.filter(function(k){return def.indexOf(k)>-1;});
+ def.forEach(function(k){if(out.indexOf(k)<0)out.push(k);});
+ return out;
+}
+function custRenderFbHeaderOrder(){
+ var pair=custFindJob();var el=document.getElementById("cj_fb_header_order");
+ if(!el||!pair)return;
+ var j=pair.j;
+ function col(side,title){
+  var order=custFbHeaderOrder(j,side),h,i,k;
+  h='<div class="mgf"><span class="mlab">'+title+'</span><div class="cj-header-order-list">';
+  for(i=0;i<order.length;i++){
+   k=order[i];
+   h+='<div class="cj-header-order-row"><span>'+CUST_FB_HEADER_FIELD_LABELS[k]+'</span><span class="cj-header-order-btns">'
+    +'<button type="button"'+(i===0?" disabled":"")+' onclick="custMoveHeaderField(\''+side+'\',\''+k+'\',-1)" aria-label="Move up">&uarr;</button>'
+    +'<button type="button"'+(i===order.length-1?" disabled":"")+' onclick="custMoveHeaderField(\''+side+'\',\''+k+'\',1)" aria-label="Move down">&darr;</button>'
+    +'</span></div>';
+  }
+  return h+'</div></div>';
+ }
+ el.innerHTML=col("left","Left column")+col("right","Right column");
+}
+function custMoveHeaderField(side,key,dir){
+ var pair=custFindJob();if(!pair)return;
+ var j=pair.j;
+ var order=custFbHeaderOrder(j,side);
+ var idx=order.indexOf(key);if(idx<0)return;
+ var swapIdx=idx+dir;if(swapIdx<0||swapIdx>=order.length)return;
+ var tmp=order[idx];order[idx]=order[swapIdx];order[swapIdx]=tmp;
+ if(side==="right")j.fbHeaderRightOrder=order;else j.fbHeaderLeftOrder=order;
+ custPersist();
+ custRenderFbHeaderOrder();
+ cjRefreshLivePreview();
+}
+window.custMoveHeaderField=custMoveHeaderField;
 // Single source of truth for the letter header's meta rows, shared by the HTML
 // preview and the PDF so they can never drift apart. A row that has nothing
 // in it is left out entirely (no "—" placeholder) instead of always printing
 // every label, and CC name/email — two fields on the Job form — collapse into
 // one CC row instead of a second, confusingly-labelled "EMAIL" row.
 function custFbLetterMetaRows(fb,j){
- var left=[],right=[],refs=[];
- function add(arr,lab,val){val=(val==null?"":String(val).trim());if(val)arr.push([lab,val]);}
- add(left,"EMAIL",fb.email);
- add(left,"COMPANY",fb.company);
- add(left,"CONTACT",fb.contactName);
- add(left,"FROM",fb.from);
- add(right,"PHONE",fb.phone);
- add(right,"DATE",custFbDateLabel(fb));
  var ccName=((j&&j.fbCcName)||"").trim(), ccEmail=((j&&j.fbCcEmail)||"").trim();
  var ccParts=[]; if(ccName)ccParts.push(ccName); if(ccEmail)ccParts.push(ccEmail);
- if(ccParts.length) right.push(["CC",ccParts.join(" · ")]);
+ var vals={
+  email:fb.email,company:fb.company,contact:fb.contactName,from:fb.from,
+  phone:fb.phone,date:custFbDateLabel(fb),cc:ccParts.join(" · ")
+ };
+ function build(order){
+  var out=[];
+  order.forEach(function(k){
+   var v=(vals[k]==null?"":String(vals[k]).trim());
+   if(v)out.push([CUST_FB_HEADER_FIELD_LABELS[k].toUpperCase(),v]);
+  });
+  return out;
+ }
+ var left=build(custFbHeaderOrder(j,"left"));
+ var right=build(custFbHeaderOrder(j,"right"));
+ var refs=[];
+ function add(arr,lab,val){val=(val==null?"":String(val).trim());if(val)arr.push([lab,val]);}
  add(refs,"SUBJECT",fb.subject);
  add(refs,"BUSCH REF",fb.buschRef);
  add(refs,"YOUR REF",fb.yourRef);
@@ -7356,7 +7419,9 @@ function custFbLetterDrawHeader(L,c,j,fb){
  L.doc.setDrawColor(160,160,160); L.doc.setLineWidth(0.25);
  L.doc.line(L.m,L.y,L.pw-L.m,L.y);
  L.y+=6;
- var y0=L.y, labW=28, mid=L.pw/2+2, maxL=L.pw/2-L.m-labW-4, maxR=L.pw-L.m-mid-labW;
+ // mid sits further right than dead-centre (58% of page width, not 50%) so the
+ // right column doesn't crowd the left one against the middle of the page.
+ var y0=L.y, labW=28, mid=L.pw*0.58, maxL=mid-4-L.m-labW, maxR=L.pw-L.m-mid-labW;
  var metaRows=custFbLetterMetaRows(fb,j), left=metaRows.left, right=metaRows.right, refs=metaRows.refs;
  var i;
  for(i=0;i<left.length;i++) custFbLetterMetaLine(L,left[i][0],left[i][1],L.m,y0+i*5.2,labW,maxL);
