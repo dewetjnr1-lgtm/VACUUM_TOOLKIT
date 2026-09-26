@@ -535,10 +535,10 @@ html[data-theme="light"] .vt-collapsible.is-collapsed .vt-collapse-bar{backgroun
 .vt-collapse-arrow:active{opacity:.75;}
 .vt-collapsible.is-collapsed .vt-collapse-arrow{grid-column:1;grid-row:1 / span 2;align-self:center;transform:rotate(-90deg);}
 .vt-collapse-title{flex:1 1 auto;min-width:0;font-size:15px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--vt-title,#6EB3D0);line-height:1.25;padding:0 4px;}
-/* Wrap ≤2 lines at WORD boundaries only — never letter-break METHOD/PHOTOS/EQUIPMENT */
-.vt-collapsible.is-collapsed .vt-collapse-title{grid-column:2;grid-row:1;flex:1 1 auto;max-width:none;min-width:0;overflow:hidden;white-space:normal;overflow-wrap:normal;word-wrap:normal;word-break:normal;hyphens:none;-webkit-hyphens:none;-ms-hyphens:none;padding:0 2px;max-height:calc(1.25em * 2);line-height:1.25;}
+/* Full words only — wrap at spaces/slash; NO ellipsis, NO letter-break, NO mid-glyph clip */
+.vt-collapsible.is-collapsed .vt-collapse-title{grid-column:2;grid-row:1;flex:1 1 auto;max-width:none;min-width:0;overflow:visible;white-space:normal;overflow-wrap:normal;word-wrap:normal;word-break:normal;hyphens:none;-webkit-hyphens:none;-ms-hyphens:none;padding:0 2px;line-height:1.25;max-height:none;}
 @media (max-width:999px){
- .vt-collapsible.is-collapsed .vt-collapse-title{font-size:13.5px;letter-spacing:.02em;}
+ .vt-collapsible.is-collapsed .vt-collapse-title{font-size:13px;letter-spacing:.015em;}
 }
 .vt-live-btn{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:flex-end;gap:6px;min-width:44px;min-height:44px;margin:0 0 0 8px;padding:6px 4px;border:0;border-radius:10px;background:transparent;cursor:pointer;color:var(--soft);-webkit-tap-highlight-color:transparent;}
 .vt-collapsible.is-collapsed .vt-live-btn{grid-column:3;grid-row:1 / span 2;align-self:center;margin:0;justify-self:end;min-width:44px;width:44px;padding:0;justify-content:center;}
@@ -1445,7 +1445,7 @@ html[data-theme="light"] .ctrl input,html[data-theme="light"] .ctrl select,html[
 <h4 style="margin:14px 0 4px;font-size:14px;font-weight:800;color:var(--teal)">Sections in this report</h4>
 <p class="cj-fb-secs-hint">Green light = live on Preview + PDF. Arrow folds the section on this phone.</p>
 <div id="cj_fb_sections">
-<div class="cj-fb-sec vt-collapsible" data-tick="exec" id="cj_sec_fb_exec" data-vt-collapse="fb_exec" data-vt-live="exec"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Exec summary" onclick="vtCollapseToggle('cj_sec_fb_exec')">▾</button><span class="vt-collapse-title">Exec summary</span><span class="vt-collapse-hint" id="cj_hint_fb_exec" aria-hidden="true"></span><button type="button" class="vt-live-btn" id="cj_fb_live_exec" aria-label="Live on Preview" onclick="vtFbLiveToggle('exec',event)"><span class="vt-live-lab">on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_exec" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_exec"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_greeting" rows="4" placeholder="Executive summary / greeting"></textarea></div></div></div></div>
+<div class="cj-fb-sec vt-collapsible" data-tick="exec" id="cj_sec_fb_exec" data-vt-collapse="fb_exec" data-vt-live="exec"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Executive summary" onclick="vtCollapseToggle('cj_sec_fb_exec')">▾</button><span class="vt-collapse-title">Executive summary</span><span class="vt-collapse-hint" id="cj_hint_fb_exec" aria-hidden="true"></span><button type="button" class="vt-live-btn" id="cj_fb_live_exec" aria-label="Live on Preview" onclick="vtFbLiveToggle('exec',event)"><span class="vt-live-lab">on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_exec" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_exec"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_greeting" rows="4" placeholder="Executive summary / greeting"></textarea></div></div></div></div>
 <div class="cj-fb-sec vt-collapsible" data-tick="method" id="cj_sec_fb_method" data-vt-collapse="fb_method" data-vt-live="method"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Method" onclick="vtCollapseToggle('cj_sec_fb_method')">▾</button><span class="vt-collapse-title">Method</span><span class="vt-collapse-hint" id="cj_hint_fb_method" aria-hidden="true"></span><button type="button" class="vt-live-btn" id="cj_fb_live_method" aria-label="Live on Preview" onclick="vtFbLiveToggle('method',event)"><span class="vt-live-lab">on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_method" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_method"><div class="fld" style="padding-top:0"><div class="fh"><label>Service type(s)</label></div><div class="ctrl" id="cj_fb_method_types" style="display:flex;flex-direction:column;gap:2px"><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="flush" onchange="custFbMethodChanged()"> Chemical flush</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="perf" onchange="custFbMethodChanged()"> Performance / efficiency testing</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="internal" onchange="custFbMethodChanged()"> Internal inspection (fiberscope)</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="bearing" onchange="custFbMethodChanged()"> Bearing replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="gland" onchange="custFbMethodChanged()"> Gland packing replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="valve" onchange="custFbMethodChanged()"> Valve &amp; intercepting plate replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="belt" onchange="custFbMethodChanged()"> Drive pulley / V-belt replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="rotable" onchange="custFbMethodChanged()"> Rotable spare pump preservation</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="diag" onchange="custFbMethodChanged()"> Site inspection / diagnostics</label></div><p class="sub" style="margin:4px 0 0;font-size:12.5px">Tick all that apply — fills Heading &amp; Details below from the Busch capability statement. Edit freely after; re-ticking rebuilds Heading &amp; Details from scratch.</p><button type="button" class="clrbtn" style="margin-top:6px" onclick="custFbMethodClearAll()">Clear all / write my own</button></div><div class="fld"><div class="fh"><label>Heading</label></div><div class="ctrl"><input type="text" id="cj_fb_intro_head"></div></div><div class="fld"><div class="fh"><label>Details</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="5"></textarea></div></div><div id="cj_phhost_method" class="cj-phhost" data-phkey="method"></div></div></div>
 <div class="cj-fb-sec vt-collapsible" data-tick="scope" id="cj_sec_fb_scope" data-vt-collapse="fb_scope" data-vt-live="scope"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Scope" onclick="vtCollapseToggle('cj_sec_fb_scope')">▾</button><span class="vt-collapse-title">Scope</span><span class="vt-collapse-hint" id="cj_hint_fb_scope" aria-hidden="true"></span><button type="button" class="vt-live-btn" id="cj_fb_live_scope" aria-label="Live on Preview" onclick="vtFbLiveToggle('scope',event)"><span class="vt-live-lab">on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_scope" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_scope"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_scope" rows="3" placeholder="What was requested / scope"></textarea></div></div><div id="cj_phhost_scope" class="cj-phhost" data-phkey="scope"></div></div></div>
 <div class="cj-fb-sec vt-collapsible" data-tick="equipment" id="cj_sec_fb_equipment" data-vt-collapse="fb_equipment" data-vt-live="equipment"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Equipment" onclick="vtCollapseToggle('cj_sec_fb_equipment')">▾</button><span class="vt-collapse-title">Equipment</span><span class="vt-collapse-hint" id="cj_hint_fb_equipment" aria-hidden="true"></span><button type="button" class="vt-live-btn" id="cj_fb_live_equipment" aria-label="Live on Preview" onclick="vtFbLiveToggle('equipment',event)"><span class="vt-live-lab">on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_equipment" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_equipment"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_equipment" rows="3" placeholder="Pump tag, system, location"></textarea></div></div><div id="cj_phhost_equipment" class="cj-phhost" data-phkey="equipment"></div></div></div>
@@ -5854,13 +5854,6 @@ function vtHintFitEl(el){
  }
  if(!best){el.textContent="";} else el.textContent=best;
 }
-function vtTitleWordClip(s){
- s=String(s||"").replace(/\s+/g," ").trim();
- if(!s)return "";
- var words=s.split(" ");
- if(words.length<=1)return s; /* single token — keep full; never crush to 1 letter */
- return words[0]+"\u2026";
-}
 function vtIsPhoneLayout(){
  try{return !!(window.matchMedia&&window.matchMedia("(max-width:999px)").matches);}catch(e){return false;}
 }
@@ -5868,53 +5861,30 @@ function vtTitleOverflow(title){
  if(!title)return false;
  return title.scrollWidth>title.clientWidth+1;
 }
-/* Fit title to ≤2 lines at word boundaries only. Never letter-break. Ellipsis only after a full word. */
+/* Fit FULL title in ≤2 lines. Wrap at spaces + slash only. NEVER ellipsis. NEVER letter-break. Shrink font if needed. */
 function vtTitleFitTwoLines(title,full){
  if(!title)return;
  full=String(full||"").replace(/\s+/g," ").trim();
  title.style.fontSize="";
  if(!full){title.textContent="";return;}
- title.textContent=full;
- var cs=getComputedStyle(title);
- var lh=parseFloat(cs.lineHeight);
- if(!(lh>0)||String(cs.lineHeight)==="normal") lh=(parseFloat(cs.fontSize)||15)*1.25;
- var maxH=lh*2.15;
- if(title.scrollHeight<=maxH+1 && title.scrollWidth<=title.clientWidth+1) return;
- var words=full.split(" ").filter(Boolean);
- if(!words.length)return;
- /* Single unbreakable token longer than column: shrink font slightly; never split letters */
- if(words.length===1 || (title.scrollWidth>title.clientWidth+1 && words[0] && !full.includes(" "))){
-  title.textContent=words.length===1?words[0]:full;
-  var fs=parseFloat(cs.fontSize)||15, step;
-  for(step=0;step<6 && (title.scrollWidth>title.clientWidth+1 || title.scrollHeight>maxH+1);step++){
-   fs=Math.max(11,fs-0.5);
-   title.style.fontSize=fs+"px";
-   lh=(parseFloat(getComputedStyle(title).lineHeight)||fs*1.25);
-   if(String(getComputedStyle(title).lineHeight)==="normal") lh=fs*1.25;
-   maxH=lh*2.15;
-  }
-  return;
+ /* Soft wrap after slash (PARTS/MATERIALS → PARTS/ + MATERIALS), not mid-letter */
+ var display=full.replace(/\//g,"/\u200B");
+ title.textContent=display;
+ function metrics(){
+  var cs=getComputedStyle(title);
+  var fs=parseFloat(cs.fontSize)||13;
+  var lh=parseFloat(cs.lineHeight);
+  if(!(lh>0)||String(cs.lineHeight)==="normal") lh=fs*1.25;
+  return {fs:fs, lh:lh, maxH:lh*2.2, ow:title.scrollWidth>title.clientWidth+1, oh:title.scrollHeight>lh*2.2+1};
  }
- var kept="", i, trial;
- for(i=0;i<words.length;i++){
-  trial=kept?(kept+" "+words[i]):words[i];
-  title.textContent=trial;
-  if(title.scrollHeight>maxH+1){
-   title.textContent=kept?(kept+(i<words.length?"\u2026":"")):(words[0]||full);
-   /* If even first word overflows height/width, shrink — still whole word */
-   if(!kept){
-    title.textContent=words[0];
-    fs=parseFloat(getComputedStyle(title).fontSize)||15;
-    for(step=0;step<6 && (title.scrollWidth>title.clientWidth+1 || title.scrollHeight>maxH+1);step++){
-     fs=Math.max(11,fs-0.5);
-     title.style.fontSize=fs+"px";
-    }
-   }
-   return;
-  }
-  kept=trial;
+ var m=metrics(), step;
+ /* Prefer full text visible: shrink until width+2-line height OK (min ~10.5px) */
+ for(step=0;step<10 && (m.ow||m.oh);step++){
+  title.style.fontSize=Math.max(10.5, m.fs-0.5)+"px";
+  m=metrics();
  }
- title.textContent=full;
+ /* Still too tall at min size: keep ALL words anyway (overflow visible) — never cut EQUIPMEN/PARTS/MA */
+ title.textContent=display;
 }
 /* Phone: full title word-wrap ≤2 lines, hide hint, icon-only light. Wider: squeeze hint/lab only — never letter-break titles. */
 function vtCollapseBarFit(sec){
