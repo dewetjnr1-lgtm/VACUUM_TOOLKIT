@@ -535,12 +535,14 @@ html[data-theme="light"] .vt-collapsible.is-collapsed .vt-collapse-bar{backgroun
 .vt-collapse-arrow:active{opacity:.75;}
 .vt-collapsible.is-collapsed .vt-collapse-arrow{grid-column:1;grid-row:1 / span 2;align-self:center;transform:rotate(-90deg);}
 .vt-collapse-title{flex:1 1 auto;min-width:0;font-size:15px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--vt-title,#6EB3D0);line-height:1.2;padding:0 4px;}
-.vt-collapsible.is-collapsed .vt-collapse-title{grid-column:2;grid-row:1;flex:unset;max-width:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;padding:0 2px;}
+/* Title lane wins width; no CSS mid-char ellipsis — JS word-boundary only as last resort */
+.vt-collapsible.is-collapsed .vt-collapse-title{grid-column:2;grid-row:1;flex:unset;max-width:none;min-width:0;overflow:hidden;white-space:nowrap;padding:0 2px;}
 .vt-live-btn{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:flex-end;gap:6px;min-width:44px;min-height:44px;margin:0 0 0 8px;padding:6px 4px;border:0;border-radius:10px;background:transparent;cursor:pointer;color:var(--soft);-webkit-tap-highlight-color:transparent;}
-.vt-collapsible.is-collapsed .vt-live-btn{grid-column:3;grid-row:1 / span 2;align-self:center;margin:0;justify-self:end;}
+.vt-collapsible.is-collapsed .vt-live-btn{grid-column:3;grid-row:1 / span 2;align-self:center;margin:0;justify-self:end;min-width:44px;}
 .vt-live-btn:active{opacity:.8;}
 .vt-live-lab{font-size:11px;font-weight:600;letter-spacing:.01em;white-space:nowrap;color:var(--soft);text-align:right;line-height:1.15;}
-.vt-live-dot{flex:0 0 auto;width:18px;height:18px;border-radius:50%;box-sizing:border-box;border:2.5px solid var(--vt-live-off,#E85A6B);background:transparent;box-shadow:0 0 0 3px var(--vt-live-off-bg,#4A2028);}
+.vt-live-lab:empty{display:none;}
+.vt-live-dot{flex:0 0 auto;width:18px;height:18px;min-width:18px;border-radius:50%;box-sizing:border-box;border:2.5px solid var(--vt-live-off,#E85A6B);background:transparent;box-shadow:0 0 0 3px var(--vt-live-off-bg,#4A2028);}
 .vt-live-btn.is-on .vt-live-dot{background:var(--vt-live-on,#3DDB9A);border-color:var(--vt-live-on,#3DDB9A);box-shadow:0 0 0 3px var(--vt-live-on-bg,#0F2E22);}
 .vt-live-btn.is-on .vt-live-lab{color:var(--vt-live-on,#3DDB9A);}
 .vt-live-btn:not(.is-on) .vt-live-lab{color:var(--vt-live-off,#E85A6B);opacity:.95;}
@@ -5841,17 +5843,93 @@ function vtHintFitEl(el){
   if(el.scrollWidth<=el.clientWidth+1){best=cand;lo=mid+1;}
   else hi=mid-1;
  }
- /* If even one word + ellipsis won't fit, hide hint (title lane stays clean). */
- if(!best){
-  var first=full.split(" ")[0]||"";
-  el.textContent=first.length?vtHintClip(first,Math.min(first.length,24)):"";
-  if(el.scrollWidth>el.clientWidth+1)el.textContent="";
- }else el.textContent=best;
+ if(!best){el.textContent="";} else el.textContent=best;
+}
+function vtTitleWordClip(s){
+ s=String(s||"").replace(/\s+/g," ").trim();
+ if(!s)return "";
+ var words=s.split(" ");
+ if(words.length<=1)return s; /* single token — keep full; never crush to 1 letter */
+ return words[0]+"\u2026";
+}
+function vtTitleOverflow(title){
+ return !!(title && title.scrollWidth>title.clientWidth+1);
+}
+/* Priority when tight: (1) full title (2) hide hint (3) shorten live lab (4) keep light (5) word-boundary title last. */
+function vtCollapseBarFit(sec){
+ if(!sec||!sec.classList.contains("is-collapsed"))return;
+ var bar=sec.querySelector(":scope > .vt-collapse-bar");
+ if(!bar)return;
+ var title=bar.querySelector(".vt-collapse-title");
+ var hint=bar.querySelector(".vt-collapse-hint");
+ var live=bar.querySelector(".vt-live-btn");
+ var lab=live?live.querySelector(".vt-live-lab"):null;
+ if(title && !title.getAttribute("data-vt-title-full")){
+  title.setAttribute("data-vt-title-full", (title.textContent||"").replace(/\s+/g," ").trim());
+ }
+ var fullTitle=title? (title.getAttribute("data-vt-title-full")||""):"";
+ if(title) title.textContent=fullTitle;
+ if(lab){
+  if(!lab.getAttribute("data-vt-lab-full")){
+   var seed=(lab.textContent||"").trim()||(live.classList.contains("is-on")?"on Preview":"off");
+   lab.setAttribute("data-vt-lab-full", seed);
+  }
+  var on=live.classList.contains("is-on");
+  lab.textContent=on?"on Preview":"off";
+  lab.setAttribute("data-vt-lab-full", lab.textContent);
+ }
+ /* Restore hint from stored full, then fit */
+ if(hint){
+  var hf=hint.getAttribute("data-vt-hint-full");
+  if(hf==null) hf=hint.textContent||"";
+  hint.setAttribute("data-vt-hint-full", String(hf||"").replace(/\s+/g," ").trim());
+  hint.textContent=hint.getAttribute("data-vt-hint-full")||"";
+ }
+ /* Step 2: if title still overflows, hide hint first */
+ if(vtTitleOverflow(title) && hint){
+  hint.textContent="";
+ }
+ /* Step 3: shorten green/red label to a full short word (never mid-word) */
+ if(vtTitleOverflow(title) && lab){
+  var on2=live.classList.contains("is-on");
+  if(on2){
+   lab.textContent="Preview";
+   if(vtTitleOverflow(title)) lab.textContent="on";
+   if(vtTitleOverflow(title)) lab.textContent=""; /* dot-only; 44×44 hit remains */
+  }else{
+   /* "off" already short; hide text before crushing title */
+   if(vtTitleOverflow(title)) lab.textContent="";
+  }
+ }
+ /* Fit hint (word-boundary) only if still shown and title fits */
+ if(hint && hint.getAttribute("data-vt-hint-full") && hint.textContent){
+  vtHintFitEl(hint);
+  if(vtTitleOverflow(title)) hint.textContent=""; /* title wins */
+ }
+ /* Step 5 last resort: word-boundary title ellipsis — keep at least first full word */
+ if(vtTitleOverflow(title) && title && fullTitle){
+  var words=fullTitle.split(" ").filter(Boolean);
+  var kept="";
+  for(var i=0;i<words.length;i++){
+   var trial=(kept?kept+" ":"")+words[i];
+   title.textContent=trial;
+   if(vtTitleOverflow(title)){
+    title.textContent=kept?kept+"\u2026":(words[0]||fullTitle);
+    break;
+   }
+   kept=trial;
+   if(i===words.length-1) title.textContent=fullTitle;
+  }
+  /* Never leave a 1–2 letter crush if a longer first word exists */
+  if(title.textContent.replace(/\u2026$/,"").length<3 && words[0] && words[0].length>=3){
+   title.textContent=words[0]+(words.length>1?"\u2026":"");
+  }
+ }
 }
 function vtHintsFitAll(root){
  try{
   var base=root||document;
-  base.querySelectorAll(".vt-collapsible.is-collapsed .vt-collapse-hint").forEach(vtHintFitEl);
+  base.querySelectorAll(".vt-collapsible.is-collapsed").forEach(vtCollapseBarFit);
  }catch(e){}
 }
 function vtCollapseHintsRefresh(){
@@ -5935,9 +6013,10 @@ function vtLiveFlash(btn){
 function vtLiveBtnSync(btn,on){
  if(!btn)return;
  if(on){btn.classList.add("is-on");btn.setAttribute("aria-pressed","true");
-  var lab=btn.querySelector(".vt-live-lab");if(lab)lab.textContent="on Preview";}
+  var lab=btn.querySelector(".vt-live-lab");if(lab){lab.textContent="on Preview";lab.setAttribute("data-vt-lab-full","on Preview");}}
  else{btn.classList.remove("is-on");btn.setAttribute("aria-pressed","false");
-  var lab2=btn.querySelector(".vt-live-lab");if(lab2)lab2.textContent="off";}
+  var lab2=btn.querySelector(".vt-live-lab");if(lab2){lab2.textContent="off";lab2.setAttribute("data-vt-lab-full","off");}}
+ try{var sec=btn.closest(".vt-collapsible");if(sec)requestAnimationFrame(function(){vtCollapseBarFit(sec);});}catch(e){}
 }
 function vtLetterLiveToggle(ev){
  if(ev){ev.preventDefault();ev.stopPropagation();}

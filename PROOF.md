@@ -1,13 +1,16 @@
-# PROOF — FAB safe area + word-boundary collapsed hints
+# PROOF — collapsed title priority (no P/V/R crush)
 
-## Fail (Quack GOLD on b38cf26)
-1. Preview FAB covered Save + lower bar green lights.
-2. Collapsed hints mid-word ellipsis (`Introduction to BUS…`, `All the works were c…`).
+## Fail on bade155
+Job bars crushed titles to 1–3 letters (`P`, `V`, `R`, `SAF…`) under FAB `padding-right:120px` + long green label.
 
-## Fix
-- Phone + `body.cj-live-open`: form col `padding-bottom:108px` + `padding-right:120px` so Save and live lights clear the FAB (44×44+ hits kept).
-- `vtHintClip` ends on **word boundary**; `vtHintFitEl` / `vtHintsFitAll` fit or hide hints (no CSS mid-char ellipsis). #47 stacked title/hint kept.
-- #48 letter type scale untouched.
+## Fix (FAB stays floating)
+Keep Preview as `position:fixed` FAB + #49 safe-area padding (bottom/right).
+When space tight, per bar:
+1. Prefer **full title**
+2. **Hide hint** first
+3. Shorten live lab to full short words: `on Preview` → `Preview` → `on` → dot-only
+4. Light/dot hit stays ≥44×44
+5. Title ellipsis **word-boundary last resort** only (never 1-letter crush)
 
 ## Proof
-`collapse-ux-2026-09-26/proof-fab-safe-area.png` — PASS (save∩FAB=false, light∩FAB=false, midWordHint=false)
+`collapse-ux-2026-09-26/proof-title-priority.png` — PASS @390 with padding-right:120; FAB clear of Save; titles readable.
