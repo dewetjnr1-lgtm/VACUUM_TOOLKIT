@@ -519,8 +519,49 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 @media print{
  .vt-status-strip,.vt-next-btn,.vt-sticky-pump,.vt-saved-chip,.lri-sameprev,.lri-samelast{display:none !important;}
 }
+
+/* --- Collapse bars + live Preview light (Christoff 2026-09-26) --- */
+.vt-collapse-bar{display:flex;align-items:center;gap:4px;min-height:44px;padding:2px 4px 2px 0;margin:0 0 6px;border-radius:10px;user-select:none;}
+.vt-collapsible.is-collapsed .vt-collapse-bar{margin-bottom:0;padding:4px 6px;background:rgba(22,40,55,.55);}
+html[data-theme="light"] .vt-collapsible.is-collapsed .vt-collapse-bar{background:var(--vt-bar-bg,#E8EEF2);}
+.vt-collapse-arrow{flex:0 0 auto;width:44px;height:44px;min-width:44px;min-height:44px;margin:0;padding:0;border:0;border-radius:10px;background:transparent;color:var(--vt-arrow,#8BBFD4);font-size:18px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;}
+.vt-collapse-arrow:active{opacity:.75;}
+.vt-collapsible.is-collapsed .vt-collapse-arrow{transform:rotate(-90deg);}
+.vt-collapse-title{flex:1 1 auto;min-width:0;font-size:15px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--vt-title,#6EB3D0);line-height:1.2;padding:0 4px;}
+.vt-live-btn{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:flex-end;gap:8px;min-width:44px;min-height:44px;margin:0 0 0 8px;padding:6px 8px;border:0;border-radius:10px;background:transparent;cursor:pointer;color:var(--soft);-webkit-tap-highlight-color:transparent;}
+.vt-live-btn:active{opacity:.8;}
+.vt-live-lab{font-size:11px;font-weight:600;letter-spacing:.01em;white-space:nowrap;color:var(--soft);max-width:72px;text-align:right;line-height:1.15;}
+.vt-live-dot{flex:0 0 auto;width:18px;height:18px;border-radius:50%;box-sizing:border-box;border:2px solid var(--vt-live-off,#3A5A4A);background:transparent;}
+.vt-live-btn.is-on .vt-live-dot{background:var(--vt-live-on,#5CBF8A);border-color:var(--vt-live-on,#5CBF8A);box-shadow:0 0 0 3px var(--vt-live-on-bg,#16352A);}
+.vt-live-btn.is-on .vt-live-lab{color:var(--vt-live-on,#5CBF8A);}
+.vt-live-btn:not(.is-on) .vt-live-lab{color:var(--soft);opacity:.85;}
+.vt-collapsible.is-collapsed > .vt-collapse-body,
+.vt-collapsible.is-collapsed > .cj-fb-sec-body,
+.vt-collapsible.is-collapsed > .cj-fb-letter-hdr-fields,
+.vt-collapsible.is-collapsed > .sub.cv-wall-hint,
+.vt-collapsible.is-collapsed > p.sub,
+.vt-collapsible.is-collapsed > .cj-fb-secs-hint{display:none !important;}
+.vt-tick-hidden{position:absolute !important;width:1px !important;height:1px !important;opacity:0 !important;pointer-events:none !important;clip:rect(0,0,0,0) !important;}
+.cj-fb-sec{position:relative;padding-top:2px;margin:10px 0 6px;border-top:1px solid var(--line);}
+.cj-fb-sec .vt-collapse-bar{margin-top:4px;}
+.cj-fb-sec-signoff .vt-collapse-title{text-transform:none;letter-spacing:0;}
+.card.vt-collapsible{padding-top:2px;}
+.card.vt-collapsible > h3.vt-legacy-h3{display:none;}
+.vt-theme-btn{flex:0 0 auto;margin-left:auto;background:rgba(255,255,255,.14);border:0;color:#fff;font-size:12px;font-weight:700;border-radius:16px;padding:8px 12px;cursor:pointer;min-height:36px;}
+body.inpage .vt-theme-btn{background:rgba(255,255,255,.16);}
+html[data-theme="light"]{
+  --paper:#F4F7F9;--ink:#1A2A33;--soft:#5A6B75;--line:#C5D0D8;--teal:#2A5F75;--teal-bg:#E0EAF0;--green:#2F8F68;--green-bg:#D8EEE4;--warn:#C46A2E;--warn-bg:#F3E4D6;--hdr:#1A3340;--accent:#D4652A;--accent-bg:#F5E6DC;--elev:#FFFFFF;--elev2:#EEF2F5;--vt-arrow:#5A6B75;--vt-title:#2A5F75;--vt-bar-bg:#E8EEF2;--vt-live-on:#2F8F68;--vt-live-on-bg:#D5EBE1;--vt-live-off:#A8B8C2;color-scheme:light;
+}
+html[data-theme="light"] body{background:var(--paper);color:var(--ink);}
+html[data-theme="light"],html[data-theme="light"] body{color-scheme:light;}
+html[data-theme="light"] input,html[data-theme="light"] select,html[data-theme="light"] textarea,html[data-theme="light"] button{color-scheme:light;}
+html[data-theme="light"] header p{color:#B8CDD8;}
+html[data-theme="light"] .custrow,.catrow{box-shadow:0 1px 4px rgba(20,40,55,.08);}
+html[data-theme="light"] .ctrl input,html[data-theme="light"] .ctrl select,html[data-theme="light"] .ctrl textarea{background:var(--elev);border-color:var(--line);color:var(--ink);}
+:root{--vt-arrow:#8BBFD4;--vt-title:#6EB3D0;--vt-bar-bg:transparent;--vt-live-on:#5CBF8A;--vt-live-on-bg:#16352A;--vt-live-off:#3A5A4A;}
+
 </style></head>
-<body><canvas id="bgbub" aria-hidden="true"></canvas><header><div class="hrow"><button id="backbtn" onclick="goBack()">&#8249; Back</button><svg id="logo" width="36" height="36" viewBox="0 0 100 100"><g fill="#B3261E" stroke="#B3261E" stroke-width="2"><path d="M46.34 20.22 L50.00 11.00 L53.66 20.22 Z"/><path d="M68.47 26.36 L77.58 22.42 L73.64 31.53 Z"/><path d="M79.78 46.34 L89.00 50.00 L79.78 53.66 Z"/><path d="M73.64 68.47 L77.58 77.58 L68.47 73.64 Z"/><path d="M53.66 79.78 L50.00 89.00 L46.34 79.78 Z"/><path d="M31.53 73.64 L22.42 77.58 L26.36 68.47 Z"/><path d="M20.22 53.66 L11.00 50.00 L20.22 46.34 Z"/><path d="M26.36 31.53 L22.42 22.42 L31.53 26.36 Z"/></g><circle cx="50" cy="50" r="30" fill="none" stroke="#B3261E" stroke-width="4.5"/><g fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M50.00 42.00 Q52.67 34.22 56.62 26.93"/><path d="M56.93 46.00 Q65.00 44.42 73.29 44.19"/><path d="M56.93 54.00 Q62.33 60.20 66.67 67.26"/><path d="M50.00 58.00 Q47.33 65.78 43.38 73.07"/><path d="M43.07 54.00 Q35.00 55.58 26.71 55.81"/><path d="M43.07 46.00 Q37.67 39.80 33.33 32.74"/></g><circle cx="50" cy="50" r="8" fill="#B3261E" stroke="#fff" stroke-width="2"/></svg><div><h1 id="hdr_t">Vacuum &amp; Compressor Toolkit</h1><p id="hdr_s">Learn it, fill it in, pick your units</p></div></div></header>
+<body><canvas id="bgbub" aria-hidden="true"></canvas><header><div class="hrow"><button id="backbtn" onclick="goBack()">&#8249; Back</button><svg id="logo" width="36" height="36" viewBox="0 0 100 100"><g fill="#B3261E" stroke="#B3261E" stroke-width="2"><path d="M46.34 20.22 L50.00 11.00 L53.66 20.22 Z"/><path d="M68.47 26.36 L77.58 22.42 L73.64 31.53 Z"/><path d="M79.78 46.34 L89.00 50.00 L79.78 53.66 Z"/><path d="M73.64 68.47 L77.58 77.58 L68.47 73.64 Z"/><path d="M53.66 79.78 L50.00 89.00 L46.34 79.78 Z"/><path d="M31.53 73.64 L22.42 77.58 L26.36 68.47 Z"/><path d="M20.22 53.66 L11.00 50.00 L20.22 46.34 Z"/><path d="M26.36 31.53 L22.42 22.42 L31.53 26.36 Z"/></g><circle cx="50" cy="50" r="30" fill="none" stroke="#B3261E" stroke-width="4.5"/><g fill="none" stroke="#fff" stroke-width="3.4" stroke-linecap="round"><path d="M50.00 42.00 Q52.67 34.22 56.62 26.93"/><path d="M56.93 46.00 Q65.00 44.42 73.29 44.19"/><path d="M56.93 54.00 Q62.33 60.20 66.67 67.26"/><path d="M50.00 58.00 Q47.33 65.78 43.38 73.07"/><path d="M43.07 54.00 Q35.00 55.58 26.71 55.81"/><path d="M43.07 46.00 Q37.67 39.80 33.33 32.74"/></g><circle cx="50" cy="50" r="8" fill="#B3261E" stroke="#fff" stroke-width="2"/></svg><div><h1 id="hdr_t">Vacuum &amp; Compressor Toolkit</h1><p id="hdr_s">Learn it, fill it in, pick your units</p></div><button type="button" class="vt-theme-btn" id="vt_theme_btn" onclick="vtToggleTheme()" title="Switch dark / light">Light</button></div></header>
 <main><section class="page active" id="home">
 <div class="pgh"><h2>Pick an area</h2><button class="q" onclick="hp('h_home')">?</button></div><div class="help" id="h_home">Pick an area below &mdash; each has its own tools inside. Every calculator starts empty: tap <b>Insert example</b> to watch one work, and the small <b>?</b> by any box if you are unsure. Tip: save this page to your phone's home screen and it works offline.<br><br>Good working estimates for checks and quoting &mdash; always confirm the final machine and motor size with the maker's selection software.</div>
 <button class="catrow hero" onclick="show('cust')"><span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="2.4"/><circle cx="16" cy="9" r="2"/><path d="M3.5 18c.8-2.6 2.8-4 5.5-4s4.7 1.4 5.5 4"/><path d="M14 14c2 .2 3.6 1.2 4.3 3.2"/></svg></span><div><b>Customers</b><small>Jobs and site notes — open a Job to write the Client feedback report</small></div><span class="chev">&#8250;</span></button>
@@ -1302,39 +1343,50 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div id="cv_head_logo" class="cv-head-logo"></div>
 <div class="means" id="cust_view_means">Saved on this device &mdash; Export backup on the Customers list copies to a file.</div>
 <div class="note warn" id="cv_warn" style="display:none">Could not save — phone storage may be full. Export a backup or remove photos.</div>
-<div class="card"><h3>Details</h3>
+<div class="card vt-collapsible" id="cv_sec_details" data-vt-collapse="cv_details">
+<div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Details" onclick="vtCollapseToggle('cv_sec_details')">▾</button><span class="vt-collapse-title">Details</span></div>
+<div class="vt-collapse-body">
 <div class="fld"><div class="fh"><label>Customer name</label></div><div class="ctrl"><input type="text" id="cv_name" placeholder="e.g. Hancock Iron Ore / Roy Hill"></div><p class="sub cv-help">Company on the Client feedback letter.</p></div>
 <div class="fld"><div class="fh"><label>Site label</label></div><div class="ctrl"><input type="text" id="cv_site" placeholder="e.g. Wet plant / desands — belt filters"></div><p class="sub cv-help">Which site this is (for you). Does not print on the letter unless you type it into the job letter fields.</p></div>
-<button class="exbtn" onclick="custSaveView()">Save details</button>
-</div>
-<div class="card cv-wall"><h3>For the letter</h3>
+<button class="exbtn" onclick="custSaveView('details')">Save details</button>
+</div></div>
+<div class="card cv-wall vt-collapsible" id="cv_sec_letter" data-vt-collapse="cv_letter" data-vt-live="letter">
+<div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse For the letter" onclick="vtCollapseToggle('cv_sec_letter')">▾</button><span class="vt-collapse-title">For the letter</span><button type="button" class="vt-live-btn is-on" id="cv_letter_live" aria-label="Live on Preview" onclick="vtLetterLiveToggle(event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div>
+<div class="vt-collapse-body">
 <p class="sub cv-wall-hint">These show on the Client feedback letter Preview and PDF.</p>
 <div class="fld"><div class="fh"><label>Customer logo</label></div><div class="ctrl"><input type="file" id="cv_logo" accept="image/*"></div><p class="sub cv-help">Prints next to Busch on white paper. Must read clearly on white.</p></div>
 <div class="cv-logo-previews" id="cv_logo_prev"></div>
 <div id="cv_logo_missing" class="note warn" style="display:none;margin:6px 0">No logo — letter shows Busch only.</div>
-<div class="fld"><div class="fh"><label>Contact name</label></div><div class="ctrl"><input type="text" id="cv_contact_name" placeholder="e.g. Site contact"></div><p class="sub cv-help">Who you&rsquo;re writing to / from on the letter.</p></div>
+<div class="fld"><div class="fh"><label>Recipient email</label></div><div class="ctrl"><input type="text" id="cv_letter_email" placeholder="e.g. rh.operations.processing@royhill.com.au"></div><p class="sub cv-help">TO address on the Client feedback letter header.</p></div>
+<div class="fld"><div class="fh"><label>Contact name</label></div><div class="ctrl"><input type="text" id="cv_contact_name" placeholder="e.g. Site contact"></div><p class="sub cv-help">Who you&rsquo;re writing to on the letter.</p></div>
 <div class="fld"><div class="fh"><label>Phone</label></div><div class="ctrl"><input type="text" id="cv_contact_phone" placeholder="e.g. +61 …"></div><p class="sub cv-help">Prints on the letter if filled.</p></div>
-<div class="fld"><div class="fh"><label>Email</label></div><div class="ctrl"><input type="text" id="cv_contact_email" placeholder="e.g. name@customer.com.au"></div><p class="sub cv-help">Prints on the letter if filled.</p></div>
-<button class="exbtn" onclick="custSaveView()">Save letter fields</button>
+<div class="fld"><div class="fh"><label>Email</label></div><div class="ctrl"><input type="text" id="cv_contact_email" placeholder="e.g. name@customer.com.au"></div><p class="sub cv-help">Extra contact email (site / person). Recipient email above is the letter TO.</p></div>
+<button class="exbtn" onclick="custSaveView('letter')">Save letter fields</button>
 <button class="clrbtn" onclick="custClearLogo()">Remove logo</button>
-</div>
-<div class="card cv-wall"><h3>For you on site</h3>
+</div></div>
+<div class="card cv-wall vt-collapsible" id="cv_sec_site" data-vt-collapse="cv_site">
+<div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse For you on site" onclick="vtCollapseToggle('cv_sec_site')">▾</button><span class="vt-collapse-title">For you on site</span></div>
+<div class="vt-collapse-body">
 <p class="sub cv-wall-hint">Stays on this device for your visit. Not printed on the Client feedback letter.</p>
 <div class="fld"><div class="fh"><label>Site notes</label></div><div class="ctrl"><textarea id="cv_notes" rows="4" placeholder="Access, gate, prep, internal reminders"></textarea></div><p class="sub cv-help">Access, gate, prep, internal reminders. Never prints on the letter.</p></div>
 <div class="fld"><div class="fh"><label>Equipment at this site</label></div><div class="ctrl"><textarea id="cv_equip" rows="6" placeholder="FLT 151"></textarea></div><p class="sub cv-help">Pick list for jobs. Letter lists only pumps/equipment you put on that job — not this whole list.</p></div>
-<button class="exbtn" onclick="custSaveView()">Save site fields</button>
-</div>
-<div class="card"><h3>Jobs / visits</h3>
+<button class="exbtn" onclick="custSaveView('site')">Save site fields</button>
+</div></div>
+<div class="card vt-collapsible" id="cv_sec_jobs" data-vt-collapse="cv_jobs">
+<div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Jobs" onclick="vtCollapseToggle('cv_sec_jobs')">▾</button><span class="vt-collapse-title">Jobs / visits</span></div>
+<div class="vt-collapse-body">
 <p class="sub cv-wall-hint">Open a visit to write the Client feedback letter and make the PDF.</p>
 <button class="exbtn" onclick="custNewJob()">New job / visit</button>
 <div id="cv_jobs" class="custlist" style="margin-top:10px"></div>
-</div>
+</div></div>
 <button class="clrbtn" style="display:block;width:100%;margin-left:0;margin:12px 0 16px" onclick="custDeleteCustomer(CUST_CUR)">Delete customer</button>
 </section>
 <section class="page" id="cust_job"><div class="cj-job-flex"><div class="cj-job-formcol">
 <div class="pgh"><h2 id="cj_title">Job</h2><span id="cj_saved_chip" class="vt-saved-chip">Saved on this device</span></div>
 <p class="sub" id="cj_sub"></p>
-<div class="card cj-visit"><h3>Visit</h3>
+<div class="card cj-visit vt-collapsible" id="cj_sec_visit" data-vt-collapse="cj_visit">
+<div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Visit" onclick="vtCollapseToggle('cj_sec_visit')">▾</button><span class="vt-collapse-title">Visit</span></div>
+<div class="vt-collapse-body">
 <div class="fld"><div class="fh"><label>Job name <span style="font-weight:500;color:var(--soft);text-transform:none;letter-spacing:0">(optional — blank uses the date and visit type)</span></label></div><div class="ctrl"><input type="text" id="cj_name" placeholder="e.g. FLT151 gland service"></div></div>
 <div class="fld"><div class="fh"><label>Start date</label></div><div class="ctrl"><input type="date" id="cj_date"></div></div>
 <div class="fld"><div class="fh"><label>End date <span style="font-weight:500;color:var(--soft);text-transform:none;letter-spacing:0">(optional — blank = same day)</span></label></div><div class="ctrl"><input type="date" id="cj_date_end"></div></div>
@@ -1342,53 +1394,54 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div class="fld"><div class="fh"><label>Status</label></div><div class="ctrl"><select id="cj_status"><option value="draft">Draft</option><option value="done">Done</option></select></div></div>
 <div class="fld"><div class="fh"><label>PO / quote ref (optional)</label></div><div class="ctrl"><input type="text" id="cj_po" placeholder="PO or quote number"></div></div>
 <p class="sub" style="margin:4px 0 0;font-size:12.5px">Auto-saves on <b>this device</b> as you edit.</p>
-</div>
-<div class="card"><h3>Client feedback report</h3>
+</div></div>
+<div class="card vt-collapsible" id="cj_sec_fb" data-vt-collapse="cj_fb">
+<div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Client feedback report" onclick="vtCollapseToggle('cj_sec_fb')">▾</button><span class="vt-collapse-title">Client feedback report</span></div>
+<div class="vt-collapse-body">
 <p style="font-size:13px;color:var(--soft);margin:0 0 10px">Client feedback report — edit here. Preview updates as you type.</p>
-<p style="font-size:12.5px;color:var(--soft);margin:0 0 10px">Tick sections to include. Tag photos above with a Letter section so they land in the right place. Auto-saves on this device.</p>
-<div class="cj-fb-letter-hdr cj-fb-letter-hdr-top">
-<h4>Letter header</h4>
-<div class="fld"><div class="fh"><label>Recipient email</label></div><div class="ctrl"><input type="text" id="cj_fb_email" placeholder="e.g. rh.operations.processing@royhill.com.au"></div></div>
-<div class="fld"><div class="fh"><label>Contact name</label></div><div class="ctrl"><input type="text" id="cj_fb_contact_name" placeholder="e.g. Site contact"></div></div>
-<p class="sub" style="margin:0 0 8px;font-size:12.5px">Company and phone on the letter come from Customer details. Contact name starts from Customer details too, but can be changed here just for this letter.</p>
+<p style="font-size:12.5px;color:var(--soft);margin:0 0 10px">Green light = live on Preview / PDF. Tag photos below with a Letter section so they land in the right place. Auto-saves on this device.</p>
+<div class="cj-fb-letter-hdr cj-fb-letter-hdr-top vt-collapsible" id="cj_sec_letter_hdr" data-vt-collapse="cj_letter_hdr">
+<div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Letter header" onclick="vtCollapseToggle('cj_sec_letter_hdr')">▾</button><span class="vt-collapse-title">Letter header</span></div>
+<div class="vt-collapse-body cj-fb-letter-hdr-fields">
+<p class="sub" style="margin:0 0 8px;font-size:12.5px">Recipient email and Contact name live under Customer → For the letter. Company and phone also come from the Customer.</p>
 <div class="mgrid"><div class="mgf"><span class="mlab">From</span><div class="ctrl"><input type="text" id="cj_fb_from"></div></div><div class="mgf"><span class="mlab">Date</span><div class="ctrl"><input type="date" id="cj_fb_date"></div></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">CC name</span><div class="ctrl"><input type="text" id="cj_fb_cc_name"></div></div><div class="mgf"><span class="mlab">CC email</span><div class="ctrl"><input type="text" id="cj_fb_cc_email"></div></div></div>
 <p class="sub" style="margin:10px 0 2px;font-size:12.5px">Order these print top-to-bottom in each column — use the arrows to rearrange.</p>
 <div class="mgrid" id="cj_fb_header_order"></div>
 <div class="fld"><div class="fh"><label>Subject</label></div><div class="ctrl"><input type="text" id="cj_fb_subject" placeholder="e.g. Liquid ring vacuum pump chemical flush feedback report"></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">Busch ref</span><div class="ctrl"><input type="text" id="cj_fb_busch_ref" placeholder="e.g. 26NBQ146"></div></div><div class="mgf"><span class="mlab">Your ref</span><div class="ctrl"><input type="text" id="cj_fb_your_ref" placeholder="e.g. DESANDS MODULE VACUUM PUMP FLT 151"></div></div></div>
-</div>
+</div></div></div>
 <h4 style="margin:14px 0 4px;font-size:14px;font-weight:800;color:var(--teal)">Sections in this report</h4>
-<p class="cj-fb-secs-hint">Sections in this report (ticked = Preview + PDF).</p>
+<p class="cj-fb-secs-hint">Green light = live on Preview + PDF. Arrow folds the section on this phone.</p>
 <div id="cj_fb_sections">
-<div class="cj-fb-sec" data-tick="exec"><label class="chk"><input type="checkbox" id="cj_fb_tick_exec" onchange="custFbTickChanged(this)"> Exec summary</label><div class="cj-fb-sec-body" id="cj_fb_body_exec"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_greeting" rows="4" placeholder="Executive summary / greeting"></textarea></div></div></div></div>
-<div class="cj-fb-sec" data-tick="method"><label class="chk"><input type="checkbox" id="cj_fb_tick_method" onchange="custFbTickChanged(this)"> Method</label><div class="cj-fb-sec-body" id="cj_fb_body_method"><div class="fld" style="padding-top:0"><div class="fh"><label>Service type(s)</label></div><div class="ctrl" id="cj_fb_method_types" style="display:flex;flex-direction:column;gap:2px"><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="flush" onchange="custFbMethodChanged()"> Chemical flush</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="perf" onchange="custFbMethodChanged()"> Performance / efficiency testing</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="internal" onchange="custFbMethodChanged()"> Internal inspection (fiberscope)</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="bearing" onchange="custFbMethodChanged()"> Bearing replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="gland" onchange="custFbMethodChanged()"> Gland packing replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="valve" onchange="custFbMethodChanged()"> Valve &amp; intercepting plate replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="belt" onchange="custFbMethodChanged()"> Drive pulley / V-belt replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="rotable" onchange="custFbMethodChanged()"> Rotable spare pump preservation</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="diag" onchange="custFbMethodChanged()"> Site inspection / diagnostics</label></div><p class="sub" style="margin:4px 0 0;font-size:12.5px">Tick all that apply — fills Heading &amp; Details below from the Busch capability statement. Edit freely after; re-ticking rebuilds Heading &amp; Details from scratch.</p><button type="button" class="clrbtn" style="margin-top:6px" onclick="custFbMethodClearAll()">Clear all / write my own</button></div><div class="fld"><div class="fh"><label>Heading</label></div><div class="ctrl"><input type="text" id="cj_fb_intro_head"></div></div><div class="fld"><div class="fh"><label>Details</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="5"></textarea></div></div><div id="cj_phhost_method" class="cj-phhost" data-phkey="method"></div></div></div>
-<div class="cj-fb-sec" data-tick="scope"><label class="chk"><input type="checkbox" id="cj_fb_tick_scope" onchange="custFbTickChanged(this)"> Scope</label><div class="cj-fb-sec-body" id="cj_fb_body_scope"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_scope" rows="3" placeholder="What was requested / scope"></textarea></div></div><div id="cj_phhost_scope" class="cj-phhost" data-phkey="scope"></div></div></div>
-<div class="cj-fb-sec" data-tick="equipment"><label class="chk"><input type="checkbox" id="cj_fb_tick_equipment" onchange="custFbTickChanged(this)"> Equipment</label><div class="cj-fb-sec-body" id="cj_fb_body_equipment"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_equipment" rows="3" placeholder="Pump tag, system, location"></textarea></div></div><div id="cj_phhost_equipment" class="cj-phhost" data-phkey="equipment"></div></div></div>
-<div class="cj-fb-sec" data-tick="findings"><label class="chk"><input type="checkbox" id="cj_fb_tick_findings" onchange="custFbTickChanged(this)"> Findings</label><div class="cj-fb-sec-body" id="cj_fb_body_findings"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_findings" rows="3" placeholder="As-found condition"></textarea></div></div><div id="cj_phhost_findings" class="cj-phhost" data-phkey="findings"></div></div></div>
-<div class="cj-fb-sec" data-tick="pumpInspection"><label class="chk"><input type="checkbox" id="cj_fb_tick_pumpInspection" onchange="custFbTickChanged(this)"> Pump inspection details</label><div class="cj-fb-sec-body" id="cj_fb_body_pumpInspection"><p class="sub" style="margin:0;font-size:12.5px" id="cj_fb_pump_status">Part of this report — checks and photos go in the letter when this section is ticked. Not a separate report.</p>
+<div class="cj-fb-sec vt-collapsible" data-tick="exec" id="cj_sec_fb_exec" data-vt-collapse="fb_exec" data-vt-live="exec"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Exec summary" onclick="vtCollapseToggle('cj_sec_fb_exec')">▾</button><span class="vt-collapse-title">Exec summary</span><button type="button" class="vt-live-btn" id="cj_fb_live_exec" aria-label="Live on Preview" onclick="vtFbLiveToggle('exec',event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_exec" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_exec"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_greeting" rows="4" placeholder="Executive summary / greeting"></textarea></div></div></div></div>
+<div class="cj-fb-sec vt-collapsible" data-tick="method" id="cj_sec_fb_method" data-vt-collapse="fb_method" data-vt-live="method"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Method" onclick="vtCollapseToggle('cj_sec_fb_method')">▾</button><span class="vt-collapse-title">Method</span><button type="button" class="vt-live-btn" id="cj_fb_live_method" aria-label="Live on Preview" onclick="vtFbLiveToggle('method',event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_method" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_method"><div class="fld" style="padding-top:0"><div class="fh"><label>Service type(s)</label></div><div class="ctrl" id="cj_fb_method_types" style="display:flex;flex-direction:column;gap:2px"><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="flush" onchange="custFbMethodChanged()"> Chemical flush</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="perf" onchange="custFbMethodChanged()"> Performance / efficiency testing</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="internal" onchange="custFbMethodChanged()"> Internal inspection (fiberscope)</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="bearing" onchange="custFbMethodChanged()"> Bearing replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="gland" onchange="custFbMethodChanged()"> Gland packing replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="valve" onchange="custFbMethodChanged()"> Valve &amp; intercepting plate replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="belt" onchange="custFbMethodChanged()"> Drive pulley / V-belt replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="rotable" onchange="custFbMethodChanged()"> Rotable spare pump preservation</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="diag" onchange="custFbMethodChanged()"> Site inspection / diagnostics</label></div><p class="sub" style="margin:4px 0 0;font-size:12.5px">Tick all that apply — fills Heading &amp; Details below from the Busch capability statement. Edit freely after; re-ticking rebuilds Heading &amp; Details from scratch.</p><button type="button" class="clrbtn" style="margin-top:6px" onclick="custFbMethodClearAll()">Clear all / write my own</button></div><div class="fld"><div class="fh"><label>Heading</label></div><div class="ctrl"><input type="text" id="cj_fb_intro_head"></div></div><div class="fld"><div class="fh"><label>Details</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="5"></textarea></div></div><div id="cj_phhost_method" class="cj-phhost" data-phkey="method"></div></div></div>
+<div class="cj-fb-sec vt-collapsible" data-tick="scope" id="cj_sec_fb_scope" data-vt-collapse="fb_scope" data-vt-live="scope"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Scope" onclick="vtCollapseToggle('cj_sec_fb_scope')">▾</button><span class="vt-collapse-title">Scope</span><button type="button" class="vt-live-btn" id="cj_fb_live_scope" aria-label="Live on Preview" onclick="vtFbLiveToggle('scope',event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_scope" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_scope"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_scope" rows="3" placeholder="What was requested / scope"></textarea></div></div><div id="cj_phhost_scope" class="cj-phhost" data-phkey="scope"></div></div></div>
+<div class="cj-fb-sec vt-collapsible" data-tick="equipment" id="cj_sec_fb_equipment" data-vt-collapse="fb_equipment" data-vt-live="equipment"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Equipment" onclick="vtCollapseToggle('cj_sec_fb_equipment')">▾</button><span class="vt-collapse-title">Equipment</span><button type="button" class="vt-live-btn" id="cj_fb_live_equipment" aria-label="Live on Preview" onclick="vtFbLiveToggle('equipment',event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_equipment" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_equipment"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_equipment" rows="3" placeholder="Pump tag, system, location"></textarea></div></div><div id="cj_phhost_equipment" class="cj-phhost" data-phkey="equipment"></div></div></div>
+<div class="cj-fb-sec vt-collapsible" data-tick="findings" id="cj_sec_fb_findings" data-vt-collapse="fb_findings" data-vt-live="findings"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Findings" onclick="vtCollapseToggle('cj_sec_fb_findings')">▾</button><span class="vt-collapse-title">Findings</span><button type="button" class="vt-live-btn" id="cj_fb_live_findings" aria-label="Live on Preview" onclick="vtFbLiveToggle('findings',event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_findings" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_findings"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_findings" rows="3" placeholder="As-found condition"></textarea></div></div><div id="cj_phhost_findings" class="cj-phhost" data-phkey="findings"></div></div></div>
+<div class="cj-fb-sec vt-collapsible" data-tick="pumpInspection" id="cj_sec_fb_pumpInspection" data-vt-collapse="fb_pumpInspection" data-vt-live="pumpInspection"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Pump inspection details" onclick="vtCollapseToggle('cj_sec_fb_pumpInspection')">▾</button><span class="vt-collapse-title">Pump inspection details</span><button type="button" class="vt-live-btn" id="cj_fb_live_pumpInspection" aria-label="Live on Preview" onclick="vtFbLiveToggle('pumpInspection',event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_pumpInspection" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_pumpInspection"><p class="sub" style="margin:0;font-size:12.5px" id="cj_fb_pump_status">Part of this report — checks and photos go in the letter when this section is ticked. Not a separate report.</p>
 <button type="button" class="exbtn" style="margin-top:8px" onclick="custStartOrOpenLri()">Edit pumps in this report</button></div></div>
-<div class="cj-fb-sec" data-tick="results"><label class="chk"><input type="checkbox" id="cj_fb_tick_results" onchange="custFbTickChanged(this)"> Results</label><div class="cj-fb-sec-body" id="cj_fb_body_results"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_results" rows="3" placeholder="As-left / outcome"></textarea></div></div><div id="cj_phhost_results" class="cj-phhost" data-phkey="results"></div></div></div>
-<div class="cj-fb-sec" data-tick="photos"><label class="chk"><input type="checkbox" id="cj_fb_tick_photos" onchange="custFbTickChanged(this)"> Photos</label><div class="cj-fb-sec-body" id="cj_fb_body_photos"><p class="sub" style="margin:0;font-size:12.5px">Tag each photo below with which section it belongs to (Scope, Method, Findings, Work performed, Recommendations, etc.) and it prints right under that section's text — pre/during/post-flush stay as their own photo-only sections if you use them.</p></div></div>
-<div class="cj-fb-sec" data-tick="work"><label class="chk"><input type="checkbox" id="cj_fb_tick_work" onchange="custFbTickChanged(this)"> Work performed</label><div class="cj-fb-sec-body" id="cj_fb_body_work"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_additional" rows="3" placeholder="One item per line, e.g. Gland packing changes (DE and NDE)"></textarea></div></div><div id="cj_phhost_additional" class="cj-phhost" data-phkey="additional"></div></div></div>
-<div class="cj-fb-sec" data-tick="recommendations"><label class="chk"><input type="checkbox" id="cj_fb_tick_recommendations" onchange="custFbTickChanged(this)"> Recommendations</label><div class="cj-fb-sec-body" id="cj_fb_body_recommendations"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_recommendations" rows="4" placeholder="One recommendation per line (numbered in Preview / PDF)"></textarea></div></div><div id="cj_phhost_recommendations" class="cj-phhost" data-phkey="recommendations"></div></div></div>
-<div class="cj-fb-sec" data-tick="safety"><label class="chk"><input type="checkbox" id="cj_fb_tick_safety" onchange="custFbTickChanged(this)"> Safety<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_safety" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_safety" rows="2" placeholder="Safety notes"></textarea></div></div><div id="cj_phhost_safety" class="cj-phhost" data-phkey="safety"></div></div></div>
-<div class="cj-fb-sec" data-tick="parts"><label class="chk"><input type="checkbox" id="cj_fb_tick_parts" onchange="custFbTickChanged(this)"> Parts/materials<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_parts" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_parts" rows="2" placeholder="Parts or materials used"></textarea></div></div><div id="cj_phhost_parts" class="cj-phhost" data-phkey="parts"></div></div></div>
-<div class="cj-fb-sec" data-tick="outstanding"><label class="chk"><input type="checkbox" id="cj_fb_tick_outstanding" onchange="custFbTickChanged(this)"> Outstanding<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_outstanding" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_outstanding" rows="2" placeholder="Open items"></textarea></div></div><div id="cj_phhost_outstanding" class="cj-phhost" data-phkey="outstanding"></div></div></div>
-<div class="cj-fb-sec" data-tick="nextVisit"><label class="chk"><input type="checkbox" id="cj_fb_tick_nextVisit" onchange="custFbTickChanged(this)"> Next visit<span style="font-weight:500;color:var(--soft)">(optional)</span></label><div class="cj-fb-sec-body" id="cj_fb_body_nextVisit" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_next_visit" rows="2" placeholder="Suggested next visit / follow-up"></textarea></div></div><div id="cj_phhost_nextVisit" class="cj-phhost" data-phkey="nextVisit"></div></div></div>
-<div class="cj-fb-sec" data-tick="closing"><label class="chk"><input type="checkbox" id="cj_fb_tick_closing" onchange="custFbTickChanged(this)"> Closing</label><div class="cj-fb-sec-body" id="cj_fb_body_closing"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_closing" rows="3"></textarea></div></div></div></div>
-<div class="cj-fb-sec cj-fb-sec-signoff"><label class="chk" style="font-weight:800"><span style="pointer-events:none">Sign-off <span style="font-weight:500;color:var(--soft)">(always last, after Closing)</span></span></label><div class="cj-fb-sec-body">
+<div class="cj-fb-sec vt-collapsible" data-tick="results" id="cj_sec_fb_results" data-vt-collapse="fb_results" data-vt-live="results"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Results" onclick="vtCollapseToggle('cj_sec_fb_results')">▾</button><span class="vt-collapse-title">Results</span><button type="button" class="vt-live-btn" id="cj_fb_live_results" aria-label="Live on Preview" onclick="vtFbLiveToggle('results',event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_results" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_results"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_results" rows="3" placeholder="As-left / outcome"></textarea></div></div><div id="cj_phhost_results" class="cj-phhost" data-phkey="results"></div></div></div>
+<div class="cj-fb-sec vt-collapsible" data-tick="photos" id="cj_sec_fb_photos" data-vt-collapse="fb_photos" data-vt-live="photos"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Photos" onclick="vtCollapseToggle('cj_sec_fb_photos')">▾</button><span class="vt-collapse-title">Photos</span><button type="button" class="vt-live-btn" id="cj_fb_live_photos" aria-label="Live on Preview" onclick="vtFbLiveToggle('photos',event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_photos" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_photos"><p class="sub" style="margin:0;font-size:12.5px">Tag each photo below with which section it belongs to (Scope, Method, Findings, Work performed, Recommendations, etc.) and it prints right under that section's text — pre/during/post-flush stay as their own photo-only sections if you use them.</p></div></div>
+<div class="cj-fb-sec vt-collapsible" data-tick="work" id="cj_sec_fb_work" data-vt-collapse="fb_work" data-vt-live="work"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Work performed" onclick="vtCollapseToggle('cj_sec_fb_work')">▾</button><span class="vt-collapse-title">Work performed</span><button type="button" class="vt-live-btn" id="cj_fb_live_work" aria-label="Live on Preview" onclick="vtFbLiveToggle('work',event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_work" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_work"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_additional" rows="3" placeholder="One item per line, e.g. Gland packing changes (DE and NDE)"></textarea></div></div><div id="cj_phhost_additional" class="cj-phhost" data-phkey="additional"></div></div></div>
+<div class="cj-fb-sec vt-collapsible" data-tick="recommendations" id="cj_sec_fb_recommendations" data-vt-collapse="fb_recommendations" data-vt-live="recommendations"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Recommendations" onclick="vtCollapseToggle('cj_sec_fb_recommendations')">▾</button><span class="vt-collapse-title">Recommendations</span><button type="button" class="vt-live-btn" id="cj_fb_live_recommendations" aria-label="Live on Preview" onclick="vtFbLiveToggle('recommendations',event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_recommendations" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_recommendations"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_recommendations" rows="4" placeholder="One recommendation per line (numbered in Preview / PDF)"></textarea></div></div><div id="cj_phhost_recommendations" class="cj-phhost" data-phkey="recommendations"></div></div></div>
+<div class="cj-fb-sec vt-collapsible" data-tick="safety" id="cj_sec_fb_safety" data-vt-collapse="fb_safety" data-vt-live="safety"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Safety" onclick="vtCollapseToggle('cj_sec_fb_safety')">▾</button><span class="vt-collapse-title">Safety</span><button type="button" class="vt-live-btn" id="cj_fb_live_safety" aria-label="Live on Preview" onclick="vtFbLiveToggle('safety',event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_safety" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_safety" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_safety" rows="2" placeholder="Safety notes"></textarea></div></div><div id="cj_phhost_safety" class="cj-phhost" data-phkey="safety"></div></div></div>
+<div class="cj-fb-sec vt-collapsible" data-tick="parts" id="cj_sec_fb_parts" data-vt-collapse="fb_parts" data-vt-live="parts"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Parts/materials" onclick="vtCollapseToggle('cj_sec_fb_parts')">▾</button><span class="vt-collapse-title">Parts/materials</span><button type="button" class="vt-live-btn" id="cj_fb_live_parts" aria-label="Live on Preview" onclick="vtFbLiveToggle('parts',event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_parts" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_parts" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_parts" rows="2" placeholder="Parts or materials used"></textarea></div></div><div id="cj_phhost_parts" class="cj-phhost" data-phkey="parts"></div></div></div>
+<div class="cj-fb-sec vt-collapsible" data-tick="outstanding" id="cj_sec_fb_outstanding" data-vt-collapse="fb_outstanding" data-vt-live="outstanding"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Outstanding" onclick="vtCollapseToggle('cj_sec_fb_outstanding')">▾</button><span class="vt-collapse-title">Outstanding</span><button type="button" class="vt-live-btn" id="cj_fb_live_outstanding" aria-label="Live on Preview" onclick="vtFbLiveToggle('outstanding',event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_outstanding" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_outstanding" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_outstanding" rows="2" placeholder="Open items"></textarea></div></div><div id="cj_phhost_outstanding" class="cj-phhost" data-phkey="outstanding"></div></div></div>
+<div class="cj-fb-sec vt-collapsible" data-tick="nextVisit" id="cj_sec_fb_nextVisit" data-vt-collapse="fb_nextVisit" data-vt-live="nextVisit"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Next visit" onclick="vtCollapseToggle('cj_sec_fb_nextVisit')">▾</button><span class="vt-collapse-title">Next visit</span><button type="button" class="vt-live-btn" id="cj_fb_live_nextVisit" aria-label="Live on Preview" onclick="vtFbLiveToggle('nextVisit',event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_nextVisit" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_nextVisit" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_next_visit" rows="2" placeholder="Suggested next visit / follow-up"></textarea></div></div><div id="cj_phhost_nextVisit" class="cj-phhost" data-phkey="nextVisit"></div></div></div>
+<div class="cj-fb-sec vt-collapsible" data-tick="closing" id="cj_sec_fb_closing" data-vt-collapse="fb_closing" data-vt-live="closing"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Closing" onclick="vtCollapseToggle('cj_sec_fb_closing')">▾</button><span class="vt-collapse-title">Closing</span><button type="button" class="vt-live-btn" id="cj_fb_live_closing" aria-label="Live on Preview" onclick="vtFbLiveToggle('closing',event)"><span class="vt-live-lab">live on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_closing" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_closing"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_closing" rows="3"></textarea></div></div></div></div>
+<div class="cj-fb-sec cj-fb-sec-signoff vt-collapsible" id="cj_sec_fb_signoff" data-vt-collapse="fb_signoff"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Sign-off" onclick="vtCollapseToggle('cj_sec_fb_signoff')">▾</button><span class="vt-collapse-title">Sign-off <span style="font-weight:500;color:var(--soft);text-transform:none;letter-spacing:0">(always last)</span></span></div><div class="cj-fb-sec-body vt-collapse-body">
 <div class="fld"><label class="chk"><input type="checkbox" id="cj_fb_sign_chris" checked onchange="custSaveJob('auto')"> Include Chris de Wet sign-off</label></div>
 <div class="fld" style="margin-top:4px"><label class="chk"><input type="checkbox" id="cj_fb_sign_andre" checked onchange="custSaveJob('auto')"> Include André de Wet sign-off</label></div>
 <div class="fld" style="margin-top:4px"><div class="fh"><label>If both are included, who goes first</label></div><div class="ctrl"><select id="cj_fb_sign_order" onchange="custSaveJob('auto')"><option value="andre">André, then Chris</option><option value="chris">Chris, then André</option></select></div></div>
 </div></div>
 </div>
-</div>
-<div class="card"><h3>Calculations for this job</h3>
+</div></div>
+<div class="card vt-collapsible" id="cj_sec_calcs" data-vt-collapse="cj_calcs"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Calculations" onclick="vtCollapseToggle('cj_sec_calcs')">▾</button><span class="vt-collapse-title">Calculations for this job</span></div><div class="vt-collapse-body">
 <p style="font-size:13px;color:var(--soft);margin:0 0 10px"><b>Site procedure (not on letter).</b> Attach Tools or On-Site Checks used on this visit. Open jumps to that calculator; Back returns here.</p>
 <div id="cj_calcs"></div>
 <button class="exbtn" type="button" onclick="custOpenCalcPicker()">Add a calculation</button>
-</div>
+</div></div>
 <div id="cj_calc_picker" class="cj-picker" style="display:none" aria-hidden="true">
 <div class="cj-picker-panel">
 <div class="cj-picker-head"><b>Add a calculation</b><button type="button" class="clrbtn" onclick="custCloseCalcPicker()" style="margin:0">Close</button></div>
@@ -1396,17 +1449,17 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 <div id="cj_calc_picker_list"></div>
 </div>
 </div>
-<div class="card"><h3>Photos</h3>
+<div class="card vt-collapsible" id="cj_sec_photos" data-vt-collapse="cj_photos"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Photos" onclick="vtCollapseToggle('cj_sec_photos')">▾</button><span class="vt-collapse-title">Photos</span></div><div class="vt-collapse-body">
 <div class="fld"><div class="fh"><label>Add photos</label></div><div class="ctrl"><input type="file" id="cj_photo_input" accept="image/*" multiple></div></div>
 <div class="note warn" id="cj_warn" style="display:none">This phone is low on storage for photos. Export a PDF or backup now, then remove a photo or two and try again.</div>
 <p class="sub" style="margin:8px 2px 4px;font-size:12.5px">Tag photos with a Letter section so they show in the client feedback letter.</p>
 <div id="cj_photos"></div>
 <div id="cj_phhost_jobPhotos" class="cj-phhost" data-phkey="jobPhotos"></div>
-</div>
-<div class="card cj-pdfs"><h3>Client feedback letter</h3>
+</div></div>
+<div class="card cj-pdfs vt-collapsible" id="cj_sec_pdfs" data-vt-collapse="cj_pdfs"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse letter actions" onclick="vtCollapseToggle('cj_sec_pdfs')">▾</button><span class="vt-collapse-title">Client feedback letter</span></div><div class="vt-collapse-body">
 <button class="exbtn" style="display:block;width:100%;margin-left:0" onclick="custPreviewFeedbackLetter()">Preview</button>
 <p class="sub" style="margin:4px 0 12px;font-size:12.5px">Preview (on screen) — does not download. Make PDF when ready.</p>
-</div>
+</div></div>
 <button class="exbtn" style="display:block;width:100%;margin:12px 0 8px" onclick="custSaveJob()">Save on this device</button>
 <p class="sub" style="margin:0 0 12px;font-size:12.5px">Stays on this phone/laptop. <b>Export backup</b> on the Customers list copies to a file.</p>
 <button class="clrbtn" style="display:block;width:100%;margin-left:0;margin-bottom:16px" onclick="custDeleteJob()">Delete job</button>
@@ -5518,7 +5571,7 @@ function custRenderList(){
  var houseSvg='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M4 19.5V8.2l8-4.2 8 4.2v11.3"/><path d="M9.5 19.5v-6h5v6"/><path d="M4 11.2h16"/></svg>';
  for(i=0;i<CUST_DB.customers.length;i++){
   c=CUST_DB.customers[i];
-  hay=(c.name+" "+(c.sites||[]).join(" ")+" "+(c.notes||"")+" "+(c.contactName||"")+" "+(c.contactPhone||"")+" "+(c.contactEmail||"")+" "+(c.contacts||"")).toLowerCase();
+  hay=(c.name+" "+(c.sites||[]).join(" ")+" "+(c.notes||"")+" "+(c.contactName||"")+" "+(c.contactPhone||"")+" "+(c.contactEmail||"")+" "+(c.letterEmail||"")+" "+(c.contacts||"")).toLowerCase();
   if(q&&hay.indexOf(q)<0)continue;
   site=(c.sites&&c.sites[0])||"";
   nJobs=(c.jobs&&c.jobs.length)||0;
@@ -5552,6 +5605,10 @@ function custRenderView(){
  var cn=document.getElementById("cv_contact_name");if(cn)cn.value=c.contactName||"";
  var cp=document.getElementById("cv_contact_phone");if(cp)cp.value=c.contactPhone||"";
  var ce=document.getElementById("cv_contact_email");if(ce)ce.value=c.contactEmail||"";
+ var le=document.getElementById("cv_letter_email");if(le)le.value=c.letterEmail||"";
+ custMigrateLetterFields(c);
+ if(le&&!(le.value||"").trim()&&(c.letterEmail||"").trim())le.value=c.letterEmail;
+ vtLiveBtnSync(document.getElementById("cv_letter_live"),c.letterLive!==false);
  var no=document.getElementById("cv_notes");if(no)no.value=c.notes||"";
  var eq=document.getElementById("cv_equip");
  if(eq)eq.value=((c.equipment||[]).map(function(e){return e.tag+(e.notes?" — "+e.notes:"");}).join("\n"));
@@ -5564,6 +5621,9 @@ function custMigrateContacts(c){
  if(c.contactName==null)c.contactName="";
  if(c.contactPhone==null)c.contactPhone="";
  if(c.contactEmail==null)c.contactEmail="";
+ if(c.letterEmail==null)c.letterEmail="";
+ if(c.letterLive===undefined)c.letterLive=true;
+ custMigrateLetterFields(c);
  if(!(c.contactName||"").trim() && (c.contacts||"").trim()){
   c.contactName=String(c.contacts).trim();
  }
@@ -5626,18 +5686,120 @@ function custRenderLogo(){
   delete c.logoLooksLight;
  }
 }
-function custSaveView(){
+
+/* Theme + collapse + live Preview light */
+function vtThemeGet(){try{return localStorage.getItem("vt-theme")==="light"?"light":"dark";}catch(e){return"dark";}}
+function vtThemeApply(theme){
+ theme=theme==="light"?"light":"dark";
+ document.documentElement.setAttribute("data-theme",theme);
+ var meta=document.querySelector('meta[name="theme-color"]');
+ if(meta)meta.setAttribute("content",theme==="light"?"#1A3340":"#0B1520");
+ var btn=document.getElementById("vt_theme_btn");
+ if(btn)btn.textContent=theme==="light"?"Dark":"Light";
+ try{localStorage.setItem("vt-theme",theme);}catch(e){}
+}
+function vtToggleTheme(){vtThemeApply(vtThemeGet()==="light"?"dark":"light");}
+function vtCollapseToggle(id){
+ var el=document.getElementById(id);if(!el)return;
+ el.classList.toggle("is-collapsed");
+ try{
+  var key=el.getAttribute("data-vt-collapse")||id;
+  var map=JSON.parse(localStorage.getItem("vt-collapse")||"{}");
+  map[key]=el.classList.contains("is-collapsed");
+  localStorage.setItem("vt-collapse",JSON.stringify(map));
+ }catch(e){}
+}
+function vtCollapseSet(id,collapsed){
+ var el=document.getElementById(id);if(!el)return;
+ if(collapsed)el.classList.add("is-collapsed");else el.classList.remove("is-collapsed");
+ try{
+  var key=el.getAttribute("data-vt-collapse")||id;
+  var map=JSON.parse(localStorage.getItem("vt-collapse")||"{}");
+  map[key]=!!collapsed;
+  localStorage.setItem("vt-collapse",JSON.stringify(map));
+ }catch(e){}
+}
+function vtCollapseRestore(){
+ try{
+  var map=JSON.parse(localStorage.getItem("vt-collapse")||"{}");
+  document.querySelectorAll(".vt-collapsible[data-vt-collapse]").forEach(function(el){
+   var key=el.getAttribute("data-vt-collapse");
+   if(map[key])el.classList.add("is-collapsed");
+  });
+ }catch(e){}
+}
+function vtLiveBtnSync(btn,on){
+ if(!btn)return;
+ if(on){btn.classList.add("is-on");btn.setAttribute("aria-pressed","true");
+  var lab=btn.querySelector(".vt-live-lab");if(lab)lab.textContent="live on Preview";}
+ else{btn.classList.remove("is-on");btn.setAttribute("aria-pressed","false");
+  var lab2=btn.querySelector(".vt-live-lab");if(lab2)lab2.textContent="off (not on letter)";}
+}
+function vtLetterLiveToggle(ev){
+ if(ev){ev.preventDefault();ev.stopPropagation();}
+ var c=custFind(CUST_CUR);if(!c)return;
+ var btn=document.getElementById("cv_letter_live");
+ var nowOn=!(btn&&btn.classList.contains("is-on"));
+ c.letterLive=nowOn;
+ vtLiveBtnSync(btn,nowOn);
+ custPersist();
+ if(typeof cjRefreshLivePreview==="function")cjRefreshLivePreview();
+}
+function vtFbLiveToggle(key,ev){
+ if(ev){ev.preventDefault();ev.stopPropagation();}
+ var pair=custFindJob();if(!pair||!key)return;
+ pair.j.fbTicks=custFbNormalizeTicks(pair.j.fbTicks);
+ var next=!pair.j.fbTicks[key];
+ pair.j.fbTicks[key]=next;
+ var cb=document.getElementById("cj_fb_tick_"+key);
+ if(cb){cb.checked=next;}
+ var body=document.getElementById("cj_fb_body_"+key);
+ // Keep body available for editing when expanded; green only gates Preview/PDF.
+ vtLiveBtnSync(document.getElementById("cj_fb_live_"+key),next);
+ custSaveJob("auto");
+}
+function vtSyncFbLiveButtons(ticks){
+ ticks=custFbNormalizeTicks(ticks);
+ for(var i=0;i<CUST_FB_TICK_KEYS.length;i++){
+  var key=CUST_FB_TICK_KEYS[i];
+  vtLiveBtnSync(document.getElementById("cj_fb_live_"+key),!!ticks[key]);
+ }
+}
+function custMigrateLetterFields(c){
+ if(!c)return;
+ if(c.letterEmail==null)c.letterEmail="";
+ if(c.letterLive===undefined)c.letterLive=true;
+ // Pull Recipient email / Contact name from jobs that still hold the old Job-header fields.
+ var jobs=c.jobs||[],i,j;
+ if(!(c.letterEmail||"").trim()){
+  for(i=0;i<jobs.length;i++){
+   j=jobs[i];
+   if(j&&(j.fbEmail||"").trim()){c.letterEmail=String(j.fbEmail).trim();break;}
+  }
+ }
+ if(!(c.contactName||"").trim()){
+  for(i=0;i<jobs.length;i++){
+   j=jobs[i];
+   if(j&&(j.fbContactName||"").trim()){c.contactName=String(j.fbContactName).trim();break;}
+  }
+ }
+}
+
+function custSaveView(which){
  var c=custFind(CUST_CUR);if(!c)return;
  custMigrateContacts(c);
+ custMigrateLetterFields(c);
  c.name=(document.getElementById("cv_name").value||"").trim()||c.name;
  var site=(document.getElementById("cv_site").value||"").trim();
  c.sites=site?[site]:(c.sites||[]);
  var eName=document.getElementById("cv_contact_name");
  var ePhone=document.getElementById("cv_contact_phone");
  var eEmail=document.getElementById("cv_contact_email");
+ var eLetter=document.getElementById("cv_letter_email");
  if(eName)c.contactName=eName.value||"";
  if(ePhone)c.contactPhone=ePhone.value||"";
  if(eEmail)c.contactEmail=eEmail.value||"";
+ if(eLetter)c.letterEmail=eLetter.value||"";
  c.notes=document.getElementById("cv_notes").value||"";
  var lines=(document.getElementById("cv_equip").value||"").split(/\n+/);
  var eq=[],i,line,parts;
@@ -5648,7 +5810,12 @@ function custSaveView(){
  }
  c.equipment=eq;
  if(!custPersist())return;
+ // Auto-collapse ONLY after that section's Save — never while typing.
+ if(which==="details")vtCollapseSet("cv_sec_details",true);
+ else if(which==="letter")vtCollapseSet("cv_sec_letter",true);
+ else if(which==="site")vtCollapseSet("cv_sec_site",true);
  custRenderView();
+ if(typeof cjRefreshLivePreview==="function")cjRefreshLivePreview();
 }
 function custClearLogo(){
  var c=custFind(CUST_CUR);if(!c)return;
@@ -5729,6 +5896,7 @@ function custRenderJob(){
  var pair=custFindJob();
  if(!pair){show("cust_view");return;}
  var c=pair.c,j=pair.j;
+ custMigrateLetterFields(c);
  var t=document.getElementById("cj_title");if(t)t.textContent=j.name||((custJobDateLabel(j)||"Job")+" · "+(j.type||"visit"));
  var sub=document.getElementById("cj_sub");if(sub)sub.textContent=c.name+(j.site?" — "+j.site:"");
  var hdr=document.getElementById("hdr_t");if(hdr)hdr.textContent="Job / visit";
@@ -5876,8 +6044,21 @@ function custFbApplyTicksToUi(ticks){
   var cb=document.getElementById("cj_fb_tick_"+key);
   var body=document.getElementById("cj_fb_body_"+key);
   if(cb)cb.checked=!!ticks[key];
-  if(body){if(ticks[key])body.removeAttribute("hidden");else body.setAttribute("hidden","");}
+  // Body visibility is controlled by the collapse arrow, not the green light.
+  if(body)body.removeAttribute("hidden");
  }
+ vtSyncFbLiveButtons(ticks);
+ // Optional sections default-collapsed when off (first paint only if no saved map).
+ try{
+  var map=JSON.parse(localStorage.getItem("vt-collapse")||"{}");
+  var defaultsOff={safety:1,parts:1,outstanding:1,nextVisit:1};
+  for(var k in defaultsOff){
+   if(!ticks[k] && map["fb_"+k]===undefined){
+    var el=document.getElementById("cj_sec_fb_"+k);
+    if(el)el.classList.add("is-collapsed");
+   }
+  }
+ }catch(e){}
 }
 function custFbTickChanged(el){
  var pair=custFindJob();if(!pair||!el)return;
@@ -5886,7 +6067,8 @@ function custFbTickChanged(el){
  pair.j.fbTicks=custFbNormalizeTicks(pair.j.fbTicks);
  pair.j.fbTicks[key]=!!el.checked;
  var body=document.getElementById("cj_fb_body_"+key);
- if(body){if(el.checked)body.removeAttribute("hidden");else body.setAttribute("hidden","");}
+ if(body)body.removeAttribute("hidden");
+ vtLiveBtnSync(document.getElementById("cj_fb_live_"+key),!!el.checked);
  custSaveJob("auto");
 }
 function custFbGrabTicksFromUi(){
@@ -6645,7 +6827,7 @@ function custAddCustomer(){
  var name=prompt("Customer name?");
  if(!name)return;
  name=name.trim();if(!name)return;
- var c={id:custUid("cust"),name:name,sites:[],contacts:"",contactName:"",contactPhone:"",contactEmail:"",notes:"",logoDataUrl:"",equipment:[],jobs:[]};
+ var c={id:custUid("cust"),name:name,sites:[],contacts:"",contactName:"",contactPhone:"",contactEmail:"",letterEmail:"",letterLive:true,notes:"",logoDataUrl:"",equipment:[],jobs:[]};
  CUST_DB.customers.push(c);
  custPersist();
  custOpen(c.id);
@@ -6720,6 +6902,8 @@ function custPlaceCustomerLogo(doc,dataUrl,x,y,maxW,maxH,opts){
 }
 function custDrawCustomerLogo(pb,c){
  // Customer logo top-left; thin plate only when logoLooksLight. Busch via pbCreate(true).
+ // FOR THE LETTER green-off → omit customer logo (Busch letterhead remains).
+ if(c&&c.letterLive===false)return;
  custPlaceCustomerLogo(pb.doc, c&&c.logoDataUrl, PB_M, PB_M, 55, 24, {plate:!!(c&&c.logoLooksLight)});
 }
 function custExportJobPDF(){
@@ -6730,15 +6914,16 @@ function custExportJobPDF(){
 }
 var CUST_FB_GROUP_LABELS={pre:"PRE-FLUSH PHOTOS",during:"PUMP FLUSH IN PROGRESS",post:"POST-FLUSH PHOTOS",additional:"ADDITIONAL WORKS COMPLETED"};
 function custFbResolve(j,c){
- // COMPANY always from customer name; phone/email contact fields from customer Details.
- // Recipient email stays on the job (Letter header).
- if(c)custMigrateContacts(c);
+ // COMPANY from customer name; phone from Customer → For the letter.
+ // Recipient email + Contact name live on Customer → For the letter (migrated from Job).
+ if(c){custMigrateContacts(c);custMigrateLetterFields(c);}
  var o={};
- o.email=(j.fbEmail||"").trim();
+ var letterOn=!(c&&c.letterLive===false);
+ o.email=letterOn?(((c&&c.letterEmail)||"").trim()||(j.fbEmail||"").trim()):"";
  o.company=(c&&c.name||"").trim();
- o.phone=((c&&c.contactPhone)||"").trim();
- o.contactName=(j.fbContactName!=null&&j.fbContactName!=="")?String(j.fbContactName).trim():((c&&c.contactName)||"").trim();
- o.contactEmail=((c&&c.contactEmail)||"").trim();
+ o.phone=letterOn?(((c&&c.contactPhone)||"").trim()):"";
+ o.contactName=letterOn?(((c&&c.contactName)||"").trim()||((j.fbContactName!=null&&j.fbContactName!=="")?String(j.fbContactName).trim():"")):"";
+ o.contactEmail=letterOn?(((c&&c.contactEmail)||"").trim()):"";
  o.from=(j.fbFrom||CUST_FB_DEFAULTS.from||"").trim();
  o.date=j.fbDate||j.date||"";
  o.buschRef=(j.fbBuschRef||"").trim();
@@ -7166,7 +7351,7 @@ function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
  var plan=custFbLetterPlan(fb,grouped,j);
  var h='<div class="cj-fb-letter cj-fb-letter-word">';
  h+='<div class="fb-logos">';
- if(c&&c.logoDataUrl){
+ if(c&&c.logoDataUrl&&c.letterLive!==false){
   var plateCls=(c.logoLooksLight===true)?" fb-logo-on-plate":"";
   h+='<img class="fb-logo-cust'+plateCls+'" src="'+c.logoDataUrl+'" alt="Customer logo">';
  }else h+='<div class="fb-logo-ph">Customer logo</div>';
@@ -7409,7 +7594,7 @@ function custFbLetterMetaLine(L,lab,val,x,y,labW,maxW){
 function custFbLetterDrawHeader(L,c,j,fb){
  // Desi L1/L3: customer ~55x24mm, Busch group ~68x16.3mm (natural aspect of LRI_LOGO).
  var logoW=68, logoH=logoW*120/502, custH;
- custH=custPlaceCustomerLogo(L.doc, c&&c.logoDataUrl, L.m, L.y, 55, 24, {plate:!!(c&&c.logoLooksLight)});
+ custH=(c&&c.letterLive===false)?0:custPlaceCustomerLogo(L.doc, c&&c.logoDataUrl, L.m, L.y, 55, 24, {plate:!!(c&&c.logoLooksLight)});
  try{L.doc.addImage(LRI_LOGO,"PNG",L.pw-L.m-logoW,L.y,logoW,logoH);}catch(e2){}
  L.y+=Math.max(logoH,custH)+6;
  L.doc.setFont("helvetica","bold"); L.doc.setFontSize(14);
@@ -7712,7 +7897,7 @@ window.custOpen=custOpen;window.custOpenJob=custOpenJob;window.custNewJob=custNe
 window.custSaveView=custSaveView;window.custSaveJob=custSaveJob;window.custScheduleAutoSave=custScheduleAutoSave;window.custClearLogo=custClearLogo;
 window.custRemovePhoto=custRemovePhoto;window.custDeleteJob=custDeleteJob;
 window.custExportBackup=custExportBackup;window.custAddCustomer=custAddCustomer;
-window.custLogoLooksLight=custLogoLooksLight;window.custEnsureLogoLightFlag=custEnsureLogoLightFlag;window.custPlaceCustomerLogo=custPlaceCustomerLogo;window.custDrawCustomerLogo=custDrawCustomerLogo;window.custExportJobPDF=custExportJobPDF;window.custRenderList=custRenderList;
+window.custLogoLooksLight=custLogoLooksLight;window.custEnsureLogoLightFlag=custEnsureLogoLightFlag;window.custPlaceCustomerLogo=custPlaceCustomerLogo;window.vtCollapseToggle=vtCollapseToggle;window.vtToggleTheme=vtToggleTheme;window.vtFbLiveToggle=vtFbLiveToggle;window.vtLetterLiveToggle=vtLetterLiveToggle;window.custDrawCustomerLogo=custDrawCustomerLogo;window.custExportJobPDF=custExportJobPDF;window.custRenderList=custRenderList;
 window.lriEditHeaderOnJob=lriEditHeaderOnJob;window.lriApplyLinkedContext=lriApplyLinkedContext;window.lriSyncHeaderFromJob=lriSyncHeaderFromJob;
 window.custOpenCalcPicker=custOpenCalcPicker;window.custCloseCalcPicker=custCloseCalcPicker;
 window.custAddJobCalc=custAddJobCalc;window.custRemoveJobCalc=custRemoveJobCalc;window.custOpenJobCalc=custOpenJobCalc;
@@ -7725,6 +7910,8 @@ function show(id){
  if(CUST_RETURN&&id!==CUST_RETURN.calc&&id!=="cust_job")CUST_RETURN=null;
  var ps=document.querySelectorAll(".page");for(var i=0;i<ps.length;i++)ps[i].classList.toggle("active",ps[i].id===id);
  document.body.classList.toggle("inpage",id!=="home");
+ try{vtCollapseRestore();}catch(e){}
+ if(id==="cust_view"||id==="cust_job"){try{vtCollapseRestore();}catch(e2){}}
  document.getElementById("hdr_t").textContent=TT[id]||TT.home;
  document.getElementById("hdr_s").style.display=id==="home"?"":"none";
  if(window.bubMode)window.bubMode(MENUS[id]?"free":"edge");
@@ -8106,4 +8293,5 @@ for(var exk in EX_LAW)renderExample(exk);
  window.addEventListener("resize",size);size();
  if(!still)requestAnimationFrame(loop);
 })();
+vtThemeApply(vtThemeGet());vtCollapseRestore();
 </script></body></html>
