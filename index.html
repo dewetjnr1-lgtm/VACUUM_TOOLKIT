@@ -399,7 +399,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
  #cust_job .cj-visit,#cust_job .card:first-of-type{scroll-margin-top:72px;}
  .vt-sticky-pump{top:72px;}
 }
-.cj-fb-letter{font-size:11px;color:#333;line-height:1.45;background:#fff;border-radius:8px;padding:16px 16px 10px;border:1px solid #D0D5D8;font-family:Helvetica,Arial,sans-serif;}
+.cj-fb-letter{font-size:9.5px;color:#333;line-height:1.35;background:#fff;border-radius:8px;padding:16px 16px 10px;border:1px solid #D0D5D8;font-family:Helvetica,Arial,sans-serif;}
 .cj-fb-letter.cj-fb-letter-word{background:#fff;}
 .cj-fb-letter .fb-logos{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;}
 .cj-fb-letter .fb-logo-cust{width:auto;height:auto;max-width:190px;max-height:76px;object-fit:contain;background:transparent;padding:0;border-radius:0;}
@@ -414,7 +414,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-letter .fb-val{color:#333;word-break:break-word;font-size:13px;font-weight:400;}
 .cj-fb-letter .fb-meta-rule{border:none;border-top:1px solid #B8C0C6;margin:8px 0 10px;height:0;}
 .cj-fb-letter .fb-refs{margin:0 0 14px;font-size:13px;}
-.cj-fb-letter .fb-body{white-space:pre-wrap;color:#333;margin:0 0 12px;font-size:11px;line-height:1.45;}
+.cj-fb-letter .fb-body{white-space:pre-wrap;color:#333;margin:0 0 10px;font-size:9.5px;line-height:1.35;}
 .cj-fb-letter .fb-sec-letter{font-size:17px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#E85D04;margin:16px 0 6px;padding-bottom:3px;border-bottom:2px solid #E85D04;}
 .cj-fb-letter .fb-pump-tag{font-size:12px;font-weight:800;color:#333;margin:14px 0 4px;}
 .cj-fb-letter .fb-pump-sub{font-size:10.5px;font-weight:800;color:#E85D04;text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px;}
@@ -434,10 +434,10 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-letter .fb-ph-letter.full .fb-ph-frame img{max-height:280px;}
 .cj-fb-letter .fb-ph-letter .cap{padding:0 2px;font-size:10.5px;color:#333;border:none;background:transparent;margin:0;line-height:1.3;}
 .cj-fb-letter .fb-note{font-size:10px;color:#667788;margin:0 0 10px;}
-.cj-fb-letter .fb-ol,.cj-fb-letter .fb-ul{margin:0 0 12px;padding:0 0 0 1.25em;color:#333;font-size:11px;line-height:1.45;}
+.cj-fb-letter .fb-ol,.cj-fb-letter .fb-ul{margin:0 0 10px;padding:0 0 0 1.25em;color:#333;font-size:9.5px;line-height:1.35;}
 .cj-fb-letter .fb-ol li,.cj-fb-letter .fb-ul li{margin:0 0 4px;}
-.cj-fb-letter .fb-signoff{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0 12px;font-size:11px;color:#333;}
-.cj-fb-letter .fb-sign b{font-size:12px;}
+.cj-fb-letter .fb-signoff{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:18px 0 12px;font-size:9.5px;color:#333;}
+.cj-fb-letter .fb-sign b{font-size:11px;}
 .cj-fb-letter .fb-em{color:#0066AA;text-decoration:underline;}
 .cj-fb-letter .fb-letter-footer{margin-top:18px;padding-top:10px;border-top:1px solid #D0D5D8;text-align:center;}
 .cj-fb-letter .fb-letter-footer img{display:block;width:100%;height:auto;margin:0 0 8px;}
@@ -7598,7 +7598,7 @@ function custFbLetterEnsure(L,need){
 }
 function custFbLetterBodyText(L,text,opt){
  opt=opt||{};
- var fs=opt.fs||9.5, lh=opt.lh||4.2, lines,i,room,take,chunk;
+ var fs=opt.fs||8.5, lh=opt.lh||3.8, lines,i,room,take,chunk;
  L.doc.setFont("helvetica",opt.bold?"bold":"normal"); L.doc.setFontSize(fs);
  L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);
  lines=L.doc.splitTextToSize(String(text==null?"":text),L.contentW);
@@ -7671,7 +7671,7 @@ function custFbLetterPumpSecPdf(L,key,normSec){
    blk=st.blocks[b];photos=blk.photos||[];
    if(!(blk.label||"").trim()&&!(blk.notes||"").trim()&&!photos.length)continue;
    if((blk.label||"").trim())custFbLetterSubHead(L,blk.label.trim(),true);
-   if((blk.notes||"").trim())custFbLetterBodyText(L,blk.notes,{fs:9.5,lh:4.2,gapAfter:3});
+   if((blk.notes||"").trim())custFbLetterBodyText(L,blk.notes,{fs:8.5,lh:3.8,gapAfter:3});
    if(blk.ba){
     before=[];after=[];other=[];
     for(i=0;i<photos.length;i++){
@@ -7736,7 +7736,7 @@ function custFbLetterDrawPumps(L,normSec){
    b=blocks[i];
    if(b.kind==="sub")custFbLetterSubHead(L,b.text,i===0);
    else if(b.kind==="rows")custFbLetterRowsPdf(L,b.text);
-   else if(b.kind==="text")custFbLetterBodyText(L,b.text,{fs:9.5,lh:4.2,gapAfter:1.5});
+   else if(b.kind==="text")custFbLetterBodyText(L,b.text,{fs:8.5,lh:3.8,gapAfter:1.5});
    else if(b.kind==="photos"){ custFbLetterPumpSecPdf(L,b.key,normSec); }
   }
   L.y+=3;
@@ -7796,7 +7796,7 @@ function custFbLetterRelBlocksPdf(L,j,key){
  for(b=0;b<blocks.length;b++){
   blk=blocks[b];
   if((blk.label||"").trim())custFbLetterSubHead(L,blk.label.trim(),true);
-  if((blk.notes||"").trim())custFbLetterBodyText(L,blk.notes,{fs:9.5,lh:4.2,gapAfter:3});
+  if((blk.notes||"").trim())custFbLetterBodyText(L,blk.notes,{fs:8.5,lh:3.8,gapAfter:3});
   photos=blk.photos||[];
   function drawList(list,title){
    if(!list.length)return;
@@ -7902,10 +7902,10 @@ function custFbLetterSignoff(L,j){
  var colW=(L.contentW-8)/2;
  custFbLetterEnsure(L,28);
  function col(x,name,role,phone,email){
-  L.doc.setFont("helvetica","bold"); L.doc.setFontSize(10);
+  L.doc.setFont("helvetica","bold"); L.doc.setFontSize(9.5);
   L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);
   L.doc.text(name,x,L.y);
-  L.doc.setFont("helvetica","normal"); L.doc.setFontSize(9);
+  L.doc.setFont("helvetica","normal"); L.doc.setFontSize(8.5);
   L.doc.text(role,x,L.y+5);
   L.doc.text(phone,x,L.y+9.5);
   L.doc.setTextColor(0,90,160);
@@ -7972,18 +7972,18 @@ function custExportFeedbackPDF(skipUngroupedWarn){
   for(si=0;si<plan.length;si++){
    sec=plan[si];
    if(sec.kind==="greeting"||sec.kind==="closing"){
-    custFbLetterBodyText(L,sec.payload,{fs:9.5,lh:4.2,gapAfter:3});
+    custFbLetterBodyText(L,sec.payload,{fs:8.5,lh:3.8,gapAfter:3});
    }else if(sec.kind==="signoff"){
     custFbLetterSignoff(L,j);
    }else if(sec.kind==="text"){
     custFbLetterSecHead(L,sec.num,sec.title);
-    if(custFbLetterHas(sec.payload.text))custFbLetterBodyText(L,sec.payload.text,{fs:9.5,lh:4.2,gapAfter:3});
+    if(custFbLetterHas(sec.payload.text))custFbLetterBodyText(L,sec.payload.text,{fs:8.5,lh:3.8,gapAfter:3});
     custFbLetterPhotosBa(L,photos,norm,sec.payload.idxs,sec.key,j);
     custFbLetterRelBlocksPdf(L,j,sec.key);
    }else if(sec.kind==="recs"){
     custFbLetterSecHead(L,sec.num,sec.title);
     if(sec.payload.lines&&sec.payload.lines.length){
-     for(li=0;li<sec.payload.lines.length;li++) custFbLetterBodyText(L,(li+1)+". "+sec.payload.lines[li],{fs:9.5,lh:4.2,gapAfter:1.5});
+     for(li=0;li<sec.payload.lines.length;li++) custFbLetterBodyText(L,(li+1)+". "+sec.payload.lines[li],{fs:8.5,lh:3.8,gapAfter:1.5});
      L.y+=2;
     }
     custFbLetterPhotosBa(L,photos,norm,sec.payload.idxs,sec.key,j);
@@ -7999,7 +7999,7 @@ function custExportFeedbackPDF(skipUngroupedWarn){
     custFbLetterSecHead(L,sec.num,sec.title);
     if(custFbLetterHas(sec.payload.text)){
      lines=custFbLetterLines(sec.payload.text).filter(function(x){return !!x.trim();});
-     for(li=0;li<lines.length;li++) custFbLetterBodyText(L,"•  "+lines[li].replace(/^[-•*]\s*/,""),{fs:9.5,lh:4.2,gapAfter:1.2});
+     for(li=0;li<lines.length;li++) custFbLetterBodyText(L,"•  "+lines[li].replace(/^[-•*]\s*/,""),{fs:8.5,lh:3.8,gapAfter:1.2});
      L.y+=2;
     }
     custFbLetterPhotosBa(L,photos,norm,sec.payload.idxs,"additional",j);
