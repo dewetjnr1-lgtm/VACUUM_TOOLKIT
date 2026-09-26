@@ -377,7 +377,14 @@ body.cj-fb-preview-open{overflow:hidden !important;}
  .cj-mobile-preview-fab,.cj-mobile-preview-backdrop{display:none !important;} /* never on wide */
 }
 @media (max-width:999px){
- .cj-mobile-preview-fab.on{display:block;position:fixed;bottom:18px;right:18px;z-index:41;background:var(--accent);color:#241505;border:0;border-radius:24px;padding:12px 20px;font-size:14px;font-weight:800;box-shadow:0 4px 16px rgba(0,0,0,.5);cursor:pointer;}
+ .cj-mobile-preview-fab.on{display:block;position:fixed;bottom:calc(18px + env(safe-area-inset-bottom,0px));right:18px;z-index:41;background:var(--accent);color:#241505;border:0;border-radius:24px;padding:12px 20px;font-size:14px;font-weight:800;min-height:44px;min-width:44px;box-shadow:0 4px 16px rgba(0,0,0,.5);cursor:pointer;}
+ /* Reserve space so Save + bar green lights never sit under the Preview FAB */
+ body.cj-live-open .cj-job-formcol,
+ body.cj-live-open .lri-live-formcol{
+  padding-bottom:calc(108px + env(safe-area-inset-bottom,0px));
+  padding-right:120px;
+  box-sizing:border-box;
+ }
  .cj-mobile-preview-backdrop.show{display:block;position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:38;}
  .cj-live-preview-panel.peek{display:flex;flex-direction:column;position:fixed;top:0;right:0;bottom:0;left:0;width:100%;height:100vh;max-height:100vh;border-radius:0;overflow-y:auto;background:var(--elev);z-index:39;padding:14px;}
  .cj-live-preview-panel.peek .cj-live-preview-close{display:block;background:none;border:1px solid var(--line);color:var(--soft);border-radius:8px;padding:6px 12px;font-size:12.5px;}
@@ -539,7 +546,7 @@ html[data-theme="light"] .vt-collapsible.is-collapsed .vt-collapse-bar{backgroun
 .vt-live-btn:not(.is-on) .vt-live-lab{color:var(--vt-live-off,#E85A6B);opacity:.95;}
 .vt-live-btn.vt-live-flash .vt-live-dot{animation:vtLiveFlash .55s ease;}
 @keyframes vtLiveFlash{0%{transform:scale(1)}35%{transform:scale(1.28)}100%{transform:scale(1)}}
-.vt-collapse-hint{display:none;flex:1 1 auto;min-width:0;font-size:12.5px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--soft);line-height:1.25;padding:0 6px 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.vt-collapse-hint{display:none;flex:1 1 auto;min-width:0;font-size:12.5px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--soft);line-height:1.25;padding:0 6px 0 2px;white-space:nowrap;overflow:hidden;}
 .vt-collapsible.is-collapsed .vt-collapse-hint:not(:empty){display:block;grid-column:2;grid-row:2;flex:unset;max-width:100%;padding:0 2px 2px;min-width:0;}
 .vt-collapse-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px;}
 .vt-collapse-toolbar button{flex:1 1 auto;min-height:40px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--elev2);color:var(--ink);font-size:13px;font-weight:700;cursor:pointer;}
@@ -5777,6 +5784,7 @@ function vtCollapseRestore(root){
    else el.classList.add("is-collapsed"); /* empty/missing fold state = all closed */
   });
   vtCollapseHintsRefresh();
+  try{requestAnimationFrame(function(){vtHintsFitAll(base);});}catch(e1){}
  }catch(e){}
 }
 function vtCollapseAllIn(pageId,expand){
@@ -5793,7 +5801,17 @@ function vtHintClip(s,n){
  s=String(s||"").replace(/\s+/g," ").trim();
  if(!s)return "";
  n=n||42;
- return s.length>n?s.slice(0,n-1)+"\u2026":s;
+ if(s.length<=n)return s;
+ var cut=s.slice(0,n);
+ var sp=cut.lastIndexOf(" ");
+ /* End on a word boundary when possible; never mid-word ellipsis. */
+ if(sp>=Math.max(6,Math.floor(n*0.35))) cut=cut.slice(0,sp);
+ else{
+  /* No usable space — keep whole last word only if short, else hide via empty after fit. */
+  cut=cut.replace(/\s+\S*$/,"").trim();
+ }
+ cut=cut.replace(/[\s·,;:\-]+$/g,"");
+ return cut?cut+"\u2026":"";
 }
 function vtHintJoin(parts){
  var out=[],i,p;
@@ -5803,6 +5821,38 @@ function vtHintJoin(parts){
 function vtHintSet(id,text){
  var el=document.getElementById(id);if(!el)return;
  el.textContent=text||"";
+ el.setAttribute("data-vt-hint-full",text||"");
+}
+/* Fit collapsed hints to available width on a word boundary; hide if too tight. */
+function vtHintFitEl(el){
+ if(!el)return;
+ var full=el.getAttribute("data-vt-hint-full");
+ if(full==null)full=el.textContent||"";
+ full=String(full||"").replace(/\s+/g," ").trim();
+ if(!full){el.textContent="";return;}
+ el.textContent=full;
+ if(el.scrollWidth<=el.clientWidth+1)return;
+ var lo=0,hi=full.length,best="";
+ while(lo<=hi){
+  var mid=(lo+hi)>>1;
+  var cand=vtHintClip(full,Math.max(1,mid));
+  el.textContent=cand;
+  if(!cand){hi=mid-1;continue;}
+  if(el.scrollWidth<=el.clientWidth+1){best=cand;lo=mid+1;}
+  else hi=mid-1;
+ }
+ /* If even one word + ellipsis won't fit, hide hint (title lane stays clean). */
+ if(!best){
+  var first=full.split(" ")[0]||"";
+  el.textContent=first.length?vtHintClip(first,Math.min(first.length,24)):"";
+  if(el.scrollWidth>el.clientWidth+1)el.textContent="";
+ }else el.textContent=best;
+}
+function vtHintsFitAll(root){
+ try{
+  var base=root||document;
+  base.querySelectorAll(".vt-collapsible.is-collapsed .vt-collapse-hint").forEach(vtHintFitEl);
+ }catch(e){}
 }
 function vtCollapseHintsRefresh(){
  try{
@@ -5879,6 +5929,7 @@ function vtLiveFlash(btn){
    if(document.getElementById("cj_saved_chip"))vtFlashSaved("cj_saved_chip");
    if(document.getElementById("cv_saved_chip"))vtFlashSaved("cv_saved_chip");
   }
+  vtHintsFitAll();
  }catch(e){}
 }
 function vtLiveBtnSync(btn,on){
@@ -6357,6 +6408,7 @@ function cjSetLiveSplitWidth(){
 window.addEventListener("resize",function(){
  if(document.body.classList.contains("cj-live-open"))cjSetLiveSplitWidth();
  cjRescaleLivePreview();
+ try{vtHintsFitAll();}catch(e){}
 });
 function cjRescaleLivePreview(){
  var panel=document.getElementById("cj_live_preview_panel");
