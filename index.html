@@ -534,11 +534,11 @@ html[data-theme="light"] .vt-collapsible.is-collapsed .vt-collapse-bar{backgroun
 .vt-collapse-arrow{flex:0 0 auto;width:44px;height:44px;min-width:44px;min-height:44px;margin:0;padding:0;border:0;border-radius:10px;background:transparent;color:var(--vt-arrow,#8BBFD4);font-size:18px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;}
 .vt-collapse-arrow:active{opacity:.75;}
 .vt-collapsible.is-collapsed .vt-collapse-arrow{grid-column:1;grid-row:1 / span 2;align-self:center;transform:rotate(-90deg);}
-.vt-collapse-title{flex:1 1 auto;min-width:0;font-size:15px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--vt-title,#6EB3D0);line-height:1.2;padding:0 4px;}
-/* Title lane wins width; no CSS mid-char ellipsis — JS word-boundary only as last resort */
-.vt-collapsible.is-collapsed .vt-collapse-title{grid-column:2;grid-row:1;flex:unset;max-width:none;min-width:0;overflow:hidden;white-space:nowrap;padding:0 2px;}
+.vt-collapse-title{flex:1 1 auto;min-width:0;font-size:15px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--vt-title,#6EB3D0);line-height:1.25;padding:0 4px;}
+/* Prefer wrap (up to 2 lines) over mid-word ellipsis — full label readable */
+.vt-collapsible.is-collapsed .vt-collapse-title{grid-column:2;grid-row:1;flex:1 1 auto;max-width:none;min-width:0;overflow:hidden;white-space:normal;overflow-wrap:anywhere;word-break:normal;padding:0 2px;display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:2;line-clamp:2;}
 .vt-live-btn{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:flex-end;gap:6px;min-width:44px;min-height:44px;margin:0 0 0 8px;padding:6px 4px;border:0;border-radius:10px;background:transparent;cursor:pointer;color:var(--soft);-webkit-tap-highlight-color:transparent;}
-.vt-collapsible.is-collapsed .vt-live-btn{grid-column:3;grid-row:1 / span 2;align-self:center;margin:0;justify-self:end;min-width:44px;}
+.vt-collapsible.is-collapsed .vt-live-btn{grid-column:3;grid-row:1 / span 2;align-self:center;margin:0;justify-self:end;min-width:44px;width:44px;padding:0;justify-content:center;}
 .vt-live-btn:active{opacity:.8;}
 .vt-live-lab{font-size:11px;font-weight:600;letter-spacing:.01em;white-space:nowrap;color:var(--soft);text-align:right;line-height:1.15;}
 .vt-live-lab:empty{display:none;}
@@ -550,6 +550,12 @@ html[data-theme="light"] .vt-collapsible.is-collapsed .vt-collapse-bar{backgroun
 @keyframes vtLiveFlash{0%{transform:scale(1)}35%{transform:scale(1.28)}100%{transform:scale(1)}}
 .vt-collapse-hint{display:none;flex:1 1 auto;min-width:0;font-size:12.5px;font-weight:600;letter-spacing:0;text-transform:none;color:var(--soft);line-height:1.25;padding:0 6px 0 2px;white-space:nowrap;overflow:hidden;}
 .vt-collapsible.is-collapsed .vt-collapse-hint:not(:empty){display:block;grid-column:2;grid-row:2;flex:unset;max-width:100%;padding:0 2px 2px;min-width:0;}
+/* Phone: fixed light column; hide hints so titles get the width; keep FAB float padding */
+@media (max-width:999px){
+ .vt-collapsible.is-collapsed .vt-collapse-bar{grid-template-columns:44px minmax(0,1fr) 44px;}
+ .vt-collapsible.is-collapsed .vt-collapse-hint{display:none !important;}
+ .vt-collapsible.is-collapsed .vt-live-lab{display:none !important;} /* icon-only on phone — never steals title space */
+}
 .vt-collapse-toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 10px;}
 .vt-collapse-toolbar button{flex:1 1 auto;min-height:40px;padding:8px 12px;border-radius:10px;border:1px solid var(--line);background:var(--elev2);color:var(--ink);font-size:13px;font-weight:700;cursor:pointer;}
 .vt-collapse-toolbar button:active{opacity:.8;}
@@ -5852,10 +5858,15 @@ function vtTitleWordClip(s){
  if(words.length<=1)return s; /* single token — keep full; never crush to 1 letter */
  return words[0]+"\u2026";
 }
-function vtTitleOverflow(title){
- return !!(title && title.scrollWidth>title.clientWidth+1);
+function vtIsPhoneLayout(){
+ try{return !!(window.matchMedia&&window.matchMedia("(max-width:999px)").matches);}catch(e){return false;}
 }
-/* Priority when tight: (1) full title (2) hide hint (3) shorten live lab (4) keep light (5) word-boundary title last. */
+function vtTitleOverflow(title){
+ if(!title)return false;
+ /* With wrap, scrollWidth≈clientWidth; use scrollHeight vs clamped height as soft signal only */
+ return title.scrollWidth>title.clientWidth+1;
+}
+/* Phone: full title (CSS wraps ≤2 lines), hide hint, icon-only light. Wider: hide hint / shorten lab before touching title — never mid-word title ellipsis. */
 function vtCollapseBarFit(sec){
  if(!sec||!sec.classList.contains("is-collapsed"))return;
  var bar=sec.querySelector(":scope > .vt-collapse-bar");
@@ -5868,63 +5879,36 @@ function vtCollapseBarFit(sec){
   title.setAttribute("data-vt-title-full", (title.textContent||"").replace(/\s+/g," ").trim());
  }
  var fullTitle=title? (title.getAttribute("data-vt-title-full")||""):"";
- if(title) title.textContent=fullTitle;
- if(lab){
-  if(!lab.getAttribute("data-vt-lab-full")){
-   var seed=(lab.textContent||"").trim()||(live.classList.contains("is-on")?"on Preview":"off");
-   lab.setAttribute("data-vt-lab-full", seed);
-  }
-  var on=live.classList.contains("is-on");
-  lab.textContent=on?"on Preview":"off";
-  lab.setAttribute("data-vt-lab-full", lab.textContent);
- }
- /* Restore hint from stored full, then fit */
+ if(title) title.textContent=fullTitle; /* always restore full label — wrap, do not ellipsis */
  if(hint){
   var hf=hint.getAttribute("data-vt-hint-full");
   if(hf==null) hf=hint.textContent||"";
   hint.setAttribute("data-vt-hint-full", String(hf||"").replace(/\s+/g," ").trim());
-  hint.textContent=hint.getAttribute("data-vt-hint-full")||"";
  }
- /* Step 2: if title still overflows, hide hint first */
- if(vtTitleOverflow(title) && hint){
-  hint.textContent="";
+ if(vtIsPhoneLayout()){
+  if(hint) hint.textContent=""; /* phone: hide hints entirely for title space */
+  if(lab){ lab.textContent=""; } /* icon-only; 44×44 light column reserved in CSS */
+  return;
  }
- /* Step 3: shorten green/red label to a full short word (never mid-word) */
+ /* Wider layouts: restore lab + hint, then squeeze hint/lab only */
+ if(lab){
+  var on=live.classList.contains("is-on");
+  lab.textContent=on?"on Preview":"off";
+  lab.setAttribute("data-vt-lab-full", lab.textContent);
+ }
+ if(hint) hint.textContent=hint.getAttribute("data-vt-hint-full")||"";
+ if(hint && hint.textContent) vtHintFitEl(hint);
+ if(vtTitleOverflow(title) && hint) hint.textContent="";
  if(vtTitleOverflow(title) && lab){
-  var on2=live.classList.contains("is-on");
-  if(on2){
-   lab.textContent="Preview";
-   if(vtTitleOverflow(title)) lab.textContent="on";
-   if(vtTitleOverflow(title)) lab.textContent=""; /* dot-only; 44×44 hit remains */
-  }else{
-   /* "off" already short; hide text before crushing title */
+  if(live.classList.contains("is-on")){
+   lab.textContent="on";
    if(vtTitleOverflow(title)) lab.textContent="";
+  }else{
+   lab.textContent="";
   }
  }
- /* Fit hint (word-boundary) only if still shown and title fits */
- if(hint && hint.getAttribute("data-vt-hint-full") && hint.textContent){
-  vtHintFitEl(hint);
-  if(vtTitleOverflow(title)) hint.textContent=""; /* title wins */
- }
- /* Step 5 last resort: word-boundary title ellipsis — keep at least first full word */
- if(vtTitleOverflow(title) && title && fullTitle){
-  var words=fullTitle.split(" ").filter(Boolean);
-  var kept="";
-  for(var i=0;i<words.length;i++){
-   var trial=(kept?kept+" ":"")+words[i];
-   title.textContent=trial;
-   if(vtTitleOverflow(title)){
-    title.textContent=kept?kept+"\u2026":(words[0]||fullTitle);
-    break;
-   }
-   kept=trial;
-   if(i===words.length-1) title.textContent=fullTitle;
-  }
-  /* Never leave a 1–2 letter crush if a longer first word exists */
-  if(title.textContent.replace(/\u2026$/,"").length<3 && words[0] && words[0].length>=3){
-   title.textContent=words[0]+(words.length>1?"\u2026":"");
-  }
- }
+ if(hint && hint.textContent && vtTitleOverflow(title)) hint.textContent="";
+ /* Title stays full — CSS wraps; no JS mid-word ellipsis */
 }
 function vtHintsFitAll(root){
  try{
