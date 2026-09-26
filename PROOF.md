@@ -1,13 +1,13 @@
-# PROOF — phone collapsed titles wrap (no mid-word cut)
+# PROOF — word-boundary title wrap (no METH OD / PHOT OS)
 
-## Fail on e5915e9
-Phone bars still mid-word truncated (`EQUIPM`, `FINDIN`, `RECOM`, `PARTS/`, `CLOSIN`) under FAB padding + nowrap.
+## Fail on 9971797
+`overflow-wrap:anywhere` letter-broke titles (`METH OD`, `PHOT OS`, `EQUIP MENT`) and line-clamp mid-word-ellipsized others.
 
 ## Fix
-- Collapsed titles: `white-space:normal` + up to **2-line wrap** (`line-clamp:2`) — **no mid-word ellipsis**
-- Phone (`max-width:999px`): hide hints; live lab icon-only; fixed **44px** light column
-- Preview stays **floating** FAB + #49 `padding-bottom` / `padding-right:120px`
-- Wider layouts: word-boundary hint fit still available; title stays full (wrap)
+- Collapsed titles: `overflow-wrap:normal; word-break:normal; hyphens:none` — **never letter-break**
+- Removed `anywhere` + `-webkit-line-clamp` mid-word ellipsis
+- `vtTitleFitTwoLines`: ≤2 lines at **word** boundaries; ellipsis only after a full word; single long token → slight font shrink, still whole
+- Phone: hints hidden; icon-only light; FAB float + #49 padding kept
 
 ## Proof
-`collapse-ux-2026-09-26/proof-title-wrap.png` — PASS @390: PHOTOS / SAFETY / PARTS/MATERIALS / OUTSTANDING (+ full list) readable; FAB float clear of Save.
+`collapse-ux-2026-09-26/proof-title-word-wrap.png` — METHOD/EQUIPMENT/FINDINGS/PHOTOS/WORK PERFORMED/RECOMMENDATIONS/SAFETY/PARTS/MATERIALS intact.
