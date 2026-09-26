@@ -1,16 +1,13 @@
-# PROOF — collapsed title priority (no P/V/R crush)
+# PROOF — phone collapsed titles wrap (no mid-word cut)
 
-## Fail on bade155
-Job bars crushed titles to 1–3 letters (`P`, `V`, `R`, `SAF…`) under FAB `padding-right:120px` + long green label.
+## Fail on e5915e9
+Phone bars still mid-word truncated (`EQUIPM`, `FINDIN`, `RECOM`, `PARTS/`, `CLOSIN`) under FAB padding + nowrap.
 
-## Fix (FAB stays floating)
-Keep Preview as `position:fixed` FAB + #49 safe-area padding (bottom/right).
-When space tight, per bar:
-1. Prefer **full title**
-2. **Hide hint** first
-3. Shorten live lab to full short words: `on Preview` → `Preview` → `on` → dot-only
-4. Light/dot hit stays ≥44×44
-5. Title ellipsis **word-boundary last resort** only (never 1-letter crush)
+## Fix
+- Collapsed titles: `white-space:normal` + up to **2-line wrap** (`line-clamp:2`) — **no mid-word ellipsis**
+- Phone (`max-width:999px`): hide hints; live lab icon-only; fixed **44px** light column
+- Preview stays **floating** FAB + #49 `padding-bottom` / `padding-right:120px`
+- Wider layouts: word-boundary hint fit still available; title stays full (wrap)
 
 ## Proof
-`collapse-ux-2026-09-26/proof-title-priority.png` — PASS @390 with padding-right:120; FAB clear of Save; titles readable.
+`collapse-ux-2026-09-26/proof-title-wrap.png` — PASS @390: PHOTOS / SAFETY / PARTS/MATERIALS / OUTSTANDING (+ full list) readable; FAB float clear of Save.
