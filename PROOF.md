@@ -1,24 +1,22 @@
-# PROOF — preview type scale + default-collapsed (#45 candidate)
+# PROOF — RGB letter hierarchy (post #45 retune)
 
-## Fail
-Phone LIVE PREVIEW of chem-flush letter on main `1b06fc5` looked uneven: body larger than orange section titles (inverted hierarchy); header meta / sign-off / footer sizes felt random vs body.
+Christoff annotated phone Preview: **RED** meta too small, **GREEN** orange headings too small, **BLUE** body too big.
 
-Also: first open with no `vt-collapse-v2` fold state left Customer + Job sections open.
+## Size table (Preview ≡ PDF)
 
-## Fix 1 — Letter type scale (Preview ≡ PDF)
-CSS (`.cj-fb-letter`):
-- Orange section titles `.fb-sec-letter` **14.5px / 800** — above body
-- Body / lists **12.5px**
-- Header meta values **11.5px**; labels **10.5px / 700** (slightly smaller than values)
-- Sign-off **11.5px** (name **12.5px**); footer tag/web **10px**
+| Band | CSS (`.cj-fb-letter`) | jsPDF |
+|------|----------------------|-------|
+| Orange section headings | **17px / 800** | **13.5pt bold** |
+| Header meta values | **13px / 400** | **10.5pt** |
+| Header meta labels | **12px / 800** | **10pt bold** |
+| Document title | **16px / 800** | **15pt bold** |
+| Body / lists | **11px / 400** | **9.5pt** |
+| Sign-off | 11px (name 12px) | ~9–10pt |
 
-jsPDF mirror:
-- `custFbLetterSecHead` **11.5pt** (was 10 = body)
-- Meta labels **8.5pt** bold, values **9pt** (body stays **10pt**)
-
-## Fix 2 — Default all collapsibles CLOSED
-`vtCollapseRestore`: missing key in scope map → `is-collapsed`. Remembered `true`/`false` in `vt-collapse-v2` unchanged. Collapse/Expand all, Save auto-collapse, hints, green-light, live tints untouched.
+Hierarchy: **headings (17) > meta (13) > body (11)** — sec/body ratio ≈ 1.55.
 
 ## Proof
-- `collapse-ux-2026-09-26/proof-preview-type-scale.png` — phone-scaled letter hierarchy
-- Fail reference: `collapse-ux-2026-09-26/fail-preview-fonts-uneven.png`
+- `collapse-ux-2026-09-26/proof-rgb-hierarchy.png` — phone-scaled letter with RGB outlines
+- Fail: `collapse-ux-2026-09-26/fail-preview-scale-red-green-blue.png`
+
+Collapse defaults from #45 unchanged.
