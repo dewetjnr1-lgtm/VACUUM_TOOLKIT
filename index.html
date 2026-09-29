@@ -1394,14 +1394,6 @@ html[data-theme="light"] .ctrl input,html[data-theme="light"] .ctrl select,html[
 <button class="exbtn" onclick="custSaveView('letter')">Save letter fields</button>
 <button class="clrbtn" onclick="custClearLogo()">Remove logo</button>
 </div></div>
-<div class="card cv-wall vt-collapsible" id="cv_sec_site" data-vt-collapse="cv_site">
-<div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse For you on site" onclick="vtCollapseToggle('cv_sec_site')">▾</button><span class="vt-collapse-title">For you on site</span><span class="vt-collapse-hint" id="cv_hint_site" aria-hidden="true"></span></div>
-<div class="vt-collapse-body">
-<p class="sub cv-wall-hint">Stays on this device for your visit. Not printed on the Client feedback letter.</p>
-<div class="fld"><div class="fh"><label>Site notes</label></div><div class="ctrl"><textarea id="cv_notes" rows="4" placeholder="Access, gate, prep, internal reminders"></textarea></div><p class="sub cv-help">Access, gate, prep, internal reminders. Never prints on the letter.</p></div>
-<div class="fld"><div class="fh"><label>Equipment at this site</label></div><div class="ctrl"><textarea id="cv_equip" rows="6" placeholder="FLT 151"></textarea></div><p class="sub cv-help">Pick list for jobs. Letter lists only pumps/equipment you put on that job — not this whole list.</p></div>
-<button class="exbtn" onclick="custSaveView('site')">Save site fields</button>
-</div></div>
 <div class="card vt-collapsible" id="cv_sec_jobs" data-vt-collapse="cv_jobs">
 <div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Jobs" onclick="vtCollapseToggle('cv_sec_jobs')">▾</button><span class="vt-collapse-title">Jobs / visits</span><span class="vt-collapse-hint" id="cv_hint_jobs" aria-hidden="true"></span></div>
 <div class="vt-collapse-body">
@@ -5946,10 +5938,6 @@ function vtCollapseHintsRefresh(){
   var contact=(document.getElementById("cv_contact_name")||{}).value||"";
   var phone=(document.getElementById("cv_contact_phone")||{}).value||"";
   vtHintSet("cv_hint_letter",vtHintJoin([contact,letterEmail||phone]));
-  var notes=(document.getElementById("cv_notes")||{}).value||"";
-  var equip=(document.getElementById("cv_equip")||{}).value||"";
-  var equipFirst=(equip.split(/\n/)[0]||"").trim();
-  vtHintSet("cv_hint_site",vtHintJoin([vtHintClip(notes,24),equipFirst]));
   var nJobs=0;
   try{var c=typeof custFind==="function"&&typeof CUST_CUR!=="undefined"?custFind(CUST_CUR):null;if(c)nJobs=(c.jobs||[]).length;}catch(e1){}
   vtHintSet("cv_hint_jobs",nJobs? (nJobs+" job"+(nJobs===1?"":"s")) : "");
@@ -6089,20 +6077,23 @@ function custSaveView(which){
  if(ePhone)c.contactPhone=ePhone.value||"";
  if(eEmail)c.contactEmail=eEmail.value||"";
  if(eLetter)c.letterEmail=eLetter.value||"";
- c.notes=document.getElementById("cv_notes").value||"";
- var lines=(document.getElementById("cv_equip").value||"").split(/\n+/);
- var eq=[],i,line,parts;
- for(i=0;i<lines.length;i++){
-  line=lines[i].trim();if(!line)continue;
-  parts=line.split(/\s+[—\-]\s+/);
-  eq.push({tag:parts[0].trim(),notes:(parts[1]||"").trim()});
+ var eNotes=document.getElementById("cv_notes");
+ if(eNotes)c.notes=eNotes.value||"";
+ var eEquip=document.getElementById("cv_equip");
+ if(eEquip){
+  var lines=(eEquip.value||"").split(/\n+/);
+  var eq=[],i,line,parts;
+  for(i=0;i<lines.length;i++){
+   line=lines[i].trim();if(!line)continue;
+   parts=line.split(/\s+[—\-]\s+/);
+   eq.push({tag:parts[0].trim(),notes:(parts[1]||"").trim()});
+  }
+  c.equipment=eq;
  }
- c.equipment=eq;
  if(!custPersist())return;
  // Auto-collapse ONLY after that section's Save — never while typing.
  if(which==="details")vtCollapseSet("cv_sec_details",true);
  else if(which==="letter")vtCollapseSet("cv_sec_letter",true);
- else if(which==="site")vtCollapseSet("cv_sec_site",true);
  custRenderView();
  if(typeof cjRefreshLivePreview==="function")cjRefreshLivePreview();
 }
@@ -8591,7 +8582,7 @@ for(var exk in EX_LAW)renderExample(exk);
 vtThemeApply(vtThemeGet());vtCollapseRestore();
 (function vtHintListeners(){
  function refresh(){try{vtCollapseHintsRefresh();}catch(e){}}
- ["cv_name","cv_site","cv_letter_email","cv_contact_name","cv_contact_phone","cv_contact_email","cv_notes","cv_equip",
+ ["cv_name","cv_site","cv_letter_email","cv_contact_name","cv_contact_phone","cv_contact_email",
   "cj_name","cj_date","cj_type","cj_status","cj_fb_from","cj_fb_date","cj_fb_subject",
   "cj_fb_greeting","cj_fb_intro_head","cj_fb_scope","cj_fb_equipment","cj_fb_findings","cj_fb_results",
   "cj_fb_additional","cj_fb_recommendations","cj_fb_safety","cj_fb_parts","cj_fb_outstanding","cj_fb_next_visit","cj_fb_closing"
