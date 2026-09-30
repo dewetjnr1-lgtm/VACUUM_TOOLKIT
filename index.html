@@ -412,7 +412,6 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-letter .fb-logo-cust{width:auto;height:auto;max-width:190px;max-height:76px;object-fit:contain;background:transparent;padding:0;border-radius:0;}
 .cj-fb-letter .fb-logo-cust.fb-logo-on-plate{background:#0C121A;padding:4px;border-radius:5px;}
 .cj-fb-letter .fb-logo-busch{width:220px;height:auto;max-width:220px;max-height:68px;object-fit:contain;}
-.cj-fb-letter .fb-logo-ph{min-width:140px;min-height:56px;border:1px dashed #C5CDD3;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:11px;color:#8899AA;padding:4px;background:transparent;}
 .cj-fb-letter .fb-letter-title{margin:0 0 12px;font-size:16px;font-weight:800;color:#222;text-align:center;letter-spacing:.01em;}
 .cj-fb-letter .fb-meta{display:grid;grid-template-columns:1.2fr 1fr;gap:4px 30px;margin:0 0 8px;font-size:13px;}
 .cj-fb-letter .fb-meta-col{min-width:0;}
@@ -1433,7 +1432,7 @@ html[data-theme="light"] .ctrl input,html[data-theme="light"] .ctrl select,html[
 <div class="mgrid" id="cj_fb_header_order"></div>
 <div class="fld"><div class="fh"><label>Subject</label></div><div class="ctrl"><input type="text" id="cj_fb_subject" placeholder="e.g. Liquid ring vacuum pump chemical flush feedback report"></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">Busch ref</span><div class="ctrl"><input type="text" id="cj_fb_busch_ref" placeholder="e.g. 26NBQ146"></div></div><div class="mgf"><span class="mlab">Your ref</span><div class="ctrl"><input type="text" id="cj_fb_your_ref" placeholder="e.g. DESANDS MODULE VACUUM PUMP FLT 151"></div></div></div>
-</div></div></div>
+</div></div>
 <h4 style="margin:14px 0 4px;font-size:14px;font-weight:800;color:var(--teal)">Sections in this report</h4>
 <p class="cj-fb-secs-hint">Green light = live on Preview + PDF. Arrow folds the section on this phone.</p>
 <div id="cj_fb_sections">
@@ -7640,7 +7639,7 @@ function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
  if(c&&c.logoDataUrl&&c.letterLive!==false){
   var plateCls=(c.logoLooksLight===true)?" fb-logo-on-plate":"";
   h+='<img class="fb-logo-cust'+plateCls+'" src="'+c.logoDataUrl+'" alt="Customer logo">';
- }else h+='<div class="fb-logo-ph">Customer logo</div>';
+ }else h+='<span></span>';
  h+='<img class="fb-logo-busch" src="'+LRI_LOGO+'" alt="Busch">';
  h+='</div>';
  h+='<h4 class="fb-letter-title">'+custEsc(CUST_FB_LETTER_TITLE)+'</h4>';
