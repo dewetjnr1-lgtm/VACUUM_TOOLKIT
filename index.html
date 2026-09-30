@@ -527,7 +527,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 }
 
 /* --- Collapse bars + live Preview light (Christoff 2026-09-26; bar layout fix) --- */
-.vt-collapse-bar{display:flex;align-items:center;gap:4px;min-height:44px;padding:2px 4px 2px 0;margin:0 0 6px;border-radius:10px;user-select:none;}
+.vt-collapse-bar{display:flex;align-items:center;gap:4px;min-height:44px;padding:2px 4px 2px 0;margin:0 0 6px;border-radius:10px;user-select:none;cursor:pointer;}
 .vt-collapsible.is-collapsed .vt-collapse-bar{display:grid;grid-template-columns:44px minmax(0,1fr) auto;grid-template-rows:auto auto;column-gap:4px;row-gap:2px;align-items:center;margin-bottom:0;padding:6px 8px;background:rgba(22,40,55,.55);}
 html[data-theme="light"] .vt-collapsible.is-collapsed .vt-collapse-bar{background:var(--vt-bar-bg,#E8EEF2);}
 .vt-collapse-arrow{flex:0 0 auto;width:44px;height:44px;min-width:44px;min-height:44px;margin:0;padding:0;border:0;border-radius:10px;background:transparent;color:var(--vt-arrow,#8BBFD4);font-size:18px;line-height:1;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;-webkit-tap-highlight-color:transparent;}
@@ -5759,6 +5759,15 @@ function vtCollapseToggle(id){
  vtCollapsePersistEl(el);
  vtCollapseHintsRefresh();
 }
+// Whole bar opens/closes its section, not just the arrow. Buttons/inputs on the
+// bar (the arrow itself, the "on Preview" light) keep their own click.
+document.addEventListener("click",function(ev){
+ var t=ev.target;if(!t||!t.closest)return;
+ var bar=t.closest(".vt-collapse-bar");if(!bar)return;
+ if(t.closest("button,input,select,textarea,a,label"))return;
+ var sec=bar.closest(".vt-collapsible");
+ if(sec&&sec.id)vtCollapseToggle(sec.id);
+});
 function vtCollapseSet(id,collapsed,skipPersist){
  var el=document.getElementById(id);if(!el)return;
  if(collapsed)el.classList.add("is-collapsed");else el.classList.remove("is-collapsed");
@@ -8594,7 +8603,7 @@ vtThemeApply(vtThemeGet());vtCollapseRestore();
 // installed app window (laptop) / home-screen app (phone) can keep an old copy
 // open far longer, so a published fix can look like "nothing changed".
 // VT_BUILD must be bumped on every change to this file (see CLAUDE.md).
-var VT_BUILD="2026-09-30.2";
+var VT_BUILD="2026-09-30.3";
 (function vtAutoUpdate(){
  if(location.protocol!=="http:"&&location.protocol!=="https:")return;
  var url=location.href.split("#")[0],bar=null,busy=false;
