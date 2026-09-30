@@ -46,6 +46,11 @@ There is no test suite, linter, package manifest, or CI in this repo.
   (e.g. "Fix nonsensical negative vacuum readings", "Add orifice sizing, water heat
   load, cooling tower make-up, and workbook conveying calculators"). Match that
   style — no conventional-commit prefixes are used.
+- **Bump `VT_BUILD`** (near the end of `index.html`, e.g. `"2026-09-30.2"` →
+  `"2026-09-30.3"`) in every commit that changes `index.html`. Open copies of the
+  app (installed laptop window, phone home-screen app) compare their `VT_BUILD`
+  with the live site's and reload themselves when it differs — if it isn't
+  bumped, the owners keep seeing the old version and think the change failed.
 - Keep everything in `index.html` unless there's a strong reason to split it out;
   the single-file, dependency-free design is intentional (works offline, can be
   saved to a phone home screen, no build pipeline for non-technical owners to

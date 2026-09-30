@@ -8590,4 +8590,49 @@ vtThemeApply(vtThemeGet());vtCollapseRestore();
   el.addEventListener("input",refresh); el.addEventListener("change",refresh);
  });
 })();
+// Self-update. The site is served with a 10-minute browser cache, and the
+// installed app window (laptop) / home-screen app (phone) can keep an old copy
+// open far longer, so a published fix can look like "nothing changed".
+// VT_BUILD must be bumped on every change to this file (see CLAUDE.md).
+var VT_BUILD="2026-09-30.2";
+(function vtAutoUpdate(){
+ if(location.protocol!=="http:"&&location.protocol!=="https:")return;
+ var url=location.href.split("#")[0],bar=null,busy=false;
+ var re=new RegExp("VT_BUILD"+"=\"([0-9A-Za-z.\\-]+)\"");
+ function latestBuild(){
+  return fetch(url,{cache:"reload"}).then(function(r){return r.ok?r.text():"";})
+   .then(function(t){var m=re.exec(t);return m?m[1]:null;});
+ }
+ function saveWork(){
+  try{if(CUR==="cust_job")custSaveJob("auto");}catch(e){}
+  try{if(CUR==="lri")lriSave(true);}catch(e){}
+ }
+ function updateNow(){saveWork();location.reload();}
+ function offer(){
+  if(bar)return;
+  bar=document.createElement("button");
+  bar.type="button";
+  bar.textContent="New version of the toolkit is ready — tap to update";
+  bar.style.cssText="position:fixed;top:64px;left:50%;transform:translateX(-50%);z-index:9500;background:var(--accent);color:#241505;border:0;border-radius:22px;padding:11px 18px;font-size:14px;font-weight:800;box-shadow:0 4px 16px rgba(0,0,0,.5);cursor:pointer;max-width:92vw;";
+  bar.onclick=updateNow;
+  document.body.appendChild(bar);
+ }
+ function check(justOpened){
+  if(busy||navigator.onLine===false)return;
+  busy=true;
+  latestBuild().then(function(b){
+   busy=false;
+   if(!b||b===VT_BUILD)return;
+   // Reload straight away only when the page has just opened (nothing typed
+   // yet), and only once per new build so a slow website can't cause a loop.
+   var key="vt_updated_to_"+b,done=false;
+   try{done=!!sessionStorage.getItem(key);sessionStorage.setItem(key,"1");}catch(e){done=true;}
+   if(justOpened&&!done)updateNow();else offer();
+  }).catch(function(){busy=false;});
+ }
+ window.vtCheckForUpdate=check;
+ check(true);
+ document.addEventListener("visibilitychange",function(){if(!document.hidden)check(false);});
+ setInterval(function(){check(false);},10*60*1000);
+})();
 </script></body></html>
