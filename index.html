@@ -411,7 +411,25 @@ body.cj-fb-preview-open{overflow:hidden !important;}
  #cust_job .cj-visit,#cust_job .card:first-of-type{scroll-margin-top:72px;}
  .vt-sticky-pump{top:72px;}
 }
-.cj-fb-letter{font-size:9.5px;color:#333;line-height:1.35;background:#fff;border-radius:8px;padding:16px 16px 10px;border:1px solid #D0D5D8;font-family:Helvetica,Arial,sans-serif;}
+.cj-fb-letter{font-size:9.5px;color:#333;line-height:1.35;background:#fff;border-radius:8px;padding:16px 16px 10px;border:1px solid #D0D5D8;font-family:Helvetica,Arial,sans-serif;container-type:inline-size;}
+/* Letter text sizes come from --fb-pt-* (PDF points, set by custFbApplySizeVars).
+   The letter's content width stands for the PDF's 180 mm text width, so
+   1 pt = 0.35278 mm = 0.196% of it (0.196cqw) — the preview then wraps lines
+   where the PDF does, whatever width the preview panel happens to be. */
+/* Bold is 700, not 800: at 800 the browser draws a heavier face ~13% wider
+   than the PDF's Helvetica-Bold, so headings wrapped on screen but not in print. */
+.cj-fb-letter .fb-letter-title{font-size:calc(var(--fb-pt-title,15) * 0.196cqw) !important;letter-spacing:0 !important;font-weight:700 !important;}
+.cj-fb-letter .fb-meta,.cj-fb-letter .fb-refs,.cj-fb-letter .fb-val{font-size:calc(var(--fb-pt-meta,10.5) * 0.196cqw) !important;}
+.cj-fb-letter .fb-lab{font-size:calc((var(--fb-pt-meta,10.5) - 0.5) * 0.196cqw) !important;letter-spacing:0 !important;font-weight:700 !important;}
+.cj-fb-letter .fb-body,.cj-fb-letter .fb-ol,.cj-fb-letter .fb-ul{font-size:calc(var(--fb-pt-body,8.5) * 0.196cqw) !important;line-height:1.27 !important;}
+.cj-fb-letter .fb-sec-letter{font-size:calc(var(--fb-pt-head,13.5) * 0.196cqw) !important;letter-spacing:0 !important;line-height:1.18 !important;font-weight:700 !important;}
+.cj-fb-sizes-box{border-top:1px solid var(--line);margin-top:12px;}
+.cj-size-row{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:5px 0;border-bottom:1px solid var(--line);font-size:13.5px;}
+.cj-size-ctl{display:flex;align-items:center;gap:8px;flex:0 0 auto;}
+.cj-size-ctl button{min-width:40px;min-height:36px;font-size:18px;font-weight:800;border-radius:8px;border:1px solid var(--line);background:var(--elev);color:var(--ink);cursor:pointer;}
+.cj-size-ctl button:disabled{opacity:.35;cursor:default;}
+.cj-size-val{min-width:74px;text-align:center;font-weight:800;}
+.cj-size-val small{display:block;font-weight:500;font-size:10.5px;color:var(--soft);}
 .cj-fb-letter.cj-fb-letter-word{background:#fff;}
 .cj-fb-letter .fb-logos{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:0 0 14px;}
 .cj-fb-letter .fb-logo-cust{width:auto;height:auto;max-width:190px;max-height:76px;object-fit:contain;background:transparent;padding:0;border-radius:0;}
@@ -1438,6 +1456,12 @@ html[data-theme="light"] .ctrl input,html[data-theme="light"] .ctrl select,html[
 <div class="fld"><div class="fh"><label>Subject</label></div><div class="ctrl"><input type="text" id="cj_fb_subject" placeholder="e.g. Liquid ring vacuum pump chemical flush feedback report"></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">Busch ref</span><div class="ctrl"><input type="text" id="cj_fb_busch_ref" placeholder="e.g. 26NBQ146"></div></div><div class="mgf"><span class="mlab">Your ref</span><div class="ctrl"><input type="text" id="cj_fb_your_ref" placeholder="e.g. DESANDS MODULE VACUUM PUMP FLT 151"></div></div></div>
 </div></div>
+<div class="cj-fb-sizes-box">
+<h4 style="margin:14px 0 2px;font-size:14px;font-weight:800;color:var(--teal)">Letter text sizes</h4>
+<p class="sub" style="margin:0 0 6px;font-size:12.5px">Applies to all your letters. The preview and the PDF change together.</p>
+<div id="cj_fb_sizes"></div>
+<button type="button" class="clrbtn" style="margin:6px 0 0" onclick="custFbSizeReset()">Reset to standard sizes</button>
+</div>
 <h4 style="margin:14px 0 4px;font-size:14px;font-weight:800;color:var(--teal)">Sections in this report</h4>
 <p class="cj-fb-secs-hint">Green light = live on Preview + PDF. Arrow folds the section on this phone.</p>
 <div id="cj_fb_sections">
@@ -6241,6 +6265,7 @@ function custRenderJob(){
 
  custFbApplyTicksToUi(j.fbTicks);
  custRenderFbHeaderOrder();
+ custRenderFbSizeUi();
  custRenderJobCalcs();
  custRenderJobPhotos();
  custSecRenderAllPhotos();
@@ -7386,6 +7411,53 @@ function custFbLetterPlan(fb,grouped,j){
 function custFbLetterMetaHtml(lab,val){
  return '<div class="fb-meta-row"><span class="fb-lab">'+custEsc(lab)+' :</span> <span class="fb-val">'+custEsc(val||"—")+'</span></div>';
 }
+// Letter text sizes, in PDF points — one setting for every letter, kept on this
+// device. The PDF uses them directly; the preview gets them as CSS variables and
+// scales them to its own page width (see .cj-fb-letter in the CSS), so both break
+// lines in the same places.
+var CUST_FB_SIZE_KEY="vt_letter_sizes";
+var CUST_FB_SIZE_DEFAULTS={title:15,head:13.5,meta:10.5,body:8.5};
+var CUST_FB_SIZE_LIMITS={title:[10,22],head:[9,18],meta:[7,14],body:[6,13]};
+var CUST_FB_SIZE_LABELS={title:"Report title",head:"Orange section headings",meta:"Header details (Email, Company…)",body:"Paragraph text"};
+function custFbSizes(){
+ var saved={},out={},k,v,lim;
+ try{saved=JSON.parse(localStorage.getItem(CUST_FB_SIZE_KEY)||"{}")||{};}catch(e){saved={};}
+ for(k in CUST_FB_SIZE_DEFAULTS){
+  v=+saved[k];lim=CUST_FB_SIZE_LIMITS[k];
+  out[k]=(isFinite(v)&&v>=lim[0]&&v<=lim[1])?v:CUST_FB_SIZE_DEFAULTS[k];
+ }
+ return out;
+}
+function custFbApplySizeVars(){
+ var s=custFbSizes(),st=document.documentElement.style,k;
+ for(k in s)st.setProperty("--fb-pt-"+k,String(s[k]));
+}
+function custFbSizesChanged(s){
+ try{if(s)localStorage.setItem(CUST_FB_SIZE_KEY,JSON.stringify(s));else localStorage.removeItem(CUST_FB_SIZE_KEY);}catch(e){}
+ custFbApplySizeVars();
+ custRenderFbSizeUi();
+ try{cjRescaleLivePreview();}catch(e){}
+}
+function custFbSizeStep(key,dir){
+ var s=custFbSizes(),lim=CUST_FB_SIZE_LIMITS[key];
+ s[key]=Math.min(lim[1],Math.max(lim[0],Math.round((s[key]+dir*0.5)*2)/2));
+ custFbSizesChanged(s);
+}
+function custFbSizeReset(){custFbSizesChanged(null);}
+function custRenderFbSizeUi(){
+ var el=document.getElementById("cj_fb_sizes");if(!el)return;
+ var s=custFbSizes(),h="",k,lim;
+ for(k in CUST_FB_SIZE_DEFAULTS){
+  lim=CUST_FB_SIZE_LIMITS[k];
+  h+='<div class="cj-size-row"><span class="cj-size-lab">'+CUST_FB_SIZE_LABELS[k]+'</span><span class="cj-size-ctl">'
+   +'<button type="button"'+(s[k]<=lim[0]?" disabled":"")+' onclick="custFbSizeStep(\''+k+'\',-1)" aria-label="Smaller">&minus;</button>'
+   +'<span class="cj-size-val">'+s[k]+(s[k]!==CUST_FB_SIZE_DEFAULTS[k]?"":" <small>standard</small>")+'</span>'
+   +'<button type="button"'+(s[k]>=lim[1]?" disabled":"")+' onclick="custFbSizeStep(\''+k+'\',1)" aria-label="Bigger">+</button>'
+   +'</span></div>';
+ }
+ el.innerHTML=h;
+}
+window.custFbSizeStep=custFbSizeStep;window.custFbSizeReset=custFbSizeReset;
 // Which fields can print in each column, and their default top-to-bottom order.
 // custFbHeaderOrder() lets a job override the order within each column (not
 // which column a field is in — that stays fixed left/right).
@@ -7745,7 +7817,7 @@ function custFbLetterEnsure(L,need){
 }
 function custFbLetterBodyText(L,text,opt){
  opt=opt||{};
- var fs=opt.fs||8.5, lh=opt.lh||3.8, lines,i,room,take,chunk;
+ var fs=opt.fs||custFbSizes().body, lh=opt.lh||(3.8*fs/8.5), lines,i,room,take,chunk;
  L.doc.setFont("helvetica",opt.bold?"bold":"normal"); L.doc.setFontSize(fs);
  L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);
  lines=L.doc.splitTextToSize(String(text==null?"":text),L.contentW);
@@ -7764,11 +7836,14 @@ function custFbLetterBodyText(L,text,opt){
 }
 function custFbLetterSecHead(L,num,title){
  var label=num+". "+String(title||"").toUpperCase();
- custFbLetterEnsure(L,14);
- L.doc.setFont("helvetica","bold"); L.doc.setFontSize(13.5);
+ var S=custFbSizes(), k=S.head/13.5, lhF=1.18, lineH=S.head*lhF*0.35278;
+ L.doc.setFont("helvetica","bold"); L.doc.setFontSize(S.head);
+ // Wrap a long heading onto more lines instead of running off the page.
+ var lines=L.doc.splitTextToSize(label,L.contentW);
+ custFbLetterEnsure(L,14*k+(lines.length-1)*lineH);
  L.doc.setTextColor(L.orange[0],L.orange[1],L.orange[2]);
- L.doc.text(label,L.m,L.y+5);
- L.y+=7.5;
+ L.doc.text(lines,L.m,L.y+5*k,{lineHeightFactor:lhF});
+ L.y+=7.5*k+(lines.length-1)*lineH;
  L.doc.setDrawColor(L.orange[0],L.orange[1],L.orange[2]); L.doc.setLineWidth(0.35);
  L.doc.line(L.m,L.y,L.pw-L.m,L.y);
  L.y+=3.5;
@@ -7818,7 +7893,7 @@ function custFbLetterPumpSecPdf(L,key,normSec){
    blk=st.blocks[b];photos=blk.photos||[];
    if(!(blk.label||"").trim()&&!(blk.notes||"").trim()&&!photos.length)continue;
    if((blk.label||"").trim())custFbLetterSubHead(L,blk.label.trim(),true);
-   if((blk.notes||"").trim())custFbLetterBodyText(L,blk.notes,{fs:8.5,lh:3.8,gapAfter:3});
+   if((blk.notes||"").trim())custFbLetterBodyText(L,blk.notes,{gapAfter:3});
    if(blk.ba){
     before=[];after=[];other=[];
     for(i=0;i<photos.length;i++){
@@ -7883,18 +7958,24 @@ function custFbLetterDrawPumps(L,normSec){
    b=blocks[i];
    if(b.kind==="sub")custFbLetterSubHead(L,b.text,i===0);
    else if(b.kind==="rows")custFbLetterRowsPdf(L,b.text);
-   else if(b.kind==="text")custFbLetterBodyText(L,b.text,{fs:8.5,lh:3.8,gapAfter:1.5});
+   else if(b.kind==="text")custFbLetterBodyText(L,b.text,{gapAfter:1.5});
    else if(b.kind==="photos"){ custFbLetterPumpSecPdf(L,b.key,normSec); }
   }
   L.y+=3;
  }
 }
-function custFbLetterMetaLine(L,lab,val,x,y,labW,maxW){
- L.doc.setFont("helvetica","bold"); L.doc.setFontSize(10);
+// Value follows its label on the same line ("EMAIL : x@y"), exactly like the
+// preview, so the label/value spacing scales with the chosen text size.
+// colW is the full width available to this label+value.
+function custFbLetterMetaLine(L,lab,val,x,y,colW){
+ var S=custFbSizes();
+ var labTxt=String(lab).toUpperCase()+" :";
+ L.doc.setFont("helvetica","bold"); L.doc.setFontSize(S.meta-0.5);
  L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);
- L.doc.text(String(lab).toUpperCase()+" :",x,y);
- L.doc.setFont("helvetica","normal"); L.doc.setFontSize(10.5);
- var lines=L.doc.splitTextToSize(String(val||"—"),Math.max(18,maxW));
+ L.doc.text(labTxt,x,y);
+ var labW=L.doc.getTextWidth(labTxt)+S.meta*0.12;
+ L.doc.setFont("helvetica","normal"); L.doc.setFontSize(S.meta);
+ var lines=L.doc.splitTextToSize(String(val||"—"),Math.max(18,colW-labW));
  L.doc.text(lines[0]||"—",x+labW,y);
  return lines.length;
 }
@@ -7904,27 +7985,28 @@ function custFbLetterDrawHeader(L,c,j,fb){
  custH=(c&&c.letterLive===false)?0:custPlaceCustomerLogo(L.doc, c&&c.logoDataUrl, L.m, L.y, 55, 24, {plate:!!(c&&c.logoLooksLight)});
  try{L.doc.addImage(LRI_LOGO,"PNG",L.pw-L.m-logoW,L.y,logoW,logoH);}catch(e2){}
  L.y+=Math.max(logoH,custH)+6;
- L.doc.setFont("helvetica","bold"); L.doc.setFontSize(15);
+ var S=custFbSizes(), kT=S.title/15, kM=S.meta/10.5;
+ L.doc.setFont("helvetica","bold"); L.doc.setFontSize(S.title);
  L.doc.setTextColor(40,40,40);
  L.doc.text(CUST_FB_LETTER_TITLE,L.pw/2,L.y,{align:"center"});
- L.y+=6;
+ L.y+=6*kT;
  L.doc.setDrawColor(160,160,160); L.doc.setLineWidth(0.25);
  L.doc.line(L.m,L.y,L.pw-L.m,L.y);
- L.y+=6;
+ L.y+=6*kM;
  // mid sits further right than dead-centre (58% of page width, not 50%) so the
  // right column doesn't crowd the left one against the middle of the page.
- var y0=L.y, labW=28, mid=L.pw*0.58, maxL=mid-4-L.m-labW, maxR=L.pw-L.m-mid-labW;
+ var y0=L.y, mid=L.pw*0.58, rowH=5.6*kM, colL=mid-4-L.m, colR=L.pw-L.m-mid;
  var metaRows=custFbLetterMetaRows(fb,j), left=metaRows.left, right=metaRows.right, refs=metaRows.refs;
  var i;
- for(i=0;i<left.length;i++) custFbLetterMetaLine(L,left[i][0],left[i][1],L.m,y0+i*5.6,labW,maxL);
- for(i=0;i<right.length;i++) custFbLetterMetaLine(L,right[i][0],right[i][1],mid,y0+i*5.6,labW,maxR);
- L.y=y0+Math.max(left.length,right.length)*5.6+2;
+ for(i=0;i<left.length;i++) custFbLetterMetaLine(L,left[i][0],left[i][1],L.m,y0+i*rowH,colL);
+ for(i=0;i<right.length;i++) custFbLetterMetaLine(L,right[i][0],right[i][1],mid,y0+i*rowH,colR);
+ L.y=y0+Math.max(left.length,right.length)*rowH+2;
  if(left.length||right.length){
   L.doc.setDrawColor(160,160,160); L.doc.setLineWidth(0.25);
   L.doc.line(L.m,L.y,L.pw-L.m,L.y);
-  L.y+=5.5;
+  L.y+=5.5*kM;
  }
- for(i=0;i<refs.length;i++){ custFbLetterMetaLine(L,refs[i][0],refs[i][1],L.m,L.y,32,L.contentW-34); L.y+=5.6; }
+ for(i=0;i<refs.length;i++){ custFbLetterMetaLine(L,refs[i][0],refs[i][1],L.m,L.y,L.contentW); L.y+=rowH; }
  if(refs.length) L.y+=1.8;
 }
 
@@ -7943,7 +8025,7 @@ function custFbLetterRelBlocksPdf(L,j,key){
  for(b=0;b<blocks.length;b++){
   blk=blocks[b];
   if((blk.label||"").trim())custFbLetterSubHead(L,blk.label.trim(),true);
-  if((blk.notes||"").trim())custFbLetterBodyText(L,blk.notes,{fs:8.5,lh:3.8,gapAfter:3});
+  if((blk.notes||"").trim())custFbLetterBodyText(L,blk.notes,{gapAfter:3});
   photos=blk.photos||[];
   function drawList(list,title){
    if(!list.length)return;
@@ -8119,18 +8201,18 @@ function custExportFeedbackPDF(skipUngroupedWarn){
   for(si=0;si<plan.length;si++){
    sec=plan[si];
    if(sec.kind==="greeting"||sec.kind==="closing"){
-    custFbLetterBodyText(L,sec.payload,{fs:8.5,lh:3.8,gapAfter:3});
+    custFbLetterBodyText(L,sec.payload,{gapAfter:3});
    }else if(sec.kind==="signoff"){
     custFbLetterSignoff(L,j);
    }else if(sec.kind==="text"){
     custFbLetterSecHead(L,sec.num,sec.title);
-    if(custFbLetterHas(sec.payload.text))custFbLetterBodyText(L,sec.payload.text,{fs:8.5,lh:3.8,gapAfter:3});
+    if(custFbLetterHas(sec.payload.text))custFbLetterBodyText(L,sec.payload.text,{gapAfter:3});
     custFbLetterPhotosBa(L,photos,norm,sec.payload.idxs,sec.key,j);
     custFbLetterRelBlocksPdf(L,j,sec.key);
    }else if(sec.kind==="recs"){
     custFbLetterSecHead(L,sec.num,sec.title);
     if(sec.payload.lines&&sec.payload.lines.length){
-     for(li=0;li<sec.payload.lines.length;li++) custFbLetterBodyText(L,(li+1)+". "+sec.payload.lines[li],{fs:8.5,lh:3.8,gapAfter:1.5});
+     for(li=0;li<sec.payload.lines.length;li++) custFbLetterBodyText(L,(li+1)+". "+sec.payload.lines[li],{gapAfter:1.5});
      L.y+=2;
     }
     custFbLetterPhotosBa(L,photos,norm,sec.payload.idxs,sec.key,j);
@@ -8146,7 +8228,7 @@ function custExportFeedbackPDF(skipUngroupedWarn){
     custFbLetterSecHead(L,sec.num,sec.title);
     if(custFbLetterHas(sec.payload.text)){
      lines=custFbLetterLines(sec.payload.text).filter(function(x){return !!x.trim();});
-     for(li=0;li<lines.length;li++) custFbLetterBodyText(L,"•  "+lines[li].replace(/^[-•*]\s*/,""),{fs:8.5,lh:3.8,gapAfter:1.2});
+     for(li=0;li<lines.length;li++) custFbLetterBodyText(L,"•  "+lines[li].replace(/^[-•*]\s*/,""),{gapAfter:1.2});
      L.y+=2;
     }
     custFbLetterPhotosBa(L,photos,norm,sec.payload.idxs,"additional",j);
@@ -8600,7 +8682,7 @@ for(var exk in EX_LAW)renderExample(exk);
  window.addEventListener("resize",size);size();
  if(!still)requestAnimationFrame(loop);
 })();
-vtThemeApply(vtThemeGet());vtCollapseRestore();
+vtThemeApply(vtThemeGet());vtCollapseRestore();custFbApplySizeVars();
 (function vtHintListeners(){
  function refresh(){try{vtCollapseHintsRefresh();}catch(e){}}
  ["cv_name","cv_site","cv_letter_email","cv_contact_name","cv_contact_phone","cv_contact_email",
@@ -8616,7 +8698,7 @@ vtThemeApply(vtThemeGet());vtCollapseRestore();
 // installed app window (laptop) / home-screen app (phone) can keep an old copy
 // open far longer, so a published fix can look like "nothing changed".
 // VT_BUILD must be bumped on every change to this file (see CLAUDE.md).
-var VT_BUILD="2026-09-30.4";
+var VT_BUILD="2026-09-30.5";
 (function vtAutoUpdate(){
  if(location.protocol!=="http:"&&location.protocol!=="https:")return;
  var url=location.href.split("#")[0],bar=null,busy=false;
