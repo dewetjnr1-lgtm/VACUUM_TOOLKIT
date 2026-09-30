@@ -5570,25 +5570,7 @@ function custLoad(){
  }else{
   CUST_DB=o;
   if(!CUST_DB.version)CUST_DB.version=1;
-  if(custMigrateSeedLogos())custPersist(true);
  }
-}
-function custMigrateSeedLogos(){
- // Quack / existing devices: seed Hancock had empty logoDataUrl → dark "Customer logo" plate.
- // Fill Standard RGB once when still empty; never overwrite a user upload.
- var i,c,n,changed=false;
- if(!CUST_DB||!CUST_DB.customers)return false;
- for(i=0;i<CUST_DB.customers.length;i++){
-  c=CUST_DB.customers[i]; if(!c)continue;
-  if(c.logoDataUrl)continue;
-  n=String(c.name||"").toLowerCase();
-  if(c.id==="royhill" || /hancock|roy\s*hill|\bhio\b/.test(n)){
-   c.logoDataUrl=CUST_SEED_HIO_LOGO;
-   c.logoLooksLight=false;
-   changed=true;
-  }
- }
- return changed;
 }
 function custPersist(quiet){
  var warn=document.getElementById("cj_warn");
@@ -8698,7 +8680,7 @@ vtThemeApply(vtThemeGet());vtCollapseRestore();custFbApplySizeVars();
 // installed app window (laptop) / home-screen app (phone) can keep an old copy
 // open far longer, so a published fix can look like "nothing changed".
 // VT_BUILD must be bumped on every change to this file (see CLAUDE.md).
-var VT_BUILD="2026-09-30.5";
+var VT_BUILD="2026-09-30.6";
 (function vtAutoUpdate(){
  if(location.protocol!=="http:"&&location.protocol!=="https:")return;
  var url=location.href.split("#")[0],bar=null,busy=false;
