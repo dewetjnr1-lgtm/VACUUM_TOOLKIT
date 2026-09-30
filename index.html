@@ -368,7 +368,12 @@ body.cj-fb-preview-open{overflow:hidden !important;}
   z-index:1; /* below form stacking; cannot cover Visit fields */
  }
  body.cj-live-open .cj-live-preview-panel.on .cj-live-preview-head{flex:0 0 auto;}
- body.cj-live-open .cj-live-preview-panel.on .cj-live-preview-body,
+ /* The letter's white paper grows to the letter's full length (the panel
+    scrolls); only the PDF viewer iframe fills the panel height. Letting the
+    paper shrink to the panel made a long letter run off its white edge. */
+ body.cj-live-open .cj-live-preview-panel.on .cj-live-preview-body{
+  flex:0 0 auto;width:100%;
+ }
  body.cj-live-open .cj-live-preview-panel.on .cj-live-preview-frame{
   flex:1 1 auto;min-height:0;width:100%;
  }
@@ -6506,6 +6511,14 @@ function cjRescaleLivePreview(){
  var scale=(availW>0&&naturalW>0)?Math.min(1,availW/naturalW):1;
  inner.style.transform="scale("+scale+")";
  wrap.style.height=Math.ceil(naturalH*scale)+"px";
+ // The height above is measured right after the letter is drawn, before its
+ // photos have loaded — re-measure whenever the letter grows, or the wrap
+ // (overflow:hidden) cuts off the end of the letter on phones.
+ if(!inner._vtResizeWatch){
+  inner._vtResizeWatch=true;
+  inner.querySelectorAll("img").forEach(function(im){if(!im.complete)im.addEventListener("load",cjRescaleLivePreview);});
+  if(window.ResizeObserver){inner._vtRO=new ResizeObserver(function(){cjRescaleLivePreview();});inner._vtRO.observe(inner);}
+ }
 }
 window.cjRescaleLivePreview=cjRescaleLivePreview;
 var _cjLiveTimer=null,_cjLiveLastGood="";
@@ -8603,7 +8616,7 @@ vtThemeApply(vtThemeGet());vtCollapseRestore();
 // installed app window (laptop) / home-screen app (phone) can keep an old copy
 // open far longer, so a published fix can look like "nothing changed".
 // VT_BUILD must be bumped on every change to this file (see CLAUDE.md).
-var VT_BUILD="2026-09-30.3";
+var VT_BUILD="2026-09-30.4";
 (function vtAutoUpdate(){
  if(location.protocol!=="http:"&&location.protocol!=="https:")return;
  var url=location.href.split("#")[0],bar=null,busy=false;
