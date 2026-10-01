@@ -4,8 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BUSCH Quote &amp; Costing Tool</title>
-<!-- visual-lock-orphan-bdm-2026-10-01: orphan heading fix + BDM picker (Chris/André) like Toolkit letter -->
+<!-- visual-lock-footer-clear-2026-10-01: fixed footer clearance (36mm) + prior orphan/BDM locks -->
 <style>
+  /* Print page box (also redeclared in @media print). Bottom ≥ footer img. */
+  @page{size:A4;margin:10mm 10mm 36mm 10mm;}
   :root{
     --orange:#FF6A1A;
     --orange-dark:#FF8A47;
@@ -339,7 +341,7 @@
     /* Match on-screen letter padding as closely as print allows */
     .paper{
       box-shadow:none !important;margin:0 auto !important;width:auto !important;max-width:100% !important;
-      min-height:0 !important;padding:12mm 13mm 30mm 13mm !important;
+      min-height:0 !important;padding:12mm 13mm 36mm 13mm !important;
       -webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important;
     }
     .paper,.paper *{
@@ -375,9 +377,13 @@
       background:#FF6A1A !important;color:#fff !important;
       -webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;
     }
-    @page{margin:10mm 10mm 28mm 10mm;}
-    .doc-footer-spacer{display:block !important;height:30mm !important;}
-    .doc-footer{position:fixed;bottom:4mm;left:10mm;right:10mm;z-index:0;}
+    /* Fixed footer clearance: footer img ~26mm + bottom:3mm ≈ 29mm; reserve 36mm so
+       body never paints under ABN/bank/countries (classic fixed-footer print pattern).
+       Keep orphan rules above — do not restore commercial-grid break-inside:avoid. */
+    @page{size:A4;margin:10mm 10mm 36mm 10mm;}
+    .doc-footer-spacer{display:block !important;height:36mm !important;min-height:36mm !important;}
+    .doc-footer{position:fixed;bottom:3mm;left:10mm;right:10mm;height:auto;z-index:0;}
+    .doc-footer img{width:100%;max-height:30mm;object-fit:contain;object-position:bottom;display:block;}
     .paper > *:not(.doc-footer){position:relative;z-index:1;}
     /* Allow long commercial / offer tables to break; keep individual rows intact */
     .commercial-grid{page-break-inside:auto;break-inside:auto;}
@@ -1304,7 +1310,7 @@ function renderPreview(){
       </div>` : `<div></div>`}
     </div>
 
-    <div class="doc-footer-spacer" aria-hidden="true" style="height:30mm;"></div>
+    <div class="doc-footer-spacer" aria-hidden="true" style="height:36mm;"></div>
     <div class="doc-footer"><img src="${LOGO_FOOTER}" alt=""></div>
   `;
 }
