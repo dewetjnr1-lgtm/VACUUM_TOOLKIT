@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BUSCH Quote &amp; Costing Tool</title>
-<!-- visual-lock-print-match-2026-10-01: print==preview, color-adjust exact, omit empty scope/tech, no editor chrome -->
+<!-- visual-lock-orphan-fix-2026-10-01: keep section headings with first content on print; commercial-grid may break -->
 <style>
   :root{
     --orange:#FF6A1A;
@@ -270,7 +270,10 @@
     background:transparent;color:var(--orange);font-weight:700;
     padding:0 0 3px;margin:18px 0 10px;
     border-bottom:1.5px solid var(--orange);
+    page-break-after:avoid;break-after:avoid;
   }
+  section.doc-sec{display:block;}
+  .doc-sec-keep{display:block;}
   h3.doc-h2 .h2-hint{
     font-weight:normal;text-transform:none;letter-spacing:0;font-size:10.5px;color:#666;margin-left:6px;
   }
@@ -348,11 +351,25 @@
       background:transparent !important;color:#FF6A1A !important;font-weight:700 !important;
       padding:0 0 3px !important;margin:18px 0 10px !important;
       border-bottom:1.5px solid #FF6A1A !important;
+      page-break-after:avoid !important;break-after:avoid !important;
     }
     h3.doc-h2 .h2-hint{
       font-weight:normal !important;text-transform:none !important;letter-spacing:0 !important;
       font-size:10.5px !important;color:#666 !important;margin-left:6px !important;
     }
+    /* Keep each numbered heading with its first content block (no orphan title + blank page).
+       Root cause was .commercial-grid{page-break-inside:avoid} as a sibling of h3: browser
+       shoved the whole grid to the next page and left "2. COMMERCIAL" alone. */
+    section.doc-sec{break-inside:auto;page-break-inside:auto;}
+    .doc-sec-keep{
+      page-break-inside:avoid !important;break-inside:avoid !important;
+    }
+    /* Glue heading to the block immediately under it (table / grid / para / imgs) */
+    section.doc-sec > h3.doc-h2 + *{
+      page-break-before:avoid !important;break-before:avoid !important;
+    }
+    /* Prefer at least a couple of commercial rows with the heading when possible */
+    .commercial-grid{orphans:3;widows:3;}
     .doc-letterhead .lh-rule{border-top:2px solid #FF6A1A !important;}
     table.offer th{
       background:#FF6A1A !important;color:#fff !important;
@@ -362,9 +379,14 @@
     .doc-footer-spacer{display:block !important;height:30mm !important;}
     .doc-footer{position:fixed;bottom:4mm;left:10mm;right:10mm;z-index:0;}
     .paper > *:not(.doc-footer){position:relative;z-index:1;}
-    .commercial-grid{page-break-inside:avoid;}
+    /* Allow long commercial / offer tables to break; keep individual rows intact */
+    .commercial-grid{page-break-inside:auto;break-inside:auto;}
+    .commercial-grid .crow{page-break-inside:avoid;break-inside:avoid;}
+    table.offer{page-break-inside:auto;break-inside:auto;}
+    table.offer tr{page-break-inside:avoid;break-inside:avoid;}
     .sig-row{page-break-inside:avoid;margin-bottom:10mm;}
     .offer-photos .op-item{page-break-inside:avoid;}
+    .tech-imgs img{page-break-inside:avoid;break-inside:avoid;}
   }
 </style>
 </head>
@@ -1132,42 +1154,42 @@ function renderPreview(){
   const scopeText = String(state.body.scope||"").replace(/\u00a0/g," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
   let sectionsHtml = "";
 
-  sectionsHtml += `<h3 class="doc-h2">${sn()} Offer</h3>
+  sectionsHtml += `<section class="doc-sec"><h3 class="doc-h2">${sn()} Offer</h3>
     <table class="offer">
       <thead><tr><th>Item</th><th>Qty</th><th>Part No.</th><th>Description</th><th>Unit Price</th><th>Total (AUD)</th><th>Availability</th></tr></thead>
       <tbody>${offerRows || '<tr><td colspan="7" style="color:#999;">No items included</td></tr>'}</tbody>
     </table>
     <div class="offer-total">TOTAL (nett, excluding GST) &nbsp; AU$ ${t.sell.toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2})} nett + GST</div>
-    ${offerPhotosHtml}`;
+    ${offerPhotosHtml}</section>`;
 
   if (options.length) {
     sectionsHtml += `
-    <h3 class="doc-h2">${sn()} Optional Extras <span class="h2-hint">(priced separately - not included in the total above)</span></h3>
+    <section class="doc-sec"><h3 class="doc-h2">${sn()} Optional Extras <span class="h2-hint">(priced separately - not included in the total above)</span></h3>
     <table class="offer">
       <thead><tr><th>Option</th><th>Qty</th><th>Part No.</th><th>Description</th><th>Unit Price</th><th>Total (AUD)</th><th>Availability</th></tr></thead>
       <tbody>${optionRows}</tbody>
     </table>
-    <div class="offer-total">Total if all options are taken &nbsp; AU$ ${t.optSell.toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2})} nett + GST</div>`;
+    <div class="offer-total">Total if all options are taken &nbsp; AU$ ${t.optSell.toLocaleString('en-AU',{minimumFractionDigits:2,maximumFractionDigits:2})} nett + GST</div></section>`;
   }
 
   if (scopeText) {
     sectionsHtml += `
-    <h3 class="doc-h2">${sn()} Scope of Work &amp; Notes</h3>
-    <p class="doc-p">${nl2br(state.body.scope)}</p>`;
+    <section class="doc-sec"><div class="doc-sec-keep"><h3 class="doc-h2">${sn()} Scope of Work &amp; Notes</h3>
+    <p class="doc-p">${nl2br(state.body.scope)}</p></div></section>`;
   }
 
   if (techImgs) {
     sectionsHtml += `
-    <h3 class="doc-h2">${sn()} ${esc(state.technical.sectionTitle||'Technical Data')}</h3>
-    <div class="tech-imgs">${techImgs}</div>`;
+    <section class="doc-sec"><div class="doc-sec-keep"><h3 class="doc-h2">${sn()} ${esc(state.technical.sectionTitle||'Technical Data')}</h3>
+    <div class="tech-imgs">${techImgs}</div></div></section>`;
   }
 
   if (commercialRows.length) {
     sectionsHtml += `
-    <h3 class="doc-h2">${sn()} Commercial</h3>
+    <section class="doc-sec"><h3 class="doc-h2">${sn()} Commercial</h3>
     <div class="commercial-grid">
       ${commercialRows.map(r=>`<div class="crow"><div class="ck">${esc(r[0])}</div><div>${nl2br(r[1])}</div></div>`).join("")}
-    </div>`;
+    </div></section>`;
   }
 
   document.getElementById('paper').innerHTML = `
