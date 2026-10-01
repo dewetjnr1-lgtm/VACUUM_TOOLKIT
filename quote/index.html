@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BUSCH Quote &amp; Costing Tool</title>
-<!-- visual-lock-2026-10-01: Toolkit header, orange heads, omit-empty, footer safe, offer photos -->
+<!-- visual-lock-print-match-2026-10-01: print==preview, color-adjust exact, omit empty scope/tech, no editor chrome -->
 <style>
   :root{
     --orange:#FF6A1A;
@@ -319,18 +319,48 @@
 
   footer.hint-footer{max-width:1200px;margin:0 auto;padding:0 20px 40px;color:var(--grey-text);font-size:11.5px;line-height:1.6;}
 
-  /* ---------- Print ---------- */
+  /* Preview-only staff chrome (editors live outside #view-preview / print root) */
+  #offerPhotosEditor,#techImagesEditor{display:none;}
+  body.tab-preview #offerPhotosEditor,
+  body.tab-preview #techImagesEditor{display:block;}
+
+  /* ---------- Print: only #paper; force orange; no editor chrome ---------- */
   @media print{
-    #appbar,#tabs,.costing-toolbar,.totals-bar,.preview-toolbar,footer.hint-footer,.view:not(#view-preview),
-    .no-print,#techImagesEditor,#offerPhotosEditor{display:none !important;}
-    body{background:#fff;}
-    #previewWrap{background:#fff;padding:0;}
-    .paper{box-shadow:none;margin:0;width:auto;min-height:0;padding:0 6mm 30mm 6mm;}
-    #view-preview{display:block !important;}
-    main{padding:0;max-width:none;}
-    @page{margin:14mm 12mm 30mm 12mm;}
+    #appbar,#tabs,.costing-toolbar,.totals-bar,.preview-toolbar,footer.hint-footer,
+    .view:not(#view-preview),.no-print,#techImagesEditor,#offerPhotosEditor,
+    #offerPhotosEditor *,#techImagesEditor *,.imgpicker,.imglist{display:none !important;visibility:hidden !important;}
+    html,body{background:#fff !important;margin:0 !important;padding:0 !important;}
+    main{padding:0 !important;max-width:none !important;margin:0 !important;}
+    #view-preview{display:block !important;padding:0 !important;margin:0 !important;}
+    #previewWrap{background:#fff !important;padding:0 !important;border-radius:0 !important;}
+    /* Match on-screen letter padding as closely as print allows */
+    .paper{
+      box-shadow:none !important;margin:0 auto !important;width:auto !important;max-width:100% !important;
+      min-height:0 !important;padding:12mm 13mm 30mm 13mm !important;
+      -webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important;
+    }
+    .paper,.paper *{
+      -webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;color-adjust:exact !important;
+    }
+    /* Re-declare orange heads (CSS vars / backgrounds often wash to gray in Save-as-PDF) */
+    h3.doc-h2{
+      font-size:12.5px !important;text-transform:uppercase !important;letter-spacing:.03em !important;
+      background:transparent !important;color:#FF6A1A !important;font-weight:700 !important;
+      padding:0 0 3px !important;margin:18px 0 10px !important;
+      border-bottom:1.5px solid #FF6A1A !important;
+    }
+    h3.doc-h2 .h2-hint{
+      font-weight:normal !important;text-transform:none !important;letter-spacing:0 !important;
+      font-size:10.5px !important;color:#666 !important;margin-left:6px !important;
+    }
+    .doc-letterhead .lh-rule{border-top:2px solid #FF6A1A !important;}
+    table.offer th{
+      background:#FF6A1A !important;color:#fff !important;
+      -webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;
+    }
+    @page{margin:10mm 10mm 28mm 10mm;}
     .doc-footer-spacer{display:block !important;height:30mm !important;}
-    .doc-footer{position:fixed;bottom:4mm;left:12mm;right:12mm;z-index:0;}
+    .doc-footer{position:fixed;bottom:4mm;left:10mm;right:10mm;z-index:0;}
     .paper > *:not(.doc-footer){position:relative;z-index:1;}
     .commercial-grid{page-break-inside:avoid;}
     .sig-row{page-break-inside:avoid;margin-bottom:10mm;}
@@ -467,8 +497,10 @@
     <div id="previewWrap">
       <div class="paper" id="paper"></div>
     </div>
+  </div>
 
-    <div id="offerPhotosEditor" class="no-print">
+  <!-- Staff chrome: structurally OUTSIDE #view-preview / print root; never paint on PDF -->
+  <div id="offerPhotosEditor" class="no-print preview-only-chrome">
     <h2 class="section-title" style="max-width:794px;margin-left:auto;margin-right:auto;">Offer photos <span class="hint">(optional — print in the Offer section with captions)</span></h2>
     <div class="card" style="max-width:794px;margin-left:auto;margin-right:auto;">
       <label class="imgpicker" id="offerImgPickLabel">Click to add a photo into the Offer (JPG/PNG)
@@ -476,16 +508,15 @@
       </label>
       <div class="imglist" id="offerImgList"></div>
     </div>
-    </div>
+  </div>
 
-    <div id="techImagesEditor" class="no-print">
+  <div id="techImagesEditor" class="no-print preview-only-chrome">
     <h2 class="section-title" style="max-width:794px;margin-left:auto;margin-right:auto;">Technical Data Images <span class="hint">(optional — only uploaded images print on the letter)</span></h2>
     <div class="card" style="max-width:794px;margin-left:auto;margin-right:auto;">
       <label class="imgpicker" id="imgPickLabel">Click to add a pump curve, GA drawing or photo (JPG/PNG)
         <input type="file" id="imgPick" accept="image/*" multiple style="display:none;">
       </label>
       <div class="imglist" id="imgList"></div>
-    </div>
     </div>
   </div>
 
@@ -661,12 +692,23 @@ function totals(){
 /* ---------------------------------------------------------------
    TAB SWITCHING
 --------------------------------------------------------------- */
+function syncPreviewChrome(){
+  document.body.classList.toggle('tab-preview', activeTab==='preview');
+  // Belt: inline hide when not on Preview (editors are outside .view)
+  ['offerPhotosEditor','techImagesEditor'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(!el) return;
+    if(activeTab==='preview') el.style.removeProperty('display');
+    else el.style.setProperty('display','none','important');
+  });
+}
 document.querySelectorAll('#tabs button').forEach(btn=>{
   btn.addEventListener('click', ()=>{
     activeTab = btn.dataset.tab;
     document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('active', b===btn));
     document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
     document.getElementById('view-'+activeTab).classList.add('active');
+    syncPreviewChrome();
     if(activeTab==="preview") renderPreview();
     if(activeTab==="setup") renderSetupComputed();
   });
@@ -1056,7 +1098,10 @@ function renderPreview(){
     ["General", state.commercial.general],
   ].filter(Boolean).filter(r=>r[1]);
 
-  const techImgs = (state.technical.images||[]).map(im=>`<img src="${im.dataUrl}">`).join("");
+  const techImgList = (state.technical.images||[]).filter(im =>
+    im && typeof im.dataUrl === 'string' && /^data:image\//i.test(im.dataUrl)
+  );
+  const techImgs = techImgList.map(im=>`<img src="${im.dataUrl}">`).join("");
   const offerPhotoList = Array.isArray(state.offerPhotos) ? state.offerPhotos.filter(p=>p && p.dataUrl) : [];
   const offerPhotosHtml = offerPhotoList.length ? (
     `<div class="offer-photos">` +
@@ -1083,7 +1128,8 @@ function renderPreview(){
   // Sequential numbered sections; omit empty entirely (Toolkit rule)
   let secN = 1;
   const sn = () => (secN++) + ".";
-  const scopeText = (state.body.scope||"").trim();
+  // Aggressive empty: whitespace / NBSP / stray tags only → omit heading entirely
+  const scopeText = String(state.body.scope||"").replace(/\u00a0/g," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
   let sectionsHtml = "";
 
   sectionsHtml += `<h3 class="doc-h2">${sn()} Offer</h3>
@@ -1268,7 +1314,21 @@ document.getElementById('btnPrint').addEventListener('click', ()=>{
   document.querySelectorAll('#tabs button').forEach(b=>b.classList.toggle('active', b.dataset.tab==='preview'));
   document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
   document.getElementById('view-preview').classList.add('active');
+  syncPreviewChrome();
+  // Force-hide staff editors with inline !important so no print engine paints them
+  ['offerPhotosEditor','techImagesEditor'].forEach(id=>{
+    const el = document.getElementById(id);
+    if(el) el.style.setProperty('display','none','important');
+  });
   renderPreview();
+  const restoreChrome = ()=>{
+    ['offerPhotosEditor','techImagesEditor'].forEach(id=>{
+      const el = document.getElementById(id);
+      if(el) el.style.removeProperty('display');
+    });
+    syncPreviewChrome();
+  };
+  window.addEventListener('afterprint', restoreChrome, {once:true});
   setTimeout(()=>window.print(), 150);
 });
 document.getElementById('btnSave').addEventListener('click', ()=>{
@@ -1311,6 +1371,7 @@ function fullRender(){
   renderImgList();
   renderOfferImgList();
   updateItemCountTag();
+  syncPreviewChrome();
   if(activeTab==="preview") renderPreview();
 }
 fullRender();
