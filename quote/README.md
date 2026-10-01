@@ -1,72 +1,45 @@
-# Busch WA — Quote & Costing (v1)
+# Busch WA — Quote & Costing (short offer / visual lock)
 
-Phone-first static web tool for Busch WA offer letters + internal costing.  
-**Not a Claude clone.** UX follows Desi lock; customer letter follows sample **26NBQ142 Rev.0** (Hydro Australia / LB 0265 A).
+Phone-first static web tool for Busch WA **spares / short offers** + internal costing.
+
+**Live:** https://dewetjnr1-lgtm.github.io/VACUUM_TOOLKIT/quote/
 
 ## Open
 
-Open `index.html` in a modern browser (Chrome / Edge / Safari).  
-No build step. Files: `index.html`, `app.css`, `app.js`.
+Open `index.html` in a modern browser (or the live Pages URL).  
+Single-file app (`index.html`) — no build step. Soft Dark phone chrome; **white paper** print.
 
-For local serving (optional, helps some FX CORS cases):
+## Visual lock (2026-10-01)
 
-```bash
-cd /workspace/quoting/app && python3 -m http.server 8765
-# then http://localhost:8765/
-```
+Matches Toolkit Client feedback letter spirit:
+
+1. **Header** — letterhead logo + orange rule + tidy document title + meta grid (ATTENTION / COMPANY / EMAIL / PHONE / FROM / DATE / SUBJECT / BUSCH REF / YOUR REF). No cluttered customer-name + title stack.
+2. **Section heads** — Busch orange (`#FF6A1A`), numbered ALL-CAPS, orange underline (not black bar).
+3. **Empty sections omitted** — no heading/body when empty; remaining sections renumber 1,2,3…
+4. **Footer safe** — spacer + `@page` bottom margin so body does not print through company footer.
+5. **Empty photos** — editor chrome is `no-print`; empty photo set → nothing on PDF.
+6. **Offer photos** — attach ≥1 photo into the Offer area with optional caption; zero → block absent.
 
 ## Tabs
 
 | Tab | Who | What |
 |-----|-----|------|
-| **Setup** | Staff | Customer / Attn / NBQ / Date, country→FX, margin, buffer **0.15**. *More* accordion for commercial, defaults, letter body, signature. Internal FX strip (live + buffered + stamp) — **never on PDF**. |
-| **Costing** | Staff | Starts empty (+ demo seed on first run). **Add import** / **Add local**. Collapsed rows. Yellow = edit. Flags: Include \| Option \| Exclude. `Sell = Landed ÷ (1 − margin)`. |
-| **Preview** | Customer view | Paper letter in the 26NBQ142 family. Tickable sections. **Images / drawings** panel (staff): add photos/GA with size S/M/L + frame; they print under Item 6 **only when that section is ticked**. AUD + GST options, ex Canning Vale. **Hard wall:** no cost / landed / margin / raw or buffered FX in the letter DOM. |
+| **1 Quote Setup** | Staff | Customer / NBQ / commercial / FX / signature |
+| **2 Costing** | Staff | Import + local lines; margin; landed → sell. **Never on PDF.** |
+| **3 Preview & Print** | Customer view | Paper letter. Offer photos + Technical Data images (staff editors; print only when populated). |
 
-## FX
+## Hard wall
 
-1. Pick **country of origin** → currency map.  
-2. Fetch **Frankfurter** `https://api.frankfurter.dev/v2` (AUD per 1 foreign).  
-3. Fallback **open.er-api.com**.  
-4. Costing uses **buffered** rate = live × (1 + buffer). Default buffer **0.15**.  
-5. Cache last good rate in `localStorage`. Manual override if both fail.  
-6. Letter commercial “exchange rate” wording uses **live** rate only (AUD sell). AUD origin = rate 1, buffer off.
+Internal FX buffer / landed / margin **never** appear on the customer PDF.
 
-## Save / open
+## Blank start
 
-- **Autosave** to `localStorage` (`busch-wa-quote-v1`).  
-- **Save** downloads JSON. **Open** loads JSON. **New** blanks. **Demo** reseeds Hydro / LB 0265 A.
+New quotes start blank (no Hydro / 26NBQ142 auto-prefill). Use **Open…** for a saved `.buschquote.json`.
+
+## Save
+
+Autosave to `localStorage` (`busch_quote_tool_v4`). **Save As…** downloads JSON.
 
 ## Print
 
-Preview → **Print / PDF**. Blocked if customer empty or zero Include lines (reason shown inline). Use browser print → Save as PDF.
-
-## Sample lock
-
-See `/workspace/quoting/SAMPLE_QUOTE_LOCK.md` and `MATCH_NOTES.md` in this folder.
-
-## Images
-
-Optional drawings live in quote JSON (compressed JPEG data URLs). Demo ships `assets/demo-drawing1.jpg` / `demo-drawing2.jpg` extracted from sample 26NBQ142 pages 3–4. Tick **6. Vacuum pump drawing** on Preview to show them on paper/print; untick to hide.
-
-## First open
-Starts **blank** (no Hydro / LB 0265 A seed). Use **Demo** only to load the layout sample deliberately. **New** clears to blank.
-
-## True blank (v3)
-First open / **New** = empty fields with gray placeholders only (storage key `busch-wa-quote-v3-blank`; old drafts not migrated). **Demo** loads layout sample on purpose. **Insert standard commercial** fills commercial text only when clicked.
-
-## iPhone Safari
-Form controls use **16px** font-size so iOS does not zoom on focus.
-
-## Save / Open
-**Save file** + Setup/Costing/Preview tabs sit at the **bottom of the page** in normal scroll (not fixed over content). **Open quote file** (top) loads a saved JSON quote. Top **Saved** chip is browser autosave only.
-
-## Letter sections
-On **Preview**, use **Include on letter** toggles (or tap a paper heading / grey stub) to choose what prints. Unticked sections are off the paper and off Print/PDF.
-
-## iPhone keyboard
-While a field is focused, the **Save file** bar and step tabs hide so they do not float over the form/keyboard.
-Focused fields scroll into view; **Saved** chip flashes after Save file / autosave.
-
-## Bottom chrome
-Save + step tabs are in document flow at the page bottom — scroll down to reach them; they never cover fields.
+Preview → **Print / PDF** (browser Save as PDF).

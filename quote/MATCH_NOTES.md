@@ -1,47 +1,28 @@
-# What matches sample 26NBQ142 vs still rough
+# Quote visual lock — match notes (2026-10-01)
 
-## Matches (spirit / structure) — improved 2026-09-19 polish
+**Source of truth:** Christoff attached `christoff-quote-v4-source.html` (STORAGE_KEY `busch_quote_tool_v4`).  
+**Shipped as:** `quote/index.html` on Pages (replaced prior modular 26NBQ142 letter app for this URL).
 
-- Letter title family: **BUSCH LIQUID RING VACUUM PUMP OFFER** (centred, bold caps)
-- **Letterhead:** top-right `assets/letterhead-logos.png` (Part of the BUSCH GROUP + Busch / Pfeiffer) with thin **orange** rule under logos
-- Header density: two-column **ATTENTION / COMPANY / FROM | EMAIL / PHONE / DATE** with label min-widths + aligned colons (Word-like)
-- **SUBJECT / BUSCH REF / YOUR REF** with same label column alignment; thin grey rules framing header blocks
-- Greeting + intro paragraph
-- Numbered TOC → Items 2–9; TOC rows as `Item N` / `-` / title with breathing room
-- **Section headings:** bright Busch orange (`#FF6600`), bold ALL CAPS, full-width grey rule under each numbered `.sec-h`
-- Sub-heads (5.1 / 5.2 / 5.4) also orange caps (sample spirit)
-- **Body:** Arial/Helvetica, dark ink on **white paper**; tighter professional spacing
-- Scope with **Option A / Option B** style rows — label LEFT (uppercase), **AU$ … + GST** RIGHT, stronger emphasis
-- Nett line: **ex Canning Vale WA**
-- Commercial block with exchange-rate wording (live sell-side only), payment stages, lead sea/air, validity, warranty
-- Signature block (André de Wet style fields)
-- **Stationery footer** on paper (+ print): BUSCH ANZ address | phone | email/web · ABN/UST-ID + CBA/NAB bank block · countries line · **Page 1 of —** hint (dense small type)
-- Tall page spirit (~sample / A4-ish `min-height`); `@media print` hides app chrome, A4 page
-- Demo seed loosely Hydro Australia / LB 0265 A / 26NBQ142 Rev.0
-- Hard wall: Preview has no landed / margin % / buffer / raw FX math
-- **Images / drawings:** staff Images panel on Preview — add/remove, caption, size S/M/L, frame none/thin/double; JPEG compress (~1200w @0.7) into state/JSON; **only printed when Item 6 drawing section is ticked**; demo seed includes one GA from sample PDF (`assets/demo-drawing1.jpg`)
-- Phone chrome: Setup | Costing | Preview big taps; dark + Busch orange; Setup accordion + More — **staff UI stays dark; only paper is white**
+## vs Claude FAIL PDF (`quote-v4-christoff.pdf`)
 
-## Still rough / deferred
+| FAIL | Fix |
+|------|-----|
+| Customer name + SPARES OFFER cluttered title stack | Toolkit letterhead + orange rule + centred title + hdr/subj meta grid |
+| Black bar section heads (orange “disappeared”) | `.doc-h2` → orange ALL-CAPS + orange underline |
+| Empty “3. Scope…” heading with blank body | Omit empty sections; sequential renumber |
+| Body “Ord” clipped into fixed footer | `doc-footer-spacer` + `@page` bottom 30mm + z-index |
+| Technical Data Images editor chrome on PDF | `#techImagesEditor` / `#offerPhotosEditor` `no-print` |
+| Photos only as orphan appendix | Offer photos block with optional captions inside Offer |
 
-- Pixel-perfect Word metrics (exact label tab stops, multi-page repeating letterhead, true “Page X of Y” across print pages)
-- `letterhead-banner.png` is the sample **footer raster** (naming legacy); Preview uses HTML stationery instead of that PNG for crisp type — raster can be swapped in later if desired
-- Full legal T&Cs appendix (Item 9 is a short pointer, not 4 pages of clauses)
-- Pixel-perfect GA crop / multi-page drawing sheets (v1: optional compressed images with S/M/L + frame)
-- Pixel-perfect Option A/B sample dollars (demo ExW is approximate; live FX + buffer will move sells)
-- Dual sea+air freight as always-on columns (v1: per-line freight % instead)
-- SharePoint / Power Automate
-- Per-line FX (one origin per quote in v1)
-- RFQ compliance block (5.5) and full Item 5.3 dossier wording — abbreviated
-- Yellow budgetary highlight band on the * note (sample has it; Preview uses plain note)
-- Exact sample orange rule weight / logo crop vs Word PDF extract
+## Kept from Christoff v4
 
-## Hard wall check
+- Costing calc UX (`data-out` live updates; no input destroy-on-keystroke)
+- Soft Dark staff chrome; white paper
+- Blank default; commercial defaults without Hydro seed
+- Embedded letterhead + ANZ footer images
 
-Preview DOM is built from sell totals + letter/commercial text only. Staff calc chips stay on Costing. FX strip stays on Setup. Forbidden-token probe remains in `renderPreview()`.
+## Compromises
 
-## First open (2026-09-19)
-**Blank by default.** 26NBQ142 is layout/print reference only — not prefilled. **Demo** button loads Hydro/LB seed deliberately; **New** clears to blank. Storage key bumped to `busch-wa-quote-v2-blank` so old demo autosaves do not return.
-
-## True blank v3 (2026-09-19)
-Empty `blankState` / letter / commercial; gray HTML placeholders; storage `busch-wa-quote-v3-blank`; optional Insert standard commercial. Demo button only for Hydro layout seed.
+1. Prior modular `quote/app.js` + `app.css` (full 26NBQ142 TOC letter) removed from this path — short-offer product is what Christoff opens. Assets folder retained.
+2. Letterhead uses embedded Busch Vacuum Solutions logo from Christoff’s file (not dual Busch/Pfeiffer plate from Toolkit chem-flush letter). Meta grid / orange heads match Toolkit spirit.
+3. True multi-page “Page X of Y” not implemented (footer image only).
