@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BUSCH Quote &amp; Costing Tool</title>
-<!-- visual-lock-orphan-fix-2026-10-01: keep section headings with first content on print; commercial-grid may break -->
+<!-- visual-lock-orphan-bdm-2026-10-01: orphan heading fix + BDM picker (Chris/André) like Toolkit letter -->
 <style>
   :root{
     --orange:#FF6A1A;
@@ -484,6 +484,13 @@
 
     <h2 class="section-title">F - From / Signature</h2>
     <div class="card grid cols-4 yellow-input">
+      <label class="field" style="grid-column:1/-1;"><span class="lbl">BDM / signatory</span>
+        <select id="bdmPicker" title="Picks who appears in FROM and the signature block">
+          <option value="chris">Chris de Wet — BDM West</option>
+          <option value="andre">André de Wet — BDM East</option>
+        </select>
+        <span class="hint" style="display:block;margin-top:4px;font-weight:normal;">Choosing a BDM fills name, title, mobile and email (same as Toolkit letter). Edit fields below only if you need a one-off change.</span>
+      </label>
       <label class="field"><span class="lbl">Your name</span><input type="text" data-bind="meta.fromName"></label>
       <label class="field"><span class="lbl">Title</span><input type="text" data-bind="meta.fromTitle"></label>
       <label class="field"><span class="lbl">Mobile</span><input type="text" data-bind="meta.fromMobile"></label>
@@ -565,8 +572,10 @@ function blankState(){
   return {
     meta:{
       ref:"", revision:"Rev 0", date:today, customer:"", attention:"", email:"", phone:"",
-      yourRef:"", subject:"", title:"", fromName:"", fromTitle:"Business Development Manager",
-      fromMobile:"", fromEmail:""
+      yourRef:"", subject:"", title:"",
+      bdmKey:"chris",
+      fromName:"Chris de Wet", fromTitle:"BDM West",
+      fromMobile:"+61 (0) 4 4701 4463", fromEmail:"chris.dewet@busch.com.au"
     },
     body:{
       opening:"Thank you for the opportunity to quote on the equipment detailed below. Should you require any further information or wish to discuss any part of this offer, please do not hesitate to contact me.",
@@ -594,6 +603,48 @@ function blankState(){
   };
 }
 
+/* Toolkit letter defaults (CUST_FB_CHRIS_DEFAULTS / CUST_FB_ANDRE_DEFAULTS) */
+const BDM_PROFILES = {
+  chris: {name:"Chris de Wet", title:"BDM West", mobile:"+61 (0) 4 4701 4463", email:"chris.dewet@busch.com.au"},
+  andre: {name:"André de Wet", title:"BDM East", mobile:"+61 (0) 4 3874 2323", email:"andre.dewet@busch.com.au"}
+};
+function normalizeBdmKey(key){
+  return (key==="andre") ? "andre" : "chris";
+}
+function applyBdmProfile(key, {fillInputs=true, save=true}={}){
+  key = normalizeBdmKey(key);
+  const p = BDM_PROFILES[key];
+  state.meta.bdmKey = key;
+  state.meta.fromName = p.name;
+  state.meta.fromTitle = p.title;
+  state.meta.fromMobile = p.mobile;
+  state.meta.fromEmail = p.email;
+  const sel = document.getElementById('bdmPicker');
+  if(sel) sel.value = key;
+  if(fillInputs){
+    ['meta.fromName','meta.fromTitle','meta.fromMobile','meta.fromEmail'].forEach(path=>{
+      const el = document.querySelector('#view-setup [data-bind="'+path+'"]');
+      if(el) el.value = getPath(state, path) || "";
+    });
+  }
+  if(typeof renderPreview === 'function' && activeTab==="preview") renderPreview();
+  if(save) queueSave();
+}
+function inferBdmKeyFromState(s){
+  if(!s || !s.meta) return "chris";
+  if(s.meta.bdmKey==="andre" || s.meta.bdmKey==="chris") return s.meta.bdmKey;
+  const n = String(s.meta.fromName||"").toLowerCase();
+  if(n.includes("andr")) return "andre";
+  return "chris";
+}
+function syncBdmPicker(){
+  const sel = document.getElementById('bdmPicker');
+  if(!sel) return;
+  const key = inferBdmKeyFromState(state);
+  state.meta.bdmKey = key;
+  sel.value = key;
+}
+
 let state = loadState() || blankState();
 let activeTab = "setup";
 
@@ -605,6 +656,16 @@ function loadState(){
     if(!Array.isArray(parsed.offerPhotos)) parsed.offerPhotos = [];
     if(!parsed.technical) parsed.technical = {sectionTitle:"Technical Data", images:[]};
     if(!Array.isArray(parsed.technical.images)) parsed.technical.images = [];
+    if(!parsed.meta) parsed.meta = blankState().meta;
+    parsed.meta.bdmKey = inferBdmKeyFromState(parsed);
+    // Legacy blank from-fields → bake Chris (picker default); do not overwrite filled quotes
+    if(!(parsed.meta.fromName||"").trim()){
+      const p = BDM_PROFILES[parsed.meta.bdmKey];
+      parsed.meta.fromName = p.name;
+      parsed.meta.fromTitle = p.title;
+      parsed.meta.fromMobile = p.mobile;
+      parsed.meta.fromEmail = p.email;
+    }
     (parsed.items||[]).forEach(it=>{ if(it.id>=itemSeq) itemSeq=it.id+1; });
     (parsed.technical.images||[]).forEach(im=>{ if(im.id>=itemSeq) itemSeq=im.id+1; });
     (parsed.offerPhotos||[]).forEach(im=>{ if(im.id>=itemSeq) itemSeq=im.id+1; });
@@ -748,6 +809,7 @@ function fillSetupInputs(){
     if(el.tagName==="SELECT" && (val===true||val===false)) val = String(val);
     el.value = (val===undefined||val===null)? "" : val;
   });
+  syncBdmPicker();
 }
 document.getElementById('view-setup').addEventListener('input', e=>{
   const el = e.target.closest('[data-bind]');
@@ -1373,6 +1435,15 @@ document.getElementById('fileOpen').addEventListener('change', e=>{
       if(!Array.isArray(state.offerPhotos)) state.offerPhotos = [];
       if(!state.technical) state.technical = {sectionTitle:"Technical Data", images:[]};
       if(!Array.isArray(state.technical.images)) state.technical.images = [];
+      if(!state.meta) state.meta = blankState().meta;
+      state.meta.bdmKey = inferBdmKeyFromState(state);
+      if(!(state.meta.fromName||"").trim()){
+        const p = BDM_PROFILES[state.meta.bdmKey];
+        state.meta.fromName = p.name;
+        state.meta.fromTitle = p.title;
+        state.meta.fromMobile = p.mobile;
+        state.meta.fromEmail = p.email;
+      }
       (state.items||[]).forEach(it=>{ if(it.id>=itemSeq) itemSeq=it.id+1; });
       (state.technical.images||[]).forEach(im=>{ if(im.id>=itemSeq) itemSeq=im.id+1; });
       (state.offerPhotos||[]).forEach(im=>{ if(im.id>=itemSeq) itemSeq=im.id+1; });
@@ -1381,6 +1452,14 @@ document.getElementById('fileOpen').addEventListener('change', e=>{
   };
   reader.readAsText(file);
   e.target.value="";
+});
+
+/* ---------------------------------------------------------------
+   BDM PICKER
+--------------------------------------------------------------- */
+document.getElementById('bdmPicker').addEventListener('change', e=>{
+  applyBdmProfile(e.target.value);
+  if(activeTab==="preview") renderPreview();
 });
 
 /* ---------------------------------------------------------------
