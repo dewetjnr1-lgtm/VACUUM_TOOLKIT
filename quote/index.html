@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="quote-build" content="tnc-gone-2026-10-02e">
+<meta name="quote-build" content="preview-wysiwyg-omit-2026-10-02">
 <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
 <meta http-equiv="Pragma" content="no-cache">
 <title>BUSCH Quote &amp; Costing Tool</title>
-<!-- visual-lock-tnc-gone-2026-10-02e: strip legacy T&C on load (non-blocking warn); UI build stamp; print scrub -->
+<!-- visual-lock-preview-wysiwyg-omit-2026-10-02: A4 Preview==Print; photos under Offer total; empty omit (no dropzones/empty Scope on letter) -->
 <style>
   /* Print page box (also redeclared in @media print). Tall tfoot + @page bottom belt-and-suspenders. */
   @page{size:A4;margin:0;}
@@ -232,24 +232,43 @@
   .totals-bar .tb-item.margin.low .tb-value{color:#f87171;}
 
   /* ---------- Print / Preview tab (kept as true white paper) ---------- */
-  #previewWrap{background:#0d0e10;padding:26px 0;border-radius:12px;}
+  #previewWrap{background:#0d0e10;padding:26px 0;border-radius:12px;overflow-x:auto;}
   /* #paper is a stack of fixed-height A4 shells; footer is flex-pinned on every shell. */
   .paper{
     width:auto;min-height:0;background:transparent;color:#1c1c1c;margin:0 auto;
     box-shadow:none;padding:0;position:relative;
   }
+  /* Screen shells use the SAME A4 geometry as @media print so layoutQuotePages
+     pagination (what lands on page 1 vs 2) matches Print / Save-as-PDF. */
   .print-page{
-    width:794px;height:1123px;max-height:1123px;background:#ffffff;color:#1c1c1c;
+    width:210mm;height:297mm;max-height:297mm;background:#ffffff;color:#1c1c1c;
     margin:0 auto 26px;box-shadow:0 4px 24px rgba(0,0,0,.5);
-    padding:46px 50px 18px;position:relative;box-sizing:border-box;
+    padding:10mm 12mm 6mm 12mm;position:relative;box-sizing:border-box;
     display:flex;flex-direction:column;overflow:hidden;
   }
   .print-page .page-body{flex:1 1 auto;min-height:0;overflow:hidden;}
   .print-page .page-foot{
-    flex:0 0 auto;margin-top:auto;padding-top:8px;
-    display:flex;align-items:flex-end;min-height:72px;
+    flex:0 0 28mm;height:28mm;min-height:28mm;max-height:28mm;
+    margin-top:auto;padding-top:0;
+    display:flex;align-items:flex-end;
   }
-  .print-page .page-foot img{width:100%;max-height:90px;object-fit:contain;object-position:bottom;display:block;}
+  .print-page .page-foot img{
+    width:100%;height:auto;max-height:28mm;
+    object-fit:contain;object-position:bottom center;display:block;
+  }
+  /* Preview-only: keep A4 shells readable in the pane without changing pagination. */
+  #paper.preview-scaled{
+    transform-origin:top center;
+  }
+  .print-page .page-num{
+    display:none; /* filled for screen; hidden in print */
+  }
+  @media screen{
+    .print-page .page-num{
+      display:block;position:absolute;top:4mm;right:12mm;
+      font-size:9px;color:#999;letter-spacing:.04em;user-select:none;
+    }
+  }
   .doc-footer{display:none;} /* legacy */
   .doc-footer-spacer{display:none;}
   /* Letterhead — Toolkit spirit: logos + orange rule + tidy title + meta grid */
@@ -312,7 +331,7 @@
   .sig-block .sig-name{font-weight:bold;font-size:13px;}
   .tech-imgs img{max-width:100%;display:block;margin:10px 0;border:1px solid #e7e9ec;}
   .offer-photos{margin:12px 0 4px;display:grid;gap:12px;}
-  .offer-photos .op-item{break-inside:avoid;}
+  .offer-photos .op-item{break-inside:avoid;page-break-inside:avoid;}
   .offer-photos .op-item img{max-width:100%;max-height:280px;object-fit:contain;display:block;margin:0 auto;border:1px solid #e7e9ec;}
   .offer-photos .op-cap{font-size:11px;color:#444;text-align:center;margin-top:4px;font-style:italic;}
   .legal{font-size:10px;color:#777;line-height:1.5;margin-top:26px;border-top:1px solid #e7e9ec;padding-top:10px;}
@@ -340,10 +359,8 @@
 
   footer.hint-footer{max-width:1200px;margin:0 auto;padding:0 20px 40px;color:var(--grey-text);font-size:11.5px;line-height:1.6;}
 
-  /* Preview-only staff chrome (editors live outside #view-preview / print root) */
-  #offerPhotosEditor,#techImagesEditor{display:none;}
-  body.tab-preview #offerPhotosEditor,
-  body.tab-preview #techImagesEditor{display:block;}
+  /* Photo/tech editors live on Setup only — never under Preview/Print letter */
+  #offerPhotosEditor,#techImagesEditor{display:block;}
 
   /* ---------- Print: only #paper; force orange; no editor chrome ---------- */
   @media print{
@@ -431,6 +448,8 @@
       overflow:hidden !important;box-sizing:border-box !important;
     }
     .print-page:last-child{page-break-after:auto !important;break-after:auto !important;}
+    .print-page .page-num{display:none !important;}
+    #paper,#paper.preview-scaled{transform:none !important;margin-bottom:0 !important;}
     .print-page .page-body{flex:1 1 auto !important;min-height:0 !important;overflow:hidden !important;}
     .print-page .page-foot{
       flex:0 0 28mm !important;height:28mm !important;min-height:28mm !important;max-height:28mm !important;
@@ -459,7 +478,7 @@
   <div class="logo"><img src="data:image/png;base64,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" alt="Busch"></div>
   <div class="quoteid" id="quoteIdBadge">-</div>
   <div class="spacer"></div>
-  <span class="buildstamp" id="buildStamp" title="Tool build id — confirm this matches live">Build tnc-gone-2026-10-02e</span>
+  <span class="buildstamp" id="buildStamp" title="Tool build id — confirm this matches live">Build preview-wysiwyg-omit-2026-10-02</span>
   <span class="savebadge" id="saveBadge">All changes saved</span>
   <button id="btnNew" title="Start a new blank quote">+ New Quote</button>
   <button id="btnOpen" title="Open a saved quote file">Open...</button>
@@ -556,6 +575,27 @@
 
     <div class="kpi-row" id="marginCheck"></div>
 
+
+    <h2 class="section-title">F - Offer photos <span class="hint">(optional — print just below Offer total; omitted when empty)</span></h2>
+    <div id="offerPhotosEditor" class="no-print">
+      <div class="card">
+        <label class="imgpicker" id="offerImgPickLabel">Click to add a photo into the Offer (JPG/PNG)
+          <input type="file" id="offerImgPick" accept="image/*" multiple style="display:none;">
+        </label>
+        <div class="imglist" id="offerImgList"></div>
+      </div>
+    </div>
+
+    <h2 class="section-title">G - Technical Data Images <span class="hint">(optional — only real images print; omitted when empty)</span></h2>
+    <div id="techImagesEditor" class="no-print">
+      <div class="card">
+        <label class="imgpicker" id="imgPickLabel">Click to add a pump curve, GA drawing or photo (JPG/PNG)
+          <input type="file" id="imgPick" accept="image/*" multiple style="display:none;">
+        </label>
+        <div class="imglist" id="imgList"></div>
+      </div>
+    </div>
+
   </div>
 
   <!-- ============ COSTING TAB ============ -->
@@ -584,31 +624,10 @@
   <div class="view" id="view-preview">
     <div class="preview-toolbar">
       <div class="warning" id="previewWarning" style="display:none;"></div>
-      <div style="margin-left:auto;font-size:12px;color:#888;">This is exactly what prints. Use "Print / PDF" above.</div>
+      <div style="margin-left:auto;font-size:12px;color:#888;">WYSIWYG A4 pages — same pagination as Print. Empty sections omitted.</div>
     </div>
     <div id="previewWrap">
       <div class="paper" id="paper"></div>
-    </div>
-  </div>
-
-  <!-- Staff chrome: structurally OUTSIDE #view-preview / print root; never paint on PDF -->
-  <div id="offerPhotosEditor" class="no-print preview-only-chrome">
-    <h2 class="section-title" style="max-width:794px;margin-left:auto;margin-right:auto;">Offer photos <span class="hint">(optional — print in the Offer section with captions)</span></h2>
-    <div class="card" style="max-width:794px;margin-left:auto;margin-right:auto;">
-      <label class="imgpicker" id="offerImgPickLabel">Click to add a photo into the Offer (JPG/PNG)
-        <input type="file" id="offerImgPick" accept="image/*" multiple style="display:none;">
-      </label>
-      <div class="imglist" id="offerImgList"></div>
-    </div>
-  </div>
-
-  <div id="techImagesEditor" class="no-print preview-only-chrome">
-    <h2 class="section-title" style="max-width:794px;margin-left:auto;margin-right:auto;">Technical Data Images <span class="hint">(optional — only uploaded images print on the letter)</span></h2>
-    <div class="card" style="max-width:794px;margin-left:auto;margin-right:auto;">
-      <label class="imgpicker" id="imgPickLabel">Click to add a pump curve, GA drawing or photo (JPG/PNG)
-        <input type="file" id="imgPick" accept="image/*" multiple style="display:none;">
-      </label>
-      <div class="imglist" id="imgList"></div>
     </div>
   </div>
 
@@ -704,7 +723,7 @@ document.querySelectorAll('img[src*="iVBORw0KGgoAAAANSUhEUgAAAVQAAABuCAYAAAB4BOv
 --------------------------------------------------------------- */
 const STORAGE_KEY = "busch_quote_tool_v5";
 const LEGACY_STORAGE_KEYS = ["busch_quote_tool_v4"];
-const QUOTE_BUILD_ID = "tnc-gone-2026-10-02e";
+const QUOTE_BUILD_ID = "preview-wysiwyg-omit-2026-10-02";
 const TNC_MARK_RE = /TNC_APPENDIX|tnc-appendix|\b22\.6\b|Purchase Order Terms|Modern Slavery|\bPPSA\b|Personal Property Securities/i;
 
 function fieldLooksLikeFullTnc(val){
@@ -997,12 +1016,13 @@ function totals(){
 --------------------------------------------------------------- */
 function syncPreviewChrome(){
   document.body.classList.toggle('tab-preview', activeTab==='preview');
-  // Belt: inline hide when not on Preview (editors are outside .view)
+  // Editors live inside Setup. Force-hide on Preview/Print so no dropzone chrome
+  // ever appears under the letter (empty-omit lock).
   ['offerPhotosEditor','techImagesEditor'].forEach(id=>{
     const el = document.getElementById(id);
     if(!el) return;
-    if(activeTab==='preview') el.style.removeProperty('display');
-    else el.style.setProperty('display','none','important');
+    if(activeTab==='preview') el.style.setProperty('display','none','important');
+    else el.style.removeProperty('display');
   });
 }
 document.querySelectorAll('#tabs button').forEach(btn=>{
@@ -1351,10 +1371,13 @@ function updateCardComputed(card,item){
    PREVIEW / PRINT TAB
 --------------------------------------------------------------- */
 /** Split the letter into fixed-height A4 .print-page shells so the bank footer
- *  is flex-pinned to the bottom of every sheet. */
+ *  is flex-pinned to the bottom of every sheet. Screen shells use the same mm
+ *  geometry as @media print, so Preview pagination matches Print. */
 function layoutQuotePages(letterHtml){
   const paper = document.getElementById('paper');
   paper.innerHTML = '';
+  paper.classList.remove('preview-scaled');
+  paper.style.transform = '';
   const src = document.createElement('div');
   // Second arg intentionally ignored (legacy tncHtml inject path is dead).
   src.innerHTML = scrubLetterHtmlForPrint(letterHtml || '');
@@ -1367,6 +1390,9 @@ function layoutQuotePages(letterHtml){
     const foot = document.createElement('div');
     foot.className = 'page-foot';
     foot.innerHTML = `<img src="${LOGO_FOOTER}" alt="">`;
+    const num = document.createElement('div');
+    num.className = 'page-num no-print';
+    page.appendChild(num);
     page.appendChild(body);
     page.appendChild(foot);
     paper.appendChild(page);
@@ -1376,15 +1402,138 @@ function layoutQuotePages(letterHtml){
   let body = makePage();
   const overflows = ()=> body.scrollHeight > body.clientHeight + 1;
 
-  Array.from(src.children).forEach(kid=>{
-    const el = kid.cloneNode(true);
-    body.appendChild(el);
-    if(overflows()){
-      body.removeChild(el);
+  /** Append node into `parent` (default: current page body). On overflow, start a
+   *  new A4 shell. Sections / commercial grids split by child so Offer can fill
+   *  page 1 and Commercial continue on page 2 — same pagination Print uses. */
+  function placeNode(node, parent){
+    const host = parent || body;
+    const el = node.cloneNode(true);
+    host.appendChild(el);
+    if(!overflows()) return;
+    host.removeChild(el);
+
+    // Split numbered sections (heading + table/grid) across shells
+    if(el.classList && el.classList.contains('doc-sec') && el.children.length > 1){
+      let wrap = el.cloneNode(false);
+      body.appendChild(wrap);
+      Array.from(el.children).forEach(child=>{
+        // Try whole child first
+        const c = child.cloneNode(true);
+        wrap.appendChild(c);
+        if(!overflows()) return;
+        wrap.removeChild(c);
+        // Row-split commercial grids / offer photo stacks that don't fit
+        if(child.classList && (child.classList.contains('commercial-grid') || child.classList.contains('offer-photos')) && child.children.length){
+          let grid = child.cloneNode(false);
+          wrap.appendChild(grid);
+          Array.from(child.children).forEach(row=>{
+            const r = row.cloneNode(true);
+            grid.appendChild(r);
+            if(overflows()){
+              grid.removeChild(r);
+              if(grid.children.length === 0) wrap.removeChild(grid);
+              if(wrap.children.length === 0) body.removeChild(wrap);
+              body = makePage();
+              wrap = el.cloneNode(false);
+              body.appendChild(wrap);
+              // Continuation fragment: do not repeat the section heading (saves space;
+              // heading already appeared with the first rows on the prior page).
+              grid = child.cloneNode(false);
+              wrap.appendChild(grid);
+              grid.appendChild(r);
+            }
+          });
+          return;
+        }
+        if(wrap.children.length === 0) body.removeChild(wrap);
+        body = makePage();
+        wrap = el.cloneNode(false);
+        body.appendChild(wrap);
+        wrap.appendChild(c);
+      });
+      return;
+    }
+
+    // Fresh page for unsplittable block
+    if(host === body){
+      body = makePage();
+      body.appendChild(el);
+    } else {
+      // host is a wrap inside body — bubble to new page
       body = makePage();
       body.appendChild(el);
     }
+  }
+
+  Array.from(src.children).forEach(kid=> placeNode(kid));
+
+  // Safety: if offer photos were stranded after Commercial / legal / signatures,
+  // move them back to immediately after the Offer total (keeps captions).
+  (function enforceOfferPhotoOrder(){
+    const photos = paper.querySelector('[data-offer-photos="1"]');
+    if(!photos) return;
+    const total = paper.querySelector('.doc-sec-offer .offer-total, .page-body .offer-total');
+    if(!total || !total.parentElement) return;
+    const pos = total.compareDocumentPosition(photos);
+    // Already after total in document order
+    const afterTotal = !!(pos & Node.DOCUMENT_POSITION_FOLLOWING);
+    // Stranded if a Commercial heading, legal blurb, or signature appears between total and photos
+    let stranded = false;
+    if(afterTotal){
+      let n = total.closest('.print-page') || total;
+      // Walk page-bodies' elements in DOM order between total and photos
+      const all = [...paper.querySelectorAll('.page-body *')];
+      const iTotal = all.indexOf(total);
+      const iPhotos = all.indexOf(photos);
+      if(iTotal >= 0 && iPhotos > iTotal){
+        const slice = all.slice(iTotal + 1, iPhotos);
+        stranded = slice.some(el => {
+          if(!el.matches) return false;
+          if(el.matches('h3.doc-h2') && /commercial/i.test(el.textContent||'')) return true;
+          if(el.matches('p.legal') || el.matches('.sig-row') || el.matches('.commercial-grid')) return true;
+          return false;
+        });
+      }
+    } else {
+      stranded = true; // photos before total — always wrong
+    }
+    if(!stranded && total.nextElementSibling === photos) return;
+    if(!stranded) return;
+    total.parentElement.insertBefore(photos, total.nextSibling);
+  })();
+
+  // Preview page labels (hidden when printing via .no-print / print CSS)
+  const pages = paper.querySelectorAll('.print-page');
+  pages.forEach((p,i)=>{
+    const label = p.querySelector('.page-num');
+    if(label) label.textContent = 'Page ' + (i+1) + ' of ' + pages.length;
   });
+  scalePreviewToPane();
+}
+
+/** Scale the A4 stack to fit the preview pane width; pagination unchanged. */
+function scalePreviewToPane(){
+  const wrap = document.getElementById('previewWrap');
+  const paper = document.getElementById('paper');
+  if(!wrap || !paper) return;
+  paper.classList.remove('preview-scaled');
+  paper.style.transform = '';
+  const page = paper.querySelector('.print-page');
+  if(!page) return;
+  const pane = wrap.clientWidth;
+  const pageW = page.offsetWidth;
+  if(!pane || !pageW) return;
+  // Leave a little breathing room for the dark preview gutter
+  const fit = Math.min(1, (pane - 24) / pageW);
+  if(fit < 0.995){
+    paper.classList.add('preview-scaled');
+    paper.style.transform = 'scale(' + fit.toFixed(4) + ')';
+    // Compensate layout height so following chrome isn't pulled up under the scale
+    const stacked = paper.scrollHeight;
+    paper.style.marginBottom = ((stacked * (1 - fit)) + 8) + 'px';
+  } else {
+    paper.style.marginBottom = '';
+  }
 }
 
 function renderPreview(){
@@ -1440,7 +1589,7 @@ function renderPreview(){
     ["Compliance", state.commercial.compliance],
     ["Special notice", state.commercial.special],
     ["General", state.commercial.general],
-  ].filter(Boolean).filter(r=>r[1]);
+  ].filter(Boolean).filter(r=>r[1] && String(r[1]).replace(/\u00a0/g," ").trim());
 
   const techImgList = (state.technical.images||[]).filter(im =>
     im && typeof im.dataUrl === 'string' && /^data:image\//i.test(im.dataUrl)
@@ -1448,7 +1597,7 @@ function renderPreview(){
   const techImgs = techImgList.map(im=>`<img src="${im.dataUrl}">`).join("");
   const offerPhotoList = Array.isArray(state.offerPhotos) ? state.offerPhotos.filter(p=>p && p.dataUrl) : [];
   const offerPhotosHtml = offerPhotoList.length ? (
-    `<div class="offer-photos">` +
+    `<div class="offer-photos" data-offer-photos="1">` +
     offerPhotoList.map(p=>{
       const cap = (p.caption||'').trim();
       return `<div class="op-item"><img src="${p.dataUrl}" alt="">` +
@@ -1476,7 +1625,9 @@ function renderPreview(){
   const scopeText = String(state.body.scope||"").replace(/\u00a0/g," ").replace(/<[^>]*>/g," ").replace(/\s+/g," ").trim();
   let sectionsHtml = "";
 
-  sectionsHtml += `<section class="doc-sec"><h3 class="doc-h2">${sn()} Offer</h3>
+  // Offer photos MUST sit just below the price total and BEFORE Commercial
+  // (and before Optional/Scope/Tech/signatures). Keep captions on each photo.
+  sectionsHtml += `<section class="doc-sec doc-sec-offer"><h3 class="doc-h2">${sn()} Offer</h3>
     <table class="offer">
       <thead><tr><th>Item</th><th>Qty</th><th>Part No.</th><th>Description</th><th>Unit Price</th><th>Total (AUD)</th><th>Availability</th></tr></thead>
       <tbody>${offerRows || '<tr><td colspan="7" style="color:#999;">No items included</td></tr>'}</tbody>
@@ -1670,6 +1821,14 @@ document.getElementById('btnPrint').addEventListener('click', ()=>{
   });
   sanitizeQuoteState(state);
   renderPreview();
+  // Print must use unscaled A4 shells (preview scale is screen-only)
+  (function clearPreviewScale(){
+    const paper = document.getElementById('paper');
+    if(!paper) return;
+    paper.classList.remove('preview-scaled');
+    paper.style.transform = '';
+    paper.style.marginBottom = '';
+  })();
   const restoreChrome = ()=>{
     ['offerPhotosEditor','techImagesEditor'].forEach(id=>{
       const el = document.getElementById(id);
@@ -1744,6 +1903,7 @@ function fullRender(){
 }
 sanitizeQuoteState(state);
 fullRender();
+window.addEventListener("resize", ()=>{ if(activeTab==="preview") scalePreviewToPane(); });
 </script>
 </body>
 </html>
