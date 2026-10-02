@@ -3,9 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="quote-build" content="tnc-gone-2026-10-02b">
+<meta name="quote-build" content="tnc-gone-2026-10-02c">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
 <title>BUSCH Quote &amp; Costing Tool</title>
-<!-- visual-lock-tnc-gone-2026-10-02b: confirm no T&C appendix on print; request line only; HTML save; page-shell footer -->
+<!-- visual-lock-tnc-gone-2026-10-02c: no T&C appendix; only "available upon request" above sigs; HTML save; page-shell footer -->
 <style>
   /* Print page box (also redeclared in @media print). Tall tfoot + @page bottom belt-and-suspenders. */
   @page{size:A4;margin:0;}
@@ -1264,9 +1266,6 @@ function updateCardComputed(card,item){
 /* ---------------------------------------------------------------
    PREVIEW / PRINT TAB
 --------------------------------------------------------------- */
-/* Full Busch PO Terms & Conditions appendix (text extracted from Christoff source PDF; print-only readable layout) */
-
-
 /** Split the letter into fixed-height A4 .print-page shells so the bank footer
  *  is flex-pinned to the bottom of every sheet. */
 function layoutQuotePages(letterHtml){
