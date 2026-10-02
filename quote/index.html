@@ -4,10 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BUSCH Quote &amp; Costing Tool</title>
-<!-- visual-lock-tnc-appendix-glyph-2026-10-02: full T&C appendix after signatures; print glyph fix (no faux-bold i/l); remove hyperlink; host text appendix -->
+<!-- visual-lock-footer-pin-tnc-8pt-2026-10-02: fixed print footer bottom every page; T&C appendix ~8pt compact -->
 <style>
   /* Print page box (also redeclared in @media print). Tall tfoot + @page bottom belt-and-suspenders. */
-  @page{size:A4;margin:10mm 10mm 22mm 10mm;}
+  @page{size:A4;margin:10mm 10mm 4mm 10mm;}
   :root{
     --orange:#FF6A1A;
     --orange-dark:#FF8A47;
@@ -316,24 +316,24 @@
   .tnc-appendix{
     margin-top:28px;padding-top:8px;color:#1c1c1c;
     font-family:Helvetica, Arial, sans-serif;font-weight:400;
-    font-size:9.5px;line-height:1.45;
+    font-size:8pt;line-height:1.28;
   }
-  .tnc-appendix .tnc-head{margin:0 0 14px;padding-bottom:10px;border-bottom:1.5px solid #FF6A1A;}
-  .tnc-appendix .tnc-kicker{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#FF6A1A;margin-bottom:4px;}
-  .tnc-appendix .tnc-title{margin:0;font-size:14px;font-weight:700;color:#1c1c1c;letter-spacing:.02em;}
-  .tnc-appendix .tnc-sub{margin:6px 0 0;font-size:9.5px;color:#555;}
+  .tnc-appendix .tnc-head{margin:0 0 8px;padding-bottom:6px;border-bottom:1.5px solid #FF6A1A;}
+  .tnc-appendix .tnc-kicker{font-size:7.5pt;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#FF6A1A;margin-bottom:2px;}
+  .tnc-appendix .tnc-title{margin:0;font-size:11pt;font-weight:700;color:#1c1c1c;letter-spacing:.02em;}
+  .tnc-appendix .tnc-sub{margin:4px 0 0;font-size:7.5pt;color:#555;}
   .tnc-appendix .tnc-sec{
-    margin:14px 0 6px;font-size:10.5px;font-weight:700;color:#FF6A1A;
+    margin:8px 0 3px;font-size:8.5pt;font-weight:700;color:#FF6A1A;
     text-transform:uppercase;letter-spacing:.02em;
     page-break-after:avoid;break-after:avoid;
   }
-  .tnc-appendix .tnc-num{font-weight:700;color:#333;margin-right:4px;text-transform:none;letter-spacing:0;}
-  .tnc-appendix .tnc-clause,.tnc-appendix .tnc-p,.tnc-appendix .tnc-def{margin:0 0 5px;font-weight:400;}
+  .tnc-appendix .tnc-num{font-weight:700;color:#333;margin-right:3px;text-transform:none;letter-spacing:0;}
+  .tnc-appendix .tnc-clause,.tnc-appendix .tnc-p,.tnc-appendix .tnc-def{margin:0 0 2.5px;font-weight:400;}
   .tnc-appendix .tnc-clause{padding-left:0;}
   .tnc-appendix .tnc-def .tnc-term{font-weight:700;color:#222;}
-  .tnc-appendix .tnc-list{list-style:none;margin:0 0 6px;padding:0 0 0 18px;}
-  .tnc-appendix .tnc-li{margin:0 0 3px;padding-left:4px;font-weight:400;}
-  .tnc-appendix .tnc-li.roman{padding-left:18px;}
+  .tnc-appendix .tnc-list{list-style:none;margin:0 0 3px;padding:0 0 0 14px;}
+  .tnc-appendix .tnc-li{margin:0 0 1.5px;padding-left:3px;font-weight:400;}
+  .tnc-appendix .tnc-li.roman{padding-left:14px;}
 
   .no-print{}
   .imgitem .cap-input{
@@ -440,11 +440,11 @@
       background:#FF6A1A !important;color:#fff !important;
       -webkit-print-color-adjust:exact !important;print-color-adjust:exact !important;
     }
-    /* Print-sheet tfoot: classic repeating footer that RESERVES height on every page.
-       42mm still bled mid-document (Site & installation / Compliance over ANZ+bank).
-       Taller band + @page bottom margin belt-and-suspenders. Keep orphan rules above.
-       Do NOT restore position:fixed footer or commercial-grid break-inside:avoid. */
-    @page{size:A4;margin:10mm 10mm 22mm 10mm;}
+    /* Print footer: position:fixed pins to bottom of EVERY page (incl. last page).
+       Chrome table-footer-group only pins mid-document pages; on the last page tfoot
+       follows content and leaves empty paper under the band. Keep tfoot as empty
+       height reserve so body rows never paint through the fixed JPEG. */
+    @page{size:A4;margin:10mm 10mm 4mm 10mm;}
     .print-sheet{
       display:table !important;width:100% !important;border:0 !important;border-collapse:collapse !important;
       border-spacing:0 !important;table-layout:fixed !important;
@@ -460,21 +460,30 @@
     }
     .print-sheet-head{height:0 !important;font-size:0 !important;line-height:0 !important;overflow:hidden !important;}
     .print-sheet-body{padding-bottom:0 !important;}
-    /* ~62mm band: spacer 10mm + footer JPEG ~26mm + breathing room; footer sits at bottom */
+    /* Empty reserve ≈ footer JPEG height + small gap (fixed band draws the visible footer). */
     .print-sheet-foot{
-      height:62mm !important;min-height:62mm !important;vertical-align:bottom !important;
+      height:34mm !important;min-height:34mm !important;vertical-align:top !important;
       padding:0 !important;
     }
     .doc-footer{
-      position:static !important;left:auto !important;right:auto !important;bottom:auto !important;
-      height:auto !important;z-index:auto !important;
-      display:flex !important;flex-direction:column !important;justify-content:flex-end !important;
+      position:fixed !important;left:10mm !important;right:10mm !important;bottom:0 !important;
+      height:28mm !important;max-height:28mm !important;z-index:999 !important;
+      display:block !important;margin:0 !important;padding:0 !important;
     }
-    .doc-footer-spacer{
-      display:block !important;height:10mm !important;min-height:10mm !important;
-      width:100% !important;flex:0 0 10mm !important;
+    .doc-footer-spacer{display:none !important;height:0 !important;min-height:0 !important;}
+    .doc-footer img{width:100% !important;height:100% !important;max-height:28mm !important;object-fit:contain !important;object-position:bottom center !important;display:block !important;}
+    /* Compact T&C appendix (~8pt) + clear fixed footer on appendix pages */
+    .tnc-appendix{
+      font-size:8pt !important;line-height:1.25 !important;
+      padding-bottom:36mm !important;margin-top:0 !important;
     }
-    .doc-footer img{width:100% !important;max-height:28mm !important;object-fit:contain !important;object-position:bottom !important;display:block !important;flex:0 0 auto !important;}
+    .tnc-appendix .tnc-kicker{font-size:7.5pt !important;}
+    .tnc-appendix .tnc-title{font-size:11pt !important;}
+    .tnc-appendix .tnc-sub{font-size:7.5pt !important;}
+    .tnc-appendix .tnc-sec{font-size:8.5pt !important;margin:7px 0 2px !important;}
+    .tnc-appendix .tnc-clause,.tnc-appendix .tnc-p,.tnc-appendix .tnc-def{margin:0 0 2px !important;}
+    .tnc-appendix .tnc-li{margin:0 0 1px !important;}
+    .tnc-appendix .tnc-head{margin:0 0 6px !important;padding-bottom:5px !important;}
     /* Allow long commercial / offer tables to break; keep individual rows intact */
     .commercial-grid{page-break-inside:auto;break-inside:auto;}
     .commercial-grid .crow{page-break-inside:avoid;break-inside:avoid;}
