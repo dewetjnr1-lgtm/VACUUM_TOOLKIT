@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>BUSCH Quote &amp; Costing Tool</title>
-<!-- visual-lock-footer-lower-2026-10-02: taller print-sheet-foot + @page bottom + spacer; keep orphan rules -->
+<!-- visual-lock-tnc-link-2026-10-02: T's & C's link above signature → quote/terms.pdf; keep footer/orphan rules -->
 <style>
   /* Print page box (also redeclared in @media print). Tall tfoot + @page bottom belt-and-suspenders. */
   @page{size:A4;margin:10mm 10mm 22mm 10mm;}
@@ -312,6 +312,12 @@
   .offer-photos .op-item img{max-width:100%;max-height:280px;object-fit:contain;display:block;margin:0 auto;border:1px solid #e7e9ec;}
   .offer-photos .op-cap{font-size:11px;color:#444;text-align:center;margin-top:4px;font-style:italic;}
   .legal{font-size:10px;color:#777;line-height:1.5;margin-top:26px;border-top:1px solid #e7e9ec;padding-top:10px;}
+  .tnc-link{margin:14px 0 0;font-size:12.5px;line-height:1.55;}
+  .tnc-link a{color:var(--orange);font-weight:600;text-decoration:underline;}
+  @media print{
+    .tnc-link a{color:#FF6A1A !important;text-decoration:underline !important;-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+    .tnc-link a[href]::after{content:none !important;}
+  }
   .no-print{}
   .imgitem .cap-input{
     display:block;width:100%;border:1px solid var(--grey-3);border-radius:0;padding:5px 6px;
@@ -1343,6 +1349,7 @@ function renderPreview(){
 
     <p class="legal">This quotation constitutes an offer to sell. By accepting this quotation you enter into a legally binding contract to which the standard Busch Terms and Conditions of Sale apply, unless a written agreement signed by both parties is already in place. Sending a purchase order is deemed to be acceptance of this quotation and of those terms.</p>
     <p class="doc-p">We trust the above meets with your approval and look forward to your favourable response.</p>
+    <p class="tnc-link"><a href="terms.pdf" target="_blank" rel="noopener noreferrer">T's &amp; C's</a></p>
 
     <div class="sig-row">
       <div class="sig-block">
