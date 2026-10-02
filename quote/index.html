@@ -3,8 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="quote-build" content="tnc-gone-2026-10-02b">
 <title>BUSCH Quote &amp; Costing Tool</title>
-<!-- visual-lock-html-save-no-tnc-2026-10-02: drop T&C appendix; request line above sig; Save As self-contained HTML; page-shell footer -->
+<!-- visual-lock-tnc-gone-2026-10-02b: confirm no T&C appendix on print; request line only; HTML save; page-shell footer -->
 <style>
   /* Print page box (also redeclared in @media print). Tall tfoot + @page bottom belt-and-suspenders. */
   @page{size:A4;margin:0;}
@@ -312,29 +313,6 @@
   .offer-photos .op-item img{max-width:100%;max-height:280px;object-fit:contain;display:block;margin:0 auto;border:1px solid #e7e9ec;}
   .offer-photos .op-cap{font-size:11px;color:#444;text-align:center;margin-top:4px;font-style:italic;}
   .legal{font-size:10px;color:#777;line-height:1.5;margin-top:26px;border-top:1px solid #e7e9ec;padding-top:10px;}
-  /* Terms appendix (after letter + signatures; own pages, no bank footer band) */
-  .tnc-appendix{
-    margin-top:28px;padding-top:8px;color:#1c1c1c;
-    font-family:Helvetica, Arial, sans-serif;font-weight:400;
-    font-size:8pt;line-height:1.28;
-  }
-  .tnc-appendix .tnc-head{margin:0 0 8px;padding-bottom:6px;border-bottom:1.5px solid #FF6A1A;}
-  .tnc-appendix .tnc-kicker{font-size:7.5pt;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:#FF6A1A;margin-bottom:2px;}
-  .tnc-appendix .tnc-title{margin:0;font-size:11pt;font-weight:700;color:#1c1c1c;letter-spacing:.02em;}
-  .tnc-appendix .tnc-sub{margin:4px 0 0;font-size:7.5pt;color:#555;}
-  .tnc-appendix .tnc-sec{
-    margin:8px 0 3px;font-size:8.5pt;font-weight:700;color:#FF6A1A;
-    text-transform:uppercase;letter-spacing:.02em;
-    page-break-after:avoid;break-after:avoid;
-  }
-  .tnc-appendix .tnc-num{font-weight:700;color:#333;margin-right:3px;text-transform:none;letter-spacing:0;}
-  .tnc-appendix .tnc-clause,.tnc-appendix .tnc-p,.tnc-appendix .tnc-def{margin:0 0 2.5px;font-weight:400;}
-  .tnc-appendix .tnc-clause{padding-left:0;}
-  .tnc-appendix .tnc-def .tnc-term{font-weight:700;color:#222;}
-  .tnc-appendix .tnc-list{list-style:none;margin:0 0 3px;padding:0 0 0 14px;}
-  .tnc-appendix .tnc-li{margin:0 0 1.5px;padding-left:3px;font-weight:400;}
-  .tnc-appendix .tnc-li.roman{padding-left:14px;}
-
   .no-print{}
   .imgitem .cap-input{
     display:block;width:100%;border:1px solid var(--grey-3);border-radius:0;padding:5px 6px;
@@ -400,18 +378,9 @@
       -webkit-text-stroke-width:0 !important;
     }
     .doc-p,.legal,.commercial-grid,.commercial-grid .crow > div:not(.ck),
-    .subj-line .val,.hdr-cell .val,.sig-block,.offer-total,
-    .tnc-appendix,.tnc-appendix p,.tnc-appendix li{
+    .subj-line .val,.hdr-cell .val,.sig-block,.offer-total{
       font-weight:400 !important;
       font-synthesis:none !important;
-    }
-    .tnc-appendix{
-      page-break-before:always !important;break-before:page !important;
-      margin-top:0 !important;padding-top:0 !important;
-    }
-    .tnc-appendix .tnc-sec{page-break-after:avoid !important;break-after:avoid !important;}
-    .tnc-appendix .tnc-clause,.tnc-appendix .tnc-def,.tnc-appendix .tnc-li{
-      orphans:3;widows:3;
     }
     /* Re-declare orange heads (CSS vars / backgrounds often wash to gray in Save-as-PDF) */
     h3.doc-h2{
@@ -469,18 +438,6 @@
       width:100% !important;height:auto !important;max-height:28mm !important;
       object-fit:contain !important;object-position:bottom center !important;display:block !important;
     }
-    /* Compact T&C appendix (~8pt) */
-    .tnc-appendix{
-      font-size:8pt !important;line-height:1.25 !important;
-      padding-bottom:0 !important;margin-top:0 !important;
-    }
-    .tnc-appendix .tnc-kicker{font-size:7.5pt !important;}
-    .tnc-appendix .tnc-title{font-size:11pt !important;}
-    .tnc-appendix .tnc-sub{font-size:7.5pt !important;}
-    .tnc-appendix .tnc-sec{font-size:8.5pt !important;margin:7px 0 2px !important;}
-    .tnc-appendix .tnc-clause,.tnc-appendix .tnc-p,.tnc-appendix .tnc-def{margin:0 0 2px !important;}
-    .tnc-appendix .tnc-li{margin:0 0 1px !important;}
-    .tnc-appendix .tnc-head{margin:0 0 6px !important;padding-bottom:5px !important;}
     /* Allow long commercial / offer tables to break; keep individual rows intact */
     .commercial-grid{page-break-inside:auto;break-inside:auto;}
     .commercial-grid .crow{page-break-inside:avoid;break-inside:avoid;}
@@ -1310,14 +1267,13 @@ function updateCardComputed(card,item){
 /* Full Busch PO Terms & Conditions appendix (text extracted from Christoff source PDF; print-only readable layout) */
 
 
-/** Split letter + T&C into fixed-height A4 .print-page shells so the bank footer
- *  is flex-pinned to the bottom of every sheet (incl. short last T&C page).
- *  Chrome Print PDF does not reliably honor position:fixed / table-footer-group. */
-function layoutQuotePages(letterHtml, tncHtml){
+/** Split the letter into fixed-height A4 .print-page shells so the bank footer
+ *  is flex-pinned to the bottom of every sheet. */
+function layoutQuotePages(letterHtml){
   const paper = document.getElementById('paper');
   paper.innerHTML = '';
   const src = document.createElement('div');
-  src.innerHTML = letterHtml + (tncHtml || '');
+  src.innerHTML = letterHtml || '';
 
   const makePage = ()=>{
     const page = document.createElement('div');
@@ -1337,32 +1293,12 @@ function layoutQuotePages(letterHtml, tncHtml){
   const overflows = ()=> body.scrollHeight > body.clientHeight + 1;
 
   Array.from(src.children).forEach(kid=>{
-    if(kid.classList.contains('tnc-appendix')){
-      if(body.childNodes.length) body = makePage();
-      let wrap = document.createElement('section');
-      wrap.className = 'tnc-appendix';
-      if(kid.getAttribute('aria-label')) wrap.setAttribute('aria-label', kid.getAttribute('aria-label'));
-      body.appendChild(wrap);
-      Array.from(kid.children).forEach(ch=>{
-        const el = ch.cloneNode(true);
-        wrap.appendChild(el);
-        if(overflows()){
-          wrap.removeChild(el);
-          body = makePage();
-          wrap = document.createElement('section');
-          wrap.className = 'tnc-appendix';
-          body.appendChild(wrap);
-          wrap.appendChild(el);
-        }
-      });
-    }else{
-      const el = kid.cloneNode(true);
+    const el = kid.cloneNode(true);
+    body.appendChild(el);
+    if(overflows()){
+      body.removeChild(el);
+      body = makePage();
       body.appendChild(el);
-      if(overflows()){
-        body.removeChild(el);
-        body = makePage();
-        body.appendChild(el);
-      }
     }
   });
 }
@@ -1545,7 +1481,7 @@ function renderPreview(){
       </div>` : `<div></div>`}
     </div>
   `;
-  layoutQuotePages(letterHtml, "");
+  layoutQuotePages(letterHtml);
 
 }
 
