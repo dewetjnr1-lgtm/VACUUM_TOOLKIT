@@ -7531,9 +7531,8 @@ function custFbLetterMetaRows(fb,j){
  var ccName=((j&&j.fbCcName)||"").trim(), ccEmail=((j&&j.fbCcEmail)||"").trim();
  var ccParts=[]; if(ccName)ccParts.push(ccName); if(ccEmail)ccParts.push(ccEmail);
  var contactName=(fb.contactName||"").trim(), contactEmail=(fb.contactEmail||"").trim();
- var contactParts=[]; if(contactName)contactParts.push(contactName); if(contactEmail)contactParts.push(contactEmail);
  var vals={
-  email:fb.email,company:fb.company,contact:contactParts.join(" · "),from:fb.from,
+  email:fb.email,company:fb.company,contact:contactName,from:fb.from,
   phone:fb.phone,date:custFbDateLabel(fb),cc:ccParts.join(" · ")
  };
  function build(order){
@@ -7546,6 +7545,16 @@ function custFbLetterMetaRows(fb,j){
  }
  var left=build(custFbHeaderOrder(j,"left"));
  var right=build(custFbHeaderOrder(j,"right"));
+ // Extra contact email sits under DATE in the right column (not beside CONTACT).
+ // Omitted entirely when empty. Top EMAIL stays the letter TO recipient.
+ if(contactEmail){
+  var dateLab=CUST_FB_HEADER_FIELD_LABELS.date.toUpperCase();
+  var insertAt=right.length, ri;
+  for(ri=0;ri<right.length;ri++){
+   if(right[ri][0]===dateLab){insertAt=ri+1;break;}
+  }
+  right.splice(insertAt,0,[CUST_FB_HEADER_FIELD_LABELS.email.toUpperCase(),contactEmail]);
+ }
  var refs=[];
  function add(arr,lab,val){val=(val==null?"":String(val).trim());if(val)arr.push([lab,val]);}
  add(refs,"SUBJECT",fb.subject);
