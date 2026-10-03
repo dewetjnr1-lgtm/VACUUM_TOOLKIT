@@ -1411,6 +1411,19 @@ html[data-theme="light"] .ctrl input,html[data-theme="light"] .ctrl select,html[
 <div id="cv_logo_missing" class="note warn" style="display:none;margin:6px 0">No logo — letter shows Busch only.</div>
 <div class="fld"><div class="fh"><label>Recipient email</label></div><div class="ctrl"><input type="text" id="cv_letter_email" placeholder="e.g. rh.operations.processing@royhill.com.au"></div><p class="sub cv-help">TO address on the Client feedback letter header.</p></div>
 <div class="fld"><div class="fh"><label>Contact name</label></div><div class="ctrl"><input type="text" id="cv_contact_name" placeholder="e.g. Site contact"></div><p class="sub cv-help">Who you&rsquo;re writing to on the letter.</p></div>
+<p class="sub" style="margin:10px 0 8px;font-size:12.5px">Letter header for every job. Leave a field blank to keep printing that job&rsquo;s saved value. Save letter fields to use the value here instead.</p>
+<div class="mgrid"><div class="mgf"><span class="mlab">From</span><div class="ctrl"><input type="text" id="cj_fb_from"></div></div><div class="mgf"><span class="mlab">Date</span><div class="ctrl"><input type="date" id="cj_fb_date"></div></div></div>
+<div class="mgrid"><div class="mgf"><span class="mlab">CC name</span><div class="ctrl"><input type="text" id="cj_fb_cc_name"></div></div><div class="mgf"><span class="mlab">CC email</span><div class="ctrl"><input type="text" id="cj_fb_cc_email"></div></div></div>
+<p class="sub" style="margin:10px 0 2px;font-size:12.5px">Order these print top-to-bottom in each column — use the arrows to rearrange.</p>
+<div class="mgrid" id="cj_fb_header_order"></div>
+<div class="fld"><div class="fh"><label>Subject</label></div><div class="ctrl"><input type="text" id="cj_fb_subject" placeholder="e.g. Liquid ring vacuum pump chemical flush feedback report"></div></div>
+<div class="mgrid"><div class="mgf"><span class="mlab">Busch ref</span><div class="ctrl"><input type="text" id="cj_fb_busch_ref" placeholder="e.g. 26NBQ146"></div></div><div class="mgf"><span class="mlab">Your ref</span><div class="ctrl"><input type="text" id="cj_fb_your_ref" placeholder="e.g. DESANDS MODULE VACUUM PUMP FLT 151"></div></div></div>
+<div class="cj-fb-sizes-box">
+<h4 style="margin:14px 0 2px;font-size:14px;font-weight:800;color:var(--teal)">Letter text sizes</h4>
+<p class="sub" style="margin:0 0 6px;font-size:12.5px">Applies to all your letters. The preview and the PDF change together.</p>
+<div id="cj_fb_sizes"></div>
+<button type="button" class="clrbtn" style="margin:6px 0 0" onclick="custFbSizeReset()">Reset to standard sizes</button>
+</div>
 <div class="fld"><div class="fh"><label>Phone</label></div><div class="ctrl"><input type="text" id="cv_contact_phone" placeholder="e.g. +61 …"></div><p class="sub cv-help">Prints on the letter if filled.</p></div>
 <div class="fld"><div class="fh"><label>Email</label></div><div class="ctrl"><input type="text" id="cv_contact_email" placeholder="e.g. name@customer.com.au"></div><p class="sub cv-help">Extra contact email (site / person). Recipient email above is the letter TO.</p></div>
 <button class="exbtn" onclick="custSaveView('letter')">Save letter fields</button>
@@ -1445,23 +1458,6 @@ html[data-theme="light"] .ctrl input,html[data-theme="light"] .ctrl select,html[
 <div class="vt-collapse-body">
 <p style="font-size:13px;color:var(--soft);margin:0 0 10px">Client feedback report — edit here. Preview updates as you type.</p>
 <p style="font-size:12.5px;color:var(--soft);margin:0 0 10px">Green light = live on Preview / PDF. Tag photos below with a Letter section so they land in the right place. Auto-saves on this device.</p>
-<div class="cj-fb-letter-hdr cj-fb-letter-hdr-top vt-collapsible" id="cj_sec_letter_hdr" data-vt-collapse="cj_letter_hdr">
-<div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Letter header" onclick="vtCollapseToggle('cj_sec_letter_hdr')">▾</button><span class="vt-collapse-title">Letter header</span><span class="vt-collapse-hint" id="cj_hint_letter_hdr" aria-hidden="true"></span></div>
-<div class="vt-collapse-body cj-fb-letter-hdr-fields">
-<p class="sub" style="margin:0 0 8px;font-size:12.5px">Recipient email and Contact name live under Customer → For the letter. Company and phone also come from the Customer.</p>
-<div class="mgrid"><div class="mgf"><span class="mlab">From</span><div class="ctrl"><input type="text" id="cj_fb_from"></div></div><div class="mgf"><span class="mlab">Date</span><div class="ctrl"><input type="date" id="cj_fb_date"></div></div></div>
-<div class="mgrid"><div class="mgf"><span class="mlab">CC name</span><div class="ctrl"><input type="text" id="cj_fb_cc_name"></div></div><div class="mgf"><span class="mlab">CC email</span><div class="ctrl"><input type="text" id="cj_fb_cc_email"></div></div></div>
-<p class="sub" style="margin:10px 0 2px;font-size:12.5px">Order these print top-to-bottom in each column — use the arrows to rearrange.</p>
-<div class="mgrid" id="cj_fb_header_order"></div>
-<div class="fld"><div class="fh"><label>Subject</label></div><div class="ctrl"><input type="text" id="cj_fb_subject" placeholder="e.g. Liquid ring vacuum pump chemical flush feedback report"></div></div>
-<div class="mgrid"><div class="mgf"><span class="mlab">Busch ref</span><div class="ctrl"><input type="text" id="cj_fb_busch_ref" placeholder="e.g. 26NBQ146"></div></div><div class="mgf"><span class="mlab">Your ref</span><div class="ctrl"><input type="text" id="cj_fb_your_ref" placeholder="e.g. DESANDS MODULE VACUUM PUMP FLT 151"></div></div></div>
-</div></div>
-<div class="cj-fb-sizes-box">
-<h4 style="margin:14px 0 2px;font-size:14px;font-weight:800;color:var(--teal)">Letter text sizes</h4>
-<p class="sub" style="margin:0 0 6px;font-size:12.5px">Applies to all your letters. The preview and the PDF change together.</p>
-<div id="cj_fb_sizes"></div>
-<button type="button" class="clrbtn" style="margin:6px 0 0" onclick="custFbSizeReset()">Reset to standard sizes</button>
-</div>
 <h4 style="margin:14px 0 4px;font-size:14px;font-weight:800;color:var(--teal)">Sections in this report</h4>
 <p class="cj-fb-secs-hint">Green light = live on Preview + PDF. Arrow folds the section on this phone.</p>
 <div id="cj_fb_sections">
@@ -5635,6 +5631,16 @@ function custRenderView(){
  var le=document.getElementById("cv_letter_email");if(le)le.value=c.letterEmail||"";
  custMigrateLetterFields(c);
  if(le&&!(le.value||"").trim()&&(c.letterEmail||"").trim())le.value=c.letterEmail;
+ function setLetter(id,v){var e=document.getElementById(id);if(e)e.value=v==null?"":v;}
+ setLetter("cj_fb_from",c.letterFrom||"");
+ setLetter("cj_fb_date",c.letterDate||"");
+ setLetter("cj_fb_cc_name",c.letterCcName||"");
+ setLetter("cj_fb_cc_email",c.letterCcEmail||"");
+ setLetter("cj_fb_subject",c.letterSubject||"");
+ setLetter("cj_fb_busch_ref",c.letterBuschRef||"");
+ setLetter("cj_fb_your_ref",c.letterYourRef||"");
+ custRenderFbHeaderOrder();
+ custRenderFbSizeUi();
  vtLiveBtnSync(document.getElementById("cv_letter_live"),c.letterLive!==false);
  var no=document.getElementById("cv_notes");if(no)no.value=c.notes||"";
  var eq=document.getElementById("cv_equip");
@@ -5980,7 +5986,9 @@ function vtCollapseHintsRefresh(){
   var letterEmail=(document.getElementById("cv_letter_email")||{}).value||"";
   var contact=(document.getElementById("cv_contact_name")||{}).value||"";
   var phone=(document.getElementById("cv_contact_phone")||{}).value||"";
-  vtHintSet("cv_hint_letter",vtHintJoin([contact,letterEmail||phone]));
+  var from=(document.getElementById("cj_fb_from")||{}).value||"";
+  var subj=(document.getElementById("cj_fb_subject")||{}).value||"";
+  vtHintSet("cv_hint_letter",vtHintJoin([contact,letterEmail||phone,subj||from]));
   var nJobs=0;
   try{var c=typeof custFind==="function"&&typeof CUST_CUR!=="undefined"?custFind(CUST_CUR):null;if(c)nJobs=(c.jobs||[]).length;}catch(e1){}
   vtHintSet("cv_hint_jobs",nJobs? (nJobs+" job"+(nJobs===1?"":"s")) : "");
@@ -5990,10 +5998,6 @@ function vtCollapseHintsRefresh(){
   var jdate=(document.getElementById("cj_date")||{}).value||"";
   var jstatus=(document.getElementById("cj_status")||{}).value||"";
   vtHintSet("cj_hint_visit",vtHintJoin([jname||jtype,jdate,jstatus]));
-  var from=(document.getElementById("cj_fb_from")||{}).value||"";
-  var fdate=(document.getElementById("cj_fb_date")||{}).value||"";
-  var subj=(document.getElementById("cj_fb_subject")||{}).value||"";
-  vtHintSet("cj_hint_letter_hdr",vtHintJoin([from,fdate,subj]));
   function taHint(tid,hid){var v=(document.getElementById(tid)||{}).value||"";vtHintSet(hid,vtHintClip(v.split(/\n/)[0],36));}
   taHint("cj_fb_greeting","cj_hint_fb_exec");
   var mboxes=document.querySelectorAll("#cj_fb_method_types .cj-fb-method-cb:checked");
@@ -6088,7 +6092,10 @@ function custMigrateLetterFields(c){
  if(!c)return;
  if(c.letterEmail==null)c.letterEmail="";
  if(c.letterLive===undefined)c.letterLive=true;
- // Pull Recipient email / Contact name from jobs that still hold the old Job-header fields.
+ // Recipient email / Contact name, and the letter header (From, Date, CC, subject,
+ // refs, column order) live on the customer. The job letter reads them.
+ // Header fields are NOT copied off jobs here: an empty customer field keeps
+ // printing that job's saved value until Save letter fields stores one.
  var jobs=c.jobs||[],i,j;
  if(!(c.letterEmail||"").trim()){
   for(i=0;i<jobs.length;i++){
@@ -6102,6 +6109,12 @@ function custMigrateLetterFields(c){
    if(j&&(j.fbContactName||"").trim()){c.contactName=String(j.fbContactName).trim();break;}
   }
  }
+}
+// Customer value wins once it is non-empty. Empty customer field → keep the job value.
+function custLetterPick(custVal, jobVal){
+ if(custVal!=null && String(custVal).trim()!=="") return String(custVal).trim();
+ if(jobVal==null) return "";
+ return String(jobVal).trim();
 }
 
 function custSaveView(which){
@@ -6119,6 +6132,16 @@ function custSaveView(which){
  if(ePhone)c.contactPhone=ePhone.value||"";
  if(eEmail)c.contactEmail=eEmail.value||"";
  if(eLetter)c.letterEmail=eLetter.value||"";
+ // Letter header — same Save letter fields path as recipient email / contact name.
+ function grabLetter(id){var e=document.getElementById(id);return e?e.value:null;}
+ var lv;
+ lv=grabLetter("cj_fb_from");if(lv!==null)c.letterFrom=lv||"";
+ lv=grabLetter("cj_fb_date");if(lv!==null)c.letterDate=lv||"";
+ lv=grabLetter("cj_fb_cc_name");if(lv!==null)c.letterCcName=lv||"";
+ lv=grabLetter("cj_fb_cc_email");if(lv!==null)c.letterCcEmail=lv||"";
+ lv=grabLetter("cj_fb_subject");if(lv!==null)c.letterSubject=lv||"";
+ lv=grabLetter("cj_fb_busch_ref");if(lv!==null)c.letterBuschRef=lv||"";
+ lv=grabLetter("cj_fb_your_ref");if(lv!==null)c.letterYourRef=lv||"";
  var eNotes=document.getElementById("cv_notes");
  if(eNotes)c.notes=eNotes.value||"";
  var eEquip=document.getElementById("cv_equip");
@@ -6246,9 +6269,7 @@ function custRenderJob(){
  if(j.fbContactName===undefined)j.fbContactName=(c&&c.contactName)||"";
  set("cj_fb_email",j.fbEmail||"");
  set("cj_fb_contact_name",j.fbContactName);
- set("cj_fb_from",j.fbFrom);set("cj_fb_date",j.fbDate);
- set("cj_fb_cc_name",j.fbCcName);set("cj_fb_cc_email",j.fbCcEmail);
- set("cj_fb_subject",j.fbSubject);set("cj_fb_busch_ref",j.fbBuschRef);set("cj_fb_your_ref",j.fbYourRef);
+ // From / Date / CC / subject / refs are edited on Customer → For the letter.
  set("cj_fb_greeting",j.fbGreeting);set("cj_fb_intro_head",j.fbIntroHead);set("cj_fb_intro_body",j.fbIntroBody);
  (function(){
   var mkeys=j.fbMethodKeys||[],boxes=document.querySelectorAll("#cj_fb_method_types .cj-fb-method-cb");
@@ -6466,13 +6487,8 @@ function custSaveJob(mode){
  v=grab("cj_findings");if(v!==null)j.findings=v||"";
  v=grab("cj_fb_email");if(v!==null)j.fbEmail=v||"";
  v=grab("cj_fb_contact_name");if(v!==null)j.fbContactName=v||"";
- v=grab("cj_fb_from");if(v!==null)j.fbFrom=v||"";
- v=grab("cj_fb_date");if(v!==null)j.fbDate=v||"";
- v=grab("cj_fb_cc_name");if(v!==null)j.fbCcName=v||"";
- v=grab("cj_fb_cc_email");if(v!==null)j.fbCcEmail=v||"";
- v=grab("cj_fb_subject");if(v!==null)j.fbSubject=v||"";
- v=grab("cj_fb_busch_ref");if(v!==null)j.fbBuschRef=v||"";
- v=grab("cj_fb_your_ref");if(v!==null)j.fbYourRef=v||"";
+ // Header inputs now live on the customer. Do not copy them onto the job
+ // (an empty customer field must not wipe a job that already has a value).
  v=grab("cj_fb_greeting");if(v!==null)j.fbGreeting=v||"";
  v=grab("cj_fb_intro_head");if(v!==null)j.fbIntroHead=v||"";
  v=grab("cj_fb_intro_body");if(v!==null)j.fbIntroBody=v||"";
@@ -7266,6 +7282,8 @@ var CUST_FB_GROUP_LABELS={pre:"PRE-FLUSH PHOTOS",during:"PUMP FLUSH IN PROGRESS"
 function custFbResolve(j,c){
  // COMPANY from customer name; phone from Customer → For the letter.
  // Recipient email + Contact name live on Customer → For the letter (migrated from Job).
+ // From / Date / CC / subject / refs / column order also live on the customer.
+ // Empty customer field → keep printing the job value. Saved customer value wins.
  if(c){custMigrateContacts(c);custMigrateLetterFields(c);}
  var o={};
  var letterOn=!(c&&c.letterLive===false);
@@ -7274,11 +7292,11 @@ function custFbResolve(j,c){
  o.phone=letterOn?(((c&&c.contactPhone)||"").trim()):"";
  o.contactName=letterOn?(((c&&c.contactName)||"").trim()||((j.fbContactName!=null&&j.fbContactName!=="")?String(j.fbContactName).trim():"")):"";
  o.contactEmail=letterOn?(((c&&c.contactEmail)||"").trim()):"";
- o.from=(j.fbFrom||CUST_FB_DEFAULTS.from||"").trim();
- o.date=j.fbDate||j.date||"";
- o.buschRef=(j.fbBuschRef||"").trim();
- o.yourRef=(j.fbYourRef||j.site||"").trim();
- o.subject=(j.fbSubject||CUST_FB_DEFAULTS.subject||"Vacuum pump chem-flush feedback report").trim();
+ o.from=(custLetterPick(c&&c.letterFrom, j&&j.fbFrom)||CUST_FB_DEFAULTS.from||"").trim();
+ o.date=custLetterPick(c&&c.letterDate, (j&&j.fbDate)||(j&&j.date)||"");
+ o.buschRef=custLetterPick(c&&c.letterBuschRef, j&&j.fbBuschRef);
+ o.yourRef=custLetterPick(c&&c.letterYourRef, (j&&j.fbYourRef)||(j&&j.site)||"");
+ o.subject=(custLetterPick(c&&c.letterSubject, j&&j.fbSubject)||CUST_FB_DEFAULTS.subject||"Vacuum pump chem-flush feedback report").trim();
  o.greeting=(j.fbGreeting!=null&&j.fbGreeting!=="")?j.fbGreeting:CUST_FB_DEFAULTS.greeting;
  o.introHead=(j.fbIntroHead!=null&&j.fbIntroHead!=="")?j.fbIntroHead:CUST_FB_DEFAULTS.introHead;
  o.introBody=(j.fbIntroBody!=null&&j.fbIntroBody!=="")?j.fbIntroBody:CUST_FB_DEFAULTS.introBody;
@@ -7475,14 +7493,26 @@ function custRenderFbSizeUi(){
 }
 window.custFbSizeStep=custFbSizeStep;window.custFbSizeReset=custFbSizeReset;
 // Which fields can print in each column, and their default top-to-bottom order.
-// custFbHeaderOrder() lets a job override the order within each column (not
-// which column a field is in — that stays fixed left/right).
+// Column membership stays fixed left/right. Order is edited on the customer;
+// until that is saved, the job's own order still prints.
 var CUST_FB_HEADER_LEFT_DEFAULT=["email","company","contact","from"];
 var CUST_FB_HEADER_RIGHT_DEFAULT=["phone","date","cc"];
 var CUST_FB_HEADER_FIELD_LABELS={email:"Email",company:"Company",contact:"Contact",from:"From",phone:"Phone",date:"Date",cc:"CC"};
+function custLetterCustomerOf(j){
+ if(j){
+  var i,k,c,jobs;
+  for(i=0;i<(CUST_DB.customers||[]).length;i++){
+   c=CUST_DB.customers[i];jobs=c.jobs||[];
+   for(k=0;k<jobs.length;k++) if(jobs[k]===j||(j.id&&jobs[k].id===j.id)) return c;
+  }
+ }
+ return (typeof custFind==="function")?custFind(CUST_CUR):null;
+}
 function custFbHeaderOrder(j,side){
  var def=side==="right"?CUST_FB_HEADER_RIGHT_DEFAULT:CUST_FB_HEADER_LEFT_DEFAULT;
- var stored=j&&(side==="right"?j.fbHeaderRightOrder:j.fbHeaderLeftOrder);
+ var c=custLetterCustomerOf(j);
+ var custStored=c&&(side==="right"?c.letterHeaderRightOrder:c.letterHeaderLeftOrder);
+ var stored=(Array.isArray(custStored)&&custStored.length)?custStored:(j&&(side==="right"?j.fbHeaderRightOrder:j.fbHeaderLeftOrder));
  if(!Array.isArray(stored)||!stored.length)return def.slice();
  // Guard against a stale order missing/duplicating keys (e.g. after an app
  // update) by keeping only known keys, then appending any the user's order
@@ -7492,11 +7522,10 @@ function custFbHeaderOrder(j,side){
  return out;
 }
 function custRenderFbHeaderOrder(){
- var pair=custFindJob();var el=document.getElementById("cj_fb_header_order");
- if(!el||!pair)return;
- var j=pair.j;
+ var c=custFind(CUST_CUR);var el=document.getElementById("cj_fb_header_order");
+ if(!el||!c)return;
  function col(side,title){
-  var order=custFbHeaderOrder(j,side),h,i,k;
+  var order=custFbHeaderOrder(null,side),h,i,k;
   h='<div class="mgf"><span class="mlab">'+title+'</span><div class="cj-header-order-list">';
   for(i=0;i<order.length;i++){
    k=order[i];
@@ -7510,16 +7539,15 @@ function custRenderFbHeaderOrder(){
  el.innerHTML=col("left","Left column")+col("right","Right column");
 }
 function custMoveHeaderField(side,key,dir){
- var pair=custFindJob();if(!pair)return;
- var j=pair.j;
- var order=custFbHeaderOrder(j,side);
+ var c=custFind(CUST_CUR);if(!c)return;
+ var order=custFbHeaderOrder(null,side);
  var idx=order.indexOf(key);if(idx<0)return;
  var swapIdx=idx+dir;if(swapIdx<0||swapIdx>=order.length)return;
  var tmp=order[idx];order[idx]=order[swapIdx];order[swapIdx]=tmp;
- if(side==="right")j.fbHeaderRightOrder=order;else j.fbHeaderLeftOrder=order;
+ if(side==="right")c.letterHeaderRightOrder=order;else c.letterHeaderLeftOrder=order;
  custPersist();
  custRenderFbHeaderOrder();
- cjRefreshLivePreview();
+ if(typeof cjRefreshLivePreview==="function")cjRefreshLivePreview();
 }
 window.custMoveHeaderField=custMoveHeaderField;
 // Single source of truth for the letter header's meta rows, shared by the HTML
@@ -7528,7 +7556,8 @@ window.custMoveHeaderField=custMoveHeaderField;
 // every label, and CC name/email — two fields on the Job form — collapse into
 // one CC row instead of a second, confusingly-labelled "EMAIL" row.
 function custFbLetterMetaRows(fb,j){
- var ccName=((j&&j.fbCcName)||"").trim(), ccEmail=((j&&j.fbCcEmail)||"").trim();
+ var c=custLetterCustomerOf(j);
+ var ccName=custLetterPick(c&&c.letterCcName, j&&j.fbCcName), ccEmail=custLetterPick(c&&c.letterCcEmail, j&&j.fbCcEmail);
  var ccParts=[]; if(ccName)ccParts.push(ccName); if(ccEmail)ccParts.push(ccEmail);
  var contactName=(fb.contactName||"").trim(), contactEmail=(fb.contactEmail||"").trim();
  var vals={
@@ -8714,7 +8743,8 @@ vtThemeApply(vtThemeGet());vtCollapseRestore();custFbApplySizeVars();
 (function vtHintListeners(){
  function refresh(){try{vtCollapseHintsRefresh();}catch(e){}}
  ["cv_name","cv_site","cv_letter_email","cv_contact_name","cv_contact_phone","cv_contact_email",
-  "cj_name","cj_date","cj_type","cj_status","cj_fb_from","cj_fb_date","cj_fb_subject",
+  "cj_fb_from","cj_fb_date","cj_fb_cc_name","cj_fb_cc_email","cj_fb_subject","cj_fb_busch_ref","cj_fb_your_ref",
+  "cj_name","cj_date","cj_type","cj_status",
   "cj_fb_greeting","cj_fb_intro_head","cj_fb_scope","cj_fb_equipment","cj_fb_findings","cj_fb_results",
   "cj_fb_additional","cj_fb_recommendations","cj_fb_safety","cj_fb_parts","cj_fb_outstanding","cj_fb_next_visit","cj_fb_closing"
  ].forEach(function(id){
@@ -8726,7 +8756,7 @@ vtThemeApply(vtThemeGet());vtCollapseRestore();custFbApplySizeVars();
 // installed app window (laptop) / home-screen app (phone) can keep an old copy
 // open far longer, so a published fix can look like "nothing changed".
 // VT_BUILD must be bumped on every change to this file (see CLAUDE.md).
-var VT_BUILD="2026-09-30.8";
+var VT_BUILD="2026-10-03.1";
 (function vtAutoUpdate(){
  if(location.protocol!=="http:"&&location.protocol!=="https:")return;
  var url=location.href.split("#")[0],bar=null,busy=false;
