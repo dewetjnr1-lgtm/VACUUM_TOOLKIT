@@ -102,6 +102,8 @@ table.vib th,table.vib td{border:1px solid #777;padding:1.2mm 2mm;text-align:cen
 table.vib th{background:#f0f0f0}
 table.vib td:first-child,table.vib th:first-child{text-align:left}
 .note{font-size:9pt;color:#222;margin:0 0 3mm;white-space:pre-wrap}
+.gstart{margin-top:7mm}
+.pg-body>:first-child{margin-top:0!important}
 .phrow{display:flex;gap:4mm;margin-bottom:4mm;align-items:flex-start}
 .ph{break-inside:avoid;flex:none;min-width:0}
 .ph .im{width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
@@ -154,7 +156,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-03.13";
+var APP_BUILD="2026-10-03.14";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -400,6 +402,14 @@ function sectionCard(sec,si){
   return c;
 }
 var BNAME={text:"Text",bullets:"Bullet list (one per line)",kv:"Details table",vib:"Vibration results",photos:"Photos"};
+/* a block is kept with the one below it when ticked; by default text/bullets stay with the photos right after them */
+function effKeep(list,i){
+  var b=list[i],n=list[i+1];
+  if(b.keep!==undefined)return !!b.keep;
+  if(!n)return false;
+  if((b.t==="text"||b.t==="bullets")&&n.t==="photos")return true;
+  return false;
+}
 function blockCard(sec,b,bi){
   var head=el("div",{class:"bh"},[el("span",{text:BNAME[b.t]}),
     el("button",{class:"btn sm ghost",text:"▲",onclick:function(){mv(sec.blocks,bi,-1);renderEditor();changed();}}),
@@ -457,7 +467,7 @@ function blockCard(sec,b,bi){
     });
     body.appendChild(th);
   }
-  var kp=el("input",{type:"checkbox"});kp.checked=!!b.keep;kp.addEventListener("change",function(){b.keep=kp.checked;changed();});
+  var kp=el("input",{type:"checkbox"});kp.checked=effKeep(sec.blocks,bi);kp.addEventListener("change",function(){b.keep=kp.checked;changed();});
   return el("div",{class:"blk"},[head,body,el("label",{class:"chk",style:"margin-top:6px"},[kp," Keep together with the block below (never split across pages)"])]);
 }
 function addPhotos(b,files){
@@ -556,12 +566,12 @@ function unitsFor(){
   else S.sections.forEach(function(s,i){it.appendChild(el("div",{},[el("b",{text:"Item "+(i+2)}),"- "+T(s.title)]));});
   U.push({e:it});
   var GID=0,pk=false,gid=0;
-  S.itemsBlocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["items-b"+bi]=U.length;if(!pk)gid=++GID;if(b.keep||pk)bu.forEach(function(u){u.grp=gid;});pk=!!b.keep;bu.forEach(function(u){U.push(u);});});
+  S.itemsBlocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["items-b"+bi]=U.length;var ek=effKeep(S.itemsBlocks,bi);if(!pk)gid=++GID;if(bu.length&&bi>0&&!pk)bu[0].gap=true;if(ek||pk)bu.forEach(function(u){u.grp=gid;});pk=ek;bu.forEach(function(u){U.push(u);});});
   S.sections.forEach(function(s,si){
     FK["s"+si]=U.length;
     U.push({e:el("div",{class:"h1",text:(si+2)+". "+T(s.title)}),keep:true,brk:si===0||!!s.newPage});
     pk=false;
-    s.blocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["s"+si+"-b"+bi]=U.length;if(!pk)gid=++GID;if(b.keep||pk)bu.forEach(function(u){u.grp=gid;});pk=!!b.keep;bu.forEach(function(u){U.push(u);});});
+    s.blocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["s"+si+"-b"+bi]=U.length;var ek=effKeep(s.blocks,bi);if(!pk)gid=++GID;if(bu.length&&bi>0&&!pk)bu[0].gap=true;if(ek||pk)bu.forEach(function(u){u.grp=gid;});pk=ek;bu.forEach(function(u){U.push(u);});});
   });
   FK.hdr=0;
   Object.keys(FK).forEach(function(k){var u=U[FK[k]];if(u&&!u.e.dataset.focus)u.e.dataset.focus=k;});
@@ -635,6 +645,7 @@ function drawPages(){
   var pu=[[]];   /* units on each page, so a group can move together */
   units.forEach(function(u){
     if(u.brk&&cur.body.children.length){newPage();pu.push([]);}
+    if(u.gap)u.e.classList.add("gstart");
     cur.body.appendChild(u.e);
     var list=pu[pu.length-1];
     if(over()&&cur.body.children.length>1){
