@@ -7507,8 +7507,10 @@ window.custMoveHeaderField=custMoveHeaderField;
 function custFbLetterMetaRows(fb,j){
  var ccName=((j&&j.fbCcName)||"").trim(), ccEmail=((j&&j.fbCcEmail)||"").trim();
  var ccParts=[]; if(ccName)ccParts.push(ccName); if(ccEmail)ccParts.push(ccEmail);
+ var contactName=(fb.contactName||"").trim(), contactEmail=(fb.contactEmail||"").trim();
+ var contactParts=[]; if(contactName)contactParts.push(contactName); if(contactEmail)contactParts.push(contactEmail);
  var vals={
-  email:fb.email,company:fb.company,contact:fb.contactName,from:fb.from,
+  email:fb.email,company:fb.company,contact:contactParts.join(" · "),from:fb.from,
   phone:fb.phone,date:custFbDateLabel(fb),cc:ccParts.join(" · ")
  };
  function build(order){
