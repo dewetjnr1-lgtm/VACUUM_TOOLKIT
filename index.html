@@ -447,6 +447,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-letter .fb-sec-letter{overflow-wrap:anywhere;}
 .cj-fb-letter .fb-sec-letter{font-size:17px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#E85D04;margin:16px 0 6px;padding-bottom:3px;border-bottom:2px solid #E85D04;}
 .cj-fb-letter .fb-pump-tag{font-size:12px;font-weight:800;color:#333;margin:14px 0 4px;}
+.cj-fb-letter .fb-pump-bold{font-size:12px;font-weight:800;color:#333;margin:2px 0 6px;}
 .cj-fb-letter .fb-pump-sub{font-size:10.5px;font-weight:800;color:#E85D04;text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px;}
 .cj-fb-letter .fb-pump-table{width:100%;border-collapse:separate;border-spacing:0;margin:3px 0 10px;border:1px solid #F0C29B;border-radius:9px;overflow:hidden;font-size:12px;box-shadow:0 1px 3px rgba(232,93,4,.08);}
 .cj-fb-letter .fb-pump-table tr:nth-child(odd) td{background:#FFF7F0;}
@@ -1368,8 +1369,9 @@ html[data-theme="light"] .ctrl input,html[data-theme="light"] .ctrl select,html[
 <div id="lri_pump_status" class="vt-status-strip" aria-label="Pump status"></div>
 <button type="button" id="lri_next_incomplete" class="vt-next-btn" onclick="lriNextIncomplete()">Next incomplete</button>
 <div id="lri_sticky_pump" class="vt-sticky-pump" hidden aria-live="polite"></div>
+<button class="clrbtn" onclick="lriAddRow()" style="margin-left:0">Add pump</button>
 <div id="lri_rows"></div>
-<button class="clrbtn" onclick="lriAddRow()" style="margin-left:0">Add another pump</button> <button class="clrbtn" onclick="lriRemoveRow()">Remove last pump</button>
+<button class="clrbtn" onclick="lriAddRow()" style="margin-left:0">Add pump</button> <button class="clrbtn" onclick="lriRemoveRow()">Remove last pump</button>
 <div class="card"><h3>Overall findings &amp; recommendations</h3>
 <div class="fld"><div class="fh"><label>Summary across all pumps on this job</label></div><div class="ctrl"><textarea id="lri_findings" rows="6" placeholder="e.g. Both hogging vacuum pumps inspected per quote WA26-0123. Pump A is in good order; Pump B needs a mechanical seal replacement and a seal water cooler clean at the next planned shutdown..."></textarea></div></div>
 <div class="mgrid"><div class="mgf"><span class="mlab">Follow-up required</span><div class="ctrl"><input type="text" id="lri_followup" placeholder="e.g. Quote mechanical seal replacement, Pump B"></div></div><div class="mgf"><span class="mlab">Next inspection due</span><div class="ctrl"><input type="date" id="lri_nextdate"></div></div></div>
@@ -3116,7 +3118,7 @@ var EX={
  lri:{lri_company:"Busch ANZ Pty Ltd",lri_client:"Kwinana Energy Recovery (Acciona)",lri_site:"Kwinana Energy Recovery, WA",lri_contact:"Brad James",lri_contact_ph:"0404 789 536",lri_ref:"WA26-0123",lri_po:"PO-45821",lri_scope:"basic_om",lri_date:"2026-07-21",lri_by:"C. de Wet, J. Service",
   lri_findings:"Both hogging vacuum pumps inspected per quote WA26-0123 (basic inspection plus O&M preventative maintenance checks). Pump A is in good order. Pump B needs a mechanical seal replacement and a seal water cooler clean at the next planned shutdown; bearing DE temperature, discharge temperature and vibration are all elevated and worth monitoring in the meantime.",
   lri_followup:"Quote mechanical seal replacement and cooler clean, Pump B",
-  lri_r1_tag:"Hogging Vacuum Pump A",lri_r1_make:"NASH",lri_r1_model:"2BE1 (per nameplate)",lri_r1_serial:"e.g. 123456",lri_r1_year:2015,lri_r1_maxp_n:6.5,lri_r1_maxp_u:"4",
+  lri_r1_tag:"Hogging Vacuum Pump A",lri_r1_title:"REPORT ON HOGGING VACUUM PUMP A",lri_r1_sub:"Pump A details",lri_r1_lines:"Manufacturer \u2013 NASH\nModel \u2013 2BE1 (per nameplate)\nSerial No. \u2013 e.g. 123456\nYear of manufacture \u2013 2015",lri_r1_make:"NASH",lri_r1_model:"2BE1 (per nameplate)",lri_r1_serial:"e.g. 123456",lri_r1_year:2015,lri_r1_maxp_n:6.5,lri_r1_maxp_u:"4",
   lri_r1_seal_type:"gland",lri_r1_seal_cond:"fair",lri_r1_seal_drip_before:"Pouring — steady stream, too fast to count",lri_r1_seal_drip_after:55,lri_r1_seal_sleeve:"good",lri_r1_seal_adj:"some",lri_r1_seal_notes:"Found the gland pouring on arrival — follower had backed off. Nipped it up evenly until a healthy weep was restored. Seal water flush clean.",
   lri_r1_brg_type:"ball",lri_r1_brg_cond:"good",lri_r1_brg_de_temp:58,lri_r1_brg_nde_temp:55,lri_r1_brg_notes:"No abnormal noise, grease condition acceptable.",
   lri_r1_bore_corr:"light",lri_r1_bore_cav:"none",lri_r1_bore_abr:"none",lri_r1_bore_notes:"Light surface corrosion on casing at discharge port, no pitting through the wall.",
@@ -3134,7 +3136,7 @@ var EX={
   lri_r1_vib_mde_ax:1.0,lri_r1_vib_mde_h:1.2,lri_r1_vib_mde_v:0.9,lri_r1_vib_mnde_ax:0.8,lri_r1_vib_mnde_h:1.1,lri_r1_vib_mnde_v:0.9,
   lri_r1_ex1_label:"Base plate grouting",lri_r1_ex1_cond:"good",lri_r1_ex1_value:"",lri_r1_ex1_notes:"No cracking or voids visible, grout in sound condition.",
   lri_r1_condition:"good",lri_r1_priority:"routine",lri_r1_corrective:"No immediate action required. Re-inspect at next scheduled PM.",
-  lri_r2_tag:"Hogging Vacuum Pump B",lri_r2_make:"NASH",lri_r2_model:"2BE1 (per nameplate)",lri_r2_serial:"e.g. 123457",lri_r2_year:2015,lri_r2_maxp_n:6.5,lri_r2_maxp_u:"4",
+  lri_r2_tag:"Hogging Vacuum Pump B",lri_r2_title:"REPORT ON HOGGING VACUUM PUMP B",lri_r2_sub:"Pump B details",lri_r2_lines:"Manufacturer \u2013 NASH\nModel \u2013 2BE1 (per nameplate)\nSerial No. \u2013 e.g. 123457\nYear of manufacture \u2013 2015",lri_r2_make:"NASH",lri_r2_model:"2BE1 (per nameplate)",lri_r2_serial:"e.g. 123457",lri_r2_year:2015,lri_r2_maxp_n:6.5,lri_r2_maxp_u:"4",
   lri_r2_seal_type:"mech",lri_r2_seal_cond:"poor",lri_r2_seal_notes:"Visible seal face weepage, recommend replacement at next opportunity.",
   lri_r2_brg_type:"ball",lri_r2_brg_cond:"fair",lri_r2_brg_de_temp:64,lri_r2_brg_nde_temp:60,lri_r2_brg_notes:"Slightly elevated DE temperature, monitor.",
   lri_r2_bore_corr:"moderate",lri_r2_bore_cav:"light",lri_r2_bore_abr:"light",lri_r2_bore_notes:"Moderate corrosion, light cavitation pitting near the rotor tips and light abrasion on the port face; casing wall thickness appears adequate.",
@@ -3642,12 +3644,12 @@ function lriApplySections(){
 }
 function lriCopyPrevPump(n){
  if(n<2)return;
- if(!confirm("Replace Pump "+n+"'s checks with Pump "+(n-1)+"'s? Tag stays."))return;
+ if(!confirm("Replace Pump "+n+"'s checks with Pump "+(n-1)+"'s? Title and detail lines stay."))return;
  var prev=n-1,p0="lri_r"+prev+"_",p1="lri_r"+n+"_";
  var f=lriRowFields(prev),i,e0,e1,id0,id1,suf;
  for(i=0;i<f.length;i++){
   id0=f[i];
-  if(id0===p0+"tag")continue;
+  if(id0===p0+"tag"||id0===p0+"title"||id0===p0+"sub"||id0===p0+"lines")continue;
   suf=id0.slice(p0.length);
   id1=p1+suf;
   e0=document.getElementById(id0);e1=document.getElementById(id1);
@@ -3871,13 +3873,13 @@ function lriRowHTML(n){
  var p="lri_r"+n+"_";
  function SB(id,opts,check){return lriSelBlock(id,opts,!!(check&&n>1));}
  return '<details class="card" id="lri_row'+n+'" open><summary>Pump '+n+' <span class="lri-sum-st open" data-lri-sum="'+n+'">Open</span></summary><div class="lripump-body">'+
- (n>1?'<button type="button" class="lri-sameprev" onclick="lriCopyPrevPump('+n+')">Same as previous pump<small>Copies filled checks from Pump '+(n-1)+'. Pump ID/tag is kept.</small></button>':'')+
- '<div class="fld"><div class="fh"><label>Pump ID / tag</label></div><div class="ctrl"><input type="text" id="'+p+'tag" placeholder="e.g. Hogging Vacuum Pump A"></div></div>'+
+ (n>1?'<button type="button" class="lri-sameprev" onclick="lriCopyPrevPump('+n+')">Same as previous pump<small>Copies filled checks from Pump '+(n-1)+'. Title and detail lines are kept.</small></button>':'')+
+ '<div class="fld"><div class="fh"><label>Section title</label></div><div class="ctrl"><input type="text" id="'+p+'title" placeholder="e.g. REPORT ON WASH PLANT # 1, HORIZONTAL BELT FILTER VACUUM PUMP"></div></div>'+
+ '<div class="fld"><div class="fh"><label>Bold line</label></div><div class="ctrl"><input type="text" id="'+p+'sub" placeholder="e.g. Pump on Wash plant # 1 Details"></div></div>'+
  '<div class="fld"><div class="fh"><label>Work order (optional)</label></div><div class="ctrl"><input type="text" id="'+p+'wo" placeholder="Client work order for this pump"></div></div>'+
- '<div class="mgrid"><div class="mgf"><select class="mlab-select" id="'+p+'make_role" title="Choose what this name means before you type it"><option value="make">Manufacturer</option><option value="rebuilt">Repaired / rebuilt by</option></select><div class="ctrl"><input type="text" id="'+p+'make" placeholder="Name — leave blank if you\'d rather not name a competitor"></div></div><div class="mgf"><span class="mlab">Model</span><div class="ctrl"><input type="text" id="'+p+'model"></div></div></div>'+
- '<p style="font-size:12px;color:var(--soft);margin:2px 0 6px">Switch the dropdown above to &ldquo;Repaired / rebuilt by&rdquo; when the nameplate now shows who repaired the pump (e.g. Busch) rather than who originally built it &mdash; the report will print that label instead of &ldquo;Manufacturer&rdquo;. Leave the name blank if you\'d rather not name it at all.</p>'+
- '<div class="mgrid"><div class="mgf"><span class="mlab">Serial No.</span><div class="ctrl"><input type="text" id="'+p+'serial"></div></div><div class="mgf"><select class="mlab-select" id="'+p+'year_role" title="Choose what this year means before you type it"><option value="make">Year of manufacture</option><option value="rebuilt">Last repaired</option></select><div class="ctrl"><input type="number" id="'+p+'year" placeholder="year"></div></div></div>'+
- '<div class="fld"><div class="fh"><label>Max working pressure (absolute, nameplate)</label></div><div class="ctrl"><input type="number" id="'+p+'maxp_n" placeholder="number"><select id="'+p+'maxp_u" data-g="pressure" data-du="4"></select><span class="fu">abs</span></div></div>'+
+ '<div class="fld"><div class="fh"><label>Details — type each line yourself</label></div><div class="ctrl"><textarea id="'+p+'lines" rows="8" placeholder="Manufacturer – Nash&#10;Model/Size – 2BE4 500 2BY4&#10;Serial Number – No Serial plate attached&#10;Plant – Byerwen Coal mine CHPP&#10;Pump Duty – Wash filter&#10;Position Number – Pump # 1"></textarea></div></div>'+
+ '<p style="font-size:12px;color:var(--soft);margin:2px 0 6px">Printed as you type it, one line per detail. Work order above prints with this pump when it is filled in. Use Add pump for pump 2, pump 3, and so on.</p>'+
+ lriSecPhotoHTML(n,"details")+
 
  '<details class="lrisec" data-lrisec="seals"><summary class="tp-num">Seals</summary><div class="lrisec-body">'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Type</span>'+SB(p+'seal_type',LRI_OPT_SEALTYPE,false)+'</div><div class="mgf"><span class="mlab">Condition</span>'+SB(p+'seal_cond',LRI_OPT_COND,true)+'</div></div>'+
@@ -4017,7 +4019,7 @@ var LRI_SEL_FIELDS=["seal_type","seal_cond","seal_sleeve","seal_adj","brg_type",
  "belt_cond","belt_tension","belt_align","belt_groove","belt_guard","cooler_system","cooler_cond","sep_lining","sep_bolts","condition","priority"];
 function lriRowFields(n){
  var p="lri_r"+n+"_";
- var f=[p+"tag",p+"wo",p+"make",p+"make_role",p+"model",p+"serial",p+"year",p+"year_role",p+"maxp_n",p+"maxp_u",
+ var f=[p+"title",p+"sub",p+"lines",p+"tag",p+"wo",p+"make",p+"make_role",p+"model",p+"serial",p+"year",p+"year_role",p+"maxp_n",p+"maxp_u",
   p+"seal_type",p+"seal_cond",p+"seal_drip_before",p+"seal_drip_after",p+"seal_sleeve",p+"seal_adj",p+"seal_notes",
   p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp",p+"brg_notes",
   p+"bore_corr",p+"bore_cav",p+"bore_abr",p+"bore_notes",
@@ -4319,6 +4321,63 @@ function lriSaveSection(btn){
  if(btn._lriSecT)clearTimeout(btn._lriSecT);
  btn._lriSecT=setTimeout(function(){btn.textContent=orig;btn.classList.remove("lri-sec-saved");},1500);
 }
+var LRI_LEGACY={};
+var LRI_MIGRATED=false;
+var LRI_PRESET_SUFFIXES=["tag","make","make_role","model","model_size","size","serial","serial_number","year","year_role","maxp_n","maxp_u","rebuilt_by","plant","duty","pump_duty","position","position_number","pos"];
+function lriCaptureLegacy(o){
+ LRI_LEGACY={};
+ if(!o)return;
+ var id,n,i;
+ for(id in o){
+  if(!Object.prototype.hasOwnProperty.call(o,id))continue;
+  var m=/^lri_r(\d+)_(.+)$/.exec(id);
+  if(!m)continue;
+  if(LRI_PRESET_SUFFIXES.indexOf(m[2])<0)continue;
+  if(o[id]===undefined||o[id]==="")continue;
+  LRI_LEGACY[id]=o[id];
+ }
+}
+function lriLinesFromPreset(o,n){
+ var p="lri_r"+n+"_";
+ function raw(k){var v=o[p+k];return v==null?"":String(v).trim();}
+ var lines=[],seen={};
+ function add(label,v){
+  v=v==null?"":String(v).trim();
+  if(!v)return;
+  var key=label.toLowerCase();
+  if(seen[key])return;
+  seen[key]=1;
+  lines.push(label+" \u2013 "+v);
+ }
+ if(raw("make"))add(raw("make_role")==="rebuilt"?"Repaired / rebuilt by":"Manufacturer",raw("make"));
+ else if(raw("rebuilt_by"))add("Repaired / rebuilt by",raw("rebuilt_by"));
+ if(raw("model"))add("Model",raw("model"));
+ else add("Model/Size",raw("model_size")||raw("size"));
+ add("Serial No.",raw("serial")||raw("serial_number"));
+ if(raw("year"))add(raw("year_role")==="rebuilt"?"Last repaired":"Year of manufacture",raw("year"));
+ if(raw("maxp_n")){
+  var u=raw("maxp_u"),names=["kPa","mbar","torr","inHg","bar"],un="";
+  if(/^\d+$/.test(u)&&names[+u])un=" "+names[+u];
+  else if(u)un=" "+u;
+  add("Max working pressure (abs)",raw("maxp_n")+un);
+ }
+ add("Plant",raw("plant"));
+ add("Pump Duty",raw("duty")||raw("pump_duty"));
+ add("Position Number",raw("position")||raw("position_number")||raw("pos"));
+ return lines;
+}
+function lriMigratePumpFreeText(o){
+ if(!o)return;
+ for(var n=1;n<=LRI_ROWCOUNT;n++){
+  var p="lri_r"+n+"_";
+  // Only fill when that key has never been saved. A blank the user saved stays blank.
+  // Preset keys are left in place; this writes the free-text copy first.
+  if(!Object.prototype.hasOwnProperty.call(o,p+"title")&&o[p+"tag"]&&String(o[p+"tag"]).trim()){o[p+"title"]=String(o[p+"tag"]);LRI_MIGRATED=true;}
+  if(Object.prototype.hasOwnProperty.call(o,p+"lines"))continue;
+  var lines=lriLinesFromPreset(o,n);
+  if(lines.length){o[p+"lines"]=lines.join("\n");LRI_MIGRATED=true;}
+ }
+}
 function lriSave(quiet){
  var o={},i,e,n,j,f,m,ec;
  for(i=0;i<LRI_HEADER.length;i++){e=document.getElementById(LRI_HEADER[i]);if(!e)continue;o[LRI_HEADER[i]]=e.type==="checkbox"?e.checked:e.value;}
@@ -4333,11 +4392,18 @@ function lriSave(quiet){
  o.secPhotos=LRI_SEC_PHOTOS;
  o.secBlocks=LRI_SEC_BLOCKS;
  var warn=document.getElementById("lri_warn");
+ var lk,ln;
+ for(lk in LRI_LEGACY){
+  if(!Object.prototype.hasOwnProperty.call(LRI_LEGACY,lk))continue;
+  ln=+((/^lri_r(\d+)_/).exec(lk)||[])[1];
+  if(ln&&ln<=LRI_ROWCOUNT&&o[lk]===undefined)o[lk]=LRI_LEGACY[lk];
+ }
  try{localStorage.setItem(LRI_KEY,JSON.stringify(o));if(warn)warn.style.display="none";if(!quiet&&typeof vtFlashSaved==="function")vtFlashSaved("lri_saved_chip");}
  catch(err){if(warn)warn.style.display="block";}
  lriScheduleLivePreview();
 }
 function lriLoad(){
+ LRI_MIGRATED=false;
  var rc=2;
  try{rc=+localStorage.getItem(LRI_RC_KEY)||2;}catch(err){rc=2;}
  if(rc<1)rc=2;
@@ -4359,6 +4425,10 @@ function lriLoad(){
   var mp="lri_r"+mn+"_",oldVal=o[mp+"rebuilt_by"];
   if(oldVal&&!o[mp+"make"]){o[mp+"make"]=oldVal;o[mp+"make_role"]="rebuilt";}
  }
+ // Preset nameplate fields become typed lines. Old keys stay on the object (and are
+ // written back on save) until this free-text copy exists — never wipe them first.
+ lriCaptureLegacy(o);
+ lriMigratePumpFreeText(o);
  var e,j,f;
  for(i=0;i<LRI_HEADER.length;i++){e=document.getElementById(LRI_HEADER[i]);if(!e||o[LRI_HEADER[i]]===undefined)continue;if(e.type==="checkbox")e.checked=!!o[LRI_HEADER[i]];else e.value=o[LRI_HEADER[i]];}
  for(n=1;n<=LRI_ROWCOUNT;n++){
@@ -4377,6 +4447,9 @@ function lriLoad(){
  lriSecEnabledInit();lriRenderSetup();lriApplySections();
  if(typeof lriRefreshPumpStatus==="function")lriRefreshPumpStatus();
  vtRefreshFilled(document.getElementById("lri"));
+ // Persist the free-text copy now. lriSave merges LRI_LEGACY back, so preset keys
+ // are not dropped on this write.
+ if(LRI_MIGRATED){try{lriSave(true);}catch(err){}}
 }
 function lriClear(){
  if(!confirm("Clear the whole inspection report, including photos?"))return;
@@ -4670,7 +4743,7 @@ function pbSummaryTable(pb){
    drive=pick([p+"coup_cond",p+"coup_align",p+"belt_cond",p+"belt_tension",p+"belt_align"]),
    overall=pick([p+"condition"]),priority=pick([p+"priority"]);
   x=PB_M;
-  cells=[{x:x,w:widths[0],text:rv(p+"tag")||("Pump "+n),bold:true}];x+=widths[0];
+  cells=[{x:x,w:widths[0],text:lriPumpTitle(n),bold:true}];x+=widths[0];
   cells.push({x:x,w:widths[1],text:seals.text,color:seals.color});x+=widths[1];
   cells.push({x:x,w:widths[2],text:brg.text,color:brg.color});x+=widths[2];
   cells.push({x:x,w:widths[3],text:internals.text,color:internals.color});x+=widths[3];
@@ -4875,19 +4948,15 @@ function pbDrawSecPhotos(pb,normSec,key){
 }
 function pbDrawPump(pb,n,normSec){
  var p="lri_r"+n+"_";
- var tag=rv(p+"tag")||("Pump "+n);
+ var tag=lriPumpTitle(n);
  // Major boundary only if <40% of page still free (avoid half-blank pages)
  pbMaybeBreakForPump(pb);
- pbSecHead(pb,"Pump: "+tag);
- if(rv(p+"wo")){pbPairRow(pb,"Work order",rv(p+"wo"));pbGap(pb,4);}
- if(lriAny([p+"make",p+"model",p+"serial",p+"year",p+"maxp_n"])){
-  var makeLabel=rv(p+"make_role")==="rebuilt"?"Repaired / rebuilt by":"Manufacturer";
-  var yearLabel=rv(p+"year_role")==="rebuilt"?"Last repaired":"Year of manufacture";
-  pbPairRow(pb,makeLabel,rv(p+"make"),"Model",rv(p+"model"));
-  pbPairRow(pb,"Serial No.",rv(p+"serial"),yearLabel,rv(p+"year"));
-  if(lriAny([p+"maxp_n"]))pbPairRow(pb,"Max working pressure (abs)",rUnitVal(p+"maxp_n",p+"maxp_u"));
-  pbGap(pb,6);
- }
+ pbSecHead(pb,tag);
+ if(rv(p+"sub")){pbNoteRow(pb,rv(p+"sub"));pbGap(pb,2);}
+ if(rv(p+"wo")){pbNoteRow(pb,"Work order: "+rv(p+"wo"));pbGap(pb,2);}
+ var detailLines=rv(p+"lines");
+ if(String(detailLines||"").trim()){pbBox(pb,detailLines);pbGap(pb,2);}
+ pbDrawSecPhotos(pb,normSec,n+"_details");
  if(lriAny([p+"seal_type",p+"seal_cond",p+"seal_drip_before",p+"seal_drip_after",p+"seal_sleeve",p+"seal_adj",p+"seal_notes",p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp",p+"brg_notes"])||(LRI_SEC_PHOTOS[n+"_seals"]||[]).length||(LRI_SEC_PHOTOS[n+"_bearings"]||[]).length){
   pbHeaderRow(pb,"Seals & bearings");
   pbPairRow(pb,"Seal type",rSelText(p+"seal_type"),"Seal condition",rSelText(p+"seal_cond"));
@@ -5048,20 +5117,20 @@ function lriNormalizeSecPhotos(){
 // PDF renderer and the HTML preview renderer, so the "which fields, in what order"
 // logic exists in exactly one place. Each block is {kind:"sub"|"text"|"photos", ...}.
 // kind:"photos" keys match LRI_SEC_PHOTOS keys 1:1, so nothing is ever pulled twice.
+function lriPumpTitle(n){
+ return rv("lri_r"+n+"_title")||rv("lri_r"+n+"_tag")||("Pump "+n);
+}
 function lriPumpBlocks(n){
  var p="lri_r"+n+"_";
  var blocks=[];
  function push(kind,text,key){blocks.push({kind:kind,text:text,key:key});}
- var tag=rv(p+"tag")||("Pump "+n);
- push("sub",tag);
- var idLines=[];
- if(rv(p+"wo"))idLines.push("Work order: "+rv(p+"wo"));
- if(rv(p+"make")){idLines.push((rv(p+"make_role")==="rebuilt"?"Repaired / rebuilt by":"Manufacturer")+": "+rv(p+"make"));}
- if(rv(p+"model"))idLines.push("Model: "+rv(p+"model"));
- if(rv(p+"serial"))idLines.push("Serial No.: "+rv(p+"serial"));
- if(rv(p+"year"))idLines.push((rv(p+"year_role")==="rebuilt"?"Last repaired":"Year of manufacture")+": "+rv(p+"year"));
- if(lriAny([p+"maxp_n"]))idLines.push("Max working pressure (abs): "+rUnitVal(p+"maxp_n",p+"maxp_u"));
- if(idLines.length)push("rows",idLines.join("\n"));
+ var tag=lriPumpTitle(n);
+ push("head",tag);
+ if(rv(p+"sub"))push("bold",rv(p+"sub"));
+ if(rv(p+"wo"))push("text","Work order: "+rv(p+"wo"));
+ var detailLines=rv(p+"lines");
+ if(String(detailLines||"").trim())push("text",detailLines);
+ push("photos",null,n+"_details");
  function section(title,key,fieldChecks,lineBuilder,notesId,notesLabel){
   var hasPhotos=((LRI_SEC_PHOTOS[key]||[]).length>0);
   var stBlk=LRI_SEC_BLOCKS[key];
@@ -5359,9 +5428,7 @@ function lriPumpStatus(n){
  return filled===0?"open":"mid";
 }
 function lriPumpLabel(n){
- var t=document.getElementById("lri_r"+n+"_tag");
- var tag=t&&(t.value||"").trim();
- return tag||("Pump "+n);
+ return lriPumpTitle(n);
 }
 function lriGoPump(n){
  var row=document.getElementById("lri_row"+n);
@@ -7610,7 +7677,7 @@ function custFbLetterLines(txt){return String(txt==null?"":txt).replace(/\r\n/g,
 // flatten newlines to spaces.
 function custFbLetterBodyHtml(text){
  var t=String(text==null?"":text).replace(/\r\n/g,"\n").replace(/\r/g,"\n");
- return custFbLetterBodyHtml(t);
+ return custEsc(t).replace(/\n/g,"<br>");
 }
 function custFbLetterAndreOn(j){
  var cb=document.getElementById("cj_fb_sign_andre");
@@ -8085,7 +8152,9 @@ function custFbLetterPumpsHtml(normSec){
   blocks=lriPumpBlocks(n);
   for(i=0;i<blocks.length;i++){
    b=blocks[i];
-   if(b.kind==="sub")h+='<div class="'+(i===0?"fb-pump-tag":"fb-pump-sub")+'">'+custEsc(b.text)+'</div>';
+   if(b.kind==="head")h+='<div class="fb-pump-tag">'+custEsc(b.text)+'</div>';
+   else if(b.kind==="bold")h+='<div class="fb-pump-bold">'+custEsc(b.text)+'</div>';
+   else if(b.kind==="sub")h+='<div class="fb-pump-sub">'+custEsc(b.text)+'</div>';
    else if(b.kind==="rows")h+=custFbLetterRowsHtml(b.text);
    else if(b.kind==="text")h+='<div class="fb-body">'+custFbLetterBodyHtml(b.text)+'</div>';
    else if(b.kind==="photos"){
@@ -8348,7 +8417,9 @@ function custFbLetterDrawPumps(L,normSec){
   blocks=lriPumpBlocks(n);
   for(i=0;i<blocks.length;i++){
    b=blocks[i];
-   if(b.kind==="sub")custFbLetterSubHead(L,b.text,i===0);
+   if(b.kind==="head")custFbLetterSubHead(L,b.text,true);
+   else if(b.kind==="bold")custFbLetterBodyText(L,b.text,{bold:true,gapAfter:1});
+   else if(b.kind==="sub")custFbLetterSubHead(L,b.text,false);
    else if(b.kind==="rows")custFbLetterRowsPdf(L,b.text);
    else if(b.kind==="text")custFbLetterBodyText(L,b.text,{gapAfter:1.5});
    else if(b.kind==="photos"){ custFbLetterPumpSecPdf(L,b.key,normSec); }
