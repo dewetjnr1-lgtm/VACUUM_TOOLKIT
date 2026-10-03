@@ -148,7 +148,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-03.4";
+var APP_BUILD="2026-10-03.5";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -252,8 +252,26 @@ function el(tag,attrs,kids){
 }
 function toast(m){var t=document.getElementById("toast");t.textContent=m;t.style.display="block";clearTimeout(toast.h);toast.h=setTimeout(function(){t.style.display="none";},4500);}
 function changed(){dirty=true;setStatus();clearTimeout(changed.h);changed.h=setTimeout(function(){renderPreview();if(!embedded)autosave();},180);}
-function setStatus(){document.getElementById("status").textContent=(dirty?"● Unsaved changes":"✓ Saved")+" · build "+APP_BUILD;}
-function autosave(){try{localStorage.setItem(DRAFT_KEY,JSON.stringify(S));}catch(e){}}
+function setStatus(){document.getElementById("status").textContent=(embedded?(dirty?"● Unsaved changes - use Save HTML":"✓ Saved"):"✓ Draft kept on this device")+" · build "+APP_BUILD;}
+/* Drafts live in this browser's IndexedDB (roomy enough for photos) and survive app updates. localStorage is only a fallback. */
+function idb(){return new Promise(function(res,rej){var r=indexedDB.open("busch-report-builder",1);r.onupgradeneeded=function(){r.result.createObjectStore("kv");};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});}
+function idbSet(k,v){return idb().then(function(db){return new Promise(function(res,rej){var t=db.transaction("kv","readwrite");t.objectStore("kv").put(v,k);t.oncomplete=function(){res();};t.onerror=function(){rej(t.error);};});});}
+function idbGet(k){return idb().then(function(db){return new Promise(function(res,rej){var q=db.transaction("kv").objectStore("kv").get(k);q.onsuccess=function(){res(q.result);};q.onerror=function(){rej(q.error);};});});}
+var lastSaved="";
+function autosave(){
+  var json=JSON.stringify(S);if(json===lastSaved)return;
+  var snap=JSON.parse(json);
+  idbSet("draft",snap).then(function(){lastSaved=json;setStatus();}).catch(function(){try{localStorage.setItem(DRAFT_KEY,json);lastSaved=json;}catch(e){toast("Could not save a draft on this device - use Save HTML to keep your work.");}});
+}
+function backupDraft(){if(embedded||!S)return;try{idbSet("previous",JSON.parse(JSON.stringify(S)));}catch(e){}}
+/* fill in anything a newer version of the app expects, so older drafts keep working */
+function normalise(d){
+  var base=newReport(d.template&&TEMPLATES[d.template]?d.template:"test",d.from||"andre");
+  Object.keys(base).forEach(function(k){if(d[k]===undefined)d[k]=base[k];});
+  if(!PEOPLE[d.from])d.from="andre";
+  d.signers=(d.signers||[]).filter(function(k){return PEOPLE[k];});if(!d.signers.length)d.signers=[d.from];
+  return d;
+}
 
 /* ---------- editor ---------- */
 function field(label,obj,key,opts){
@@ -580,7 +598,7 @@ function openFile(f){
       else{var m=/<script type="application\/json" id="saved-data">([\s\S]*?)<\/script>/.exec(txt);if(m&&m[1].trim())data=JSON.parse(m[1]);}
     }catch(e){}
     if(!data||!data.sections){toast("That file doesn't contain a Busch report.");return;}
-    S=data;dirty=false;renderEditor();renderPreview();setStatus();toast("Opened "+f.name);
+    backupDraft();S=normalise(data);embedded=false;dirty=false;lastSaved="";autosave();renderEditor();renderPreview();setStatus();toast("Opened "+f.name);
   };
   r.readAsText(f);
 }
@@ -601,11 +619,16 @@ function newRev(){
   if(raw){try{S=JSON.parse(raw);embedded=true;}catch(e){}}
   if(!S){try{var d=localStorage.getItem(DRAFT_KEY);if(d)S=JSON.parse(d);}catch(e){}}
   if(!S)S=newReport("test","andre");
+  S=normalise(S);
+  if(!embedded){
+    try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
+    idbGet("draft").then(function(d){if(d&&d.sections&&!dirty){S=normalise(d);lastSaved=JSON.stringify(S);renderEditor();renderPreview();setStatus();}}).catch(function(){});
+  }
   document.getElementById("bNew").onclick=function(){
-    if(dirty&&!confirm("You have unsaved changes. Start a new report anyway?"))return;
+    if(!confirm(embedded?"Start a new report? Save HTML first if you want to keep this one.":"Start a new report? Your current draft is kept as the 'previous' backup on this device."))return;
     var k=prompt("New report type:\n1 = Test & Scope\n2 = Chemical Flush / Descaling\n3 = Field Service","1");
     var key={"1":"test","2":"flush","3":"service"}[(k||"").trim()];if(!key)return;
-    S=newReport(key,S.from);embedded=false;dirty=false;renderEditor();renderPreview();setStatus();
+    backupDraft();S=newReport(key,S.from);embedded=false;dirty=false;lastSaved="";autosave();renderEditor();renderPreview();setStatus();
   };
   document.getElementById("bOpen").onclick=function(){document.getElementById("fOpen").click();};
   document.getElementById("fOpen").onchange=function(e){if(e.target.files[0])openFile(e.target.files[0]);e.target.value="";};
@@ -620,7 +643,9 @@ function newRev(){
   window.addEventListener("resize",function(){clearTimeout(init.rh);init.rh=setTimeout(renderPreview,150);});
   window.addEventListener("beforeprint",function(){var sc=document.getElementById("scaler");sc.style.height="auto";});
   window.addEventListener("afterprint",fitScale);
-  window.addEventListener("beforeunload",function(e){if(dirty){e.preventDefault();e.returnValue="";}});
+  window.addEventListener("pagehide",function(){if(!embedded)autosave();});
+  document.addEventListener("visibilitychange",function(){if(document.hidden&&!embedded)autosave();});
+  window.addEventListener("beforeunload",function(e){if(embedded&&dirty){e.preventDefault();e.returnValue="";}});
   renderEditor();renderPreview();setStatus();
 })();
 </script>
