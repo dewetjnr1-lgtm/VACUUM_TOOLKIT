@@ -3,9 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="color-scheme" content="light">
 <title>Busch Report Builder</title>
 <style>
-:root{--orange:#ff5a00;--ink:#1b1b1b;--mute:#666;--line:#d9d9d9;--bg:#eceff1;--card:#fff;--ui:#2b2f33}
+:root{color-scheme:light;--orange:#ff5a00;--ink:#1b1b1b;--mute:#666;--line:#d9d9d9;--bg:#eceff1;--card:#fff;--ui:#2b2f33}
 *{box-sizing:border-box}
 html,body{margin:0;height:100%}
 body{font-family:Arial,Helvetica,sans-serif;color:var(--ink);background:var(--bg);font-size:14px}
@@ -66,13 +67,14 @@ label.f textarea{resize:vertical;min-height:70px;line-height:1.4}
 .pg-head{position:absolute;left:16mm;right:16mm;top:10mm;height:16mm;display:flex;justify-content:space-between;align-items:flex-end;border-bottom:1.5px solid var(--orange);padding-bottom:2mm}
 .pg-head img{height:11mm;display:block}
 .pg-head .ref{font-size:8pt;color:#444;text-align:right;line-height:1.3}
-.pg-body{position:absolute;left:16mm;right:16mm;top:31mm;height:206mm;overflow:hidden}
-.pg-foot{position:absolute;left:16mm;right:16mm;bottom:7mm;height:50mm;font-size:6.2pt;line-height:1.3;color:#444;border-top:1px solid #bbb;padding-top:2mm}
-.pg-foot .cols{display:grid;grid-template-columns:repeat(5,1fr);gap:3mm}
-.pg-foot b{color:#000}
-.pg-foot .world{margin-top:2mm;font-size:5.6pt;color:#666}
-.pg-foot .pn{position:absolute;right:0;bottom:0;font-size:8pt;color:#000}
-.pg-foot .web{position:absolute;left:0;bottom:0;font-size:7pt;color:var(--orange);font-weight:700}
+.pg-body{position:absolute;left:16mm;right:16mm;top:31mm;height:232mm;overflow:hidden}
+.pg-foot{position:absolute;left:16mm;right:16mm;bottom:5mm;font-size:5.8pt;line-height:1.35;color:#222;border-top:1px solid #bbb;padding-top:1.2mm}
+.pg-foot .pn{text-align:right;font-size:8pt;color:#000;margin-bottom:.8mm}
+.pg-foot .l1{font-size:7pt;margin-bottom:1.4mm}
+.pg-foot .l2{display:grid;grid-template-columns:34mm 1fr;gap:3mm;font-size:6.8pt;margin-bottom:1.4mm}
+.pg-foot .sep{margin:0 1.2mm}
+.pg-foot a{color:#0b5cad;text-decoration:underline}
+.pg-foot .world{font-size:5.6pt;color:#444}
 .doc-title{font-size:17pt;font-weight:700;text-align:center;margin:2mm 0 6mm;line-height:1.2}
 .hdr{display:grid;grid-template-columns:23mm 1fr 14mm 52mm;column-gap:2mm;row-gap:1.2mm;font-size:10pt;margin-bottom:3mm}
 .hdr .k{font-weight:700}
@@ -146,7 +148,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-03.1";
+var APP_BUILD="2026-10-03.3";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -160,7 +162,7 @@ var BRANCHES=[
  ["Branch WA","Unit 14, 24 Baile Road","Canning Vale, WA 6155, Australia","Telephone: +61 8 9456 4233","Fax: +61 8 9456 4236"],
  ["Branch NZ","Unit D, 41 Arrenway Drive","Albany 0632, New Zealand","Telephone: +64 9 414 7782","Fax: +64 9 414 7783"]
 ];
-var WORLD="Busch - All over the World in Industry";
+var WORLD_COUNTRIES="Argentina Australia Austria Bangladesh Belgium Bolivia Brazil Canada Chile China Colombia Czech Republic Denmark Estonia Finland France Germany Hungary India Ireland Israel Italy Japan Korea Malaysia Mexico Netherlands New Zealand Norway Peru Poland Portugal Romania Russia Singapore South Africa Spain Sweden Switzerland Taiwan Thailand Turkey United Arab Emirates United Kingdom United States of America";
 
 /* ---------- templates (built from the nine previous reports) ---------- */
 var PUMP_ROWS=[["Manufacturer",""],["Model/Size",""],["Serial Number",""],["Plant",""],["Pump Duty",""],["Position Number",""],["Year of Manufacture/overhaul",""],["Pump Speed",""]];
@@ -415,10 +417,13 @@ function mkPage(){
   var ref=(S.ref||"")+(S.ref?" Rev."+S.rev:"");
   pg.appendChild(el("div",{class:"pg-head"},[el("img",{src:window.BUSCH_LOGO,alt:"Busch Vacuum Solutions"}),el("div",{class:"ref"},[ref,el("br"),S.company||""])]));
   var body=el("div",{class:"pg-body"});pg.appendChild(body);
-  var cols=el("div",{class:"cols"},BRANCHES.map(function(b){
-    return el("div",{},[el("b",{text:b[0]}),el("br"),b[1],el("br"),b[2],el("br"),b[3],el("br"),b[4]]);
-  }));
-  pg.appendChild(el("div",{class:"pg-foot"},[cols,el("div",{class:"world",text:WORLD}),el("span",{class:"web",text:"www.buschvacuum.com.au"}),el("span",{class:"pn"})]));
+  var A=function(t,h){return el("a",{href:h,text:t});};
+  var sep=function(){return el("span",{class:"sep",text:"|"});};
+  var l1=el("div",{class:"l1"},[el("b",{text:"BUSCH ANZ Pty Ltd"}),sep(),"30 Lakeside Drive",sep(),"Broadmeadows, VIC 3047",sep(),"P +61 (0) 3 93 55 06 00",sep(),A("sales@busch.com.au","mailto:sales@busch.com.au"),sep(),A("www.buschvacuum.com.au","https://www.buschvacuum.com.au")]);
+  var l2=el("div",{class:"l2"},[
+    el("div",{},["UST-ID DE264058499",el("br"),"ABN 38 006 402 964"]),
+    el("div",{},["Commonwealth Bank of Australia (CBA)",sep(),"BSB 063-893",sep(),"Account No. 10046328",sep(),"SWIFT: CTBAAU2S",el("br"),"National Australian Bank (NAB)",sep(),"BSB 083-363",sep(),"Account No. 155822068",sep(),"SWIFT: NATAAU3303M"])]);
+  pg.appendChild(el("div",{class:"pg-foot"},[el("div",{class:"pn"}),l1,l2,el("div",{class:"world",text:WORLD_COUNTRIES})]));
   return {pg:pg,body:body};
 }
 function unitsFor(){
@@ -455,7 +460,7 @@ function unitsFor(){
     s.blocks.forEach(function(b){blockUnits(b).forEach(function(u){U.push(u);});});
   });
   /* sign-off */
-  var sg=el("div",{class:"sign"},S.signers.filter(function(k){return PEOPLE[k];}).map(function(k){var q=PEOPLE[k];
+  var sg=el("div",{class:"sign"},S.signers.filter(function(k){return PEOPLE[k];}).sort(function(a,b){return (b===S.from)-(a===S.from);}).map(function(k){var q=PEOPLE[k];
     return el("div",{},[el("div",{class:"nm",text:q.name}),q.title,el("br"),q.region,el("br"),"Mob: "+q.mob,el("br"),q.email]);}));
   U.push({e:el("p",{class:"p",text:"Should you require any further assistance, please contact me.",style:"margin-top:6mm"}),keep:true});
   U.push({e:sg});
