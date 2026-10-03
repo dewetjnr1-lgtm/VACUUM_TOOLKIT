@@ -97,10 +97,10 @@ table.vib th,table.vib td{border:1px solid #777;padding:1.2mm 2mm;text-align:cen
 table.vib th{background:#f0f0f0}
 table.vib td:first-child,table.vib th:first-child{text-align:left}
 .note{font-size:9pt;color:#222;margin:0 0 3mm;white-space:pre-wrap}
-.phrow{display:grid;gap:4mm;margin-bottom:4mm;align-items:start}
+.phrow{display:flex;gap:4mm;margin-bottom:4mm;align-items:flex-start}
 .ph{break-inside:avoid}
 .ph .im{width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden}
-.ph img{display:block;max-width:100%;max-height:92mm;width:auto;height:auto}
+.ph img{display:block}
 .ph .cap{font-size:9pt;margin-top:1.2mm;white-space:pre-wrap;color:#222}
 .sign{margin-top:8mm;display:grid;grid-template-columns:1fr 1fr;gap:8mm;font-size:10pt}
 .sign .nm{font-weight:700}
@@ -148,7 +148,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-03.3";
+var APP_BUILD="2026-10-03.4";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -377,11 +377,17 @@ function blockCard(sec,b,bi){
     cs.addEventListener("change",function(){b.cols=+cs.value;changed();});
     var fi=el("input",{type:"file",accept:"image/*",multiple:"multiple",hidden:"hidden"});
     fi.addEventListener("change",function(){addPhotos(b,fi.files);});
-    body.appendChild(el("div",{class:"adds"},[cs,el("button",{class:"btn sm pri",text:"+ Add photos",onclick:function(){fi.click();}}),fi]));
+    var allb=el("button",{class:"btn sm ghost",text:"Make all the same size",onclick:function(){var h=b.items.length?(b.items[0].h||DEFH):DEFH;b.items.forEach(function(x){x.h=h;});renderEditor();changed();}});
+    body.appendChild(el("p",{class:"hint",text:"Photos sit side by side (e.g. before / after) when they fit. Use the size slider on each photo, or tick 'On its own row' for a single large photo. 'Per row' is the most that will sit together."}));
+    body.appendChild(el("div",{class:"adds"},[cs,allb,el("button",{class:"btn sm pri",text:"+ Add photos",onclick:function(){fi.click();}}),fi]));
     var th=el("div",{class:"thumbs",style:"margin-top:8px"});
     b.items.forEach(function(it,ii){
       var cap=el("textarea",{placeholder:"Caption / comment"});cap.value=it.cap||"";cap.addEventListener("input",function(){it.cap=cap.value;changed();});
-      th.appendChild(el("div",{class:"th"},[el("img",{src:it.src}),cap,el("div",{class:"tb"},[
+      var sz=el("input",{type:"range",min:"30",max:"150",step:"2",style:"width:100%"});sz.value=it.h||DEFH;
+      var szl=el("div",{class:"hint",text:"Size: "+sz.value+" mm tall"});
+      sz.addEventListener("input",function(){it.h=+sz.value;szl.textContent="Size: "+sz.value+" mm tall";changed();});
+      var al=el("input",{type:"checkbox"});al.checked=!!it.alone;al.addEventListener("change",function(){it.alone=al.checked;changed();});
+      th.appendChild(el("div",{class:"th"},[el("img",{src:it.src}),cap,szl,sz,el("label",{class:"chk",style:"margin:2px 0"},[al," On its own row"]),el("div",{class:"tb"},[
         el("button",{class:"btn sm ghost",text:"◀",onclick:function(){mv(b.items,ii,-1);renderEditor();changed();}}),
         el("button",{class:"btn sm ghost",text:"▶",onclick:function(){mv(b.items,ii,1);renderEditor();changed();}}),
         el("button",{class:"btn sm del",text:"✕",onclick:function(){b.items.splice(ii,1);renderEditor();changed();}})])]));
@@ -400,7 +406,7 @@ function addPhotos(b,files){
         var M=1600,s=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement("canvas");
         c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
         var x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
-        b.items.push({src:c.toDataURL("image/jpeg",0.82),cap:""});
+        b.items.push({src:c.toDataURL("image/jpeg",0.82),cap:"",h:DEFH,alone:false});
         if(++n===list.length){renderEditor();changed();}
       };
       im.onerror=function(){if(++n===list.length){renderEditor();changed();}toast("Could not read "+f.name);};
@@ -484,21 +490,27 @@ function blockUnits(b){
     out.push({e:t,keep:!!b.note});
     if(b.note)out.push({e:el("div",{class:"note",text:b.note})});
   }else if(b.t==="photos"){
-    var n=Math.max(1,b.cols||2);
-    for(var i=0;i<b.items.length;i+=n){
-      var row=el("div",{class:"phrow",style:"grid-template-columns:repeat("+n+",1fr)"});
-      b.items.slice(i,i+n).forEach(function(it){
-        /* explicit pixel size from the preloaded dimensions, so page breaks are exact before the image paints */
-        var d=DIMS[it.src]||[4,3],colW=(178-(n-1)*4)/n*MM,maxH=92*MM,sc=Math.min(colW/d[0],maxH/d[1]);
-        var im=el("img",{src:it.src});im.style.width=Math.round(d[0]*sc)+"px";im.style.height=Math.round(d[1]*sc)+"px";
-        row.appendChild(el("div",{class:"ph"},[el("div",{class:"im"},[im]),it.cap?el("div",{class:"cap",text:it.cap}):null]));
+    /* each photo has its own height; photos share a row while they fit (and the per-row limit allows) */
+    var n=Math.max(1,b.cols||2),W=178*MM,G=4*MM,rows=[],cur=[],curW=0;
+    var size=function(it){var d=DIMS[it.src]||[4,3],h=(it.h||DEFH)*MM,w=d[0]/d[1]*h;if(w>W){w=W;h=w*d[1]/d[0];}return [Math.round(w),Math.round(h)];};
+    b.items.forEach(function(it){
+      var w=size(it)[0];
+      if(cur.length&&(it.alone||cur[cur.length-1].alone||cur.length>=n||curW+G+w>W+1)){rows.push(cur);cur=[];curW=0;}
+      cur.push(it);curW+=(cur.length>1?G:0)+w;
+    });
+    if(cur.length)rows.push(cur);
+    rows.forEach(function(r){
+      var row=el("div",{class:"phrow"});
+      r.forEach(function(it){
+        var s=size(it),im=el("img",{src:it.src});im.style.width=s[0]+"px";im.style.height=s[1]+"px";
+        row.appendChild(el("div",{class:"ph",style:"width:"+s[0]+"px"},[im,it.cap?el("div",{class:"cap",text:it.cap}):null]));
       });
       out.push({e:row});
-    }
+    });
   }
   return out;
 }
-var DIMS={},MM=96/25.4,rpToken=0;
+var DEFH=70,DIMS={},MM=96/25.4,rpToken=0;
 function renderPreview(){
   var tok=++rpToken,need=[];
   S.sections.forEach(function(s){s.blocks.forEach(function(b){if(b.t==="photos")b.items.forEach(function(it){if(!DIMS[it.src]&&need.indexOf(it.src)<0)need.push(it.src);});});});
