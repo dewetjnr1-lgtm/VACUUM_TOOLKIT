@@ -5737,6 +5737,10 @@ function vtCollapseScopeKey(){
  }catch(e){}
  return "global";
 }
+/* Customer + job screens never remember which sections were open across open/refresh. */
+function vtCollapseIsCjScope(scope){
+ return typeof scope==="string" && (scope.indexOf("cust:")===0 || scope.indexOf("job:")===0);
+}
 function vtCollapseMapRead(){
  try{return JSON.parse(localStorage.getItem("vt-collapse-v2")||"{}");}catch(e){return {};}
 }
@@ -5751,6 +5755,7 @@ function vtCollapsePersistEl(el){
  if(!el)return;
  try{
   var scope=vtCollapseScopeKey();
+  if(vtCollapseIsCjScope(scope))return; /* do not write open flags for customer/job */
   var key=vtCollapseSectionKey(el,el.id);
   var all=vtCollapseMapRead();
   if(!all[scope]||typeof all[scope]!=="object")all[scope]={};
@@ -5779,9 +5784,34 @@ function vtCollapseSet(id,collapsed,skipPersist){
  if(!skipPersist)vtCollapsePersistEl(el);
  vtCollapseHintsRefresh();
 }
+function vtCollapseForceAllClosed(root){
+ var base=root||document;
+ if(!root){
+  try{
+   if(typeof CUR!=="undefined" && (CUR==="cust_view"||CUR==="cust_job")){
+    var page=document.getElementById(CUR);
+    if(page)base=page;
+   }
+  }catch(e0){}
+ }
+ base.querySelectorAll(".vt-collapsible[data-vt-collapse]").forEach(function(el){
+  el.classList.add("is-collapsed");
+ });
+ vtCollapseHintsRefresh();
+ try{requestAnimationFrame(function(){vtHintsFitAll(base);});}catch(e1){}
+}
 function vtCollapseRestore(root){
  try{
   var scope=vtCollapseScopeKey();
+  /* Customer + job: ignore saved open state; every open starts fully collapsed. */
+  if(vtCollapseIsCjScope(scope)){
+   try{
+    var drop=vtCollapseMapRead();
+    if(drop[scope]){delete drop[scope]; vtCollapseMapWrite(drop);}
+   }catch(eDel){}
+   vtCollapseForceAllClosed(root);
+   return;
+  }
   var all=vtCollapseMapRead();
   var map=all[scope]||{};
   if(!Object.keys(map).length){
