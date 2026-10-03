@@ -456,14 +456,18 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-letter .fb-pump-table tr:last-child td{border-bottom:none;}
 .cj-fb-letter .fb-pt-lab{font-weight:700;color:#B5480A;width:38%;white-space:nowrap;}
 .cj-fb-letter .fb-pt-val{color:#333;}
-.cj-fb-letter .fb-photos-letter{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 0 12px;align-items:start;}
+.cj-fb-letter .fb-photos-letter{display:grid;grid-template-columns:1fr 1fr;gap:calc(4 * 0.5556cqw);margin:0 0 12px;align-items:start;}
 .cj-fb-letter .fb-ph-letter{border:none;border-radius:0;overflow:visible;background:transparent;display:flex;flex-direction:column;gap:6px;}
 .cj-fb-letter .fb-ph-frame{border:1.5px solid #E85D04;border-radius:2px;background:#f4f4f4;overflow:hidden;line-height:0;display:inline-flex;align-self:center;max-width:100%;}
-.cj-fb-letter .fb-ph-frame img{display:block;width:auto;height:auto;max-width:100%;max-height:180px;object-fit:contain;object-position:center;border:none;background:transparent;}
+.cj-fb-letter .fb-ph-frame img{display:block;width:auto;height:auto;max-width:100%;max-height:calc(var(--ph-mm, 62) * 0.5556cqw);object-fit:contain;object-position:center;border:none;background:transparent;}
 .cj-fb-letter .fb-ph-letter.full{grid-column:1 / -1;}
 .cj-fb-letter .fb-ph-letter.full .fb-ph-frame{align-self:flex-start;}
-.cj-fb-letter .fb-ph-letter.full .fb-ph-frame img{max-height:280px;}
+.cj-fb-letter .fb-ph-letter.full .fb-ph-frame img{max-height:calc(var(--ph-mm, 110) * 0.5556cqw);}
 .cj-fb-letter .fb-ph-letter .cap{padding:0 2px;font-size:10.5px;color:#333;border:none;background:transparent;margin:0;line-height:1.3;}
+.cj-fb-letter .fb-pump-side{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:calc(4 * 0.5556cqw);align-items:start;margin:0 0 10px;}
+.cj-fb-letter .fb-pump-side-text .fb-body{margin:0;}
+.cj-fb-letter .fb-pump-side-photo .fb-ph-letter{margin:0 0 8px;}
+.cj-fb-letter .fb-pump-side-photo .fb-ph-frame{align-self:flex-start;}
 .cj-fb-letter .fb-note{font-size:10px;color:#667788;margin:0 0 10px;}
 .cj-fb-letter .fb-ol,.cj-fb-letter .fb-ul{margin:0 0 10px;padding:0 0 0 1.25em;color:#333;font-size:9.5px;line-height:1.35;}
 .cj-fb-letter .fb-ol li,.cj-fb-letter .fb-ul li{margin:0 0 4px;}
@@ -513,7 +517,7 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-phblock-title{font-size:12.5px;font-weight:750;margin:0 0 4px;color:var(--ink);}
 .cj-fb-letter .fb-aspect{font-size:11.5px;font-weight:800;color:#333;margin:10px 0 4px;}
 .cj-fb-letter .fb-ba-side{font-size:10.5px;font-weight:800;color:#E85D04;text-transform:uppercase;letter-spacing:.03em;margin:8px 0 4px;}
-.cj-fb-letter .fb-ba-pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;margin:0 0 12px;align-items:start;page-break-inside:avoid;break-inside:avoid;}
+.cj-fb-letter .fb-ba-pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:calc(4 * 0.5556cqw);margin:0 0 12px;align-items:start;page-break-inside:avoid;break-inside:avoid;}
 .cj-fb-letter .fb-ba-pair .fb-ba-side{margin:0 0 4px;}
 .cj-fb-letter .fb-ba-pair .fb-ph-letter{min-width:0;}
 @media print{
@@ -3718,7 +3722,13 @@ function lriNewRelBlock(){
 }
 function lriSecPhotoThumb(key,arrName,idx,ph,baOn){
  var sideAttr=baOn&&ph.side?(' data-side="'+ph.side+'"'):'';
- return '<div class="rpt-ph"'+sideAttr+'><img src="'+ph.src+'"><div class="ctrl"><input type="text" placeholder="Caption, e.g. Before / After" value="'+pEsc(ph.caption||'')+'" oninput="lriSecPhotoCaption(\''+key+'\',\''+arrName+'\','+idx+',this.value)"></div><button type="button" class="clrbtn" onclick="lriSecRemovePhoto(\''+key+'\',\''+arrName+'\','+idx+')" style="margin:6px 0 0">Remove photo</button></div>';
+ return '<div class="rpt-ph"'+sideAttr+'><img src="'+ph.src+'"><div class="ctrl"><input type="text" class="cj-noauto" placeholder="Caption, e.g. Before / After" value="'+pEsc(ph.caption||'')+'" oninput="lriSecPhotoCaption(\''+key+'\',\''+arrName+'\','+idx+',this.value)"></div>'+custFbPhotoSizeFields(ph,'oninput="lriSecPhotoSize(\''+key+'\',\''+arrName+'\','+idx+',this.value,this)"')+'<button type="button" class="clrbtn" onclick="lriSecRemovePhoto(\''+key+'\',\''+arrName+'\','+idx+')" style="margin:6px 0 0">Remove photo</button></div>';
+}
+function lriSecPhotoSize(key,arrName,i,v,el){
+ var target=lriSecGetPhotoArr(key,arrName);if(!target||!target[i])return;
+ custPhotoPhHSet(target[i],v,el);
+ lriSave(true);
+ if(typeof cjScheduleLivePreview==="function")cjScheduleLivePreview();
 }
 function lriSecRenderPhotos(key){
  var el=document.getElementById("lri_phhost_"+key)||document.getElementById("lri_secphlist_"+key);
@@ -3868,7 +3878,7 @@ function lriClearSecPhotosForPump(n){
  for(var key in LRI_SEC_PHOTOS)if(LRI_SEC_PHOTOS.hasOwnProperty(key)&&key.indexOf(prefix)===0)delete LRI_SEC_PHOTOS[key];
  for(var key2 in LRI_SEC_BLOCKS)if(LRI_SEC_BLOCKS.hasOwnProperty(key2)&&key2.indexOf(prefix)===0)delete LRI_SEC_BLOCKS[key2];
 }
-window.lriSecHandleFiles=lriSecHandleFiles;window.lriSecPhotoCaption=lriSecPhotoCaption;window.lriSecRemovePhoto=lriSecRemovePhoto;window.lriSecToggleBa=lriSecToggleBa;window.lriSecMainLabelChanged=lriSecMainLabelChanged;window.lriAddRelBlock=lriAddRelBlock;window.lriRemoveRelBlock=lriRemoveRelBlock;window.lriRelBlockField=lriRelBlockField;window.lriRelBlockBa=lriRelBlockBa;
+window.lriSecHandleFiles=lriSecHandleFiles;window.lriSecPhotoCaption=lriSecPhotoCaption;window.lriSecRemovePhoto=lriSecRemovePhoto;window.lriSecPhotoSize=lriSecPhotoSize;window.lriSecToggleBa=lriSecToggleBa;window.lriSecMainLabelChanged=lriSecMainLabelChanged;window.lriAddRelBlock=lriAddRelBlock;window.lriRemoveRelBlock=lriRemoveRelBlock;window.lriRelBlockField=lriRelBlockField;window.lriRelBlockBa=lriRelBlockBa;
 function lriRowHTML(n){
  var p="lri_r"+n+"_";
  function SB(id,opts,check){return lriSelBlock(id,opts,!!(check&&n>1));}
@@ -3878,7 +3888,7 @@ function lriRowHTML(n){
  '<div class="fld"><div class="fh"><label>Bold line</label></div><div class="ctrl"><input type="text" id="'+p+'sub" placeholder="e.g. Pump on Wash plant # 1 Details"></div></div>'+
  '<div class="fld"><div class="fh"><label>Work order (optional)</label></div><div class="ctrl"><input type="text" id="'+p+'wo" placeholder="Client work order for this pump"></div></div>'+
  '<div class="fld"><div class="fh"><label>Details — type each line yourself</label></div><div class="ctrl"><textarea id="'+p+'lines" rows="8" placeholder="Manufacturer – Nash&#10;Model/Size – 2BE4 500 2BY4&#10;Serial Number – No Serial plate attached&#10;Plant – Byerwen Coal mine CHPP&#10;Pump Duty – Wash filter&#10;Position Number – Pump # 1"></textarea></div></div>'+
- '<p style="font-size:12px;color:var(--soft);margin:2px 0 6px">Printed as you type it, one line per detail. Work order above prints with this pump when it is filled in. Use Add pump for pump 2, pump 3, and so on.</p>'+
+ '<p style="font-size:12px;color:var(--soft);margin:2px 0 6px">Printed as you type it, one line per detail, beside this pump\'s photo when there is one (full width if there is no photo). Work order above prints with this pump when it is filled in. Use Add pump for pump 2, pump 3, and so on.</p>'+
  lriSecPhotoHTML(n,"details")+
 
  '<details class="lrisec" data-lrisec="seals"><summary class="tp-num">Seals</summary><div class="lrisec-body">'+
@@ -5108,7 +5118,7 @@ function lriNormalizeSecPhotos(){
    nrm=normAll[mi];
    cap=(LRI_SEC_PHOTOS[m.key][m.idx]||{}).caption||"";
    if(!normSec[m.key])normSec[m.key]=[];
-   normSec[m.key][m.idx]={src:nrm.src,w:nrm.w,h:nrm.h,caption:cap,side:(LRI_SEC_PHOTOS[m.key][m.idx]||{}).side||""};
+   normSec[m.key][m.idx]={src:nrm.src,w:nrm.w,h:nrm.h,caption:cap,side:(LRI_SEC_PHOTOS[m.key][m.idx]||{}).side||"",phH:(LRI_SEC_PHOTOS[m.key][m.idx]||{}).phH};
   }
   return normSec;
  });
@@ -5129,8 +5139,14 @@ function lriPumpBlocks(n){
  if(rv(p+"sub"))push("bold",rv(p+"sub"));
  if(rv(p+"wo"))push("text","Work order: "+rv(p+"wo"));
  var detailLines=rv(p+"lines");
- if(String(detailLines||"").trim())push("text",detailLines);
- push("photos",null,n+"_details");
+ var hasDetailLines=!!String(detailLines||"").trim();
+ var hasDetailPhoto=((LRI_SEC_PHOTOS[n+"_details"]||[]).length>0);
+ // Typed lines sit beside the details photo. No photo → lines stay full width.
+ if(hasDetailLines&&hasDetailPhoto)push("detailSide",detailLines,n+"_details");
+ else{
+  if(hasDetailLines)push("text",detailLines);
+  push("photos",null,n+"_details");
+ }
  function section(title,key,fieldChecks,lineBuilder,notesId,notesLabel){
   var hasPhotos=((LRI_SEC_PHOTOS[key]||[]).length>0);
   var stBlk=LRI_SEC_BLOCKS[key];
@@ -6989,10 +7005,29 @@ function custSecPhotoHTML(key){
  return '<div id="cj_phhost_'+key+'" class="cj-phhost" data-phkey="'+key+'"></div>';
 }
 function custSecPhotoThumb(globalIdx,ph){
- return '<div class="rpt-ph"><img src="'+ph.dataUrl+'"><div class="ctrl"><input type="text" class="cj-noauto" placeholder="Caption" value="'+custEsc(ph.caption||"")+'" oninput="custSecPhotoCaption('+globalIdx+',this.value)"></div><button type="button" class="clrbtn" onclick="custSecRemovePhotoAt('+globalIdx+')" style="margin:6px 0 0">Remove photo</button></div>';
+ return '<div class="rpt-ph"><img src="'+ph.dataUrl+'"><div class="ctrl"><input type="text" class="cj-noauto" placeholder="Caption" value="'+custEsc(ph.caption||"")+'" oninput="custSecPhotoCaption('+globalIdx+',this.value)"></div>'+custFbPhotoSizeFields(ph,'oninput="custSecPhotoSize('+globalIdx+',this.value,this)"')+'<button type="button" class="clrbtn" onclick="custSecRemovePhotoAt('+globalIdx+')" style="margin:6px 0 0">Remove photo</button></div>';
 }
 function custBlockPhotoThumb(key,bi,pi,ph){
- return '<div class="rpt-ph"><img src="'+ph.dataUrl+'"><div class="ctrl"><input type="text" class="cj-noauto" placeholder="Caption" value="'+custEsc(ph.caption||"")+'" oninput="custRelBlockPhotoCap(\''+key+'\','+bi+','+pi+',this.value)"></div><button type="button" class="clrbtn" onclick="custRelBlockPhotoRemove(\''+key+'\','+bi+','+pi+')" style="margin:6px 0 0">Remove photo</button></div>';
+ return '<div class="rpt-ph"><img src="'+ph.dataUrl+'"><div class="ctrl"><input type="text" class="cj-noauto" placeholder="Caption" value="'+custEsc(ph.caption||"")+'" oninput="custRelBlockPhotoCap(\''+key+'\','+bi+','+pi+',this.value)"></div>'+custFbPhotoSizeFields(ph,'oninput="custRelBlockPhotoSize(\''+key+'\','+bi+','+pi+',this.value,this)"')+'<button type="button" class="clrbtn" onclick="custRelBlockPhotoRemove(\''+key+'\','+bi+','+pi+')" style="margin:6px 0 0">Remove photo</button></div>';
+}
+function custSecPhotoSize(idx,v,el){
+ var pair=custFindJob();if(!pair||!pair.j.photos||!pair.j.photos[idx])return;
+ custPhotoPhHSet(pair.j.photos[idx],v,el);
+ if(_custSecPhotoTimer)clearTimeout(_custSecPhotoTimer);
+ _custSecPhotoTimer=setTimeout(function(){custPersist();cjRefreshLivePreview();},120);
+}
+function custRelBlockPhotoSize(key,bi,pi,v,el){
+ var pair=custFindJob();if(!pair)return;
+ custEnsureSecMeta(pair.j,key);var blk=pair.j.secBlocks[key][bi];if(!blk||!blk.photos||!blk.photos[pi])return;
+ custPhotoPhHSet(blk.photos[pi],v,el);
+ if(_custSecPhotoTimer)clearTimeout(_custSecPhotoTimer);
+ _custSecPhotoTimer=setTimeout(function(){custPersist();cjRefreshLivePreview();},120);
+}
+function custJobPhotoSize(i,v,el){
+ var pair=custFindJob();if(!pair||!pair.j.photos||!pair.j.photos[i])return;
+ custPhotoPhHSet(pair.j.photos[i],v,el);
+ if(_custSecPhotoTimer)clearTimeout(_custSecPhotoTimer);
+ _custSecPhotoTimer=setTimeout(function(){custPersist();cjScheduleLivePreview();},120);
 }
 function custRenderRelBlocks(key,blocks){
  var h='',b,blk,baOn,photos,i,bc,ac;
@@ -7159,6 +7194,7 @@ function custSecRemovePhotoAt(idx){
  cjRefreshLivePreview();
 }
 window.custSecHandleFiles=custSecHandleFiles;window.custSecPhotoCaption=custSecPhotoCaption;window.custSecRemovePhotoAt=custSecRemovePhotoAt;
+window.custSecPhotoSize=custSecPhotoSize;window.custRelBlockPhotoSize=custRelBlockPhotoSize;window.custJobPhotoSize=custJobPhotoSize;
 window.custSecMainLabelChanged=custSecMainLabelChanged;window.custSecToggleBa=custSecToggleBa;window.custAddRelBlock=custAddRelBlock;window.custRemoveRelBlock=custRemoveRelBlock;
 window.custRelBlockField=custRelBlockField;window.custRelBlockBa=custRelBlockBa;window.custRelBlockHandleFiles=custRelBlockHandleFiles;
 window.custRelBlockPhotoCap=custRelBlockPhotoCap;window.custRelBlockPhotoRemove=custRelBlockPhotoRemove;
@@ -7169,7 +7205,7 @@ function custRenderJobPhotos(){
  var photos=pair.j.photos||[],h="",i,p;
  for(i=0;i<photos.length;i++){
   p=photos[i];
-  h+='<div class="rpt-ph"><img src="'+p.dataUrl+'"><div class="mgrid"><div class="mgf"><span class="mlab">Caption</span><div class="ctrl"><input type="text" id="cj_ph'+i+'_cap" placeholder="Caption, e.g. FLT 151 discharge" value="'+custEsc(p.caption||"")+'" onchange="custSaveJob(\'auto\')" oninput="custScheduleAutoSave()"></div></div><div class="mgf"><span class="mlab">Letter section (for feedback PDF)</span><div class="ctrl"><select id="cj_ph'+i+'_grp" onchange="custSaveJob(\'auto\')">'+CUST_PHOTO_GROUP_OPT+'</select></div></div></div><div class="fld" style="margin-top:6px"><div class="fh"><label>Size in letter</label></div><div class="ctrl"><select id="cj_ph'+i+'_size" onchange="custSaveJob(\'auto\')"><option value="half">Half width &mdash; 2 side by side</option><option value="full">Full width &mdash; on its own row</option></select></div></div><button class="clrbtn" onclick="custRemovePhoto('+i+')" style="margin:6px 0 0">Remove photo</button></div>';
+  h+='<div class="rpt-ph"><img src="'+p.dataUrl+'"><div class="mgrid"><div class="mgf"><span class="mlab">Caption</span><div class="ctrl"><input type="text" id="cj_ph'+i+'_cap" placeholder="Caption, e.g. FLT 151 discharge" value="'+custEsc(p.caption||"")+'" onchange="custSaveJob(\'auto\')" oninput="custScheduleAutoSave()"></div></div><div class="mgf"><span class="mlab">Letter section (for feedback PDF)</span><div class="ctrl"><select id="cj_ph'+i+'_grp" onchange="custSaveJob(\'auto\')">'+CUST_PHOTO_GROUP_OPT+'</select></div></div></div><div class="fld" style="margin-top:6px"><div class="fh"><label>Size in letter</label></div><div class="ctrl"><select id="cj_ph'+i+'_size" onchange="custSaveJob(\'auto\')"><option value="half">Half width &mdash; 2 side by side</option><option value="full">Full width &mdash; on its own row</option></select></div></div>'+custFbPhotoSizeFields(p,'oninput="custJobPhotoSize('+i+',this.value,this)"')+'<button class="clrbtn" onclick="custRemovePhoto('+i+')" style="margin:6px 0 0">Remove photo</button></div>';
  }
  el.innerHTML=h||'<p style="font-size:13px;color:var(--soft);margin:8px 2px">No photos yet.</p>';
  for(i=0;i<photos.length;i++){
@@ -7913,34 +7949,70 @@ function custFbBaRole(ph){
  var m=/^(before|after)\b/.exec(cap);
  return m?m[1]:"";
 }
-function custFbPhLetterHtml(src,cap){
- return '<div class="fb-ph-letter"><div class="fb-ph-frame"><img src="'+src+'" alt=""></div><div class="cap">'+custEsc(cap)+'</div></div>';
+// Photo size is millimetres of max height on the A4 letter (not the text-size
+// controls). 62 / 110 match the old half-column and full-width caps, so a photo
+// with no stored size prints as it does today. Preview uses the same mm via cqw.
+var CUST_FB_PHOTO_MM_HALF=62, CUST_FB_PHOTO_MM_FULL=110, CUST_FB_PHOTO_MM_MIN=20, CUST_FB_PHOTO_MM_MAX=160;
+function custFbPhotoMm(ph, full){
+ var d=full?CUST_FB_PHOTO_MM_FULL:CUST_FB_PHOTO_MM_HALF;
+ var n=ph&&ph.phH;
+ if(n==null||n==="")return d;
+ n=+n;
+ if(!isFinite(n))return d;
+ if(n<CUST_FB_PHOTO_MM_MIN)n=CUST_FB_PHOTO_MM_MIN;
+ if(n>CUST_FB_PHOTO_MM_MAX)n=CUST_FB_PHOTO_MM_MAX;
+ return n;
 }
-function custFbBaPairHtml(bSrc,bCap,aSrc,aCap){
- return '<div class="fb-ba-pair"><div class="fb-ba-cell"><div class="fb-ba-side">Before</div>'+custFbPhLetterHtml(bSrc,bCap)+'</div><div class="fb-ba-cell"><div class="fb-ba-side">After</div>'+custFbPhLetterHtml(aSrc,aCap)+'</div></div>';
+function custFbPhStyle(ph, full){
+ return ' style="--ph-mm:'+custFbPhotoMm(ph, !!full)+'"';
+}
+function custFbPhotoSizeFields(ph, inputAttrs){
+ var shown=custFbPhotoMm(ph, !!(ph&&ph.size==="full"));
+ return '<div class="fld" style="margin-top:4px"><div class="fh"><label>Photo size <span data-phsz>'+shown+' mm</span></label></div><div class="ctrl"><input type="range" class="cj-noauto" min="'+CUST_FB_PHOTO_MM_MIN+'" max="'+CUST_FB_PHOTO_MM_MAX+'" step="2" value="'+shown+'" '+inputAttrs+'></div></div>';
+}
+function custFbPhotoSizeLabel(el, mm){
+ var fld=el&&el.closest?el.closest(".fld"):null;
+ var lab=fld?fld.querySelector("[data-phsz]"):null;
+ if(lab)lab.textContent=mm+" mm";
+}
+function custPhotoPhHSet(ph, v, el){
+ var n=+v;
+ if(!ph||!isFinite(n))return;
+ if(n<CUST_FB_PHOTO_MM_MIN)n=CUST_FB_PHOTO_MM_MIN;
+ if(n>CUST_FB_PHOTO_MM_MAX)n=CUST_FB_PHOTO_MM_MAX;
+ ph.phH=n;
+ custFbPhotoSizeLabel(el, n);
+}
+function custFbPhLetterHtml(src,cap,ph,full){
+ var wide=!!(full||(ph&&ph.full));
+ return '<div class="fb-ph-letter'+(wide?' full':'')+'"><div class="fb-ph-frame"'+custFbPhStyle(ph, wide)+'><img src="'+src+'" alt=""></div><div class="cap">'+custEsc(cap)+'</div></div>';
+}
+function custFbBaPairHtml(b,a){
+ return '<div class="fb-ba-pair"><div class="fb-ba-cell"><div class="fb-ba-side">Before</div>'+custFbPhLetterHtml(b.src,b.cap,b,false)+'</div><div class="fb-ba-cell"><div class="fb-ba-side">After</div>'+custFbPhLetterHtml(a.src,a.cap,a,false)+'</div></div>';
 }
 function custFbLetterPhotoGridHtml(items){
  if(!items||!items.length)return "";
  var h='<div class="fb-photos-letter">',i,it;
  for(i=0;i<items.length;i++){
   it=items[i];
-  h+='<div class="fb-ph-letter'+(it.full?" full":"")+'"><div class="fb-ph-frame"><img src="'+it.src+'" alt=""></div><div class="cap">'+custEsc(it.cap)+'</div></div>';
+  h+=custFbPhLetterHtml(it.src,it.cap,it,!!it.full);
  }
  return h+"</div>";
 }
 function custFbLetterBaGroupsHtml(before,after,other){
  var h="",n=Math.min(before.length,after.length),i;
- for(i=0;i<n;i++)h+=custFbBaPairHtml(before[i].src,before[i].cap,after[i].src,after[i].cap);
+ for(i=0;i<n;i++)h+=custFbBaPairHtml(before[i],after[i]);
  if(before.length>n)h+='<div class="fb-ba-side">Before</div>'+custFbLetterPhotoGridHtml(before.slice(n));
  if(after.length>n)h+='<div class="fb-ba-side">After</div>'+custFbLetterPhotoGridHtml(after.slice(n));
  if(other&&other.length)h+=custFbLetterPhotoGridHtml(other);
  return h;
 }
 function custFbLetterDrawBaPair(L,b,a){
- var halfW=(L.contentW-4)/2,maxH=62,capFs=8,capLh=3.2,labH=4.2;
+ var halfW=(L.contentW-4)/2,capFs=8,capLh=3.2,labH=4.2;
  function prep(cell){
   L.doc.setFont("helvetica","normal");L.doc.setFontSize(capFs);
   var capLines=L.doc.splitTextToSize(cell.cap,halfW-2);
+  var maxH=cell.maxMm||CUST_FB_PHOTO_MM_HALF;
   var scale=Math.min(halfW/Math.max(1,cell.w),maxH/Math.max(1,cell.h));
   return {capLines:capLines,w:cell.w*scale,h:cell.h*scale};
  }
@@ -7971,7 +8043,7 @@ function custFbLetterDrawLoose(L,list,title){
  if(title)custFbLetterSubHead(L,title,false);
  var photos=[],norm=[],idxs=[],i;
  for(i=0;i<list.length;i++){
-  photos.push({caption:list[i].cap,size:list[i].full?"full":"half"});
+  photos.push({caption:list[i].cap,size:list[i].full?"full":"half",phH:list[i].phH});
   norm.push({src:list[i].src,w:list[i].w||1000,h:list[i].h||750});
   idxs.push(i);
  }
@@ -8023,7 +8095,7 @@ function custFbLetterBaPhotosHtml(photos,pack){
  }
  function itemFromIx(ix){
   var ph=photos[ix]; if(!ph)return null;
-  return {src:ph.dataUrl,cap:(ph.caption||"").trim()||("Photo "+(ix+1)),full:ph.size==="full"};
+  return {src:ph.dataUrl,cap:(ph.caption||"").trim()||("Photo "+(ix+1)),full:ph.size==="full",phH:ph.phH};
  }
  function take(arr){
   var out=[],i,it;
@@ -8038,7 +8110,7 @@ function custFbLetterBlockPhotosHtml(blk){
   var out=[],k,ph;
   for(k=0;k<list.length;k++){
    ph=list[k];
-   out.push({src:ph.dataUrl,cap:(ph.caption||"").trim()||("Photo "+(k+1)),full:false});
+   out.push({src:ph.dataUrl,cap:(ph.caption||"").trim()||("Photo "+(k+1)),full:false,phH:ph.phH});
   }
   return out;
  }
@@ -8067,19 +8139,20 @@ function custFbLetterPhotosHtml(photos,idxs){
   ph=photos[idxs[i]]; if(!ph) continue;
   cap=(ph.caption||"").trim()||("Photo "+(idxs[i]+1));
   full=ph.size==="full";
-  h+='<div class="fb-ph-letter'+(full?" full":"")+'"><div class="fb-ph-frame"><img src="'+ph.dataUrl+'" alt=""></div><div class="cap">'+custEsc(cap)+'</div></div>';
+  h+=custFbPhLetterHtml(ph.dataUrl,cap,ph,full);
  }
  return h+'</div>';
 }
 
-function custFbLetterPumpSecHtml(key,normSec){
+function custFbLetterPumpSecHtml(key,normSec,opt){
+ opt=opt||{};
  var h="",arr=(normSec&&normSec[key])||[],st=LRI_SEC_BLOCKS[key],baOn=!!(st&&st.ba),i;
  function listHtml(list){
   if(!list||!list.length)return "";
   var out='<div class="fb-photos-letter">',ph,cap,ii;
   for(ii=0;ii<list.length;ii++){
    ph=list[ii];cap=(ph.caption||"").trim()||("Photo "+(ii+1));
-   out+='<div class="fb-ph-letter"><div class="fb-ph-frame"><img src="'+(ph.src||ph.dataUrl)+'" alt=""></div><div class="cap">'+custEsc(cap)+'</div></div>';
+   out+=custFbPhLetterHtml(ph.src||ph.dataUrl,cap,ph,false);
   }
   return out+'</div>';
  }
@@ -8087,7 +8160,7 @@ function custFbLetterPumpSecHtml(key,normSec){
   var out=[],ii,ph,cap;
   for(ii=0;ii<(list||[]).length;ii++){
    ph=list[ii];cap=(ph.caption||"").trim()||("Photo "+(ii+1));
-   out.push({src:ph.src||ph.dataUrl,cap:cap,full:false});
+   out.push({src:ph.src||ph.dataUrl,cap:cap,full:false,phH:ph.phH});
   }
   return out;
  }
@@ -8103,9 +8176,9 @@ function custFbLetterPumpSecHtml(key,normSec){
   if(forceBa||(before.length&&after.length))return custFbLetterBaGroupsHtml(pumpBaItems(before),pumpBaItems(after),pumpBaItems(other));
   return listHtml(list);
  }
- if(st&&(st.label||"").trim())h+='<div class="fb-aspect">'+custEsc(String(st.label).trim())+'</div>';
- if(arr.length)h+=emitClassified(arr,baOn);
- if(st&&st.blocks){
+ if(!opt.skipLabel&&st&&(st.label||"").trim())h+='<div class="fb-aspect">'+custEsc(String(st.label).trim())+'</div>';
+ if(!opt.skipMain&&arr.length)h+=emitClassified(arr,baOn);
+ if(!opt.skipBlocks&&st&&st.blocks){
   var b,blk,photos,raw;
   for(b=0;b<st.blocks.length;b++){
    blk=st.blocks[b];photos=blk.photos||[];
@@ -8123,7 +8196,7 @@ function custFbLetterPumpPhotosHtml(arr){
  for(i=0;i<(arr||[]).length;i++){
   ph=arr[i];
   cap=(ph.caption||"").trim()||("Photo "+(i+1));
-  h+='<div class="fb-ph-letter"><div class="fb-ph-frame"><img src="'+ph.src+'" alt=""></div><div class="cap">'+custEsc(cap)+'</div></div>';
+  h+=custFbPhLetterHtml(ph.src||ph.dataUrl,cap,ph,false);
  }
  return h+'</div>';
 }
@@ -8157,11 +8230,40 @@ function custFbLetterPumpsHtml(normSec){
    else if(b.kind==="sub")h+='<div class="fb-pump-sub">'+custEsc(b.text)+'</div>';
    else if(b.kind==="rows")h+=custFbLetterRowsHtml(b.text);
    else if(b.kind==="text")h+='<div class="fb-body">'+custFbLetterBodyHtml(b.text)+'</div>';
+   else if(b.kind==="detailSide")h+=custFbLetterDetailSideHtml(b.text,b.key);
    else if(b.kind==="photos"){
     h+=custFbLetterPumpSecHtml(b.key,normSec);
    }
   }
  }
+ return h;
+}
+function custFbLetterPumpPhotoStackHtml(arr){
+ var h="",i,ph,cap,role;
+ for(i=0;i<(arr||[]).length;i++){
+  ph=arr[i];
+  cap=(ph.caption||"").trim()||("Photo "+(i+1));
+  role=custFbBaRole(ph);
+  if(role)h+='<div class="fb-ba-side">'+(role==="before"?"Before":"After")+'</div>';
+  h+=custFbPhLetterHtml(ph.src||ph.dataUrl,cap,ph,false);
+ }
+ return h;
+}
+function custFbLetterDetailSideHtml(text,key){
+ var arr=(LRI_SEC_PHOTOS[key])||[];
+ var hasPh=arr.length>0;
+ var hasTx=!!String(text||"").trim();
+ var h="";
+ if(!(hasTx&&hasPh)){
+  if(hasTx)h+='<div class="fb-body">'+custFbLetterBodyHtml(text)+'</div>';
+  h+=custFbLetterPumpSecHtml(key,LRI_SEC_PHOTOS);
+  return h;
+ }
+ var st=LRI_SEC_BLOCKS[key];
+ if(st&&(st.label||"").trim())h+='<div class="fb-aspect">'+custEsc(String(st.label).trim())+'</div>';
+ h+='<div class="fb-pump-side"><div class="fb-pump-side-text"><div class="fb-body">'+custFbLetterBodyHtml(text)+'</div></div>';
+ h+='<div class="fb-pump-side-photo">'+custFbLetterPumpPhotoStackHtml(arr)+'</div></div>';
+ h+=custFbLetterPumpSecHtml(key,LRI_SEC_PHOTOS,{skipLabel:true,skipMain:true});
  return h;
 }
 function custFbLetterSignoffHtml(j){
@@ -8276,12 +8378,25 @@ function custFbLetterNewPage(L){
 function custFbLetterEnsure(L,need){
  if(L.y+need>L.bottom) custFbLetterNewPage(L);
 }
+// Newlines are a hard break first; splitTextToSize only wraps one typed line.
+function custFbLetterHardLines(doc, text, width){
+ var raw=String(text==null?"":text).replace(/\r\n/g,"\n").replace(/\r/g,"\n");
+ var paras=raw.split("\n"), out=[], i, piece, k;
+ for(i=0;i<paras.length;i++){
+  if(paras[i]===""){out.push("");continue;}
+  piece=doc.splitTextToSize(paras[i], Math.max(12, width));
+  if(!piece)continue;
+  if(typeof piece==="string")piece=[piece];
+  for(k=0;k<piece.length;k++)out.push(piece[k]);
+ }
+ return out.length?out:[""];
+}
 function custFbLetterBodyText(L,text,opt){
  opt=opt||{};
  var fs=opt.fs||custFbSizes().body, lh=opt.lh||(3.8*fs/8.5), lines,i,room,take,chunk;
  L.doc.setFont("helvetica",opt.bold?"bold":"normal"); L.doc.setFontSize(fs);
  L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);
- lines=L.doc.splitTextToSize(String(text==null?"":text),L.contentW);
+ lines=custFbLetterHardLines(L.doc,text,opt.width||L.contentW);
  i=0;
  while(i<lines.length){
   room=L.bottom-L.y;
@@ -8324,10 +8439,11 @@ function custFbLetterSubHead(L,text,big){
 // together, not one). Reads lriPumpBlocks(n) so the field list can't drift from the
 // standalone report's logic.
 
-function custFbLetterPumpSecPdf(L,key,normSec){
+function custFbLetterPumpSecPdf(L,key,normSec,opt){
+ opt=opt||{};
  var arr=(normSec&&normSec[key])||[],st=LRI_SEC_BLOCKS[key],baOn=!!(st&&st.ba);
  function toPseudo(photos){
-  return photos.map(function(ph,i){return {dataUrl:ph.src||ph.dataUrl,caption:ph.caption||"",size:"half",side:ph.side||""};});
+  return photos.map(function(ph,i){return {dataUrl:ph.src||ph.dataUrl,caption:ph.caption||"",size:"half",side:ph.side||"",phH:ph.phH};});
  }
  function drawPseudo(list,title){
   if(!list.length)return;
@@ -8340,7 +8456,7 @@ function custFbLetterPumpSecPdf(L,key,normSec){
   var out=[],k,ph;
   for(k=0;k<list.length;k++){
    ph=list[k];
-   out.push({src:ph.src||ph.dataUrl,w:ph.w||1000,h:ph.h||750,cap:(ph.caption||"").trim()||("Photo "+(k+1)),full:false});
+   out.push({src:ph.src||ph.dataUrl,w:ph.w||1000,h:ph.h||750,cap:(ph.caption||"").trim()||("Photo "+(k+1)),full:false,phH:ph.phH,maxMm:custFbPhotoMm(ph,false)});
   }
   return out;
  }
@@ -8356,9 +8472,9 @@ function custFbLetterPumpSecPdf(L,key,normSec){
   if(forceBa||(before.length&&after.length))custFbLetterDrawBaGroups(L,cellsOf(before),cellsOf(after),cellsOf(other));
   else drawPseudo(list,"");
  }
- if(st&&(st.label||"").trim())custFbLetterSubHead(L,String(st.label).trim(),true);
- drawClassified(arr,baOn);
- if(st&&st.blocks){
+ if(!opt.skipLabel&&st&&(st.label||"").trim())custFbLetterSubHead(L,String(st.label).trim(),true);
+ if(!opt.skipMain)drawClassified(arr,baOn);
+ if(!opt.skipBlocks&&st&&st.blocks){
   var b,blk,photos;
   for(b=0;b<st.blocks.length;b++){
    blk=st.blocks[b];photos=blk.photos||[];
@@ -8411,6 +8527,71 @@ function custFbLetterRowsPdf(L,text){
  L.doc.setTextColor(0,0,0);
  L.y=y0+totalH+4;
 }
+function custFbLetterDrawPhotoCol(L, photos, x, y, colW){
+ var yy=y, i, ph, mm, scale, w, h, capFs=8, capLh=3.2, capLines, fmt, role, src;
+ for(i=0;i<photos.length;i++){
+  ph=photos[i]; src=ph.src||ph.dataUrl||"";
+  role=custFbBaRole(ph);
+  if(role){
+   if(yy+6>L.bottom)break;
+   L.doc.setFont("helvetica","bold"); L.doc.setFontSize(9);
+   L.doc.setTextColor(L.orange[0],L.orange[1],L.orange[2]);
+   L.doc.text(role==="before"?"Before":"After", x, yy+3.2);
+   yy+=4.6;
+  }
+  mm=custFbPhotoMm(ph,false);
+  L.doc.setFont("helvetica","normal"); L.doc.setFontSize(capFs);
+  capLines=L.doc.splitTextToSize((ph.caption||"").trim()||("Photo "+(i+1)), Math.max(10,colW-1));
+  if(typeof capLines==="string")capLines=[capLines];
+  scale=Math.min(colW/Math.max(1,ph.w||1000), mm/Math.max(1,ph.h||750));
+  w=(ph.w||1000)*scale; h=(ph.h||750)*scale;
+  if(yy+Math.min(h,20)>L.bottom && yy>y+1)break;
+  try{fmt=/^data:image\/jpe?g/i.test(src)?"JPEG":"PNG"; L.doc.addImage(src,fmt,x,yy,w,h);}catch(err){}
+  L.doc.setDrawColor(L.orange[0],L.orange[1],L.orange[2]); L.doc.setLineWidth(0.4);
+  L.doc.rect(x,yy,w,h);
+  L.doc.setFont("helvetica","normal"); L.doc.setFontSize(capFs);
+  L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);
+  L.doc.text(capLines, x, yy+h+2+capLh);
+  yy+=h+capLines.length*capLh+5;
+ }
+ L.doc.setTextColor(0,0,0);
+ return yy;
+}
+function custFbLetterDrawBeside(L, text, photos){
+ var gap=4, photoW=(L.contentW-gap)/2.35, textW=L.contentW-gap-photoW;
+ var fs=custFbSizes().body, lh=3.8*fs/8.5, i, est=0, ph, mm;
+ L.doc.setFont("helvetica","normal"); L.doc.setFontSize(fs);
+ var lines=custFbLetterHardLines(L.doc, text, textW);
+ var textH=Math.max(lh, lines.length*lh)+1;
+ for(i=0;i<photos.length;i++){ph=photos[i]; mm=custFbPhotoMm(ph,false); est+=mm+8;}
+ if(L.y+Math.min(Math.max(textH, est)+4, 36)>L.bottom) custFbLetterNewPage(L);
+ var y0=L.y, page0=L.page, xPh=L.m+textW+gap;
+ var yPh=custFbLetterDrawPhotoCol(L, photos, xPh, y0, photoW);
+ var ty=y0, li;
+ L.doc.setFont("helvetica","normal"); L.doc.setFontSize(fs);
+ L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);
+ for(li=0;li<lines.length;li++){
+  if(ty+lh>L.bottom){custFbLetterNewPage(L); ty=L.y;}
+  if(lines[li])L.doc.text(lines[li], L.m, ty+lh*0.75);
+  ty+=lh;
+ }
+ L.doc.setTextColor(0,0,0);
+ if(L.page===page0) L.y=Math.max(ty, yPh)+2;
+ else L.y=ty+2;
+}
+function custFbLetterDetailSidePdf(L, text, key, normSec){
+ var arr=(normSec&&normSec[key])||[];
+ var hasPh=arr.length>0, hasTx=!!String(text||"").trim();
+ if(!(hasTx&&hasPh)){
+  if(hasTx)custFbLetterBodyText(L, text, {gapAfter:1.5});
+  custFbLetterPumpSecPdf(L, key, normSec);
+  return;
+ }
+ var st=LRI_SEC_BLOCKS[key];
+ if(st&&(st.label||"").trim())custFbLetterSubHead(L, String(st.label).trim(), true);
+ custFbLetterDrawBeside(L, text, arr);
+ custFbLetterPumpSecPdf(L, key, normSec, {skipLabel:true, skipMain:true});
+}
 function custFbLetterDrawPumps(L,normSec){
  var n,blocks,i,b;
  for(n=1;n<=LRI_ROWCOUNT;n++){
@@ -8422,6 +8603,7 @@ function custFbLetterDrawPumps(L,normSec){
    else if(b.kind==="sub")custFbLetterSubHead(L,b.text,false);
    else if(b.kind==="rows")custFbLetterRowsPdf(L,b.text);
    else if(b.kind==="text")custFbLetterBodyText(L,b.text,{gapAfter:1.5});
+   else if(b.kind==="detailSide")custFbLetterDetailSidePdf(L,b.text,b.key,normSec);
    else if(b.kind==="photos"){ custFbLetterPumpSecPdf(L,b.key,normSec); }
   }
   L.y+=3;
@@ -8481,7 +8663,7 @@ function custFbLetterPhotosBa(L,photos,norm,idxs,sectionKey,j){
  }
  function cell(ix){
   var ph=photos[ix],dim=norm[ix]; if(!ph||!dim)return null;
-  return {src:dim.src,w:dim.w,h:dim.h,cap:(ph.caption||"").trim()||("Photo "+(ix+1)),full:ph.size==="full"};
+  return {src:dim.src,w:dim.w,h:dim.h,cap:(ph.caption||"").trim()||("Photo "+(ix+1)),full:ph.size==="full",phH:ph.phH,maxMm:custFbPhotoMm(ph, ph.size==="full")};
  }
  function take(arr){
   var out=[],i,it;
@@ -8507,7 +8689,7 @@ function custFbLetterRelBlocksPdf(L,j,key){
     for(ci=0;ci<row.length;ci++){
      L.doc.setFont("helvetica","normal");L.doc.setFontSize(capFs);
      capLines=L.doc.splitTextToSize(row[ci].cap,cellW-2);caps.push(capLines);
-     scale=Math.min(cellW/Math.max(1,row[ci].w),maxH/Math.max(1,row[ci].h));
+     scale=Math.min(cellW/Math.max(1,row[ci].w),(row[ci].maxMm||maxH)/Math.max(1,row[ci].h));
      ws.push(row[ci].w*scale);heights.push(row[ci].h*scale);
     }
     var capH=Math.max(caps[0].length,(caps[1]?caps[1].length:0))*capLh+2;
@@ -8528,7 +8710,7 @@ function custFbLetterRelBlocksPdf(L,j,key){
    }
    for(i=0;i<list.length;i++){
     ph=list[i];
-    item={src:ph.dataUrl,w:1000,h:750,cap:(ph.caption||"").trim()||("Photo "+(i+1))};
+    item={src:ph.dataUrl,w:ph.w||1000,h:ph.h||750,cap:(ph.caption||"").trim()||("Photo "+(i+1)),maxMm:custFbPhotoMm(ph,false)};
     row.push(item);if(row.length===2)flush();
    }
    flush();
@@ -8545,7 +8727,7 @@ function custFbLetterRelBlocksPdf(L,j,key){
     var out=[],k,ph;
     for(k=0;k<list.length;k++){
      ph=list[k];
-     out.push({src:ph.dataUrl,w:ph.w||1000,h:ph.h||750,cap:(ph.caption||"").trim()||("Photo "+(k+1)),full:false});
+     out.push({src:ph.dataUrl,w:ph.w||1000,h:ph.h||750,cap:(ph.caption||"").trim()||("Photo "+(k+1)),full:false,phH:ph.phH,maxMm:custFbPhotoMm(ph,false)});
     }
     return out;
    }
@@ -8565,7 +8747,7 @@ function custFbLetterPhotos(L,photos,norm,idxs){
    L.doc.setFont("helvetica","normal"); L.doc.setFontSize(capFs);
    capLines=L.doc.splitTextToSize(cell.cap,cellW-2);
    caps.push(capLines);
-   scale=Math.min(cellW/Math.max(1,cell.w), maxH/Math.max(1,cell.h));
+   scale=Math.min(cellW/Math.max(1,cell.w), (cell.maxMm||maxH)/Math.max(1,cell.h));
    ws.push(cell.w*scale);
    heights.push(cell.h*scale);
   }
@@ -8593,7 +8775,7 @@ function custFbLetterPhotos(L,photos,norm,idxs){
  }
  for(i=0;i<idxs.length;i++){
   var i0=idxs[i];
-  var item={src:norm[i0].src,w:norm[i0].w,h:norm[i0].h,cap:(photos[i0].caption||"").trim()||("Photo "+(i0+1))};
+  var item={src:norm[i0].src,w:norm[i0].w,h:norm[i0].h,cap:(photos[i0].caption||"").trim()||("Photo "+(i0+1)),maxMm:custFbPhotoMm(photos[i0], photos[i0].size==="full")};
   if(photos[i0].size==="full"){
    flush();
    row=[item]; rowFull=true;
@@ -9183,7 +9365,7 @@ vtThemeApply(vtThemeGet());vtCollapseRestore();custFbApplySizeVars();
 // installed app window (laptop) / home-screen app (phone) can keep an old copy
 // open far longer, so a published fix can look like "nothing changed".
 // VT_BUILD must be bumped on every change to this file (see CLAUDE.md).
-var VT_BUILD="2026-10-03.2";
+var VT_BUILD="2026-10-03.3";
 (function vtAutoUpdate(){
  if(location.protocol!=="http:"&&location.protocol!=="https:")return;
  var url=location.href.split("#")[0],bar=null,busy=false;
