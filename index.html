@@ -2865,7 +2865,7 @@ function drawLR(){
  ctx.lineWidth=6;ctx.lineCap="butt";
  ctx.strokeStyle="#2E7D52";ctx.beginPath();ctx.arc(cx,ry,rh+8,-0.85,0.85);ctx.stroke();
  ctx.strokeStyle="#BF4E10";ctx.beginPath();ctx.arc(cx,ry,rh+8,2.29,3.99);ctx.stroke();
- ctx.font="700 11px "+"-apple-system,sans-serif";
+ ctx.font="700 11px "+"'Noto Sans', Arial, sans-serif";
  ctx.fillStyle="#2E7D52";ctx.textAlign="center";ctx.fillText("gas in",cx+rh+8,ry-rh-2);
  ctx.fillStyle="#BF4E10";ctx.fillText("gas out",cx-rh-8,ry-rh-2);
  ctx.fillStyle="#3d4f55";ctx.fillText("water ring",cx,cy+(Ri+R)/2+4);
@@ -2892,9 +2892,9 @@ function drawFan(){
  var x0=f.W*0.45,bw=(f.W*0.5)/3-8,maxH=f.H*0.66,base=f.H*0.82,vmax=3.5;
  for(var i=0;i<3;i++){var bx=x0+i*(bw+8),bh=Math.min(1,vals[i]/vmax)*maxH;
   ctx.fillStyle=cols[i];ctx.fillRect(bx,base-bh,bw,bh);
-  ctx.fillStyle="#3d4f55";ctx.font="700 10.5px -apple-system,sans-serif";ctx.textAlign="center";
+  ctx.fillStyle="#3d4f55";ctx.font="700 10.5px 'Noto Sans', Arial, sans-serif";ctx.textAlign="center";
   ctx.fillText(labs[i],bx+bw/2,base+13);
-  ctx.fillStyle=cols[i];ctx.font="700 11.5px ui-monospace,monospace";ctx.fillText(vals[i].toFixed(2)+"×",bx+bw/2,base-bh-5);}
+  ctx.fillStyle=cols[i];ctx.font="700 11.5px 'Noto Sans', Arial, sans-serif";ctx.fillText(vals[i].toFixed(2)+"×",bx+bw/2,base-bh-5);}
 }
 // Heat load toy: water balls flow through a pipe, warming from teal (cool) to
 // orange (warm); the readout is the heat carried, flow x 4.19 x warm-up.
@@ -2909,7 +2909,7 @@ function drawHeatToy(){
  ctx.fillStyle="#EDEAE0";ctx.fillRect(0,py-ph/2,f.W,ph);
  ctx.strokeStyle="#C7BFA9";ctx.lineWidth=2;ctx.strokeRect(0,py-ph/2,f.W,ph);
  // heat source band under the pipe
- ctx.fillStyle="#BF4E10";ctx.font="700 10px -apple-system,sans-serif";ctx.textAlign="center";
+ ctx.fillStyle="#BF4E10";ctx.font="700 10px 'Noto Sans', Arial, sans-serif";ctx.textAlign="center";
  var nh=Math.round(3+dt/2);
  for(var j=0;j<nh;j++){var hx=(j+0.5)/nh*f.W;
   ctx.strokeStyle="rgba(191,78,16,"+(0.25+dt/15*0.5).toFixed(2)+")";ctx.lineWidth=2;
@@ -2921,7 +2921,7 @@ function drawHeatToy(){
   var frac=b.x/f.W;if(frac<0)frac=0;if(frac>1)frac=1;var warm=frac*Math.min(1,dt/15);
   var rr=Math.round(29+(191-29)*warm),gg=Math.round(90+(78-90)*warm),bb=Math.round(120+(16-120)*warm);
   ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,6.2832);ctx.fillStyle="rgba("+rr+","+gg+","+bb+","+b.o.toFixed(3)+")";ctx.fill();}
- ctx.fillStyle="#3d4f55";ctx.font="700 10.5px -apple-system,sans-serif";
+ ctx.fillStyle="#3d4f55";ctx.font="700 10.5px 'Noto Sans', Arial, sans-serif";
  ctx.textAlign="left";ctx.fillText("cool in",4,py-ph/2-5);
  ctx.textAlign="right";ctx.fillText("warm out",f.W-4,py-ph/2-5);
 }
@@ -2969,7 +2969,7 @@ function drawBP(){
  var ctx=f.ctx;ctx.clearRect(0,0,f.W,f.H);
  var nm=gv("bp_mrpm_n"),Dm=readUnit("bp_md","length"),Dp=readUnit("bp_pd","length");
  if(!isFinite(nm)||!isFinite(Dm)||!isFinite(Dp)||nm<=0||Dm<=0||Dp<=0){
-  ctx.font="13px -apple-system,sans-serif";ctx.fillStyle="#8A959D";ctx.textAlign="center";
+  ctx.font="13px 'Noto Sans', Arial, sans-serif";ctx.fillStyle="#8A959D";ctx.textAlign="center";
   ctx.fillText("Fill in the boxes to see the drive",f.W/2,f.H/2);
   return;
  }
@@ -3001,10 +3001,10 @@ function drawBP(){
  BPA_M+=nm*0.00007;BPA_P+=np*0.00007;
  drawPulleyDisc(ctx,cx1,cy,rM,BPA_M,"#1D5A78");
  drawPulleyDisc(ctx,cx2,cy,rP,BPA_P,"#2E7D52");
- ctx.textAlign="center";ctx.font="700 11px -apple-system,sans-serif";
+ ctx.textAlign="center";ctx.font="700 11px 'Noto Sans', Arial, sans-serif";
  ctx.fillStyle="#1D5A78";ctx.fillText("Motor",cx1,cy+rM+16);
  ctx.fillStyle="#2E7D52";ctx.fillText("Pump",cx2,cy+rP+16);
- ctx.font="700 11px ui-monospace,monospace";ctx.fillStyle="#3d4f55";
+ ctx.font="700 11px 'Noto Sans', Arial, sans-serif";ctx.fillStyle="#3d4f55";
  ctx.fillText(fmtA(nm,0)+" rpm",cx1,cy-rM-8);
  ctx.fillText(fmtA(np,0)+" rpm",cx2,cy-rP-8);
 }
