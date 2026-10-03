@@ -78,7 +78,7 @@ label.f textarea{resize:vertical;min-height:70px;line-height:1.4}
 .doc-title{font-size:17pt;font-weight:700;text-align:center;margin:2mm 0 6mm;line-height:1.2}
 .hdr{display:grid;grid-template-columns:23mm 1fr 14mm 52mm;column-gap:2mm;row-gap:1.2mm;font-size:10pt;margin-bottom:3mm}
 .hdr .k{font-weight:700}
-.hdr .full{grid-column:2/-1}
+.hdr .wide{grid-column:2/-1;overflow-wrap:anywhere}
 .hdr.subj{border-top:1px solid #999;padding-top:3mm;grid-template-columns:23mm 1fr}
 .hdr .v{word-break:break-word}
 .revbox{border:1px solid #999;padding:2mm 3mm;font-size:9pt;margin-bottom:4mm;background:#fff6ef}
@@ -148,7 +148,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-03.7";
+var APP_BUILD="2026-10-03.8";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -491,15 +491,18 @@ function unitsFor(){
   var kv=function(k,v){return [el("div",{class:"k",text:k}),v];};
   U.push({e:el("div",{class:"doc-title",text:T(S.title),style:"white-space:pre-line"})});
   var h=el("div",{class:"hdr"});
-  h.appendChild(el("div",{class:"k",text:"ATTENTION"}));h.appendChild(el("div",{class:"v",text:": "+esc(S.attn)}));
-  h.appendChild(el("div",{class:"k",text:"EMAIL"}));h.appendChild(el("div",{class:"v",text:": "+esc(S.attnEmail)}));
-  h.appendChild(el("div",{class:"k",text:"COMPANY"}));h.appendChild(el("div",{class:"v",text:": "+esc(S.company)}));
-  h.appendChild(el("div",{class:"k",text:"PHONE"}));h.appendChild(el("div",{class:"v",text:": "+esc(S.phone)}));
-  h.appendChild(el("div",{class:"k",text:"FROM"}));h.appendChild(el("div",{class:"v",text:": "+P.name}));
-  h.appendChild(el("div",{class:"k",text:"DATE"}));h.appendChild(el("div",{class:"v",text:": "+fmtDate(S.date)}));
+  var row=function(k,v,k2,v2,wide){
+    h.appendChild(el("div",{class:"k",text:k}));
+    h.appendChild(el("div",{class:"v"+(wide?" wide":""),text:": "+v}));
+    if(!wide){h.appendChild(el("div",{class:"k",text:k2||""}));h.appendChild(el("div",{class:"v",text:k2?": "+v2:""}));}
+  };
+  row("ATTENTION",esc(S.attn),"PHONE",esc(S.phone));
+  row("EMAIL",esc(S.attnEmail),0,0,true);
+  row("COMPANY",esc(S.company),"DATE",fmtDate(S.date));
+  row("FROM",P.name,"","");
   if(S.cc||S.ccEmail){
-    h.appendChild(el("div",{class:"k",text:"CC"}));h.appendChild(el("div",{class:"v",text:": "+esc(S.cc)}));
-    h.appendChild(el("div",{class:"k",text:"EMAIL"}));h.appendChild(el("div",{class:"v",text:": "+esc(S.ccEmail)}));
+    row("CC",esc(S.cc),"","");
+    if(S.ccEmail)row("EMAIL",esc(S.ccEmail),0,0,true);
   }
   U.push({e:h});
   var sj=el("div",{class:"hdr subj"});
