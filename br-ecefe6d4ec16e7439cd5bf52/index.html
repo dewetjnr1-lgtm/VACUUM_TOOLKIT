@@ -154,7 +154,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-03.12";
+var APP_BUILD="2026-10-03.13";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -457,7 +457,8 @@ function blockCard(sec,b,bi){
     });
     body.appendChild(th);
   }
-  return el("div",{class:"blk"},[head,body]);
+  var kp=el("input",{type:"checkbox"});kp.checked=!!b.keep;kp.addEventListener("change",function(){b.keep=kp.checked;changed();});
+  return el("div",{class:"blk"},[head,body,el("label",{class:"chk",style:"margin-top:6px"},[kp," Keep together with the block below (never split across pages)"])]);
 }
 function addPhotos(b,files){
   var list=[].slice.call(files),n=0;
@@ -554,11 +555,13 @@ function unitsFor(){
   if(S.itemsCustom)S.items.forEach(function(x,i){if((x.text||"").trim()||(x.label||"").trim())it.appendChild(el("div",{},[el("b",{text:(x.label||"").trim()||"Item "+(i+2)}),"- "+T(x.text)]));});
   else S.sections.forEach(function(s,i){it.appendChild(el("div",{},[el("b",{text:"Item "+(i+2)}),"- "+T(s.title)]));});
   U.push({e:it});
-  S.itemsBlocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["items-b"+bi]=U.length;bu.forEach(function(u){U.push(u);});});
+  var GID=0,pk=false,gid=0;
+  S.itemsBlocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["items-b"+bi]=U.length;if(!pk)gid=++GID;if(b.keep||pk)bu.forEach(function(u){u.grp=gid;});pk=!!b.keep;bu.forEach(function(u){U.push(u);});});
   S.sections.forEach(function(s,si){
     FK["s"+si]=U.length;
     U.push({e:el("div",{class:"h1",text:(si+2)+". "+T(s.title)}),keep:true,brk:si===0||!!s.newPage});
-    s.blocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["s"+si+"-b"+bi]=U.length;bu.forEach(function(u){U.push(u);});});
+    pk=false;
+    s.blocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["s"+si+"-b"+bi]=U.length;if(!pk)gid=++GID;if(b.keep||pk)bu.forEach(function(u){u.grp=gid;});pk=!!b.keep;bu.forEach(function(u){U.push(u);});});
   });
   FK.hdr=0;
   Object.keys(FK).forEach(function(k){var u=U[FK[k]];if(u&&!u.e.dataset.focus)u.e.dataset.focus=k;});
@@ -629,19 +632,29 @@ function drawPages(){
   host.appendChild(cur.pg);pages.push(cur);
   var newPage=function(){cur=mkPage();host.appendChild(cur.pg);pages.push(cur);return cur;};
   var over=function(){return cur.body.scrollHeight>cur.body.clientHeight+1;};
-  var prevU=null;
+  var pu=[[]];   /* units on each page, so a group can move together */
   units.forEach(function(u){
-    if(u.brk&&cur.body.children.length)newPage();
+    if(u.brk&&cur.body.children.length){newPage();pu.push([]);}
     cur.body.appendChild(u.e);
+    var list=pu[pu.length-1];
     if(over()&&cur.body.children.length>1){
       cur.body.removeChild(u.e);
-      var carry=null;
-      if(prevU&&prevU.keep&&cur.body.lastChild===prevU.e){carry=prevU.e;cur.body.removeChild(carry);}
-      newPage();
-      if(carry)cur.body.appendChild(carry);
+      var moved=[],nx=u,i=list.length-1;
+      while(i>=0&&(list[i].keep||(list[i].grp&&list[i].grp===nx.grp))){moved.unshift(list[i]);nx=list[i];i--;}
+      if(moved.length>=list.length)moved=[];   /* the group fills the whole page: nothing to gain */
+      moved.forEach(function(m){cur.body.removeChild(m.e);});
+      list.length-=moved.length;
+      var old=cur,oldList=list;
+      newPage();pu.push([]);
+      moved.forEach(function(m){cur.body.appendChild(m.e);pu[pu.length-1].push(m);});
+      list=pu[pu.length-1];
       cur.body.appendChild(u.e);
+      if(moved.length&&over()){   /* group plus this block is taller than a page: leave the group where it was */
+        moved.forEach(function(m){old.body.appendChild(m.e);oldList.push(m);});
+        list.length=0;
+      }
     }
-    prevU=u;
+    list.push(u);
   });
   pages.forEach(function(p,i){p.pg.querySelector(".pn").textContent="Page "+(i+1)+" of "+pages.length;});
   fitScale();
