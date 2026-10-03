@@ -443,7 +443,8 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-letter .fb-val{color:#333;word-break:break-word;font-size:13px;font-weight:400;}
 .cj-fb-letter .fb-meta-rule{border:none;border-top:1px solid #B8C0C6;margin:8px 0 10px;height:0;}
 .cj-fb-letter .fb-refs{margin:0 0 14px;font-size:13px;}
-.cj-fb-letter .fb-body{white-space:pre-wrap;color:#333;margin:0 0 10px;font-size:9.5px;line-height:1.35;}
+.cj-fb-letter .fb-body{white-space:pre-wrap !important;color:#333;margin:0 0 10px;font-size:9.5px;line-height:1.35;}
+.cj-fb-letter .fb-sec-letter{overflow-wrap:anywhere;}
 .cj-fb-letter .fb-sec-letter{font-size:17px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:#E85D04;margin:16px 0 6px;padding-bottom:3px;border-bottom:2px solid #E85D04;}
 .cj-fb-letter .fb-pump-tag{font-size:12px;font-weight:800;color:#333;margin:14px 0 4px;}
 .cj-fb-letter .fb-pump-sub{font-size:10.5px;font-weight:800;color:#E85D04;text-transform:uppercase;letter-spacing:.02em;margin:8px 0 2px;}
@@ -478,6 +479,19 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-sec .cj-fb-sec-body{margin-top:10px;}
 .cj-fb-sec .cj-fb-sec-body[hidden]{display:none !important;}
 .cj-fb-secs-hint{font-size:12.5px;color:var(--soft);margin:4px 0 10px;}
+.cj-sec-picker{margin:8px 0 12px;border:1px solid var(--line);border-radius:10px;background:var(--elev);padding:0 0 2px;}
+.cj-sec-picker>summary{list-style:none;cursor:pointer;padding:12px 12px;font-weight:700;font-size:14px;min-height:44px;display:flex;align-items:center;gap:8px;-webkit-tap-highlight-color:transparent;}
+.cj-sec-picker>summary::-webkit-details-marker{display:none;}
+.cj-sec-picker>summary::before{content:"▸";display:inline-block;width:1em;color:var(--soft);transition:transform .15s ease;}
+.cj-sec-picker[open]>summary::before{transform:rotate(90deg);}
+.cj-sec-picker-body{padding:0 12px 12px;}
+.cj-sec-picker-grid{display:flex;flex-direction:column;gap:2px;}
+.cj-sec-picker-grid .chk{font-weight:500;}
+.cj-sec-picker-custom{margin-top:10px;padding-top:8px;border-top:1px solid var(--line);}
+.cj-sec-picker-custom .cj-custom-row{display:flex;align-items:center;gap:8px;margin:6px 0;}
+.cj-sec-picker-custom .cj-custom-row .ctrl{flex:1;min-width:0;}
+.cj-fb-sec.is-offjob{display:none !important;}
+
 .cj-relwrap{margin-top:10px;}
 .cj-ba-row{display:flex;align-items:center;gap:10px;margin:8px 0 6px;flex-wrap:wrap;}
 .cj-photo-row{display:flex;align-items:center;gap:16px;margin:8px 0 6px;flex-wrap:wrap;}
@@ -1465,10 +1479,11 @@ html[data-theme="light"] .ctrl input,html[data-theme="light"] .ctrl select,html[
 <p style="font-size:13px;color:var(--soft);margin:0 0 10px">Client feedback report — edit here. Preview updates as you type.</p>
 <p style="font-size:12.5px;color:var(--soft);margin:0 0 10px">Green light = live on Preview / PDF. Tag photos below with a Letter section so they land in the right place. Auto-saves on this device.</p>
 <h4 style="margin:14px 0 4px;font-size:14px;font-weight:800;color:var(--teal)">Sections in this report</h4>
-<p class="cj-fb-secs-hint">Green light = live on Preview + PDF. Arrow folds the section on this phone.</p>
+<p class="cj-fb-secs-hint">Green light = live on Preview + PDF. Arrow folds the section on this phone. Use the section picker after Method to add Scope, Findings, and the rest.</p>
 <div id="cj_fb_sections">
 <div class="cj-fb-sec vt-collapsible" data-tick="exec" id="cj_sec_fb_exec" data-vt-collapse="fb_exec" data-vt-live="exec"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Executive summary" onclick="vtCollapseToggle('cj_sec_fb_exec')">▾</button><span class="vt-collapse-title">Executive summary</span><span class="vt-collapse-hint" id="cj_hint_fb_exec" aria-hidden="true"></span><button type="button" class="vt-live-btn" id="cj_fb_live_exec" aria-label="Live on Preview" onclick="vtFbLiveToggle('exec',event)"><span class="vt-live-lab">on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_exec" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_exec"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_greeting" rows="4" placeholder="Executive summary / greeting"></textarea></div></div></div></div>
 <div class="cj-fb-sec vt-collapsible" data-tick="method" id="cj_sec_fb_method" data-vt-collapse="fb_method" data-vt-live="method"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Method" onclick="vtCollapseToggle('cj_sec_fb_method')">▾</button><span class="vt-collapse-title">Method</span><span class="vt-collapse-hint" id="cj_hint_fb_method" aria-hidden="true"></span><button type="button" class="vt-live-btn" id="cj_fb_live_method" aria-label="Live on Preview" onclick="vtFbLiveToggle('method',event)"><span class="vt-live-lab">on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_method" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_method"><div class="fld" style="padding-top:0"><div class="fh"><label>Service type(s)</label></div><div class="ctrl" id="cj_fb_method_types" style="display:flex;flex-direction:column;gap:2px"><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="flush" onchange="custFbMethodChanged()"> Chemical flush</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="perf" onchange="custFbMethodChanged()"> Performance / efficiency testing</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="internal" onchange="custFbMethodChanged()"> Internal inspection (fiberscope)</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="bearing" onchange="custFbMethodChanged()"> Bearing replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="gland" onchange="custFbMethodChanged()"> Gland packing replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="valve" onchange="custFbMethodChanged()"> Valve &amp; intercepting plate replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="belt" onchange="custFbMethodChanged()"> Drive pulley / V-belt replacement</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="rotable" onchange="custFbMethodChanged()"> Rotable spare pump preservation</label><label class="chk" style="font-weight:500"><input type="checkbox" class="cj-fb-method-cb" value="diag" onchange="custFbMethodChanged()"> Site inspection / diagnostics</label></div><p class="sub" style="margin:4px 0 0;font-size:12.5px">Tick all that apply — fills Heading &amp; Details below from the Busch capability statement. Edit freely after; re-ticking rebuilds Heading &amp; Details from scratch.</p><button type="button" class="clrbtn" style="margin-top:6px" onclick="custFbMethodClearAll()">Clear all / write my own</button></div><div class="fld"><div class="fh"><label>Heading</label></div><div class="ctrl"><input type="text" id="cj_fb_intro_head"></div></div><div class="fld"><div class="fh"><label>Details</label></div><div class="ctrl"><textarea id="cj_fb_intro_body" rows="5"></textarea></div></div><div id="cj_phhost_method" class="cj-phhost" data-phkey="method"></div></div></div>
+<details class="cj-sec-picker" id="cj_fb_sec_picker"><summary>Add sections to this report</summary><div class="cj-sec-picker-body"><p class="sub" style="margin:0 0 8px;font-size:12.5px">Tick a section to put it on this job (editor + Preview light appear below). Untick to hide it from the job and the letter — existing text and photos stay saved.</p><div class="cj-sec-picker-grid" id="cj_fb_sec_picker_grid"></div><div class="cj-sec-picker-custom" id="cj_fb_sec_picker_custom"></div></div></details>
 <div class="cj-fb-sec vt-collapsible" data-tick="scope" id="cj_sec_fb_scope" data-vt-collapse="fb_scope" data-vt-live="scope"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Scope" onclick="vtCollapseToggle('cj_sec_fb_scope')">▾</button><span class="vt-collapse-title">Scope</span><span class="vt-collapse-hint" id="cj_hint_fb_scope" aria-hidden="true"></span><button type="button" class="vt-live-btn" id="cj_fb_live_scope" aria-label="Live on Preview" onclick="vtFbLiveToggle('scope',event)"><span class="vt-live-lab">on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_scope" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_scope"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_scope" rows="3" placeholder="What was requested / scope"></textarea></div></div><div id="cj_phhost_scope" class="cj-phhost" data-phkey="scope"></div></div></div>
 <div class="cj-fb-sec vt-collapsible" data-tick="equipment" id="cj_sec_fb_equipment" data-vt-collapse="fb_equipment" data-vt-live="equipment"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Equipment" onclick="vtCollapseToggle('cj_sec_fb_equipment')">▾</button><span class="vt-collapse-title">Equipment</span><span class="vt-collapse-hint" id="cj_hint_fb_equipment" aria-hidden="true"></span><button type="button" class="vt-live-btn" id="cj_fb_live_equipment" aria-label="Live on Preview" onclick="vtFbLiveToggle('equipment',event)"><span class="vt-live-lab">on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_equipment" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_equipment"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_equipment" rows="3" placeholder="Pump tag, system, location"></textarea></div></div><div id="cj_phhost_equipment" class="cj-phhost" data-phkey="equipment"></div></div></div>
 <div class="cj-fb-sec vt-collapsible" data-tick="findings" id="cj_sec_fb_findings" data-vt-collapse="fb_findings" data-vt-live="findings"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Findings" onclick="vtCollapseToggle('cj_sec_fb_findings')">▾</button><span class="vt-collapse-title">Findings</span><span class="vt-collapse-hint" id="cj_hint_fb_findings" aria-hidden="true"></span><button type="button" class="vt-live-btn" id="cj_fb_live_findings" aria-label="Live on Preview" onclick="vtFbLiveToggle('findings',event)"><span class="vt-live-lab">on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_findings" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_findings"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_findings" rows="3" placeholder="As-found condition"></textarea></div></div><div id="cj_phhost_findings" class="cj-phhost" data-phkey="findings"></div></div></div>
@@ -1482,6 +1497,7 @@ html[data-theme="light"] .ctrl input,html[data-theme="light"] .ctrl select,html[
 <div class="cj-fb-sec vt-collapsible" data-tick="outstanding" id="cj_sec_fb_outstanding" data-vt-collapse="fb_outstanding" data-vt-live="outstanding"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Outstanding" onclick="vtCollapseToggle('cj_sec_fb_outstanding')">▾</button><span class="vt-collapse-title">Outstanding</span><span class="vt-collapse-hint" id="cj_hint_fb_outstanding" aria-hidden="true"></span><button type="button" class="vt-live-btn" id="cj_fb_live_outstanding" aria-label="Live on Preview" onclick="vtFbLiveToggle('outstanding',event)"><span class="vt-live-lab">on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_outstanding" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_outstanding" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_outstanding" rows="2" placeholder="Open items"></textarea></div></div><div id="cj_phhost_outstanding" class="cj-phhost" data-phkey="outstanding"></div></div></div>
 <div class="cj-fb-sec vt-collapsible" data-tick="nextVisit" id="cj_sec_fb_nextVisit" data-vt-collapse="fb_nextVisit" data-vt-live="nextVisit"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Next visit" onclick="vtCollapseToggle('cj_sec_fb_nextVisit')">▾</button><span class="vt-collapse-title">Next visit</span><span class="vt-collapse-hint" id="cj_hint_fb_nextVisit" aria-hidden="true"></span><button type="button" class="vt-live-btn" id="cj_fb_live_nextVisit" aria-label="Live on Preview" onclick="vtFbLiveToggle('nextVisit',event)"><span class="vt-live-lab">on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_nextVisit" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_nextVisit" hidden><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_next_visit" rows="2" placeholder="Suggested next visit / follow-up"></textarea></div></div><div id="cj_phhost_nextVisit" class="cj-phhost" data-phkey="nextVisit"></div></div></div>
 <div class="cj-fb-sec vt-collapsible" data-tick="closing" id="cj_sec_fb_closing" data-vt-collapse="fb_closing" data-vt-live="closing"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Closing" onclick="vtCollapseToggle('cj_sec_fb_closing')">▾</button><span class="vt-collapse-title">Closing</span><span class="vt-collapse-hint" id="cj_hint_fb_closing" aria-hidden="true"></span><button type="button" class="vt-live-btn" id="cj_fb_live_closing" aria-label="Live on Preview" onclick="vtFbLiveToggle('closing',event)"><span class="vt-live-lab">on Preview</span><span class="vt-live-dot" aria-hidden="true"></span></button></div><input type="checkbox" class="vt-tick-hidden" id="cj_fb_tick_closing" onchange="custFbTickChanged(this)" tabindex="-1" aria-hidden="true"><div class="cj-fb-sec-body vt-collapse-body" id="cj_fb_body_closing"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea id="cj_fb_closing" rows="3"></textarea></div></div></div></div>
+<div id="cj_fb_custom_host"></div>
 <div class="cj-fb-sec cj-fb-sec-signoff vt-collapsible" id="cj_sec_fb_signoff" data-vt-collapse="fb_signoff"><div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse Sign-off" onclick="vtCollapseToggle('cj_sec_fb_signoff')">▾</button><span class="vt-collapse-title">Sign-off <span style="font-weight:500;color:var(--soft);text-transform:none;letter-spacing:0">(always last)</span></span><span class="vt-collapse-hint" id="cj_hint_fb_signoff" aria-hidden="true"></span></div><div class="cj-fb-sec-body vt-collapse-body">
 <div class="fld"><label class="chk"><input type="checkbox" id="cj_fb_sign_chris" checked onchange="custSaveJob('auto')"> Include Chris de Wet sign-off</label></div>
 <div class="fld" style="margin-top:4px"><label class="chk"><input type="checkbox" id="cj_fb_sign_andre" checked onchange="custSaveJob('auto')"> Include André de Wet sign-off</label></div>
@@ -3687,9 +3703,13 @@ function lriSecBaOn(key){
  return !!(b&&b.ba);
 }
 function lriSecEnsureBlocks(key){
- if(!LRI_SEC_BLOCKS[key])LRI_SEC_BLOCKS[key]={ba:false,blocks:[]};
+ if(!LRI_SEC_BLOCKS[key])LRI_SEC_BLOCKS[key]={ba:false,label:"",blocks:[]};
+ if(LRI_SEC_BLOCKS[key].label===undefined)LRI_SEC_BLOCKS[key].label="";
  if(!Array.isArray(LRI_SEC_BLOCKS[key].blocks))LRI_SEC_BLOCKS[key].blocks=[];
  return LRI_SEC_BLOCKS[key];
+}
+function lriSecMainLabelChanged(key,val){
+ var st=lriSecEnsureBlocks(key);st.label=val;lriSave(true);
 }
 function lriNewRelBlock(){
  return {id:"b"+Date.now().toString(36)+Math.floor(Math.random()*1e4).toString(36),label:"",notes:"",ba:false,photos:[]};
@@ -3705,6 +3725,7 @@ function lriSecRenderPhotos(key){
  var arr=LRI_SEC_PHOTOS[key]||[];
  var baOn=!!st.ba;
  var h='<div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this check</label></div>';
+ h+='<div class="cj-rel-head" style="margin:0 0 6px"><div class="ctrl"><input type="text" placeholder="Block label — e.g. Packing, Lantern rings" value="'+pEsc(st.label||'')+'" oninput="lriSecMainLabelChanged(\''+key+'\',this.value)"></div></div>';
  h+='<div class="cj-ba-row"><label class="chk"><input type="checkbox" '+(baOn?'checked':'')+' onchange="lriSecToggleBa(\''+key+'\',this.checked)"> Before &amp; after</label></div>';
  if(!baOn){
   h+='<div id="lri_secphlist_'+key+'" class="lri-secph-list">';
@@ -3845,13 +3866,14 @@ function lriClearSecPhotosForPump(n){
  for(var key in LRI_SEC_PHOTOS)if(LRI_SEC_PHOTOS.hasOwnProperty(key)&&key.indexOf(prefix)===0)delete LRI_SEC_PHOTOS[key];
  for(var key2 in LRI_SEC_BLOCKS)if(LRI_SEC_BLOCKS.hasOwnProperty(key2)&&key2.indexOf(prefix)===0)delete LRI_SEC_BLOCKS[key2];
 }
-window.lriSecHandleFiles=lriSecHandleFiles;window.lriSecPhotoCaption=lriSecPhotoCaption;window.lriSecRemovePhoto=lriSecRemovePhoto;window.lriSecToggleBa=lriSecToggleBa;window.lriAddRelBlock=lriAddRelBlock;window.lriRemoveRelBlock=lriRemoveRelBlock;window.lriRelBlockField=lriRelBlockField;window.lriRelBlockBa=lriRelBlockBa;
+window.lriSecHandleFiles=lriSecHandleFiles;window.lriSecPhotoCaption=lriSecPhotoCaption;window.lriSecRemovePhoto=lriSecRemovePhoto;window.lriSecToggleBa=lriSecToggleBa;window.lriSecMainLabelChanged=lriSecMainLabelChanged;window.lriAddRelBlock=lriAddRelBlock;window.lriRemoveRelBlock=lriRemoveRelBlock;window.lriRelBlockField=lriRelBlockField;window.lriRelBlockBa=lriRelBlockBa;
 function lriRowHTML(n){
  var p="lri_r"+n+"_";
  function SB(id,opts,check){return lriSelBlock(id,opts,!!(check&&n>1));}
  return '<details class="card" id="lri_row'+n+'" open><summary>Pump '+n+' <span class="lri-sum-st open" data-lri-sum="'+n+'">Open</span></summary><div class="lripump-body">'+
  (n>1?'<button type="button" class="lri-sameprev" onclick="lriCopyPrevPump('+n+')">Same as previous pump<small>Copies filled checks from Pump '+(n-1)+'. Pump ID/tag is kept.</small></button>':'')+
  '<div class="fld"><div class="fh"><label>Pump ID / tag</label></div><div class="ctrl"><input type="text" id="'+p+'tag" placeholder="e.g. Hogging Vacuum Pump A"></div></div>'+
+ '<div class="fld"><div class="fh"><label>Work order (optional)</label></div><div class="ctrl"><input type="text" id="'+p+'wo" placeholder="Client work order for this pump"></div></div>'+
  '<div class="mgrid"><div class="mgf"><select class="mlab-select" id="'+p+'make_role" title="Choose what this name means before you type it"><option value="make">Manufacturer</option><option value="rebuilt">Repaired / rebuilt by</option></select><div class="ctrl"><input type="text" id="'+p+'make" placeholder="Name — leave blank if you\'d rather not name a competitor"></div></div><div class="mgf"><span class="mlab">Model</span><div class="ctrl"><input type="text" id="'+p+'model"></div></div></div>'+
  '<p style="font-size:12px;color:var(--soft);margin:2px 0 6px">Switch the dropdown above to &ldquo;Repaired / rebuilt by&rdquo; when the nameplate now shows who repaired the pump (e.g. Busch) rather than who originally built it &mdash; the report will print that label instead of &ldquo;Manufacturer&rdquo;. Leave the name blank if you\'d rather not name it at all.</p>'+
  '<div class="mgrid"><div class="mgf"><span class="mlab">Serial No.</span><div class="ctrl"><input type="text" id="'+p+'serial"></div></div><div class="mgf"><select class="mlab-select" id="'+p+'year_role" title="Choose what this year means before you type it"><option value="make">Year of manufacture</option><option value="rebuilt">Last repaired</option></select><div class="ctrl"><input type="number" id="'+p+'year" placeholder="year"></div></div></div>'+
@@ -3995,7 +4017,7 @@ var LRI_SEL_FIELDS=["seal_type","seal_cond","seal_sleeve","seal_adj","brg_type",
  "belt_cond","belt_tension","belt_align","belt_groove","belt_guard","cooler_system","cooler_cond","sep_lining","sep_bolts","condition","priority"];
 function lriRowFields(n){
  var p="lri_r"+n+"_";
- var f=[p+"tag",p+"make",p+"make_role",p+"model",p+"serial",p+"year",p+"year_role",p+"maxp_n",p+"maxp_u",
+ var f=[p+"tag",p+"wo",p+"make",p+"make_role",p+"model",p+"serial",p+"year",p+"year_role",p+"maxp_n",p+"maxp_u",
   p+"seal_type",p+"seal_cond",p+"seal_drip_before",p+"seal_drip_after",p+"seal_sleeve",p+"seal_adj",p+"seal_notes",
   p+"brg_type",p+"brg_cond",p+"brg_de_temp",p+"brg_nde_temp",p+"brg_notes",
   p+"bore_corr",p+"bore_cav",p+"bore_abr",p+"bore_notes",
@@ -4857,6 +4879,7 @@ function pbDrawPump(pb,n,normSec){
  // Major boundary only if <40% of page still free (avoid half-blank pages)
  pbMaybeBreakForPump(pb);
  pbSecHead(pb,"Pump: "+tag);
+ if(rv(p+"wo")){pbPairRow(pb,"Work order",rv(p+"wo"));pbGap(pb,4);}
  if(lriAny([p+"make",p+"model",p+"serial",p+"year",p+"maxp_n"])){
   var makeLabel=rv(p+"make_role")==="rebuilt"?"Repaired / rebuilt by":"Manufacturer";
   var yearLabel=rv(p+"year_role")==="rebuilt"?"Last repaired":"Year of manufacture";
@@ -5032,6 +5055,7 @@ function lriPumpBlocks(n){
  var tag=rv(p+"tag")||("Pump "+n);
  push("sub",tag);
  var idLines=[];
+ if(rv(p+"wo"))idLines.push("Work order: "+rv(p+"wo"));
  if(rv(p+"make")){idLines.push((rv(p+"make_role")==="rebuilt"?"Repaired / rebuilt by":"Manufacturer")+": "+rv(p+"make"));}
  if(rv(p+"model"))idLines.push("Model: "+rv(p+"model"));
  if(rv(p+"serial"))idLines.push("Serial No.: "+rv(p+"serial"));
@@ -6084,6 +6108,8 @@ function vtFbLiveToggle(key,ev){
  var liveBtn=document.getElementById("cj_fb_live_"+key);
  vtLiveBtnSync(liveBtn,next);
  vtLiveFlash(liveBtn);
+ if(typeof custFbApplyPickerVisibility==="function")custFbApplyPickerVisibility(pair.j.fbTicks);
+ if(typeof custFbRenderSecPicker==="function")custFbRenderSecPicker();
  custSaveJob("auto");
  vtCollapseHintsRefresh();
 }
@@ -6230,7 +6256,7 @@ function custNewJob(){
  try{nm=prompt("Name this job / visit (optional — leave blank to use the date and type):","")||"";}catch(err){nm="";}
  var today=new Date();
  var mo=today.getMonth()+1,da=today.getDate();var ds=today.getFullYear()+"-"+(mo<10?"0":"")+mo+"-"+(da<10?"0":"")+da;
- var job={id:custUid("job"),name:nm.trim(),date:ds,dateEnd:"",site:(c.sites&&c.sites[0])||"",type:"Belt-filter vac pumps",status:"draft",po:"",findings:"",photos:[],calcs:[]};
+ var job={id:custUid("job"),name:nm.trim(),date:ds,dateEnd:"",site:(c.sites&&c.sites[0])||"",type:"Belt-filter vac pumps",status:"draft",po:"",findings:"",photos:[],calcs:[],fbTicks:Object.assign({},CUST_FB_TICK_NEWJOB),fbCustomSecs:[]};
  if(!c.jobs)c.jobs=[];
  c.jobs.unshift(job);
  custPersist();
@@ -6267,7 +6293,8 @@ function custRenderJob(){
  if(j.fbParts===undefined)j.fbParts="";
  if(j.fbOutstanding===undefined)j.fbOutstanding="";
  if(j.fbNextVisit===undefined)j.fbNextVisit="";
- j.fbTicks=custFbNormalizeTicks(j.fbTicks);
+ if(!Array.isArray(j.fbCustomSecs))j.fbCustomSecs=[];
+ j.fbTicks=custFbEnsureContentTicks(j);
  if(!j.fbDate)j.fbDate=j.date||"";
  if(!j.fbFrom)j.fbFrom=CUST_FB_DEFAULTS.from||"";
  if(!j.fbYourRef)j.fbYourRef=j.site||"";
@@ -6276,6 +6303,7 @@ function custRenderJob(){
  set("cj_fb_email",j.fbEmail||"");
  set("cj_fb_contact_name",j.fbContactName);
  // From / Date / CC / subject / refs are edited on Customer → For the letter.
+ custFbMigrateMethodHead(j);
  set("cj_fb_greeting",j.fbGreeting);set("cj_fb_intro_head",j.fbIntroHead);set("cj_fb_intro_body",j.fbIntroBody);
  (function(){
   var mkeys=j.fbMethodKeys||[],boxes=document.querySelectorAll("#cj_fb_method_types .cj-fb-method-cb");
@@ -6343,6 +6371,36 @@ var CUST_METHOD_PRESETS={
  diag:{head:"Site and Vacuum Pump System Inspection / Diagnostics",
   body:"An on-site assessment of the vacuum pump and system was carried out, evaluating condition, performance and efficiency. Diagnostic tools and techniques were used to assess pump health, including measuring pressure, temperature and flow rates, and inspecting components for wear, in order to pinpoint any existing or potential problems and provide recommendations."}
 };
+// Join selected method-type headings as a normal English list (commas + "and"
+// before the last). Keeps each type's own wording — including an "&" inside a
+// single type name such as "Valve & Intercepting Plate Replacement".
+function custFbJoinMethodHeads(heads){
+ if(!heads||!heads.length)return "";
+ if(heads.length===1)return heads[0];
+ if(heads.length===2)return heads[0]+" and "+heads[1];
+ return heads.slice(0,-1).join(", ")+", and "+heads[heads.length-1];
+}
+function custFbMethodHeadsForKeys(keys){
+ var heads=[],i,pr;
+ for(i=0;i<(keys||[]).length;i++){
+  pr=CUST_METHOD_PRESETS[keys[i]];
+  if(pr&&pr.head)heads.push(pr.head);
+ }
+ return heads;
+}
+// If the stored Heading is exactly the old auto-joined " & " string for the
+// ticked methods, rewrite it to the comma-list form. Hand-edited headings
+// are left alone.
+function custFbMigrateMethodHead(j){
+ if(!j)return;
+ var keys=j.fbMethodKeys||[];
+ if(keys.length<2)return;
+ var heads=custFbMethodHeadsForKeys(keys);
+ if(heads.length<2)return;
+ var cur=(j.fbIntroHead||"").trim();
+ if(!cur)return;
+ if(cur===heads.join(" & ")) j.fbIntroHead=custFbJoinMethodHeads(heads);
+}
 // Rebuilds Heading & Details from whichever service-type boxes are ticked,
 // in the fixed order above (not tick order) — a single tick reads exactly
 // like the old one-at-a-time picker, several stack into labelled paragraphs.
@@ -6362,7 +6420,7 @@ function custFbMethodChanged(){
    heads.push(pr.head);
    bodies.push(pr.head+":\n"+pr.body);
   }
-  if(head)head.value=heads.join(" & ");
+  if(head)head.value=custFbJoinMethodHeads(heads);
   if(body)body.value=bodies.join("\n\n");
  }
  if(head&&typeof vtMarkFilled==="function")vtMarkFilled(head);
@@ -6377,8 +6435,14 @@ function custFbMethodClearAll(){
  if(body)body.value="";
  custSaveJob("auto");
 }
+// Legacy defaults: used when an existing job has no fbTicks yet, so older jobs keep
+// the sections they already showed. Brand-new jobs set fbTicks explicitly in custNewJob
+// (picker sections start unticked).
 var CUST_FB_TICK_DEFAULTS={exec:true,method:true,scope:true,equipment:true,findings:true,pumpInspection:true,results:true,work:true,recommendations:true,safety:false,parts:false,outstanding:false,nextVisit:false,closing:true};
+var CUST_FB_TICK_NEWJOB={exec:true,method:true,scope:false,equipment:false,findings:false,pumpInspection:false,results:false,work:false,recommendations:false,safety:false,parts:false,outstanding:false,nextVisit:false,closing:false};
 var CUST_FB_TICK_KEYS=["exec","method","scope","equipment","findings","pumpInspection","results","work","recommendations","safety","parts","outstanding","nextVisit","closing"];
+// Sections after Method that live in the picker dropdown (Method / Exec stay always listed).
+var CUST_FB_PICKER_KEYS=["scope","equipment","findings","pumpInspection","results","work","recommendations","safety","parts","outstanding","nextVisit","closing"];
 var CUST_FB_SEC_LABELS={exec:"Executive summary",method:"Method / chemistry",scope:"Scope of work",equipment:"Equipment / system",findings:"Findings / condition",pumpInspection:"Pump inspection details",results:"Results / status",work:"Work performed",recommendations:"Recommendations",safety:"Safety note",parts:"Parts / materials",outstanding:"Outstanding issues",nextVisit:"Next visit",closing:"Closing / contacts"};
 function custFbNormalizeTicks(t){
  var out={},k;
@@ -6388,6 +6452,142 @@ function custFbNormalizeTicks(t){
   else out[key]=!!CUST_FB_TICK_DEFAULTS[key];
  }
  return out;
+}
+function custFbSectionHasContent(j,key){
+ if(!j)return false;
+ var fieldMap={scope:"fbScope",equipment:"fbEquipment",findings:"fbFindings",results:"fbResults",work:"fbAdditional",recommendations:"fbRecommendations",safety:"fbSafety",parts:"fbParts",outstanding:"fbOutstanding",nextVisit:"fbNextVisit",closing:"fbClosing"};
+ var fk=fieldMap[key];
+ if(fk&&String(j[fk]||"").trim())return true;
+ if(key==="pumpInspection"){
+  try{if(typeof custJobHasLri==="function"&&custJobHasLri())return true;}catch(e){}
+ }
+ var photos=j.photos||[],i,gk=(key==="work")?"additional":key;
+ for(i=0;i<photos.length;i++)if((photos[i].group||"")===gk)return true;
+ if(j.secBlocks&&Array.isArray(j.secBlocks[gk])&&j.secBlocks[gk].length)return true;
+ if(j.secMainLabel&&String(j.secMainLabel[gk]||"").trim())return true;
+ return false;
+}
+// Existing jobs that already have text/photos in a picker section stay ticked so
+// content is not hidden just because a brand-new job starts unticked.
+function custFbEnsureContentTicks(j){
+ if(!j)return custFbNormalizeTicks(null);
+ j.fbTicks=custFbNormalizeTicks(j.fbTicks);
+ for(var i=0;i<CUST_FB_PICKER_KEYS.length;i++){
+  var key=CUST_FB_PICKER_KEYS[i];
+  if(!j.fbTicks[key]&&custFbSectionHasContent(j,key))j.fbTicks[key]=true;
+ }
+ return j.fbTicks;
+}
+function custFbApplyPickerVisibility(ticks){
+ ticks=custFbNormalizeTicks(ticks);
+ for(var i=0;i<CUST_FB_PICKER_KEYS.length;i++){
+  var key=CUST_FB_PICKER_KEYS[i];
+  var el=document.getElementById("cj_sec_fb_"+key);
+  if(el)el.classList.toggle("is-offjob",!ticks[key]);
+ }
+}
+function custFbRenderSecPicker(){
+ var grid=document.getElementById("cj_fb_sec_picker_grid");
+ var customHost=document.getElementById("cj_fb_sec_picker_custom");
+ if(!grid)return;
+ var pair=typeof custFindJob==="function"?custFindJob():null;
+ var ticks=pair?custFbNormalizeTicks(pair.j.fbTicks):custFbNormalizeTicks(null);
+ var h="",i,key;
+ for(i=0;i<CUST_FB_PICKER_KEYS.length;i++){
+  key=CUST_FB_PICKER_KEYS[i];
+  h+='<label class="chk"><input type="checkbox" data-fb-pick="'+key+'"'+(ticks[key]?" checked":"")+' onchange="custFbPickerChanged(this)"> '+(CUST_FB_SEC_LABELS[key]||key)+'</label>';
+ }
+ grid.innerHTML=h;
+ if(customHost){
+  var customs=(pair&&Array.isArray(pair.j.fbCustomSecs))?pair.j.fbCustomSecs:[];
+  var ch='<p class="sub" style="margin:0 0 6px;font-size:12.5px">Custom section — name it yourself for something the list does not cover.</p>';
+  for(i=0;i<customs.length;i++){
+   var cs=customs[i];
+   ch+='<div class="cj-custom-row"><label class="chk" style="flex:0 0 auto"><input type="checkbox" data-fb-custom-i="'+i+'"'+(cs.on!==false?" checked":"")+' onchange="custFbCustomTickChanged('+i+',this.checked)"></label>';
+   ch+='<div class="ctrl"><input type="text" class="cj-noauto" placeholder="Section name" value="'+custEsc(cs.title||"")+'" oninput="custFbCustomTitleChanged('+i+',this.value)"></div>';
+   ch+='<button type="button" class="clrbtn" onclick="custFbCustomRemove('+i+')" style="margin:0">Remove</button></div>';
+  }
+  ch+='<button type="button" class="clrbtn" onclick="custFbCustomAdd()" style="margin:6px 0 0">Add section</button>';
+  customHost.innerHTML=ch;
+ }
+}
+function custFbPickerChanged(el){
+ var pair=custFindJob();if(!pair||!el)return;
+ var key=el.getAttribute("data-fb-pick");
+ if(!key||CUST_FB_TICK_DEFAULTS[key]===undefined)return;
+ pair.j.fbTicks=custFbNormalizeTicks(pair.j.fbTicks);
+ pair.j.fbTicks[key]=!!el.checked;
+ var cb=document.getElementById("cj_fb_tick_"+key);
+ if(cb)cb.checked=!!el.checked;
+ var body=document.getElementById("cj_fb_body_"+key);
+ if(body)body.removeAttribute("hidden");
+ vtLiveBtnSync(document.getElementById("cj_fb_live_"+key),!!el.checked);
+ custFbApplyPickerVisibility(pair.j.fbTicks);
+ custSaveJob("auto");
+ try{vtCollapseHintsRefresh();}catch(e){}
+}
+function custFbEnsureCustomSecs(j){
+ if(!j)return [];
+ if(!Array.isArray(j.fbCustomSecs))j.fbCustomSecs=[];
+ return j.fbCustomSecs;
+}
+function custFbCustomAdd(){
+ var pair=custFindJob();if(!pair)return;
+ custFbEnsureCustomSecs(pair.j).push({id:"cs"+Date.now().toString(36)+Math.floor(Math.random()*1e3).toString(36),title:"",body:"",on:true});
+ custPersist();custFbRenderSecPicker();custFbRenderCustomSecs();cjRefreshLivePreview();
+}
+function custFbCustomRemove(i){
+ var pair=custFindJob();if(!pair)return;
+ var arr=custFbEnsureCustomSecs(pair.j);
+ if(i<0||i>=arr.length)return;
+ arr.splice(i,1);
+ custPersist();custFbRenderSecPicker();custFbRenderCustomSecs();cjRefreshLivePreview();
+}
+function custFbCustomTickChanged(i,on){
+ var pair=custFindJob();if(!pair)return;
+ var arr=custFbEnsureCustomSecs(pair.j);if(!arr[i])return;
+ arr[i].on=!!on;custPersist();custFbRenderCustomSecs();cjRefreshLivePreview();
+}
+function custFbCustomTitleChanged(i,val){
+ var pair=custFindJob();if(!pair)return;
+ var arr=custFbEnsureCustomSecs(pair.j);if(!arr[i])return;
+ arr[i].title=val;
+ if(typeof _custSecPhotoTimer!=="undefined"&&_custSecPhotoTimer)clearTimeout(_custSecPhotoTimer);
+ _custSecPhotoTimer=setTimeout(function(){custPersist();custFbRenderCustomSecs();cjRefreshLivePreview();},350);
+}
+function custFbCustomBodyChanged(i,val){
+ var pair=custFindJob();if(!pair)return;
+ var arr=custFbEnsureCustomSecs(pair.j);if(!arr[i])return;
+ arr[i].body=val;
+ if(typeof _custSecPhotoTimer!=="undefined"&&_custSecPhotoTimer)clearTimeout(_custSecPhotoTimer);
+ _custSecPhotoTimer=setTimeout(function(){custPersist();cjRefreshLivePreview();},350);
+}
+function custFbCustomPhotoKey(cs){return "custom_"+cs.id;}
+function custFbRenderCustomSecs(){
+ var host=document.getElementById("cj_fb_custom_host");
+ if(!host)return;
+ var pair=typeof custFindJob==="function"?custFindJob():null;
+ if(!pair){host.innerHTML="";return;}
+ var arr=custFbEnsureCustomSecs(pair.j),h="",i,cs,key,title;
+ for(i=0;i<arr.length;i++){
+  cs=arr[i];
+  if(cs.on===false)continue;
+  key=custFbCustomPhotoKey(cs);
+  title=(cs.title||"").trim()||"Custom section";
+  h+='<div class="cj-fb-sec vt-collapsible" id="cj_sec_fb_custom_'+cs.id+'" data-vt-collapse="fb_custom_'+cs.id+'">';
+  h+='<div class="vt-collapse-bar"><button type="button" class="vt-collapse-arrow" aria-label="Expand or collapse '+custEsc(title)+'" onclick="vtCollapseToggle(\'cj_sec_fb_custom_'+cs.id+'\')">▾</button>';
+  h+='<span class="vt-collapse-title">'+custEsc(title)+'</span><span class="vt-collapse-hint" aria-hidden="true"></span></div>';
+  h+='<div class="cj-fb-sec-body vt-collapse-body"><div class="fld" style="padding-top:0"><div class="ctrl"><textarea class="cj-noauto" rows="3" placeholder="Section details" oninput="custFbCustomBodyChanged('+i+',this.value)">'+custEsc(cs.body||"")+'</textarea></div></div>';
+  h+='<div id="cj_phhost_'+key+'" class="cj-phhost" data-phkey="'+key+'"></div></div></div>';
+ }
+ host.innerHTML=h;
+ for(i=0;i<arr.length;i++){
+  cs=arr[i];if(cs.on===false)continue;
+  key=custFbCustomPhotoKey(cs);
+  if(typeof CUST_REL_HOST_KEYS!=="undefined"&&CUST_REL_HOST_KEYS.indexOf(key)<0)CUST_REL_HOST_KEYS.push(key);
+  if(typeof CUST_SEC_PHOTO_KEYS!=="undefined"&&CUST_SEC_PHOTO_KEYS.indexOf(key)<0)CUST_SEC_PHOTO_KEYS.push(key);
+  if(typeof custSecRenderPhotos==="function")custSecRenderPhotos(key);
+ }
 }
 function custFbApplyTicksToUi(ticks){
  ticks=custFbNormalizeTicks(ticks);
@@ -6400,6 +6600,9 @@ function custFbApplyTicksToUi(ticks){
   if(body)body.removeAttribute("hidden");
  }
  vtSyncFbLiveButtons(ticks);
+ custFbApplyPickerVisibility(ticks);
+ custFbRenderSecPicker();
+ custFbRenderCustomSecs();
  // Optional sections default-collapsed when off (first paint only if no saved map).
  try{
   var scope=vtCollapseScopeKey();
@@ -6424,8 +6627,11 @@ function custFbTickChanged(el){
  var body=document.getElementById("cj_fb_body_"+key);
  if(body)body.removeAttribute("hidden");
  vtLiveBtnSync(document.getElementById("cj_fb_live_"+key),!!el.checked);
+ custFbApplyPickerVisibility(pair.j.fbTicks);
+ custFbRenderSecPicker();
  custSaveJob("auto");
 }
+
 function custFbGrabTicksFromUi(){
  var t={};
  for(var i=0;i<CUST_FB_TICK_KEYS.length;i++){
@@ -6695,9 +6901,22 @@ function custNewRelBlock(){
 function custEnsureSecMeta(j,key){
  if(!j.photoBa||typeof j.photoBa!=="object")j.photoBa={};
  if(j.photoBa[key]===undefined)j.photoBa[key]=false;
+ if(!j.secMainLabel||typeof j.secMainLabel!=="object")j.secMainLabel={};
+ if(j.secMainLabel[key]===undefined)j.secMainLabel[key]="";
  if(!j.secBlocks||typeof j.secBlocks!=="object")j.secBlocks={};
  if(!Array.isArray(j.secBlocks[key]))j.secBlocks[key]=[];
  return j;
+}
+function custFbMainPhotoLabel(j,key){
+ if(!j||!j.secMainLabel)return "";
+ return String(j.secMainLabel[key]||"").trim();
+}
+function custSecMainLabelChanged(key,val){
+ var pair=custFindJob();if(!pair)return;
+ custEnsureSecMeta(pair.j,key);
+ pair.j.secMainLabel[key]=val;
+ if(_custSecPhotoTimer)clearTimeout(_custSecPhotoTimer);
+ _custSecPhotoTimer=setTimeout(function(){custPersist();cjRefreshLivePreview();},350);
 }
 function custSecPhotoHTML(key){
  return '<div id="cj_phhost_'+key+'" class="cj-phhost" data-phkey="'+key+'"></div>';
@@ -6754,6 +6973,7 @@ function custSecRenderPhotos(key){
  var h="";
  if(!isJob){
   h+='<div class="fld" style="margin-top:8px"><div class="fh"><label>Photos for this section</label></div>';
+  h+='<div class="cj-rel-head" style="margin:0 0 6px"><div class="ctrl"><input type="text" class="cj-noauto" placeholder="Block label — e.g. Packing, Lantern rings" value="'+custEsc(j.secMainLabel[key]||"")+'" oninput="custSecMainLabelChanged(\''+key+'\',this.value)"></div></div>';
   if(!baOn){
    h+='<div class="cj-photo-row"><label class="chk" style="display:flex;align-items:center;gap:6px;width:auto;flex:0 0 auto"><input type="checkbox" onchange="custSecToggleBa(\''+key+'\',this.checked)"> Before &amp; after</label><input type="file" accept="image/*" multiple id="cj_secphinput_'+key+'" onchange="custSecHandleFiles(\''+key+'\',this.files,\'\')"></div>';
    h+='<div id="cj_secph_'+key+'" class="cj-secph-list">';
@@ -6872,7 +7092,7 @@ function custSecRemovePhotoAt(idx){
  cjRefreshLivePreview();
 }
 window.custSecHandleFiles=custSecHandleFiles;window.custSecPhotoCaption=custSecPhotoCaption;window.custSecRemovePhotoAt=custSecRemovePhotoAt;
-window.custSecToggleBa=custSecToggleBa;window.custAddRelBlock=custAddRelBlock;window.custRemoveRelBlock=custRemoveRelBlock;
+window.custSecMainLabelChanged=custSecMainLabelChanged;window.custSecToggleBa=custSecToggleBa;window.custAddRelBlock=custAddRelBlock;window.custRemoveRelBlock=custRemoveRelBlock;
 window.custRelBlockField=custRelBlockField;window.custRelBlockBa=custRelBlockBa;window.custRelBlockHandleFiles=custRelBlockHandleFiles;
 window.custRelBlockPhotoCap=custRelBlockPhotoCap;window.custRelBlockPhotoRemove=custRelBlockPhotoRemove;
 
@@ -7302,6 +7522,8 @@ function custFbResolve(j,c){
  o.date=custLetterPick(c&&c.letterDate, (j&&j.fbDate)||(j&&j.date)||"");
  o.buschRef=custLetterPick(c&&c.letterBuschRef, j&&j.fbBuschRef);
  o.yourRef=custLetterPick(c&&c.letterYourRef, (j&&j.fbYourRef)||(j&&j.site)||"");
+ // Client PO from the job (cj_po) — not Busch's own ref.
+ o.clientPo=((j&&j.po)||"").trim();
  o.subject=(custLetterPick(c&&c.letterSubject, j&&j.fbSubject)||CUST_FB_DEFAULTS.subject||"Vacuum pump chem-flush feedback report").trim();
  o.greeting=(j.fbGreeting!=null&&j.fbGreeting!=="")?j.fbGreeting:CUST_FB_DEFAULTS.greeting;
  o.introHead=(j.fbIntroHead!=null&&j.fbIntroHead!=="")?j.fbIntroHead:CUST_FB_DEFAULTS.introHead;
@@ -7383,6 +7605,13 @@ var CUST_FB_CHRIS_DEFAULTS={name:"Chris de Wet",role:"BDM West",phone:"+61 (0) 4
 
 function custFbLetterHas(v){return !!(v&&String(v).trim());}
 function custFbLetterLines(txt){return String(txt==null?"":txt).replace(/\r\n/g,"\n").split("\n");}
+// Preview body HTML: keep the same hard line breaks the PDF keeps (jsPDF
+// splitTextToSize preserves \n). Normalize CR/LF, escape, then <br> — never
+// flatten newlines to spaces.
+function custFbLetterBodyHtml(text){
+ var t=String(text==null?"":text).replace(/\r\n/g,"\n").replace(/\r/g,"\n");
+ return custFbLetterBodyHtml(t);
+}
 function custFbLetterAndreOn(j){
  var cb=document.getElementById("cj_fb_sign_andre");
  if(cb) return !!cb.checked;
@@ -7440,6 +7669,17 @@ function custFbLetterPlan(fb,grouped,j){
  addTextWithPhotos("parts",CUST_FB_LETTER_HEADINGS.parts,ticks.parts,fb.parts);
  addTextWithPhotos("outstanding",CUST_FB_LETTER_HEADINGS.outstanding,ticks.outstanding,fb.outstanding);
  addTextWithPhotos("nextVisit",CUST_FB_LETTER_HEADINGS.nextVisit,ticks.nextVisit,fb.nextVisit);
+ // Custom named sections (picker "Add section") — numbered like the presets.
+ if(j&&Array.isArray(j.fbCustomSecs)){
+  var ci,cs,ck,cIdxs;
+  for(ci=0;ci<j.fbCustomSecs.length;ci++){
+   cs=j.fbCustomSecs[ci];if(!cs||cs.on===false)continue;
+   ck="custom_"+cs.id;
+   cIdxs=idxsFor(ck);
+   if(custFbLetterHas(cs.body)||custFbLetterHas(cs.title)||cIdxs.length||hasBlocks(ck))
+    add(ck,(cs.title||"").trim()||"Custom section","text",{text:cs.body||"",idxs:cIdxs});
+  }
+ }
  if(ticks.closing){
   var closeTxt=custFbLetterHas(fb.closing)?fb.closing:(CUST_FB_DEFAULTS.closing||"");
   if(custFbLetterHas(closeTxt)) secs.push({kind:"closing",payload:closeTxt});
@@ -7595,6 +7835,7 @@ function custFbLetterMetaRows(fb,j){
  add(refs,"SUBJECT",fb.subject);
  add(refs,"BUSCH REF",fb.buschRef);
  add(refs,"YOUR REF",fb.yourRef);
+ add(refs,"CLIENT PO",fb.clientPo);
  return {left:left,right:right,refs:refs};
 }
 
@@ -7699,6 +7940,14 @@ function custFbRelBlocksFor(j,key){
   return false;
  });
 }
+function custFbLetterMainLabelHtml(j,key){
+ var lab=custFbMainPhotoLabel(j,key);
+ return lab?'<div class="fb-aspect">'+custEsc(lab)+'</div>':"";
+}
+function custFbLetterMainLabelPdf(L,j,key){
+ var lab=custFbMainPhotoLabel(j,key);
+ if(lab)custFbLetterSubHead(L,lab,true);
+}
 function custFbLetterBaPhotosHtml(photos,pack){
  var h="";
  if(pack.mode==="flat"){
@@ -7740,7 +7989,7 @@ function custFbLetterRelBlocksHtml(j,key){
  for(b=0;b<blocks.length;b++){
   blk=blocks[b];
   if((blk.label||"").trim())h+='<div class="fb-aspect">'+custEsc(blk.label.trim())+'</div>';
-  if((blk.notes||"").trim())h+='<div class="fb-body">'+custEsc(blk.notes).replace(/\n/g,"<br>")+'</div>';
+  if((blk.notes||"").trim())h+='<div class="fb-body">'+custFbLetterBodyHtml(blk.notes)+'</div>';
   h+=custFbLetterBlockPhotosHtml(blk);
  }
  return h;
@@ -7787,6 +8036,7 @@ function custFbLetterPumpSecHtml(key,normSec){
   if(forceBa||(before.length&&after.length))return custFbLetterBaGroupsHtml(pumpBaItems(before),pumpBaItems(after),pumpBaItems(other));
   return listHtml(list);
  }
+ if(st&&(st.label||"").trim())h+='<div class="fb-aspect">'+custEsc(String(st.label).trim())+'</div>';
  if(arr.length)h+=emitClassified(arr,baOn);
  if(st&&st.blocks){
   var b,blk,photos,raw;
@@ -7794,7 +8044,7 @@ function custFbLetterPumpSecHtml(key,normSec){
    blk=st.blocks[b];photos=blk.photos||[];
    if(!(blk.label||"").trim()&&!(blk.notes||"").trim()&&!photos.length)continue;
    if((blk.label||"").trim())h+='<div class="fb-aspect">'+custEsc(blk.label.trim())+'</div>';
-   if((blk.notes||"").trim())h+='<div class="fb-body">'+custEsc(blk.notes).replace(/\n/g,"<br>")+'</div>';
+   if((blk.notes||"").trim())h+='<div class="fb-body">'+custFbLetterBodyHtml(blk.notes)+'</div>';
    raw=photos.map(function(ph){return {src:ph.src,caption:ph.caption,side:ph.side||""};});
    h+=emitClassified(raw,!!blk.ba);
   }
@@ -7837,7 +8087,7 @@ function custFbLetterPumpsHtml(normSec){
    b=blocks[i];
    if(b.kind==="sub")h+='<div class="'+(i===0?"fb-pump-tag":"fb-pump-sub")+'">'+custEsc(b.text)+'</div>';
    else if(b.kind==="rows")h+=custFbLetterRowsHtml(b.text);
-   else if(b.kind==="text")h+='<div class="fb-body">'+custEsc(b.text).replace(/\n/g,"<br>")+'</div>';
+   else if(b.kind==="text")h+='<div class="fb-body">'+custFbLetterBodyHtml(b.text)+'</div>';
    else if(b.kind==="photos"){
     h+=custFbLetterPumpSecHtml(b.key,normSec);
    }
@@ -7890,12 +8140,13 @@ function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
  for(si=0;si<plan.length;si++){
   sec=plan[si];
   if(sec.kind==="greeting"||sec.kind==="closing"){
-   h+='<div class="fb-body">'+custEsc(sec.payload).replace(/\n/g,"<br>")+'</div>';
+   h+='<div class="fb-body">'+custFbLetterBodyHtml(sec.payload)+'</div>';
   }else if(sec.kind==="signoff"){
    h+=custFbLetterSignoffHtml(j);
   }else if(sec.kind==="text"){
    h+='<div class="fb-sec-letter">'+sec.num+'. '+custEsc(sec.title)+'</div>';
-   if(custFbLetterHas(sec.payload.text)) h+='<div class="fb-body">'+custEsc(sec.payload.text).replace(/\n/g,"<br>")+'</div>';
+   if(custFbLetterHas(sec.payload.text)) h+='<div class="fb-body">'+custFbLetterBodyHtml(sec.payload.text)+'</div>';
+   h+=custFbLetterMainLabelHtml(j,sec.key);
    h+=custFbLetterBaPhotosHtml(photos,custFbPhotosForSection(photos,sec.payload.idxs,sec.key,j));
    h+=custFbLetterRelBlocksHtml(j,sec.key);
   }else if(sec.kind==="recs"){
@@ -7905,10 +8156,12 @@ function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
     for(ii=0;ii<sec.payload.lines.length;ii++) h+='<li>'+custEsc(sec.payload.lines[ii])+'</li>';
     h+='</ol>';
    }
+   h+=custFbLetterMainLabelHtml(j,sec.key);
    h+=custFbLetterBaPhotosHtml(photos,custFbPhotosForSection(photos,sec.payload.idxs,sec.key,j));
    h+=custFbLetterRelBlocksHtml(j,sec.key);
   }else if(sec.kind==="photos"){
    h+='<div class="fb-sec-letter">'+sec.num+'. '+custEsc(sec.title)+'</div>';
+   h+=custFbLetterMainLabelHtml(j,sec.key);
    h+=custFbLetterBaPhotosHtml(photos,custFbPhotosForSection(photos,sec.payload,sec.key,j));
    h+=custFbLetterRelBlocksHtml(j,sec.key);
   }else if(sec.kind==="pumps"){
@@ -7922,6 +8175,7 @@ function custBuildFeedbackPreviewHtml(j,c,fb,photos,grouped){
     for(ii=0;ii<lines.length;ii++) h+='<li>'+custEsc(lines[ii].replace(/^[-•*]\s*/,""))+'</li>';
     h+='</ul>';
    }
+   h+=custFbLetterMainLabelHtml(j,"additional");
    h+=custFbLetterBaPhotosHtml(photos,custFbPhotosForSection(photos,sec.payload.idxs,"additional",j));
    h+=custFbLetterRelBlocksHtml(j,"additional");
   }
@@ -8033,6 +8287,7 @@ function custFbLetterPumpSecPdf(L,key,normSec){
   if(forceBa||(before.length&&after.length))custFbLetterDrawBaGroups(L,cellsOf(before),cellsOf(after),cellsOf(other));
   else drawPseudo(list,"");
  }
+ if(st&&(st.label||"").trim())custFbLetterSubHead(L,String(st.label).trim(),true);
  drawClassified(arr,baOn);
  if(st&&st.blocks){
   var b,blk,photos;
@@ -8360,6 +8615,7 @@ function custExportFeedbackPDF(skipUngroupedWarn){
    }else if(sec.kind==="text"){
     custFbLetterSecHead(L,sec.num,sec.title);
     if(custFbLetterHas(sec.payload.text))custFbLetterBodyText(L,sec.payload.text,{gapAfter:3});
+    custFbLetterMainLabelPdf(L,j,sec.key);
     custFbLetterPhotosBa(L,photos,norm,sec.payload.idxs,sec.key,j);
     custFbLetterRelBlocksPdf(L,j,sec.key);
    }else if(sec.kind==="recs"){
@@ -8368,10 +8624,12 @@ function custExportFeedbackPDF(skipUngroupedWarn){
      for(li=0;li<sec.payload.lines.length;li++) custFbLetterBodyText(L,(li+1)+". "+sec.payload.lines[li],{gapAfter:1.5});
      L.y+=2;
     }
+    custFbLetterMainLabelPdf(L,j,sec.key);
     custFbLetterPhotosBa(L,photos,norm,sec.payload.idxs,sec.key,j);
     custFbLetterRelBlocksPdf(L,j,sec.key);
    }else if(sec.kind==="photos"){
     custFbLetterSecHead(L,sec.num,sec.title);
+    custFbLetterMainLabelPdf(L,j,sec.key);
     custFbLetterPhotosBa(L,photos,norm,sec.payload,sec.key,j);
     custFbLetterRelBlocksPdf(L,j,sec.key);
    }else if(sec.kind==="pumps"){
@@ -8384,6 +8642,7 @@ function custExportFeedbackPDF(skipUngroupedWarn){
      for(li=0;li<lines.length;li++) custFbLetterBodyText(L,"•  "+lines[li].replace(/^[-•*]\s*/,""),{gapAfter:1.2});
      L.y+=2;
     }
+    custFbLetterMainLabelPdf(L,j,"additional");
     custFbLetterPhotosBa(L,photos,norm,sec.payload.idxs,"additional",j);
     custFbLetterRelBlocksPdf(L,j,"additional");
    }
@@ -8433,7 +8692,7 @@ function custConfirmFeedbackPDF(){
 }
 
 
-window.custExportFeedbackPDF=custExportFeedbackPDF;window.custPreviewFeedbackLetter=custPreviewFeedbackLetter;window.custCloseFeedbackPreview=custCloseFeedbackPreview;window.custConfirmFeedbackPDF=custConfirmFeedbackPDF;window.custFbTickChanged=custFbTickChanged;
+window.custExportFeedbackPDF=custExportFeedbackPDF;window.custPreviewFeedbackLetter=custPreviewFeedbackLetter;window.custCloseFeedbackPreview=custCloseFeedbackPreview;window.custConfirmFeedbackPDF=custConfirmFeedbackPDF;window.custFbTickChanged=custFbTickChanged;window.custFbPickerChanged=custFbPickerChanged;window.custFbCustomAdd=custFbCustomAdd;window.custFbCustomRemove=custFbCustomRemove;window.custFbCustomTickChanged=custFbCustomTickChanged;window.custFbCustomTitleChanged=custFbCustomTitleChanged;window.custFbCustomBodyChanged=custFbCustomBodyChanged;
 try{custLoad();}catch(err){CUST_DB={version:1,customers:[custSeedRoyHill()]};}
 window.custOpen=custOpen;window.custOpenJob=custOpenJob;window.custNewJob=custNewJob;
 window.custSaveView=custSaveView;window.custSaveJob=custSaveJob;window.custScheduleAutoSave=custScheduleAutoSave;window.custClearLogo=custClearLogo;
