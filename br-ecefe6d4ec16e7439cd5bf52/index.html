@@ -85,7 +85,7 @@ label.f textarea{resize:vertical;min-height:70px;line-height:1.4}
 .p{margin:0 0 3mm;white-space:pre-wrap;overflow-wrap:break-word}
 .h1{font-size:12.5pt;font-weight:700;text-transform:uppercase;margin:4mm 0 3mm;padding-bottom:1mm;border-bottom:1.5px solid var(--orange);break-after:avoid}
 .items{margin:0 0 4mm}
-.items div{display:grid;grid-template-columns:20mm 1fr;margin-bottom:1.2mm}
+.items div{display:grid;grid-template-columns:24mm 1fr;margin-bottom:1.2mm}
 .items b{font-weight:700}
 ul.bl{margin:0 0 3mm;padding-left:6mm}
 ul.bl li{margin-bottom:1mm;white-space:pre-wrap}
@@ -148,7 +148,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-03.6";
+var APP_BUILD="2026-10-03.7";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -232,7 +232,7 @@ function newReport(key,from){
   return {v:1,template:key,from:from||"andre",signers:[from||"andre"],
     ref:"",rev:"0",revNote:"",date:todayISO(),
     title:T.title,attn:"",company:"",attnEmail:"",phone:"",cc:"",ccEmail:"",
-    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections()};
+    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),itemsCustom:false,items:[],itemsBlocks:[]};
 }
 function todayISO(){var d=new Date();return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());}
 function p2(n){return (n<10?"0":"")+n;}
@@ -324,6 +324,7 @@ function renderEditor(){
     field("Opening paragraph(s)  —  tip: replace [SITE] with the site name",S,"intro",{area:true,rows:7,full:true})
   ]);
   host.appendChild(el("div",{class:"card"},[el("h3",{text:"Report header"}),g]));
+  host.appendChild(itemsCard());
   /* sections */
   S.sections.forEach(function(sec,si){host.appendChild(sectionCard(sec,si));});
   host.appendChild(el("div",{class:"adds"},[
@@ -334,6 +335,46 @@ function renderEditor(){
   host.scrollTop=keep;
 }
 function mv(arr,i,d){var j=i+d;if(j<0||j>=arr.length)return;var t=arr[i];arr[i]=arr[j];arr[j]=t;}
+function addBar(sec){
+  var add=function(label,mk){return el("button",{class:"btn sm ghost",text:label,onclick:function(){sec.blocks.push(mk());renderEditor();changed();}});};
+  return el("div",{class:"adds"},[
+    add("+ Photos",function(){return {t:"photos",cols:2,items:[]};}),
+    add("+ Text",function(){return {t:"text",text:""};}),
+    add("+ Bullet list",function(){return {t:"bullets",text:""};}),
+    add("+ Details table",function(){return {t:"kv",rows:[["",""]]};}),
+    add("+ Vibration table",function(){return {t:"vib",de:["","","",""],nde:["","","",""],note:VIB_NOTE};})
+  ]);
+}
+function itemsCard(){
+  var cb=el("input",{type:"checkbox"});cb.checked=!!S.itemsCustom;
+  cb.addEventListener("change",function(){
+    S.itemsCustom=cb.checked;
+    if(S.itemsCustom&&!S.items.length)S.items=S.sections.map(function(s){return {label:"",text:s.title};});
+    renderEditor();changed();
+  });
+  var c=el("div",{class:"card sec"},[el("h3",{text:"1. Items of discussion"}),
+    el("label",{class:"chk"},[cb," Write my own list (otherwise it is built from the section titles below)"])]);
+  if(S.itemsCustom){
+    c.appendChild(el("p",{class:"hint",text:"Leave the label blank for automatic numbering (Item 2, Item 3 ...), or type your own, e.g. 'Items 2-7'."}));
+    S.items.forEach(function(it,i){
+      var l=el("input",{type:"text",placeholder:"Item "+(i+2)}),t=el("input",{type:"text",placeholder:"Description"});
+      l.value=it.label||"";t.value=it.text||"";
+      l.addEventListener("input",function(){it.label=l.value;changed();});t.addEventListener("input",function(){it.text=t.value;changed();});
+      c.appendChild(el("div",{class:"row2",style:"grid-template-columns:90px 1fr auto auto auto"},[l,t,
+        el("button",{class:"btn sm ghost",text:"▲",onclick:function(){mv(S.items,i,-1);renderEditor();changed();}}),
+        el("button",{class:"btn sm ghost",text:"▼",onclick:function(){mv(S.items,i,1);renderEditor();changed();}}),
+        el("button",{class:"btn sm del",text:"✕",onclick:function(){S.items.splice(i,1);renderEditor();changed();}})]));
+    });
+    c.appendChild(el("div",{class:"adds"},[
+      el("button",{class:"btn sm pri",text:"+ Add item",onclick:function(){S.items.push({label:"",text:""});renderEditor();changed();}}),
+      el("button",{class:"btn sm ghost",text:"Reset from section titles",onclick:function(){if(confirm("Replace your list with the current section titles?")){S.items=S.sections.map(function(s){return {label:"",text:s.title};});renderEditor();changed();}}})]));
+  }
+  var holder={blocks:S.itemsBlocks};
+  S.itemsBlocks.forEach(function(b,bi){c.appendChild(blockCard(holder,b,bi));});
+  c.appendChild(addBar(holder));
+  return c;
+}
+
 function sectionCard(sec,si){
   var title=el("input",{type:"text"});title.value=sec.title;
   title.addEventListener("input",function(){sec.title=title.value;changed();});
@@ -349,14 +390,7 @@ function sectionCard(sec,si){
     el("label",{class:"chk"},[np," Start this section on a new page"])
   ]);
   sec.blocks.forEach(function(b,bi){c.appendChild(blockCard(sec,b,bi));});
-  var add=function(label,mk){return el("button",{class:"btn sm ghost",text:label,onclick:function(){sec.blocks.push(mk());renderEditor();changed();}});};
-  c.appendChild(el("div",{class:"adds"},[
-    add("+ Text",function(){return {t:"text",text:""};}),
-    add("+ Bullet list",function(){return {t:"bullets",text:""};}),
-    add("+ Details table",function(){return {t:"kv",rows:[["",""]]};}),
-    add("+ Vibration table",function(){return {t:"vib",de:["","","",""],nde:["","","",""],note:VIB_NOTE};}),
-    add("+ Photos",function(){return {t:"photos",cols:2,items:[]};})
-  ]));
+  c.appendChild(addBar(sec));
   return c;
 }
 var BNAME={text:"Text",bullets:"Bullet list (one per line)",kv:"Details table",vib:"Vibration results",photos:"Photos"};
@@ -479,8 +513,10 @@ function unitsFor(){
   S.intro.split(/\n{2,}/).forEach(function(t){if(t.trim())U.push({e:el("p",{class:"p",text:T(t.trim())})});});
   U.push({e:el("div",{class:"h1",text:"1. ITEMS OF DISCUSSION"}),keep:true});
   var it=el("div",{class:"items"});
-  S.sections.forEach(function(s,i){it.appendChild(el("div",{},[el("b",{text:"Item "+(i+2)}),"- "+T(s.title)]));});
+  if(S.itemsCustom)S.items.forEach(function(x,i){if((x.text||"").trim()||(x.label||"").trim())it.appendChild(el("div",{},[el("b",{text:(x.label||"").trim()||"Item "+(i+2)}),"- "+T(x.text)]));});
+  else S.sections.forEach(function(s,i){it.appendChild(el("div",{},[el("b",{text:"Item "+(i+2)}),"- "+T(s.title)]));});
   U.push({e:it});
+  S.itemsBlocks.forEach(function(b){blockUnits(b).forEach(function(u){U.push(u);});});
   S.sections.forEach(function(s,si){
     U.push({e:el("div",{class:"h1",text:(si+2)+". "+T(s.title)}),keep:true,brk:si===0||!!s.newPage});
     s.blocks.forEach(function(b){blockUnits(b).forEach(function(u){U.push(u);});});
