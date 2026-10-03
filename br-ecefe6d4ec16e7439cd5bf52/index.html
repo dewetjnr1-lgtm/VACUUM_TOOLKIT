@@ -46,6 +46,9 @@ label.f textarea{resize:vertical;min-height:70px;line-height:1.4}
 .sec{border-left:4px solid var(--orange)}
 .sec .hd{display:flex;gap:6px;align-items:center;margin-bottom:8px}
 .sec .hd input{flex:1;font-weight:700;padding:6px 8px;border:1px solid #bfc5ca;border-radius:5px}
+.grp{border:2px dashed var(--orange);background:#fff4ec;border-radius:8px;padding:6px 8px 2px;margin:10px 0}
+.grp .gtag{font-size:11px;font-weight:700;color:#c44600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
+.grp .blk{background:#fff;margin:6px 0}
 .blk{border:1px solid var(--line);border-radius:6px;padding:8px;margin:8px 0;background:#fafbfb}
 .blk .bh{display:flex;gap:6px;align-items:center;margin-bottom:6px;font-size:12px;color:var(--mute);text-transform:uppercase}
 .blk .bh span{flex:1}
@@ -156,7 +159,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-03.14";
+var APP_BUILD="2026-10-03.15";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -378,7 +381,7 @@ function itemsCard(){
       el("button",{class:"btn sm ghost",text:"Reset from section titles",onclick:function(){if(confirm("Replace your list with the current section titles?")){S.items=S.sections.map(function(s){return {label:"",text:s.title};});renderEditor();changed();}}})]));
   }
   var holder={blocks:S.itemsBlocks};
-  S.itemsBlocks.forEach(function(b,bi){var bc=blockCard(holder,b,bi);bc.dataset.focus="items-b"+bi;c.appendChild(bc);});
+  renderBlocks(c,holder,"items-b");
   c.appendChild(addBar(holder));
   return c;
 }
@@ -397,7 +400,7 @@ function sectionCard(sec,si){
     ]),
     el("label",{class:"chk"},[np," Start this section on a new page"])
   ]);
-  sec.blocks.forEach(function(b,bi){var bc=blockCard(sec,b,bi);bc.dataset.focus="s"+si+"-b"+bi;c.appendChild(bc);});
+  renderBlocks(c,sec,"s"+si+"-b");
   c.appendChild(addBar(sec));
   return c;
 }
@@ -410,6 +413,21 @@ function effKeep(list,i){
   if((b.t==="text"||b.t==="bullets")&&n.t==="photos")return true;
   return false;
 }
+/* draw the blocks of a section, wrapping blocks that are kept together in one visible frame */
+function renderBlocks(c,holder,keyPrefix){
+  var list=holder.blocks,i=0;
+  while(i<list.length){
+    var j=i;while(j<list.length-1&&effKeep(list,j))j++;
+    var frame=null;
+    if(j>i){frame=el("div",{class:"grp"},[el("div",{class:"gtag",text:"🔗 Kept together on one page  ·  "+(j-i+1)+" blocks"})]);c.appendChild(frame);}
+    for(var k=i;k<=j;k++){
+      var bc=blockCard(holder,list[k],k);bc.dataset.focus=keyPrefix+k;
+      (frame||c).appendChild(bc);
+    }
+    i=j+1;
+  }
+}
+
 function blockCard(sec,b,bi){
   var head=el("div",{class:"bh"},[el("span",{text:BNAME[b.t]}),
     el("button",{class:"btn sm ghost",text:"▲",onclick:function(){mv(sec.blocks,bi,-1);renderEditor();changed();}}),
@@ -467,8 +485,8 @@ function blockCard(sec,b,bi){
     });
     body.appendChild(th);
   }
-  var kp=el("input",{type:"checkbox"});kp.checked=effKeep(sec.blocks,bi);kp.addEventListener("change",function(){b.keep=kp.checked;changed();});
-  return el("div",{class:"blk"},[head,body,el("label",{class:"chk",style:"margin-top:6px"},[kp," Keep together with the block below (never split across pages)"])]);
+  var kp=el("input",{type:"checkbox"});kp.checked=effKeep(sec.blocks,bi);kp.addEventListener("change",function(){b.keep=kp.checked;renderEditor();changed();});
+  return el("div",{class:"blk"},[head,body,el("label",{class:"chk",style:"margin-top:6px"},[kp," Keep together with the block below (stays on one page)"])]);
 }
 function addPhotos(b,files){
   var list=[].slice.call(files),n=0;
