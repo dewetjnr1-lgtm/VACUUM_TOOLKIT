@@ -456,18 +456,20 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-fb-letter .fb-pump-table tr:last-child td{border-bottom:none;}
 .cj-fb-letter .fb-pt-lab{font-weight:700;color:#B5480A;width:38%;white-space:nowrap;}
 .cj-fb-letter .fb-pt-val{color:#333;}
-.cj-fb-letter .fb-photos-letter{display:grid;grid-template-columns:1fr 1fr;gap:calc(4 * 0.5556cqw);margin:0 0 12px;align-items:start;}
+.cj-fb-letter .fb-photos-letter{display:flex;flex-wrap:wrap;align-items:flex-start;gap:calc(4 * 0.5556cqw);margin:0 0 12px;}
+.cj-fb-letter .fb-photos-letter>.fb-ph-letter{flex:0 0 auto;max-width:100%;}
 .cj-fb-letter .fb-ph-letter{border:none;border-radius:0;overflow:visible;background:transparent;display:flex;flex-direction:column;gap:6px;}
-.cj-fb-letter .fb-ph-frame{border:1.5px solid #E85D04;border-radius:2px;background:#f4f4f4;overflow:hidden;line-height:0;display:inline-flex;align-self:center;max-width:100%;}
-.cj-fb-letter .fb-ph-frame img{display:block;width:auto;height:auto;max-width:100%;max-height:calc(var(--ph-mm, 62) * 0.5556cqw);object-fit:contain;object-position:center;border:none;background:transparent;}
-.cj-fb-letter .fb-ph-letter.full{grid-column:1 / -1;}
+.cj-fb-letter .fb-ph-frame{border:1.5px solid #E85D04;border-radius:2px;background:#f4f4f4;overflow:hidden;line-height:0;display:inline-flex;align-self:center;max-width:100cqw;}
+.cj-fb-letter .fb-ph-frame img{display:block;width:auto;height:auto;max-width:100cqw;max-height:calc(var(--ph-mm, 62) * 0.5556cqw);object-fit:contain;object-position:center;border:none;background:transparent;}
+.cj-fb-letter .fb-ph-letter.full{flex:1 0 100%;}
 .cj-fb-letter .fb-ph-letter.full .fb-ph-frame{align-self:flex-start;}
 .cj-fb-letter .fb-ph-letter.full .fb-ph-frame img{max-height:calc(var(--ph-mm, 110) * 0.5556cqw);}
 .cj-fb-letter .fb-ph-letter .cap{padding:0 2px;font-size:10.5px;color:#333;border:none;background:transparent;margin:0;line-height:1.3;}
 .cj-fb-letter .fb-pump-side{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:calc(4 * 0.5556cqw);align-items:start;margin:0 0 10px;}
 .cj-fb-letter .fb-pump-side-text .fb-body{margin:0;}
 .cj-fb-letter .fb-pump-side-photo .fb-ph-letter{margin:0 0 8px;}
-.cj-fb-letter .fb-pump-side-photo .fb-ph-frame{align-self:flex-start;}
+.cj-fb-letter .fb-pump-side-photo .fb-ph-frame{align-self:flex-start;max-width:100%;}
+.cj-fb-letter .fb-pump-side-photo .fb-ph-frame img{max-width:100%;}
 .cj-fb-letter .fb-note{font-size:10px;color:#667788;margin:0 0 10px;}
 .cj-fb-letter .fb-ol,.cj-fb-letter .fb-ul{margin:0 0 10px;padding:0 0 0 1.25em;color:#333;font-size:9.5px;line-height:1.35;}
 .cj-fb-letter .fb-ol li,.cj-fb-letter .fb-ul li{margin:0 0 4px;}
@@ -517,11 +519,12 @@ body.cj-fb-preview-open{overflow:hidden !important;}
 .cj-phblock-title{font-size:12.5px;font-weight:750;margin:0 0 4px;color:var(--ink);}
 .cj-fb-letter .fb-aspect{font-size:11.5px;font-weight:800;color:#333;margin:10px 0 4px;}
 .cj-fb-letter .fb-ba-side{font-size:10.5px;font-weight:800;color:#E85D04;text-transform:uppercase;letter-spacing:.03em;margin:8px 0 4px;}
-.cj-fb-letter .fb-ba-pair{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:calc(4 * 0.5556cqw);margin:0 0 12px;align-items:start;page-break-inside:avoid;break-inside:avoid;}
+.cj-fb-letter .fb-ba-pair{display:flex;flex-wrap:wrap;align-items:flex-start;gap:calc(4 * 0.5556cqw);margin:0 0 12px;page-break-inside:avoid;break-inside:avoid;}
+.cj-fb-letter .fb-ba-pair>.fb-ba-cell{flex:0 0 auto;max-width:100%;}
 .cj-fb-letter .fb-ba-pair .fb-ba-side{margin:0 0 4px;}
-.cj-fb-letter .fb-ba-pair .fb-ph-letter{min-width:0;}
+
 @media print{
-.cj-fb-letter .fb-ba-pair{display:grid !important;grid-template-columns:minmax(0,1fr) minmax(0,1fr) !important;}
+.cj-fb-letter .fb-ba-pair{display:flex !important;flex-wrap:wrap !important;}
 }
 .lri-relwrap{margin-top:8px;}
 
@@ -7949,9 +7952,10 @@ function custFbBaRole(ph){
  var m=/^(before|after)\b/.exec(cap);
  return m?m[1]:"";
 }
-// Photo size is millimetres of max height on the A4 letter (not the text-size
-// controls). 62 / 110 match the old half-column and full-width caps, so a photo
-// with no stored size prints as it does today. Preview uses the same mm via cqw.
+// Photo size is millimetres of height on the A4 letter (not the text-size
+// controls). Blank stays 62 mm (half and before/after) or 110 mm (full-width).
+// Width follows aspect. Shrink only to the letter content width, not a half column.
+// Preview uses the same mm via cqw (100cqw = 180 mm).
 var CUST_FB_PHOTO_MM_HALF=62, CUST_FB_PHOTO_MM_FULL=110, CUST_FB_PHOTO_MM_MIN=20, CUST_FB_PHOTO_MM_MAX=160;
 function custFbPhotoMm(ph, full){
  var d=full?CUST_FB_PHOTO_MM_FULL:CUST_FB_PHOTO_MM_HALF;
@@ -7962,6 +7966,12 @@ function custFbPhotoMm(ph, full){
  if(n<CUST_FB_PHOTO_MM_MIN)n=CUST_FB_PHOTO_MM_MIN;
  if(n>CUST_FB_PHOTO_MM_MAX)n=CUST_FB_PHOTO_MM_MAX;
  return n;
+}
+function custFbPhotoDrawMm(pxW,pxH,mm,maxW){
+ var w=Math.max(1,pxW||1), h=Math.max(1,pxH||1), dh=+mm, dw=dh*w/h;
+ if(!(maxW>0)||!isFinite(dw)||!(dw>0)) return {w:Math.max(1,maxW||1),h:dh>0?dh:1};
+ if(dw>maxW){var s=maxW/dw; dw=maxW; dh*=s;}
+ return {w:dw,h:dh};
 }
 function custFbPhStyle(ph, full){
  return ' style="--ph-mm:'+custFbPhotoMm(ph, !!full)+'"';
@@ -8008,34 +8018,49 @@ function custFbLetterBaGroupsHtml(before,after,other){
  return h;
 }
 function custFbLetterDrawBaPair(L,b,a){
- var halfW=(L.contentW-4)/2,capFs=8,capLh=3.2,labH=4.2;
+ var capFs=8,capLh=3.2,labH=4.2,gap=4;
  function prep(cell){
-  L.doc.setFont("helvetica","normal");L.doc.setFontSize(capFs);
-  var capLines=L.doc.splitTextToSize(cell.cap,halfW-2);
   var maxH=cell.maxMm||CUST_FB_PHOTO_MM_HALF;
-  var scale=Math.min(halfW/Math.max(1,cell.w),maxH/Math.max(1,cell.h));
-  return {capLines:capLines,w:cell.w*scale,h:cell.h*scale};
+  var dim=custFbPhotoDrawMm(cell.w,cell.h,maxH,L.contentW);
+  L.doc.setFont("helvetica","normal");L.doc.setFontSize(capFs);
+  var capLines=L.doc.splitTextToSize(cell.cap,Math.max(10,dim.w-1));
+  if(typeof capLines==="string")capLines=[capLines];
+  return {capLines:capLines,w:dim.w,h:dim.h};
  }
  var pb=prep(b),pa=prep(a);
- var capH=Math.max(pb.capLines.length,pa.capLines.length)*capLh+2;
- var imgBlock=Math.max(pb.h,pa.h);
- var need=labH+imgBlock+capH+6;
- custFbLetterEnsure(L,Math.min(need,40));
- if(L.y+need>L.bottom)custFbLetterNewPage(L);
- function paint(cell,meta,x,title){
+ function paint(cell,meta,x,y,title){
   L.doc.setFont("helvetica","bold");L.doc.setFontSize(9);
   L.doc.setTextColor(L.orange[0],L.orange[1],L.orange[2]);
-  L.doc.text(title,x,L.y+3.2);
-  var iy=L.y+labH,fmt;
+  L.doc.text(title,x,y+3.2);
+  var iy=y+labH,fmt;
   try{fmt=/^data:image\/jpe?g/i.test(cell.src)?"JPEG":"PNG";L.doc.addImage(cell.src,fmt,x,iy,meta.w,meta.h);}catch(err){}
   L.doc.setDrawColor(L.orange[0],L.orange[1],L.orange[2]);L.doc.setLineWidth(0.4);L.doc.rect(x,iy,meta.w,meta.h);
   L.doc.setFont("helvetica","normal");L.doc.setFontSize(capFs);
   L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);
   L.doc.text(meta.capLines,x+1,iy+meta.h+2.2+capLh);
  }
- paint(b,pb,L.m,"Before");
- paint(a,pa,L.m+halfW+4,"After");
- L.y+=labH+imgBlock+capH+7;
+ var side=pb.w+gap+pa.w<=L.contentW+0.05;
+ if(side){
+  var capH=Math.max(pb.capLines.length,pa.capLines.length)*capLh+2;
+  var imgBlock=Math.max(pb.h,pa.h);
+  var need=labH+imgBlock+capH+6;
+  custFbLetterEnsure(L,Math.min(need,40));
+  if(L.y+need>L.bottom)custFbLetterNewPage(L);
+  paint(b,pb,L.m,L.y,"Before");
+  paint(a,pa,L.m+pb.w+gap,L.y,"After");
+  L.y+=labH+imgBlock+capH+7;
+ }else{
+  function one(cell,meta,title){
+   var capH=meta.capLines.length*capLh+2, imgBlock=meta.h;
+   var need=labH+imgBlock+capH+6;
+   custFbLetterEnsure(L,Math.min(need,40));
+   if(L.y+need>L.bottom)custFbLetterNewPage(L);
+   paint(cell,meta,L.m,L.y,title);
+   L.y+=labH+imgBlock+capH+7;
+  }
+  one(b,pb,"Before");
+  one(a,pa,"After");
+ }
  L.doc.setTextColor(0,0,0);
 }
 function custFbLetterDrawLoose(L,list,title){
@@ -8682,31 +8707,39 @@ function custFbLetterRelBlocksPdf(L,j,key){
   function drawList(list,title){
    if(!list.length)return;
    if(title)custFbLetterSubHead(L,title,false);
-   var halfW=(L.contentW-4)/2,maxHhalf=62,row=[],ci;
+   var maxHhalf=62,row=[],ci,gap=4;
    function flush(){
     if(!row.length)return;
-    var caps=[],ws=[],heights=[],capFs=8,capLh=3.2,cellW=halfW,maxH=maxHhalf,capLines,scale,need,x,iy,fmt;
+    var sized=[],capFs=8,capLh=3.2,capLines,dim,mm;
     for(ci=0;ci<row.length;ci++){
+     mm=row[ci].maxMm||maxHhalf;
+     dim=custFbPhotoDrawMm(row[ci].w,row[ci].h,mm,L.contentW);
      L.doc.setFont("helvetica","normal");L.doc.setFontSize(capFs);
-     capLines=L.doc.splitTextToSize(row[ci].cap,cellW-2);caps.push(capLines);
-     scale=Math.min(cellW/Math.max(1,row[ci].w),(row[ci].maxMm||maxH)/Math.max(1,row[ci].h));
-     ws.push(row[ci].w*scale);heights.push(row[ci].h*scale);
+     capLines=L.doc.splitTextToSize(row[ci].cap,Math.max(10,dim.w-1));
+     if(typeof capLines==="string")capLines=[capLines];
+     sized.push({src:row[ci].src,w:dim.w,h:dim.h,caps:capLines});
     }
-    var capH=Math.max(caps[0].length,(caps[1]?caps[1].length:0))*capLh+2;
-    var imgBlock=Math.max.apply(null,heights);
-    need=capH+imgBlock+6;
-    custFbLetterEnsure(L,Math.min(need,40));
-    if(L.y+need>L.bottom)custFbLetterNewPage(L);
-    for(ci=0;ci<row.length;ci++){
-     x=L.m+ci*(cellW+4);
-     iy=L.y;
-     try{fmt=/^data:image\/jpe?g/i.test(row[ci].src)?"JPEG":"PNG";L.doc.addImage(row[ci].src,fmt,x,iy,ws[ci],heights[ci]);}catch(err){}
-     L.doc.setDrawColor(L.orange[0],L.orange[1],L.orange[2]);L.doc.setLineWidth(0.4);L.doc.rect(x,iy,ws[ci],heights[ci]);
-     var cy=iy+heights[ci]+2.2;
-     L.doc.setFont("helvetica","normal");L.doc.setFontSize(capFs);
-     L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);L.doc.text(caps[ci],x+1,cy+capLh);
+    var bands=[sized];
+    if(sized.length===2&&sized[0].w+gap+sized[1].w>L.contentW)bands=[[sized[0]],[sized[1]]];
+    var bi,band,capH,imgBlock,need,x,iy,fmt;
+    for(bi=0;bi<bands.length;bi++){
+     band=bands[bi]; capH=0; imgBlock=0;
+     for(ci=0;ci<band.length;ci++){capH=Math.max(capH,band[ci].caps.length*capLh+2);imgBlock=Math.max(imgBlock,band[ci].h);}
+     need=capH+imgBlock+6;
+     custFbLetterEnsure(L,Math.min(need,40));
+     if(L.y+need>L.bottom)custFbLetterNewPage(L);
+     x=L.m;
+     for(ci=0;ci<band.length;ci++){
+      iy=L.y;
+      try{fmt=/^data:image\/jpe?g/i.test(band[ci].src)?"JPEG":"PNG";L.doc.addImage(band[ci].src,fmt,x,iy,band[ci].w,band[ci].h);}catch(err){}
+      L.doc.setDrawColor(L.orange[0],L.orange[1],L.orange[2]);L.doc.setLineWidth(0.4);L.doc.rect(x,iy,band[ci].w,band[ci].h);
+      L.doc.setFont("helvetica","normal");L.doc.setFontSize(capFs);
+      L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);L.doc.text(band[ci].caps,x+1,iy+band[ci].h+2.2+capLh);
+      x+=band[ci].w+gap;
+     }
+     L.y+=imgBlock+capH+7;
     }
-    L.y+=imgBlock+capH+7;row=[];
+    row=[];
    }
    for(i=0;i<list.length;i++){
     ph=list[i];
@@ -8736,41 +8769,44 @@ function custFbLetterRelBlocksPdf(L,j,key){
  }
 }
 function custFbLetterPhotos(L,photos,norm,idxs){
- var halfW=(L.contentW-4)/2, maxHhalf=62, maxHfull=110, capFs=8, capLh=3.2, row=[], rowFull=false, i;
+ var maxHhalf=62, maxHfull=110, capFs=8, capLh=3.2, gap=4, row=[], rowFull=false, i;
  function flush(){
   if(!row.length) return;
-  var cellW=rowFull?L.contentW:halfW;
-  var maxH=rowFull?maxHfull:maxHhalf;
-  var caps=[], ws=[], heights=[], ci, capLines, scale, need, x, cell, fmt, iy;
+  var sized=[], ci, cell, capLines, dim, mm, maxH=rowFull?maxHfull:maxHhalf;
   for(ci=0;ci<row.length;ci++){
    cell=row[ci];
+   mm=cell.maxMm||maxH;
+   dim=custFbPhotoDrawMm(cell.w,cell.h,mm,L.contentW);
    L.doc.setFont("helvetica","normal"); L.doc.setFontSize(capFs);
-   capLines=L.doc.splitTextToSize(cell.cap,cellW-2);
-   caps.push(capLines);
-   scale=Math.min(cellW/Math.max(1,cell.w), (cell.maxMm||maxH)/Math.max(1,cell.h));
-   ws.push(cell.w*scale);
-   heights.push(cell.h*scale);
+   capLines=L.doc.splitTextToSize(cell.cap,Math.max(10,dim.w-1));
+   if(typeof capLines==="string")capLines=[capLines];
+   sized.push({cell:cell,w:dim.w,h:dim.h,caps:capLines});
   }
-  var capH=Math.max(caps[0].length,(caps[1]?caps[1].length:0))*capLh+2;
-  var imgBlock=Math.max.apply(null,heights);
-  need=capH+imgBlock+6;
-  custFbLetterEnsure(L,Math.min(need,40));
-  if(L.y+need>L.bottom) custFbLetterNewPage(L);
-  for(ci=0;ci<row.length;ci++){
-   cell=row[ci]; x=L.m+ci*(cellW+4);
-   iy=L.y;
-   try{
-    fmt=/^data:image\/jpe?g/i.test(cell.src)?"JPEG":"PNG";
-    L.doc.addImage(cell.src,fmt,x,iy,ws[ci],heights[ci]);
-   }catch(err){}
-   L.doc.setDrawColor(L.orange[0],L.orange[1],L.orange[2]); L.doc.setLineWidth(0.4);
-   L.doc.rect(x,iy,ws[ci],heights[ci]);
-   var cy=iy+heights[ci]+2.2;
-   L.doc.setFont("helvetica","normal"); L.doc.setFontSize(capFs);
-   L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);
-   L.doc.text(caps[ci],x+1,cy+capLh);
+  var bands=[sized];
+  if(!rowFull&&sized.length===2&&sized[0].w+gap+sized[1].w>L.contentW) bands=[[sized[0]],[sized[1]]];
+  var bi, band, capH, imgBlock, need, x, fmt, iy;
+  for(bi=0;bi<bands.length;bi++){
+   band=bands[bi]; capH=0; imgBlock=0;
+   for(ci=0;ci<band.length;ci++){capH=Math.max(capH,band[ci].caps.length*capLh+2); imgBlock=Math.max(imgBlock,band[ci].h);}
+   need=capH+imgBlock+6;
+   custFbLetterEnsure(L,Math.min(need,40));
+   if(L.y+need>L.bottom) custFbLetterNewPage(L);
+   x=L.m;
+   for(ci=0;ci<band.length;ci++){
+    cell=band[ci].cell; iy=L.y;
+    try{
+     fmt=/^data:image\/jpe?g/i.test(cell.src)?"JPEG":"PNG";
+     L.doc.addImage(cell.src,fmt,x,iy,band[ci].w,band[ci].h);
+    }catch(err){}
+    L.doc.setDrawColor(L.orange[0],L.orange[1],L.orange[2]); L.doc.setLineWidth(0.4);
+    L.doc.rect(x,iy,band[ci].w,band[ci].h);
+    L.doc.setFont("helvetica","normal"); L.doc.setFontSize(capFs);
+    L.doc.setTextColor(L.body[0],L.body[1],L.body[2]);
+    L.doc.text(band[ci].caps,x+1,iy+band[ci].h+2.2+capLh);
+    x+=band[ci].w+gap;
+   }
+   L.y+=imgBlock+capH+7;
   }
-  L.y+=imgBlock+capH+7;
   row=[]; rowFull=false;
  }
  for(i=0;i<idxs.length;i++){
@@ -9365,7 +9401,7 @@ vtThemeApply(vtThemeGet());vtCollapseRestore();custFbApplySizeVars();
 // installed app window (laptop) / home-screen app (phone) can keep an old copy
 // open far longer, so a published fix can look like "nothing changed".
 // VT_BUILD must be bumped on every change to this file (see CLAUDE.md).
-var VT_BUILD="2026-10-03.3";
+var VT_BUILD="2026-10-03.4";
 (function vtAutoUpdate(){
  if(location.protocol!=="http:"&&location.protocol!=="https:")return;
  var url=location.href.split("#")[0],bar=null,busy=false;
