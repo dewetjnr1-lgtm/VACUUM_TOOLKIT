@@ -148,7 +148,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-03.8";
+var APP_BUILD="2026-10-03.9";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -430,16 +430,21 @@ function blockCard(sec,b,bi){
     var fi=el("input",{type:"file",accept:"image/*",multiple:"multiple",hidden:"hidden"});
     fi.addEventListener("change",function(){addPhotos(b,fi.files);});
     var allb=el("button",{class:"btn sm ghost",text:"Make all the same size",onclick:function(){var h=b.items.length?(b.items[0].h||DEFH):DEFH;b.items.forEach(function(x){x.h=h;});renderEditor();changed();}});
-    body.appendChild(el("p",{class:"hint",text:"Photos sit side by side (e.g. before / after) when they fit. Use the size slider on each photo, or tick 'On its own row' for a single large photo. 'Per row' is the most that will sit together."}));
+    body.appendChild(el("p",{class:"hint",text:"Photos sit side by side (e.g. before / after) when they fit. Type a height in mm for each photo, slide it left or right, or tick 'On its own row' for a single large photo. 'Per row' is the most that will sit together."}));
     body.appendChild(el("div",{class:"adds"},[cs,allb,el("button",{class:"btn sm pri",text:"+ Add photos",onclick:function(){fi.click();}}),fi]));
     var th=el("div",{class:"thumbs",style:"margin-top:8px"});
     b.items.forEach(function(it,ii){
       var cap=el("textarea",{placeholder:"Caption / comment"});cap.value=it.cap||"";cap.addEventListener("input",function(){it.cap=cap.value;changed();});
-      var sz=el("input",{type:"range",min:"30",max:"150",step:"2",style:"width:100%"});sz.value=it.h||DEFH;
-      var szl=el("div",{class:"hint",text:"Size: "+sz.value+" mm tall"});
-      sz.addEventListener("input",function(){it.h=+sz.value;szl.textContent="Size: "+sz.value+" mm tall";changed();});
+      var sz=el("input",{type:"number",min:"10",max:"250",step:"1",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});sz.value=it.h||DEFH;
+      sz.addEventListener("input",function(){var v=parseFloat(sz.value);if(v>=10&&v<=250){it.h=v;changed();}});
+      var szl=el("div",{class:"hint",style:"display:flex;align-items:center;gap:6px"},["Height",sz,"mm"]);
+      var px=el("input",{type:"range",min:"-100",max:"100",step:"1",style:"width:100%"});px.value=it.x||0;
+      var pxl=el("div",{class:"hint",text:"Move: "+px.value+" mm  (◀ left · right ▶)"});
+      px.addEventListener("input",function(){it.x=+px.value;pxl.textContent="Move: "+px.value+" mm  (◀ left · right ▶)";changed();});
+      var ctr=el("button",{class:"btn sm ghost",text:"Centre",onclick:function(){var d=DIMS[it.src]||[4,3];it.x=Math.round((178-d[0]/d[1]*(it.h||DEFH))/2);renderEditor();changed();}});
+      var rst=el("button",{class:"btn sm ghost",text:"Reset",onclick:function(){it.x=0;renderEditor();changed();}});
       var al=el("input",{type:"checkbox"});al.checked=!!it.alone;al.addEventListener("change",function(){it.alone=al.checked;changed();});
-      th.appendChild(el("div",{class:"th"},[el("img",{src:it.src}),cap,szl,sz,el("label",{class:"chk",style:"margin:2px 0"},[al," On its own row"]),el("div",{class:"tb"},[
+      th.appendChild(el("div",{class:"th"},[el("img",{src:it.src}),cap,szl,pxl,px,el("div",{class:"tb"},[ctr,rst]),el("label",{class:"chk",style:"margin:2px 0"},[al," On its own row"]),el("div",{class:"tb"},[
         el("button",{class:"btn sm ghost",text:"◀",onclick:function(){mv(b.items,ii,-1);renderEditor();changed();}}),
         el("button",{class:"btn sm ghost",text:"▶",onclick:function(){mv(b.items,ii,1);renderEditor();changed();}}),
         el("button",{class:"btn sm del",text:"✕",onclick:function(){b.items.splice(ii,1);renderEditor();changed();}})])]));
@@ -559,10 +564,12 @@ function blockUnits(b){
     });
     if(cur.length)rows.push(cur);
     rows.forEach(function(r){
-      var row=el("div",{class:"phrow"});
+      var row=el("div",{class:"phrow"}),L=0;
       r.forEach(function(it){
         var s=size(it),im=el("img",{src:it.src});im.style.width=s[0]+"px";im.style.height=s[1]+"px";
-        row.appendChild(el("div",{class:"ph",style:"width:"+s[0]+"px"},[im,it.cap?el("div",{class:"cap",text:T(it.cap)}):null]));
+        /* moved left/right by the typed position, kept inside the page margins */
+        var sh=Math.max(-L,Math.min(W-L-s[0],(it.x||0)*MM));L+=s[0]+G;
+        row.appendChild(el("div",{class:"ph",style:"width:"+s[0]+"px;position:relative;left:"+Math.round(sh)+"px"},[im,it.cap?el("div",{class:"cap",text:T(it.cap)}):null]));
       });
       out.push({e:row});
     });
