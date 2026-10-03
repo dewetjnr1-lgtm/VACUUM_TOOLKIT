@@ -148,7 +148,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-03.5";
+var APP_BUILD="2026-10-03.6";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -315,7 +315,7 @@ function renderEditor(){
     field("Busch ref (e.g. 26NBQ083)",S,"ref"),
     field("Revision",S,"rev"),
     field("Attention (name)",S,"attn"),field("Attention email",S,"attnEmail"),
-    field("Company / site",S,"company"),field("Phone",S,"phone"),
+    field("Company / site  (fills [SITE] everywhere)",S,"company"),field("Phone",S,"phone"),
     field("CC (name, optional)",S,"cc"),field("CC email",S,"ccEmail"),
     field("Date",S,"date",{type:"date"}),field("Your ref / PO",S,"yourRef"),
     field("Subject",S,"subject",{full:true}),
@@ -436,6 +436,8 @@ function addPhotos(b,files){
 
 /* ---------- the paper ---------- */
 function esc(s){return String(s==null?"":s);}
+/* [SITE] anywhere in the report text is replaced live with the Company / site field */
+function T(s){return esc(s).split("[SITE]").join((S.company||"").trim()||"[SITE]");}
 function mkPage(){
   var pg=el("div",{class:"page"});
   var ref=(S.ref||"")+(S.ref?" Rev."+S.rev:"");
@@ -453,7 +455,7 @@ function mkPage(){
 function unitsFor(){
   var U=[],P=PEOPLE[S.from]||PEOPLE.andre;
   var kv=function(k,v){return [el("div",{class:"k",text:k}),v];};
-  U.push({e:el("div",{class:"doc-title",text:S.title,style:"white-space:pre-line"})});
+  U.push({e:el("div",{class:"doc-title",text:T(S.title),style:"white-space:pre-line"})});
   var h=el("div",{class:"hdr"});
   h.appendChild(el("div",{class:"k",text:"ATTENTION"}));h.appendChild(el("div",{class:"v",text:": "+esc(S.attn)}));
   h.appendChild(el("div",{class:"k",text:"EMAIL"}));h.appendChild(el("div",{class:"v",text:": "+esc(S.attnEmail)}));
@@ -467,20 +469,20 @@ function unitsFor(){
   }
   U.push({e:h});
   var sj=el("div",{class:"hdr subj"});
-  sj.appendChild(el("div",{class:"k",text:"SUBJECT"}));sj.appendChild(el("div",{class:"v",text:": "+esc(S.subject)}));
+  sj.appendChild(el("div",{class:"k",text:"SUBJECT"}));sj.appendChild(el("div",{class:"v",text:": "+T(S.subject)}));
   sj.appendChild(el("div",{class:"k",text:"BUSCH REF"}));sj.appendChild(el("div",{class:"v",text:": "+esc(S.ref)+" Rev."+esc(S.rev)}));
   sj.appendChild(el("div",{class:"k",text:"YOUR REF"}));sj.appendChild(el("div",{class:"v",text:": "+esc(S.yourRef)}));
   U.push({e:sj});
   if(+S.rev>0&&S.revNote)U.push({e:el("div",{class:"revbox"},[el("b",{text:"Revision "+S.rev+": "}),S.revNote])});
   var first=(S.attn||"").trim().split(/\s+/)[0];
   U.push({e:el("p",{class:"p",text:(S.greeting||"Good day")+(first?" "+first:"")})});
-  S.intro.split(/\n{2,}/).forEach(function(t){if(t.trim())U.push({e:el("p",{class:"p",text:t.trim()})});});
+  S.intro.split(/\n{2,}/).forEach(function(t){if(t.trim())U.push({e:el("p",{class:"p",text:T(t.trim())})});});
   U.push({e:el("div",{class:"h1",text:"1. ITEMS OF DISCUSSION"}),keep:true});
   var it=el("div",{class:"items"});
-  S.sections.forEach(function(s,i){it.appendChild(el("div",{},[el("b",{text:"Item "+(i+2)}),"- "+s.title]));});
+  S.sections.forEach(function(s,i){it.appendChild(el("div",{},[el("b",{text:"Item "+(i+2)}),"- "+T(s.title)]));});
   U.push({e:it});
   S.sections.forEach(function(s,si){
-    U.push({e:el("div",{class:"h1",text:(si+2)+". "+s.title}),keep:true,brk:si===0||!!s.newPage});
+    U.push({e:el("div",{class:"h1",text:(si+2)+". "+T(s.title)}),keep:true,brk:si===0||!!s.newPage});
     s.blocks.forEach(function(b){blockUnits(b).forEach(function(u){U.push(u);});});
   });
   /* sign-off */
@@ -493,20 +495,20 @@ function unitsFor(){
 function blockUnits(b){
   var out=[];
   if(b.t==="text"){
-    (b.text||"").split(/\n{2,}/).forEach(function(t){if(t.trim()!=="")out.push({e:el("p",{class:"p",text:t.replace(/^\n+|\n+$/g,"")})});});
+    (b.text||"").split(/\n{2,}/).forEach(function(t){if(t.trim()!=="")out.push({e:el("p",{class:"p",text:T(t.replace(/^\n+|\n+$/g,""))})});});
   }else if(b.t==="bullets"){
     var items=(b.text||"").split("\n").filter(function(x){return x.trim();});
-    items.forEach(function(x){out.push({e:el("ul",{class:"bl"},[el("li",{text:x.replace(/^[\-•*]\s*/,"")})])});});
+    items.forEach(function(x){out.push({e:el("ul",{class:"bl"},[el("li",{text:T(x.replace(/^[\-•*]\s*/,""))})])});});
   }else if(b.t==="kv"){
     var tb=el("table",{class:"kv"});
-    b.rows.forEach(function(r){if(!r[0]&&!r[1])return;tb.appendChild(el("tr",{},[el("td",{text:r[0]}),el("td",{text:"- "+r[1]})]));});
+    b.rows.forEach(function(r){if(!r[0]&&!r[1])return;tb.appendChild(el("tr",{},[el("td",{text:T(r[0])}),el("td",{text:"- "+T(r[1])})]));});
     out.push({e:tb});
   }else if(b.t==="vib"){
     var t=el("table",{class:"vib"});
     t.appendChild(el("tr",{},[el("th",{text:"BEARING VIBRATION"}),el("th",{text:"Axial"}),el("th",{text:"Horizontal"}),el("th",{text:"Vertical"})]));
     [["Drive end",b.de],["Non-drive end",b.nde]].forEach(function(r){t.appendChild(el("tr",{},[el("td",{text:r[0]}),el("td",{text:r[1][1]}),el("td",{text:r[1][2]}),el("td",{text:r[1][3]})]));});
     out.push({e:t,keep:!!b.note});
-    if(b.note)out.push({e:el("div",{class:"note",text:b.note})});
+    if(b.note)out.push({e:el("div",{class:"note",text:T(b.note)})});
   }else if(b.t==="photos"){
     /* each photo has its own height; photos share a row while they fit (and the per-row limit allows) */
     var n=Math.max(1,b.cols||2),W=178*MM,G=4*MM,rows=[],cur=[],curW=0;
@@ -521,7 +523,7 @@ function blockUnits(b){
       var row=el("div",{class:"phrow"});
       r.forEach(function(it){
         var s=size(it),im=el("img",{src:it.src});im.style.width=s[0]+"px";im.style.height=s[1]+"px";
-        row.appendChild(el("div",{class:"ph",style:"width:"+s[0]+"px"},[im,it.cap?el("div",{class:"cap",text:it.cap}):null]));
+        row.appendChild(el("div",{class:"ph",style:"width:"+s[0]+"px"},[im,it.cap?el("div",{class:"cap",text:T(it.cap)}):null]));
       });
       out.push({e:row});
     });
@@ -575,7 +577,7 @@ function fitScale(){
 
 /* ---------- save / open / pdf ---------- */
 function fileBase(){
-  var t=(S.ref?S.ref+" Rev."+S.rev:"Busch Report Rev."+S.rev)+(S.subject?" - "+S.subject:"");
+  var t=(S.ref?S.ref+" Rev."+S.rev:"Busch Report Rev."+S.rev)+(S.subject?" - "+T(S.subject):"");
   return t.replace(/[\\\/:*?"<>|\r\n]+/g," ").replace(/\s+/g," ").trim().slice(0,120);
 }
 function saveHtml(){
