@@ -70,6 +70,13 @@ label.f textarea{resize:vertical;min-height:70px;line-height:1.4}
 .vibgrid{display:grid;grid-template-columns:1.2fr 1fr 1fr 1fr;gap:4px;align-items:center;font-size:12px}
 .vibgrid input{padding:5px;border:1px solid #bfc5ca;border-radius:5px;min-width:0;width:100%}
 .hint{font-size:12px;color:var(--mute);margin:4px 0}
+.svc{position:relative}
+.svcsum{list-style:none;cursor:pointer;padding:5px 7px;border:1px solid #bfc5ca;border-radius:5px;background:#fff;color:var(--ink);min-height:30px;display:flex;align-items:center}
+.svcsum::-webkit-details-marker{display:none}
+.svcsum.empty{color:#8a9097}
+.svcpop{position:absolute;z-index:20;left:0;right:0;top:100%;margin-top:2px;background:#fff;border:1px solid #bfc5ca;border-radius:6px;padding:8px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
+.svcopt{display:inline-flex;align-items:center;gap:8px;width:fit-content;padding:3px 0;margin-right:14px;cursor:pointer;font-size:13px}
+.svcopt input{width:18px;height:18px;margin:0;flex:none}
 .chk{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;margin-top:4px}
 .chk input[type=checkbox],.blk input[type=checkbox]{width:18px;height:18px;flex:none;margin:0;cursor:pointer}
 /* ---------- the paper (preview == PDF) ---------- */
@@ -179,7 +186,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-06.15";
+var APP_BUILD="2026-10-06.16";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -267,7 +274,7 @@ function newReport(key,from){
   return {v:1,template:key,from:from||"andre",signers:[from||"andre"],
     ref:"",rev:"0",revNote:"",date:todayISO(),
     title:T.title,attn:"",company:"",attnEmail:"",phone:"",cc:"",ccEmail:"",
-    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),items:blankItems(),itemsV:3,itemsBlocks:[],hdrOrder:["company","phone","attn","from","attnEmail","cc","ccEmail","date"],hdrHide:{date:true}};
+    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),items:blankItems(),itemsV:4,itemsBlocks:[],hdrOrder:["company","phone","attn","from","attnEmail","cc","ccEmail","date"],hdrHide:{date:true}};
 }
 function todayISO(){var d=new Date();return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());}
 function p2(n){return (n<10?"0":"")+n;}
@@ -314,6 +321,13 @@ function normalise(d,isDraft){
   }
   /* the working draft on this device: empty the index list once, back to the grey examples (saved reports are left alone) */
   if(isDraft&&d.itemsV<3){d.items=blankItems();d.itemsV=3;}
+  if(isDraft&&d.itemsV<4){
+    /* remove the sections the old templates filled in, keeping any that hold photos; the previous draft is kept as a backup */
+    try{idbSet("previous",JSON.parse(JSON.stringify(d)));}catch(e){}
+    d.sections=(d.sections||[]).filter(function(s){return (s.blocks||[]).some(function(b){return b.t==="photos"&&b.items&&b.items.length;});});
+    d.itemsV=4;
+  }
+  if(d.items&&d.items.length&&!d.items.some(function(r){return r.svc;}))d.items[0].svc=[];
   d.signers=(d.signers||[]).filter(function(k){return PEOPLE[k];});if(!d.signers.length)d.signers=[d.from];
   return d;
 }
@@ -399,26 +413,54 @@ function addBar(sec){
 /* ---------- index (items of discussion): typed by you; an empty row never prints ---------- */
 var ITEM_INPUTS={};
 var ITEM_EXAMPLES=["e.g. Introduction","e.g. Pump details","e.g. Photo report","e.g. Conclusion"];
-function blankItems(){return [{label:"",text:""},{label:"",text:""},{label:"",text:""},{label:"",text:""}];}
-/* what the report prints: [{label,text}] - only rows that have something typed in */
+var SERVICES=["Chemical flush","Descaling","Performance test","Inspection","Scope","Service","Repair","Bearing change","Overhaul"];
+function blankItems(){return [{label:"",text:"",svc:[]},{label:"",text:""},{label:"",text:""},{label:"",text:""}];}
+function joinList(a){return a.length<2?(a[0]||""):a.slice(0,-1).join(", ")+" and "+a[a.length-1];}
+/* the words an item prints: ticked services (Item 2) followed by anything typed */
+function itemText(r){
+  var s=(r.svc&&r.svc.length)?joinList(r.svc):"",t=(r.text||"").trim();
+  return s&&t?s+" - "+t:(s||t);
+}
+/* what the report prints: [{label,text}] - only rows that have something in them */
 function itemRows(){
   var out=[],n=0;
   S.items.forEach(function(r){
-    var text=(r.text||"").trim(),lab=(r.label||"").trim();
+    var text=itemText(r),lab=(r.label||"").trim();
     if(!text&&!lab)return;
     n++;
-    out.push({label:lab||("Item "+(n+1)),text:r.text||""});
+    out.push({label:lab||("Item "+(n+1)),text:text});
   });
   return out;
 }
+/* Item 2: a drop-down to tick the service(s) done, plus a box for anything else */
+function serviceDrop(it){
+  var sum=el("summary",{class:"svcsum"}),box=el("details",{class:"svc"},[sum]);
+  var paint=function(){var v=(it.svc||[]).join(", ");sum.textContent=v||"Choose the service(s) ▾";sum.className="svcsum"+(v?"":" empty");};
+  var pop=el("div",{class:"svcpop"});
+  SERVICES.forEach(function(name){
+    var cb=el("input",{type:"checkbox"});cb.checked=(it.svc||[]).indexOf(name)>-1;
+    cb.addEventListener("change",function(){
+      var cur=(it.svc||[]).filter(function(x){return x!==name;});if(cb.checked)cur.push(name);
+      it.svc=SERVICES.filter(function(x){return cur.indexOf(x)>-1;});paint();changed();});
+    pop.appendChild(el("label",{class:"svcopt"},[cb,name]));
+  });
+  var other=el("input",{type:"text",placeholder:"Anything else (optional)",style:"width:100%;margin-top:6px;padding:5px 7px;border:1px solid #bfc5ca;border-radius:5px"});
+  other.value=it.text||"";other.addEventListener("input",function(){it.text=other.value;changed();});
+  pop.appendChild(other);box.appendChild(pop);paint();
+  return box;
+}
 function itemsCard(){
   var c=el("div",{class:"card sec","data-focus":"items"},[el("h3",{text:"1. Items of discussion"}),
-    el("p",{class:"hint",text:"Type your own items. Rows left empty do not appear in the report. Leave the label blank for automatic numbering (Item 2, Item 3 ...), or type your own, e.g. 'Items 2-7'."})]);
+    el("p",{class:"hint",text:"Item 2 is a drop-down: tick the service(s) done. The other rows you type yourself. Rows left empty do not appear in the report. Leave a label blank for automatic numbering, or type your own, e.g. 'Items 2-7'."})]);
   S.items.forEach(function(it,i){
-    var l=el("input",{type:"text",placeholder:"Item "+(i+2)}),t=el("input",{type:"text",placeholder:ITEM_EXAMPLES[i]||"Description"});
-    l.value=it.label||"";t.value=it.text||"";
-    l.addEventListener("input",function(){it.label=l.value;changed();});
-    t.addEventListener("input",function(){it.text=t.value;changed();});
+    var l=el("input",{type:"text",placeholder:"Item "+(i+2)});
+    l.value=it.label||"";l.addEventListener("input",function(){it.label=l.value;changed();});
+    var t;
+    if(it.svc)t=serviceDrop(it);
+    else{
+      t=el("input",{type:"text",placeholder:ITEM_EXAMPLES[i]||"Description"});
+      t.value=it.text||"";t.addEventListener("input",function(){it.text=t.value;changed();});
+    }
     c.appendChild(el("div",{class:"row2",style:"grid-template-columns:90px 1fr auto auto auto"},[l,t,
       el("button",{class:"btn sm ghost",text:"▲",onclick:function(){mv(S.items,i,-1);renderEditor();changed();}}),
       el("button",{class:"btn sm ghost",text:"▼",onclick:function(){mv(S.items,i,1);renderEditor();changed();}}),
@@ -426,10 +468,7 @@ function itemsCard(){
   });
   c.appendChild(el("div",{class:"adds"},[
     el("button",{class:"btn sm pri",text:"+ Add item",onclick:function(){S.items.push({label:"",text:""});renderEditor();changed();}}),
-    el("button",{class:"btn sm ghost",text:"Fill from section titles",onclick:function(){
-      if(S.items.some(function(r){return (r.text||"").trim();})&&!confirm("Replace what you typed with the current section titles?"))return;
-      S.items=S.sections.map(function(s){return {label:"",text:s.title};});if(!S.items.length)S.items=blankItems();renderEditor();changed();}}),
-    el("button",{class:"btn sm del",text:"Clear all",title:"Empty the list and start again with the grey examples",onclick:function(){
+    el("button",{class:"btn sm del",text:"Clear all",title:"Empty the list and start again",onclick:function(){
       if(!confirm("Empty the whole Items of discussion list? Nothing else in the report is touched."))return;
       S.items=blankItems();renderEditor();changed();}})]));
   var holder={blocks:S.itemsBlocks};
@@ -617,6 +656,7 @@ function initSync(){
     focusKey=c.dataset.focus;if(focusKey!==lastScrolled){lastScrolled=focusKey;jumpPreview(focusKey);}
   };
   edit.addEventListener("focusin",go);edit.addEventListener("click",go);
+  document.addEventListener("click",function(e){[].forEach.call(document.querySelectorAll("details.svc[open]"),function(d){if(!d.contains(e.target))d.removeAttribute("open");});});
 }
 
 /* ---------- the paper ---------- */
