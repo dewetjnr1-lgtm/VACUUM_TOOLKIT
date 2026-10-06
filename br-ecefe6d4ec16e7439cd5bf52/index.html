@@ -179,7 +179,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-06.9";
+var APP_BUILD="2026-10-06.10";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -465,7 +465,12 @@ function itemsCard(){
       c.appendChild(el("div",{class:"row2",style:"grid-template-columns:90px 1fr auto auto auto"},[l,t,
         (s?el("span"):el("button",{class:"btn sm ghost",text:"▲",onclick:function(){mv(S.items,i,-1);renderEditor();changed();}})),
         (s?el("span"):el("button",{class:"btn sm ghost",text:"▼",onclick:function(){mv(S.items,i,1);renderEditor();changed();}})),
-        el("button",{class:"btn sm del",text:"✕",title:"Remove from the list",onclick:function(){if(it.sid)S.itemsSkip[it.sid]=true;S.items.splice(i,1);renderEditor();changed();}})]));
+        el("button",{class:"btn sm del",text:"✕",title:"Delete this item (and its section)",onclick:function(){
+          if(s){
+            if(!confirm("Delete section "+num+" \""+s.title+"\" from the report as well, including everything in it (text and photos)?"))return;
+            S.sections.splice(S.sections.indexOf(s),1);
+          }else S.items.splice(i,1);
+          renderEditor();changed();}})]));
     });
     c.appendChild(el("div",{class:"adds"},[
       el("button",{class:"btn sm pri",text:"+ Add item",onclick:function(){S.items.push({label:"",text:"",free:true});renderEditor();changed();}}),
