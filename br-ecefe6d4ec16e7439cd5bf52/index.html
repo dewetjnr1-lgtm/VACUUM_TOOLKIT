@@ -179,7 +179,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-06.14";
+var APP_BUILD="2026-10-06.15";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -599,8 +599,8 @@ function addPhotos(b,files){
 /* ---------- keep the preview on the section being edited ---------- */
 var focusKey="",lastScrolled="";
 function findFocusEl(key){
-  var host=document.getElementById("pages"),e=host.querySelector('[data-focus="'+key+'"]');
-  if(!e&&key.indexOf("-b")>0)e=host.querySelector('[data-focus="'+key.split("-b")[0]+'"]');
+  var host=document.getElementById("pages"),e=host.querySelector('[data-focus~="'+key+'"]');
+  if(!e&&key.indexOf("-b")>0)e=host.querySelector('[data-focus~="'+key.split("-b")[0]+'"]');
   return e;
 }
 function jumpPreview(key,onlyIfHidden){
@@ -661,6 +661,7 @@ function unitsFor(){
   S.intro.split(/\n{2,}/).forEach(function(t){if(t.trim())U.push({e:el("p",{class:"p",text:T(t.trim())})});});
   var FK={items:U.length};
   var irows=itemRows(),showItems=irows.length>0;
+  if(!showItems)FK.items=0;   /* nothing printed for the list: the jump goes to the top of the cover */
   if(showItems)U.push({e:el("div",{class:"h1",text:"1. ITEMS OF DISCUSSION"}),keep:true});
   var it=el("div",{class:"items"});
   irows.forEach(function(r){it.appendChild(el("div",{},[el("b",{text:r.label}),"- "+T(r.text)]));});
@@ -674,7 +675,7 @@ function unitsFor(){
     s.blocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["s"+si+"-b"+bi]=U.length;var ek=effKeep(s.blocks,bi);if(!pk)gid=++GID;if(bu.length&&bi>0&&!pk)bu[0].gap=true;if(ek||pk)bu.forEach(function(u){u.grp=gid;});pk=ek;bu.forEach(function(u){U.push(u);});});
   });
   FK.hdr=0;
-  Object.keys(FK).forEach(function(k){var u=U[FK[k]];if(u&&!u.e.dataset.focus)u.e.dataset.focus=k;});
+  Object.keys(FK).forEach(function(k){var u=U[FK[k]];if(u)u.e.dataset.focus=((u.e.dataset.focus||"")+" "+k).trim();});
   /* sign-off */
   var sg=el("div",{class:"sign"},S.signers.filter(function(k){return PEOPLE[k];}).sort(function(a,b){return (b===S.from)-(a===S.from);}).map(function(k){var q=PEOPLE[k];
     return el("div",{},[el("div",{class:"nm",text:q.name}),q.title,el("br"),q.region,el("br"),"Mob: "+q.mob,el("br"),q.email]);}));
