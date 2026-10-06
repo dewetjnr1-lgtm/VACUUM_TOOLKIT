@@ -4,6 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="color-scheme" content="light">
+<meta name="darkreader-lock">
 <title>Busch Report Builder</title>
 <style>
 :root{color-scheme:light;--orange:#ff5a00;--ink:#1b1b1b;--mute:#666;--line:#d9d9d9;--bg:#eceff1;--card:#fff;--ui:#2b2f33}
@@ -84,8 +85,9 @@ label.f textarea{resize:vertical;min-height:70px;line-height:1.4}
 .pg-foot a{color:#0b5cad;text-decoration:underline}
 .pg-foot .world{font-size:5.6pt;color:#444}
 .doc-title{font-size:17pt;font-weight:700;text-align:center;margin:2mm 0 6mm;line-height:1.2}
-.hdr{display:grid;grid-template-columns:23mm 1fr 14mm 52mm;column-gap:2mm;row-gap:1.2mm;font-size:10pt;margin-bottom:3mm}
+.hdr{display:grid;grid-template-columns:23mm 1fr 23mm 1fr;column-gap:2mm;row-gap:1.2mm;font-size:10pt;margin-bottom:3mm}
 .hdr .k{font-weight:700}
+.hdr .kw{grid-column:1}
 .hdr .wide{grid-column:2/-1;overflow-wrap:anywhere}
 .hdr.subj{border-top:1px solid #999;padding-top:3mm;grid-template-columns:23mm 1fr}
 .hdr .v{word-break:break-word}
@@ -170,7 +172,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-06.1";
+var APP_BUILD="2026-10-06.2";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -254,7 +256,7 @@ function newReport(key,from){
   return {v:1,template:key,from:from||"andre",signers:[from||"andre"],
     ref:"",rev:"0",revNote:"",date:todayISO(),
     title:T.title,attn:"",company:"",attnEmail:"",phone:"",cc:"",ccEmail:"",
-    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),itemsCustom:false,items:[],itemsBlocks:[]};
+    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),itemsCustom:false,items:[],itemsBlocks:[],hdrOrder:["company","phone","attn","from","attnEmail","cc","ccEmail","date"],hdrHide:{date:true}};
 }
 function todayISO(){var d=new Date();return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());}
 function p2(n){return (n<10?"0":"")+n;}
@@ -346,6 +348,7 @@ function renderEditor(){
     field("Opening paragraph(s)  —  tip: replace [SITE] with the site name",S,"intro",{area:true,rows:7,full:true})
   ]);
   host.appendChild(el("div",{class:"card","data-focus":"hdr"},[el("h3",{text:"Report header"}),g]));
+  host.appendChild(headerLayoutCard());
   host.appendChild(itemsCard());
   /* sections */
   S.sections.forEach(function(sec,si){host.appendChild(sectionCard(sec,si));});
@@ -367,6 +370,20 @@ function addBar(sec){
     add("+ Vibration table",function(){return {t:"vib",de:["","","",""],nde:["","","",""],note:VIB_NOTE};})
   ]);
 }
+function headerLayoutCard(){
+  var NAMES={company:"Company",attn:"Attention",attnEmail:"Email (full width)",phone:"Phone",from:"From",date:"Date",cc:"CC (only if filled in)",ccEmail:"CC email (full width, only if filled in)"};
+  var c=el("div",{class:"card"},[el("h3",{text:"Layout of the top block"}),
+    el("p",{class:"hint",text:"Choose what shows and in what order. Short items sit two across; emails run the full width. The date also always shows beside the company name at the top right of every page."})]);
+  S.hdrOrder.forEach(function(k,i){
+    var cb=el("input",{type:"checkbox"});cb.checked=!S.hdrHide[k];
+    cb.addEventListener("change",function(){if(cb.checked)delete S.hdrHide[k];else S.hdrHide[k]=true;changed();});
+    c.appendChild(el("div",{class:"row2",style:"grid-template-columns:auto 1fr auto auto"},[cb,el("span",{text:NAMES[k]||k,style:"align-self:center"}),
+      el("button",{class:"btn sm ghost",text:"▲",onclick:function(){mv(S.hdrOrder,i,-1);renderEditor();changed();}}),
+      el("button",{class:"btn sm ghost",text:"▼",onclick:function(){mv(S.hdrOrder,i,1);renderEditor();changed();}})]));
+  });
+  return c;
+}
+
 function itemsCard(){
   var cb=el("input",{type:"checkbox"});cb.checked=!!S.itemsCustom;
   cb.addEventListener("change",function(){
@@ -579,7 +596,7 @@ function T(s){return esc(s).split("[SITE]").join((S.company||"").trim()||"[SITE]
 function mkPage(){
   var pg=el("div",{class:"page"});
   var ref=(S.ref||"")+(S.ref?" Rev."+S.rev:"");
-  pg.appendChild(el("div",{class:"pg-head"},[el("div",{class:"lockup"},[el("img",{class:"top",src:window.LOGO_TOP,alt:"Part of the Busch Group"}),el("div",{class:"row"},[el("img",{class:"bu",src:window.LOGO_BUSCH,alt:"Busch Vacuum Solutions"}),el("img",{class:"pf",src:window.LOGO_PF,alt:"Pfeiffer Vacuum+Fab Solutions"})])]),el("div",{class:"ref"},[ref,el("br"),S.company||""])]));
+  pg.appendChild(el("div",{class:"pg-head"},[el("div",{class:"lockup"},[el("img",{class:"top",src:window.LOGO_TOP,alt:"Part of the Busch Group"}),el("div",{class:"row"},[el("img",{class:"bu",src:window.LOGO_BUSCH,alt:"Busch Vacuum Solutions"}),el("img",{class:"pf",src:window.LOGO_PF,alt:"Pfeiffer Vacuum+Fab Solutions"})])]),el("div",{class:"ref"},[ref,el("br"),(S.company||"")+(S.company?"  ·  ":"")+fmtDate(S.date)])]));
   var body=el("div",{class:"pg-body"});pg.appendChild(body);
   var A=function(t,h){return el("a",{href:h,text:t});};
   var sep=function(){return el("span",{class:"sep",text:"|"});};
@@ -595,19 +612,13 @@ function unitsFor(){
   var kv=function(k,v){return [el("div",{class:"k",text:k}),v];};
   U.push({e:el("div",{class:"doc-title",text:T(S.title),style:"white-space:pre-line"})});
   var h=el("div",{class:"hdr"});
-  var row=function(k,v,k2,v2,wide){
-    h.appendChild(el("div",{class:"k",text:k}));
-    h.appendChild(el("div",{class:"v"+(wide?" wide":""),text:": "+v}));
-    if(!wide){h.appendChild(el("div",{class:"k",text:k2||""}));h.appendChild(el("div",{class:"v",text:k2?": "+v2:""}));}
-  };
-  row("ATTENTION",esc(S.attn),"PHONE",esc(S.phone));
-  row("EMAIL",esc(S.attnEmail),0,0,true);
-  row("COMPANY",esc(S.company),"DATE",fmtDate(S.date));
-  row("FROM",P.name,"","");
-  if(S.cc||S.ccEmail){
-    row("CC",esc(S.cc),"","");
-    if(S.ccEmail)row("EMAIL",esc(S.ccEmail),0,0,true);
-  }
+  var HF={company:["COMPANY",esc(S.company)],attn:["ATTENTION",esc(S.attn)],attnEmail:["EMAIL",esc(S.attnEmail),1],phone:["PHONE",esc(S.phone)],from:["FROM",P.name],date:["DATE",fmtDate(S.date)],cc:["CC",esc(S.cc)],ccEmail:["EMAIL",esc(S.ccEmail),1]};
+  S.hdrOrder.forEach(function(k){
+    var f=HF[k];if(!f||S.hdrHide[k])return;
+    if((k==="cc"||k==="ccEmail")&&!String(f[1]).trim())return;
+    h.appendChild(el("div",{class:"k"+(f[2]?" kw":""),text:f[0]}));
+    h.appendChild(el("div",{class:"v"+(f[2]?" wide":""),text:": "+f[1]}));
+  });
   U.push({e:h});
   var sj=el("div",{class:"hdr subj"});
   sj.appendChild(el("div",{class:"k",text:"SUBJECT"}));sj.appendChild(el("div",{class:"v",text:": "+T(S.subject)}));
