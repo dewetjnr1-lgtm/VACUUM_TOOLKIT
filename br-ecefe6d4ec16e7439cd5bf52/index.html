@@ -44,12 +44,15 @@ body.mode-prev #edit{display:none}
 label.f{position:relative;display:block;font-size:11px;color:var(--mute);text-transform:uppercase;letter-spacing:.03em}
 label.f input,label.f select,label.f textarea{display:block;width:100%;margin-top:2px;padding:6px 8px;border:1px solid #bfc5ca;border-radius:5px;background:#fff;color:var(--ink);font-size:14px;text-transform:none;letter-spacing:0}
 label.f textarea{resize:vertical;min-height:70px;line-height:1.4}
-.mvs{position:absolute;right:0;top:-3px;display:flex;gap:2px}
+.lh{display:flex;justify-content:space-between;align-items:flex-start;gap:6px}
+.lt{min-width:0;flex:1}
+.mvs{display:flex;gap:2px;flex:none}
 .mvb{border:0;background:#e5e8ea;color:#444;border-radius:4px;width:22px;height:18px;font-size:9px;line-height:1;cursor:pointer;padding:0}
 .mvb:hover{background:var(--orange);color:#fff}
 .sec{border-left:4px solid var(--orange)}
 .sec .hd{display:flex;gap:6px;align-items:center;margin-bottom:8px}
-.sec .hd input{flex:1;font-weight:700;padding:6px 8px;border:1px solid #bfc5ca;border-radius:5px}
+.sec .hd input{min-width:0;flex:1;font-weight:700;padding:6px 8px;border:1px solid #bfc5ca;border-radius:5px}
+.sec .hd .btn{flex:none}
 .grp{border:2px dashed var(--orange);background:#fff4ec;border-radius:8px;padding:6px 8px 2px;margin:10px 0}
 .grp .gtag{font-size:11px;font-weight:700;color:#c44600;text-transform:uppercase;letter-spacing:.04em;margin-bottom:2px}
 .grp .blk{background:#fff;margin:6px 0}
@@ -175,7 +178,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-06.5";
+var APP_BUILD="2026-10-06.6";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -310,7 +313,7 @@ function field(label,obj,key,opts){
   var inp=opts.area?el("textarea",{rows:opts.rows||3}):el("input",{type:opts.type||"text"});
   inp.value=obj[key]||"";
   inp.addEventListener("input",function(){obj[key]=inp.value;changed();});
-  return el("label",{class:"f"+(opts.full?" full":"")},[label,opts.hk?moveArrows(opts.hk):null,inp]);
+  return el("label",{class:"f"+(opts.full?" full":"")},[opts.hk?labelRow(label,opts.hk):label,inp]);
 }
 /* small up/down arrows on a field: moves that item up or down in the top block of the report */
 function moveHdr(k,d){
@@ -319,6 +322,7 @@ function moveHdr(k,d){
   var a=S.hdrOrder.indexOf(k),b=S.hdrOrder.indexOf(t);S.hdrOrder[a]=t;S.hdrOrder[b]=k;
   renderEditor();changed();
 }
+function labelRow(text,k){return el("span",{class:"lh"},[el("span",{class:"lt",text:text}),moveArrows(k)]);}
 function moveArrows(k){
   var mk=function(t,d,tip){return el("button",{type:"button",class:"mvb",text:t,title:tip,onclick:function(e){e.preventDefault();moveHdr(k,d);}});};
   return el("span",{class:"mvs"},[mk("▲",-1,"Move up in the report"),mk("▼",1,"Move down in the report")]);
@@ -341,7 +345,7 @@ function renderEditor(){
   }));
   host.appendChild(el("div",{class:"card"},[el("h3",{text:"Report type & author"}),
     el("div",{class:"grid"},[
-      el("label",{class:"f"},["From (fills in details automatically)",moveArrows("from"),fsel]),
+      el("label",{class:"f"},[labelRow("From (fills in details automatically)","from"),fsel]),
       el("div",{class:"f"},["Sign off with",chk])
     ])]));
   /* header */
