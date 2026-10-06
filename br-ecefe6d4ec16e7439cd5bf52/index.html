@@ -186,7 +186,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-07.2";
+var APP_BUILD="2026-10-07.3";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -445,11 +445,12 @@ var AUTO_OF={"Chemical flush":"flush","Descaling":"flush","Performance test":"te
 var AUTO_ORDER=["flush","test","inspect"];
 /* A ticked service adds its standard explanation as BULLET POINTS under the items list. It never makes a numbered
    section, so the numbers in the report stay under your control. */
-var AUTO_TITLE={flush:"About the chemical flush",test:"About the performance test",inspect:"About the inspection"};
+var AUTO_TITLE={flush:AUTO.flush.title,test:AUTO.test.title,inspect:AUTO.inspect.title};
+var AUTO_TITLE_OLD={flush:"About the chemical flush",test:"About the performance test",inspect:"About the inspection"};   /* wording used by mistake in one earlier build */
 function bul(t){return String(t||"").split(/\n{2,}/).map(function(p){return p.trim();}).filter(Boolean).join("\n");}
 function autoBlockUntouched(b,k){
   var known=[bul(AUTO[k].text)].concat((AUTO_OLD[k]||[]).map(bul));
-  return b.t==="bullets"&&b.auto===k&&known.indexOf(b.text)>-1&&(b.title||"")===AUTO_TITLE[k];
+  return b.t==="bullets"&&b.auto===k&&known.indexOf(b.text)>-1&&((b.title||"")===AUTO_TITLE[k]||(b.title||"")===AUTO_TITLE_OLD[k]);
 }
 /* add the bullet blocks for ticked services; with removeToo, take away those of un-ticked services (only if you have not edited them) */
 function syncAuto(d,removeToo){
@@ -473,7 +474,8 @@ function syncAuto(d,removeToo){
     }
   });
   /* bullets still holding an earlier version of the standard wording get the current wording */
-  d.itemsBlocks.forEach(function(b){if(b.auto&&autoBlockUntouched(b,b.auto))b.text=bul(AUTO[b.auto].text);});
+  d.itemsBlocks.forEach(function(b){if(b.auto&&b.title===AUTO_TITLE_OLD[b.auto])b.title=AUTO_TITLE[b.auto];});
+  d.itemsBlocks.forEach(function(b){if(b.auto&&autoBlockUntouched(b,b.auto)){b.text=bul(AUTO[b.auto].text);b.title=AUTO_TITLE[b.auto];}});
 }
 
 var svcKeepOpen=false;
