@@ -85,12 +85,12 @@ label.f textarea{resize:vertical;min-height:70px;line-height:1.4}
 .pg-foot a{color:#0b5cad;text-decoration:underline}
 .pg-foot .world{font-size:5.6pt;color:#444}
 .doc-title{font-size:17pt;font-weight:700;text-align:center;margin:2mm 0 6mm;line-height:1.2}
-.hdr{display:grid;grid-template-columns:23mm 1fr 23mm 1fr;column-gap:2mm;row-gap:1.2mm;font-size:10pt;margin-bottom:3mm}
+.hdr{display:grid;grid-template-columns:23mm minmax(0,1fr) auto minmax(0,1fr);column-gap:2mm;row-gap:1.2mm;font-size:10pt;margin-bottom:3mm}
 .hdr .k{font-weight:700}
 .hdr .kw{grid-column:1}
 .hdr .wide{grid-column:2/-1;overflow-wrap:anywhere}
 .hdr.subj{border-top:1px solid #999;padding-top:3mm;grid-template-columns:23mm 1fr}
-.hdr .v{word-break:break-word}
+.hdr .v{word-break:break-word;padding-right:4mm}
 .revbox{border:1px solid #999;padding:2mm 3mm;font-size:9pt;margin-bottom:4mm;background:#fff6ef}
 .p{margin:0 0 3mm;white-space:pre-wrap;overflow-wrap:break-word}
 .h1{font-size:12.5pt;font-weight:700;text-transform:uppercase;margin:4mm 0 3mm;padding-bottom:1mm;border-bottom:1.5px solid var(--orange);break-after:avoid}
@@ -172,7 +172,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-06.2";
+var APP_BUILD="2026-10-06.3";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -497,11 +497,17 @@ function blockCard(sec,b,bi){
     var th=el("div",{class:"thumbs",style:"margin-top:8px"});
     b.items.forEach(function(it,ii){
       var common=function(){
-        var px=el("input",{type:"range",min:"-100",max:"100",step:"1",style:"width:100%"});px.value=it.x||0;
-        var pxl=el("div",{class:"hint",text:"Move: "+px.value+" mm  (◀ left · right ▶)"});
-        px.addEventListener("input",function(){it.x=+px.value;pxl.textContent="Move: "+px.value+" mm  (◀ left · right ▶)";changed();});
-        var ctr=el("button",{class:"btn sm ghost",text:"Centre",onclick:function(){it.x=Math.round((178-itemWidthMm(it))/2);renderEditor();changed();}});
-        var rst=el("button",{class:"btn sm ghost",text:"Reset",onclick:function(){it.x=0;renderEditor();changed();}});
+        /* position = distance of the item's left edge from the left page margin, so the same number always lines up */
+        var legacy=it.px==null&&it.x;
+        var wmm=Math.round(itemWidthMm(it)),maxp=Math.max(0,178-wmm);
+        var px=el("input",{type:"range",min:"0",max:String(maxp),step:"1",style:"width:100%"});px.value=it.px==null?0:Math.min(maxp,it.px);
+        var pn=el("input",{type:"number",min:"0",max:String(maxp),step:"1",placeholder:"auto",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});pn.value=it.px==null?"":it.px;
+        var setP=function(v){it.px=v;delete it.x;changed();};
+        px.addEventListener("input",function(){pn.value=px.value;setP(+px.value);});
+        pn.addEventListener("input",function(){var v=parseFloat(pn.value);if(v>=0&&v<=maxp){px.value=v;setP(v);}});
+        var pxl=el("div",{class:"hint",style:"display:flex;align-items:center;gap:6px;flex-wrap:wrap"},["Position from left margin",pn,"mm",el("span",{text:legacy?"(old-style move in use - set a position to replace it)":(it.px==null?"(automatic)":""),style:"color:#a55"})]);
+        var ctr=el("button",{class:"btn sm ghost",text:"Centre",onclick:function(){setP(Math.round((178-itemWidthMm(it))/2));renderEditor();}});
+        var rst=el("button",{class:"btn sm ghost",text:"Automatic",onclick:function(){delete it.px;delete it.x;renderEditor();changed();}});
         var al=el("input",{type:"checkbox"});al.checked=!!it.alone;al.addEventListener("change",function(){it.alone=al.checked;changed();});
         return [pxl,px,el("div",{class:"tb"},[ctr,rst]),el("label",{class:"chk",style:"margin:2px 0"},[al," On its own row"]),el("div",{class:"tb"},[
           el("button",{class:"btn sm ghost",text:"◀",onclick:function(){mv(b.items,ii,-1);renderEditor();changed();}}),
@@ -694,7 +700,8 @@ function blockUnits(b){
           box=el("div",{class:"ph",style:"width:"+s[0]+"px"},[im,it.cap?el("div",{class:"cap",text:T(it.cap)}):null]);
         }
         /* moved left/right by the typed position, kept inside the page margins */
-        var sh=Math.max(-L,Math.min(W-L-s[0],(it.x||0)*MM));L+=s[0]+G;
+        var want=(it.px!=null)?it.px*MM-L:(it.x||0)*MM;
+        var sh=Math.max(-L,Math.min(W-L-s[0],want));L+=s[0]+G;
         box.style.position="relative";box.style.left=Math.round(sh)+"px";
         row.appendChild(box);
       });
