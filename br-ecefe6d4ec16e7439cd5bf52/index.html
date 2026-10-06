@@ -186,7 +186,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-06.18";
+var APP_BUILD="2026-10-07.2";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -443,22 +443,37 @@ var AUTO_OLD={inspect:[AUTO.inspect.text]};
 AUTO.inspect.text="The internal inspection feedback is based on what can be seen through the inspection hatches and ports: the condition of the rotor blades, the shroud and the body wall, the port plates (or cone, depending on the pump design), and any scale, corrosion, build-up or cavitation damage.\n\nThe clearance between the rotor and the port plates (or cone) is the most important, as it dictates the vacuum performance of the pump. If wear has opened that clearance, the vacuum performance on the curve will show the curve dropping off at higher vacuum levels.";
 var AUTO_OF={"Chemical flush":"flush","Descaling":"flush","Performance test":"test","Inspection":"inspect","Scope":"inspect"};
 var AUTO_ORDER=["flush","test","inspect"];
-function autoUntouched(s,k){return s.blocks&&s.blocks.length===1&&s.blocks[0].t==="text"&&s.blocks[0].text===AUTO[k].text&&s.title===AUTO[k].title;}
-/* add the sections for ticked services; with removeToo, take away the ones whose service was un-ticked (only if you have not edited them) */
+/* A ticked service adds its standard explanation as BULLET POINTS under the items list. It never makes a numbered
+   section, so the numbers in the report stay under your control. */
+var AUTO_TITLE={flush:"About the chemical flush",test:"About the performance test",inspect:"About the inspection"};
+function bul(t){return String(t||"").split(/\n{2,}/).map(function(p){return p.trim();}).filter(Boolean).join("\n");}
+function autoBlockUntouched(b,k){
+  var known=[bul(AUTO[k].text)].concat((AUTO_OLD[k]||[]).map(bul));
+  return b.t==="bullets"&&b.auto===k&&known.indexOf(b.text)>-1&&(b.title||"")===AUTO_TITLE[k];
+}
+/* add the bullet blocks for ticked services; with removeToo, take away those of un-ticked services (only if you have not edited them) */
 function syncAuto(d,removeToo){
   var want={};(d.items||[]).forEach(function(r){(r.svc||[]).forEach(function(n){if(AUTO_OF[n])want[AUTO_OF[n]]=true;});});
-  d.autoOff=d.autoOff||{};d.sections=d.sections||[];
-  /* sections still holding an earlier version of the standard wording get the current wording */
-  d.sections.forEach(function(s){var k=s.auto;if(k&&AUTO_OLD[k]&&s.blocks&&s.blocks.length===1&&s.blocks[0].t==="text"&&AUTO_OLD[k].indexOf(s.blocks[0].text)>-1){s.blocks[0].text=AUTO[k].text;}});
+  d.autoOff=d.autoOff||{};d.itemsBlocks=d.itemsBlocks||[];d.sections=d.sections||[];
+  var has=function(k){return d.itemsBlocks.some(function(b){return b.auto===k;});};
+  /* earlier versions made a numbered section: turn an untouched one into bullets, and let a section you added to stay as an ordinary section */
+  d.sections=d.sections.filter(function(s){
+    var k=s.auto;if(!k)return true;
+    var only=s.blocks&&s.blocks.length===1&&s.blocks[0].t==="text";
+    if(!only){delete s.auto;return true;}
+    if(!has(k)&&!d.autoOff[k])d.itemsBlocks.push({t:"bullets",auto:k,title:AUTO_TITLE[k],text:bul(s.blocks[0].text)});
+    return false;
+  });
   AUTO_ORDER.forEach(function(k){
-    var idx=-1;d.sections.forEach(function(s,i){if(s.auto===k)idx=i;});
-    if(want[k]&&idx<0&&!d.autoOff[k]){
-      var at=d.sections.filter(function(s){return s.auto&&AUTO_ORDER.indexOf(s.auto)<AUTO_ORDER.indexOf(k);}).length;
-      d.sections.splice(at,0,{auto:k,title:AUTO[k].title,newPage:false,blocks:[{t:"text",text:AUTO[k].text}]});
-    }else if(!want[k]&&idx>=0&&removeToo&&autoUntouched(d.sections[idx],k)){
-      d.sections.splice(idx,1);
+    if(want[k]&&!has(k)&&!d.autoOff[k]){
+      var at=0;d.itemsBlocks.forEach(function(b,i){if(b.auto&&AUTO_ORDER.indexOf(b.auto)<AUTO_ORDER.indexOf(k))at=i+1;});
+      d.itemsBlocks.splice(at,0,{t:"bullets",auto:k,title:AUTO_TITLE[k],text:bul(AUTO[k].text)});
+    }else if(!want[k]&&removeToo){
+      d.itemsBlocks=d.itemsBlocks.filter(function(b){return !(b.auto===k&&autoBlockUntouched(b,k));});
     }
   });
+  /* bullets still holding an earlier version of the standard wording get the current wording */
+  d.itemsBlocks.forEach(function(b){if(b.auto&&autoBlockUntouched(b,b.auto))b.text=bul(AUTO[b.auto].text);});
 }
 
 var svcKeepOpen=false;
@@ -556,11 +571,12 @@ function blockCard(sec,b,bi){
   var head=el("div",{class:"bh"},[el("span",{text:BNAME[b.t]}),
     el("button",{class:"btn sm ghost",text:"▲",onclick:function(){mv(sec.blocks,bi,-1);renderEditor();changed();}}),
     el("button",{class:"btn sm ghost",text:"▼",onclick:function(){mv(sec.blocks,bi,1);renderEditor();changed();}}),
-    el("button",{class:"btn sm del",text:"✕",onclick:function(){sec.blocks.splice(bi,1);renderEditor();changed();}})]);
+    el("button",{class:"btn sm del",text:"✕",onclick:function(){if(b.auto){S.autoOff=S.autoOff||{};S.autoOff[b.auto]=true;}sec.blocks.splice(bi,1);renderEditor();changed();}})]);
   var body;
   if(b.t==="text"||b.t==="bullets"){
     var ta=el("textarea",{rows:b.t==="text"?5:4,style:"width:100%;padding:6px;border:1px solid #bfc5ca;border-radius:5px;line-height:1.4"});
     ta.value=b.text;ta.addEventListener("input",function(){b.text=ta.value;changed();});body=ta;
+    if(b.title!==undefined){var tt=el("input",{type:"text",placeholder:"Heading above the bullets",style:"width:100%;margin-bottom:6px;padding:6px 8px;border:1px solid #bfc5ca;border-radius:5px;font-weight:700"});tt.value=b.title;tt.addEventListener("input",function(){b.title=tt.value;changed();});body=el("div",{},[tt,ta]);}
   }else if(b.t==="kv"){
     body=el("div",{});
     b.rows.forEach(function(r,ri){
@@ -761,6 +777,7 @@ function blockUnits(b){
   if(b.t==="text"){
     (b.text||"").split(/\n{2,}/).forEach(function(t){if(t.trim()!=="")out.push({e:el("p",{class:"p",text:T(t.replace(/^\n+|\n+$/g,""))})});});
   }else if(b.t==="bullets"){
+    if(b.title)out.push({e:el("p",{class:"p",style:"font-weight:700;margin-bottom:1.5mm",text:T(b.title)}),keep:true});
     var items=(b.text||"").split("\n").filter(function(x){return x.trim();});
     items.forEach(function(x){out.push({e:el("ul",{class:"bl"},[el("li",{text:T(x.replace(/^[\-•*]\s*/,""))})])});});
   }else if(b.t==="kv"){
