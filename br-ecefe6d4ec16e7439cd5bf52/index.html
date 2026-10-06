@@ -179,7 +179,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-06.7";
+var APP_BUILD="2026-10-06.9";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -386,29 +386,90 @@ function addBar(sec){
   ]);
 }
 
+/* ---------- index (items of discussion) kept in step with the sections ---------- */
+var ITEM_INPUTS={};
+function newSid(){return "s"+Math.random().toString(36).slice(2,8);}
+function syncItems(){
+  S.sections.forEach(function(s){if(!s.id)s.id=newSid();});
+  if(!S.itemsSkip)S.itemsSkip={};
+  if(!S.itemsCustom)return;
+  var byId={};S.sections.forEach(function(s){byId[s.id]=s;});
+  /* rows pointing at a section that no longer exists go away */
+  S.items=S.items.filter(function(r){return !r.sid||byId[r.sid];});
+  var used={};S.items.forEach(function(r){if(r.sid)used[r.sid]=true;});
+  /* older lists: link a typed row to the section with the same title, in order */
+  S.items.forEach(function(r){
+    if(r.sid||!(r.text||"").trim())return;
+    var t=r.text.trim().toLowerCase();
+    var s=S.sections.filter(function(x){return !used[x.id]&&(x.title||"").trim().toLowerCase()===t;})[0];
+    if(s){r.sid=s.id;used[s.id]=true;delete r.text;}
+  });
+  /* leftovers of an older typed list: line them up with the sections still unused, in order, and use the section titles */
+  S.items.forEach(function(r){
+    if(r.sid||r.free||!(r.text||"").trim())return;
+    var s=S.sections.filter(function(x){return !used[x.id];})[0];
+    if(s){r.sid=s.id;used[s.id]=true;delete r.text;}
+  });
+  /* any section not in the list yet is added right after the one before it */
+  S.sections.forEach(function(s,si){
+    if(used[s.id]||S.itemsSkip[s.id])return;
+    var at=S.items.length;
+    for(var k=si-1;k>=0;k--){var p=S.items.map(function(r){return r.sid;}).indexOf(S.sections[k].id);if(p>-1){at=p+1;break;}}
+    S.items.splice(at,0,{sid:s.id,label:""});used[s.id]=true;
+  });
+  /* linked rows always follow the section order; your own extra rows stay after the row they came after */
+  var anchor=null,after={};
+  S.items.forEach(function(r){if(r.sid)anchor=r.sid;else{(after[anchor||"_start"]=after[anchor||"_start"]||[]).push(r);}});
+  var order={};S.sections.forEach(function(s,i){order[s.id]=i;});
+  var linked=S.items.filter(function(r){return r.sid;}).sort(function(a,b){return order[a.sid]-order[b.sid];});
+  var res=(after._start||[]).slice();
+  linked.forEach(function(r){res.push(r);(after[r.sid]||[]).forEach(function(f){res.push(f);});});
+  S.items=res;
+}
+/* what the report prints: [{label,text}] */
+function itemRows(){
+  syncItems();
+  if(!S.itemsCustom)return S.sections.map(function(s,i){return {label:"Item "+(i+2),text:s.title};});
+  var out=[];
+  S.items.forEach(function(r,i){
+    var s=r.sid&&S.sections.filter(function(x){return x.id===r.sid;})[0];
+    var num=s?S.sections.indexOf(s)+2:i+2;
+    var text=(r.text||"").trim()?r.text:(s?s.title:"");
+    var label=(r.label||"").trim()||("Item "+num);
+    if((text||"").trim()||(r.label||"").trim())out.push({label:label,text:text});
+  });
+  return out;
+}
+function itemsFromSections(){return S.sections.map(function(s){return {sid:s.id,label:""};});}
 function itemsCard(){
+  syncItems();ITEM_INPUTS={};
   var cb=el("input",{type:"checkbox"});cb.checked=!!S.itemsCustom;
   cb.addEventListener("change",function(){
     S.itemsCustom=cb.checked;
-    if(S.itemsCustom&&!S.items.length)S.items=S.sections.map(function(s){return {label:"",text:s.title};});
+    if(S.itemsCustom){S.itemsSkip={};if(!S.items.length)S.items=itemsFromSections();}
     renderEditor();changed();
   });
   var c=el("div",{class:"card sec","data-focus":"items"},[el("h3",{text:"1. Items of discussion"}),
-    el("div",{class:"chk"},[cb," Write my own list (otherwise it is built from the section titles below)"])]);
+    el("div",{class:"chk"},[cb," Edit the list myself (otherwise it is built from the section titles below)"])]);
   if(S.itemsCustom){
-    c.appendChild(el("p",{class:"hint",text:"Leave the label blank for automatic numbering (Item 2, Item 3 ...), or type your own, e.g. 'Items 2-7'."}));
+    c.appendChild(el("p",{class:"hint",text:"Each row follows its section: the number and wording update by themselves when you rename, move, add or delete a section. Type over a row to word it your own way, or type your own label such as 'Items 2-7'."}));
     S.items.forEach(function(it,i){
-      var l=el("input",{type:"text",placeholder:"Item "+(i+2)}),t=el("input",{type:"text",placeholder:"Description"});
-      l.value=it.label||"";t.value=it.text||"";
-      l.addEventListener("input",function(){it.label=l.value;changed();});t.addEventListener("input",function(){it.text=t.value;changed();});
+      var s=it.sid&&S.sections.filter(function(x){return x.id===it.sid;})[0];
+      var num=s?S.sections.indexOf(s)+2:i+2;
+      var l=el("input",{type:"text",placeholder:"Item "+num}),t=el("input",{type:"text",placeholder:s?"":"Description"});
+      l.value=it.label||"";t.value=(it.text||"").trim()?it.text:(s?s.title:"");
+      l.addEventListener("input",function(){it.label=l.value;changed();});
+      t.addEventListener("input",function(){
+        if(s&&t.value===s.title)delete it.text;else it.text=t.value;changed();});
+      if(s)ITEM_INPUTS[s.id]={input:t,row:it};
       c.appendChild(el("div",{class:"row2",style:"grid-template-columns:90px 1fr auto auto auto"},[l,t,
-        el("button",{class:"btn sm ghost",text:"▲",onclick:function(){mv(S.items,i,-1);renderEditor();changed();}}),
-        el("button",{class:"btn sm ghost",text:"▼",onclick:function(){mv(S.items,i,1);renderEditor();changed();}}),
-        el("button",{class:"btn sm del",text:"✕",onclick:function(){S.items.splice(i,1);renderEditor();changed();}})]));
+        (s?el("span"):el("button",{class:"btn sm ghost",text:"▲",onclick:function(){mv(S.items,i,-1);renderEditor();changed();}})),
+        (s?el("span"):el("button",{class:"btn sm ghost",text:"▼",onclick:function(){mv(S.items,i,1);renderEditor();changed();}})),
+        el("button",{class:"btn sm del",text:"✕",title:"Remove from the list",onclick:function(){if(it.sid)S.itemsSkip[it.sid]=true;S.items.splice(i,1);renderEditor();changed();}})]));
     });
     c.appendChild(el("div",{class:"adds"},[
-      el("button",{class:"btn sm pri",text:"+ Add item",onclick:function(){S.items.push({label:"",text:""});renderEditor();changed();}}),
-      el("button",{class:"btn sm ghost",text:"Reset from section titles",onclick:function(){if(confirm("Replace your list with the current section titles?")){S.items=S.sections.map(function(s){return {label:"",text:s.title};});renderEditor();changed();}}})]));
+      el("button",{class:"btn sm pri",text:"+ Add item",onclick:function(){S.items.push({label:"",text:"",free:true});renderEditor();changed();}}),
+      el("button",{class:"btn sm ghost",text:"Reset from section titles",onclick:function(){if(confirm("Rebuild the list from the current sections? Your own wording is replaced.")){S.itemsSkip={};S.items=itemsFromSections();renderEditor();changed();}}})]));
   }
   var holder={blocks:S.itemsBlocks};
   renderBlocks(c,holder,"items-b");
@@ -418,7 +479,7 @@ function itemsCard(){
 
 function sectionCard(sec,si){
   var title=el("input",{type:"text"});title.value=sec.title;
-  title.addEventListener("input",function(){sec.title=title.value;changed();});
+  title.addEventListener("input",function(){sec.title=title.value;var ii=ITEM_INPUTS[sec.id];if(ii&&!(ii.row.text||"").trim())ii.input.value=sec.title;changed();});
   var np=el("input",{type:"checkbox"});np.checked=!!sec.newPage;
   np.addEventListener("change",function(){sec.newPage=np.checked;changed();});
   var c=el("div",{class:"card sec","data-focus":"s"+si},[
@@ -638,11 +699,10 @@ function unitsFor(){
   U.push({e:el("p",{class:"p",text:(S.greeting||"Good day")+(first?" "+first:"")})});
   S.intro.split(/\n{2,}/).forEach(function(t){if(t.trim())U.push({e:el("p",{class:"p",text:T(t.trim())})});});
   var FK={items:U.length};
-  var showItems=S.itemsCustom?S.items.some(function(x){return (x.text||"").trim();}):S.sections.length>0;
+  var irows=itemRows(),showItems=irows.length>0;
   if(showItems)U.push({e:el("div",{class:"h1",text:"1. ITEMS OF DISCUSSION"}),keep:true});
   var it=el("div",{class:"items"});
-  if(S.itemsCustom)S.items.forEach(function(x,i){if((x.text||"").trim()||(x.label||"").trim())it.appendChild(el("div",{},[el("b",{text:(x.label||"").trim()||"Item "+(i+2)}),"- "+T(x.text)]));});
-  else S.sections.forEach(function(s,i){it.appendChild(el("div",{},[el("b",{text:"Item "+(i+2)}),"- "+T(s.title)]));});
+  irows.forEach(function(r){it.appendChild(el("div",{},[el("b",{text:r.label}),"- "+T(r.text)]));});
   if(showItems)U.push({e:it});
   var GID=0,pk=false,gid=0;
   S.itemsBlocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["items-b"+bi]=U.length;var ek=effKeep(S.itemsBlocks,bi);if(!pk)gid=++GID;if(bu.length&&bi>0&&!pk)bu[0].gap=true;if(ek||pk)bu.forEach(function(u){u.grp=gid;});pk=ek;bu.forEach(function(u){U.push(u);});});
