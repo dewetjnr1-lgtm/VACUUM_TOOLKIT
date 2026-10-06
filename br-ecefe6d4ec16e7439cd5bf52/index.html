@@ -179,7 +179,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-06.13";
+var APP_BUILD="2026-10-06.14";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -267,7 +267,7 @@ function newReport(key,from){
   return {v:1,template:key,from:from||"andre",signers:[from||"andre"],
     ref:"",rev:"0",revNote:"",date:todayISO(),
     title:T.title,attn:"",company:"",attnEmail:"",phone:"",cc:"",ccEmail:"",
-    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),items:blankItems(),itemsV:2,itemsBlocks:[],hdrOrder:["company","phone","attn","from","attnEmail","cc","ccEmail","date"],hdrHide:{date:true}};
+    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),items:blankItems(),itemsV:3,itemsBlocks:[],hdrOrder:["company","phone","attn","from","attnEmail","cc","ccEmail","date"],hdrHide:{date:true}};
 }
 function todayISO(){var d=new Date();return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());}
 function p2(n){return (n<10?"0":"")+n;}
@@ -300,7 +300,7 @@ function autosave(){
 }
 function backupDraft(){if(embedded||!S)return;try{idbSet("previous",JSON.parse(JSON.stringify(S)));}catch(e){}}
 /* fill in anything a newer version of the app expects, so older drafts keep working */
-function normalise(d){
+function normalise(d,isDraft){
   var convert=!d.itemsV&&d.sections;   /* drafts from before the typed-in index */
   var base=newReport(d.template&&TEMPLATES[d.template]?d.template:"test",d.from||"andre");
   Object.keys(base).forEach(function(k){if(d[k]===undefined)d[k]=base[k];});
@@ -312,6 +312,8 @@ function normalise(d){
     else d.items=blankItems();
     d.itemsV=2;
   }
+  /* the working draft on this device: empty the index list once, back to the grey examples (saved reports are left alone) */
+  if(isDraft&&d.itemsV<3){d.items=blankItems();d.itemsV=3;}
   d.signers=(d.signers||[]).filter(function(k){return PEOPLE[k];});if(!d.signers.length)d.signers=[d.from];
   return d;
 }
@@ -876,10 +878,10 @@ function newRev(){
   if(raw){try{S=JSON.parse(raw);embedded=true;}catch(e){}}
   if(!S){try{var d=localStorage.getItem(DRAFT_KEY);if(d)S=JSON.parse(d);}catch(e){}}
   if(!S)S=newReport("blank","andre");
-  S=normalise(S);
+  S=normalise(S,!embedded);
   if(!embedded){
     try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
-    idbGet("draft").then(function(d){if(d&&d.sections&&!dirty){S=normalise(d);lastSaved=JSON.stringify(S);renderEditor();renderPreview();setStatus();}}).catch(function(){});
+    idbGet("draft").then(function(d){if(d&&d.sections&&!dirty){S=normalise(d,true);lastSaved=JSON.stringify(S);renderEditor();renderPreview();setStatus();}}).catch(function(){});
   }
   document.getElementById("bNew").onclick=function(){
     if(!confirm(embedded?"Start a new report? Save HTML first if you want to keep this one.":"Start a new report? Your current draft is kept as the 'previous' backup on this device."))return;
