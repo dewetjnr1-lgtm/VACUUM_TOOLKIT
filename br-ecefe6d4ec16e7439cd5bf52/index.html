@@ -179,7 +179,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-06.12";
+var APP_BUILD="2026-10-06.13";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -426,7 +426,10 @@ function itemsCard(){
     el("button",{class:"btn sm pri",text:"+ Add item",onclick:function(){S.items.push({label:"",text:""});renderEditor();changed();}}),
     el("button",{class:"btn sm ghost",text:"Fill from section titles",onclick:function(){
       if(S.items.some(function(r){return (r.text||"").trim();})&&!confirm("Replace what you typed with the current section titles?"))return;
-      S.items=S.sections.map(function(s){return {label:"",text:s.title};});if(!S.items.length)S.items=blankItems();renderEditor();changed();}})]));
+      S.items=S.sections.map(function(s){return {label:"",text:s.title};});if(!S.items.length)S.items=blankItems();renderEditor();changed();}}),
+    el("button",{class:"btn sm del",text:"Clear all",title:"Empty the list and start again with the grey examples",onclick:function(){
+      if(!confirm("Empty the whole Items of discussion list? Nothing else in the report is touched."))return;
+      S.items=blankItems();renderEditor();changed();}})]));
   var holder={blocks:S.itemsBlocks};
   renderBlocks(c,holder,"items-b");
   c.appendChild(addBar(holder));
