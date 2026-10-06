@@ -179,7 +179,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-06.11";
+var APP_BUILD="2026-10-06.12";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -267,7 +267,7 @@ function newReport(key,from){
   return {v:1,template:key,from:from||"andre",signers:[from||"andre"],
     ref:"",rev:"0",revNote:"",date:todayISO(),
     title:T.title,attn:"",company:"",attnEmail:"",phone:"",cc:"",ccEmail:"",
-    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),itemsCustom:false,items:[],itemsBlocks:[],hdrOrder:["company","phone","attn","from","attnEmail","cc","ccEmail","date"],hdrHide:{date:true}};
+    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),items:blankItems(),itemsV:2,itemsBlocks:[],hdrOrder:["company","phone","attn","from","attnEmail","cc","ccEmail","date"],hdrHide:{date:true}};
 }
 function todayISO(){var d=new Date();return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());}
 function p2(n){return (n<10?"0":"")+n;}
@@ -301,9 +301,17 @@ function autosave(){
 function backupDraft(){if(embedded||!S)return;try{idbSet("previous",JSON.parse(JSON.stringify(S)));}catch(e){}}
 /* fill in anything a newer version of the app expects, so older drafts keep working */
 function normalise(d){
+  var convert=!d.itemsV&&d.sections;   /* drafts from before the typed-in index */
   var base=newReport(d.template&&TEMPLATES[d.template]?d.template:"test",d.from||"andre");
   Object.keys(base).forEach(function(k){if(d[k]===undefined)d[k]=base[k];});
   if(!PEOPLE[d.from])d.from="andre";
+  if(convert){
+    var byId={};d.sections.forEach(function(s){if(s.id)byId[s.id]=s;});
+    if(d.itemsCustom&&d.items&&d.items.length)d.items=d.items.map(function(r){var s=r.sid&&byId[r.sid];return {label:r.label||"",text:(r.text||"").trim()?r.text:(s?s.title:"")};});
+    else if(d.sections.length)d.items=d.sections.map(function(s){return {label:"",text:s.title};});
+    else d.items=blankItems();
+    d.itemsV=2;
+  }
   d.signers=(d.signers||[]).filter(function(k){return PEOPLE[k];});if(!d.signers.length)d.signers=[d.from];
   return d;
 }
@@ -386,96 +394,39 @@ function addBar(sec){
   ]);
 }
 
-/* ---------- index (items of discussion) kept in step with the sections ---------- */
+/* ---------- index (items of discussion): typed by you; an empty row never prints ---------- */
 var ITEM_INPUTS={};
-function newSid(){return "s"+Math.random().toString(36).slice(2,8);}
-function syncItems(){
-  S.sections.forEach(function(s){if(!s.id)s.id=newSid();});
-  if(!S.itemsSkip)S.itemsSkip={};
-  if(!S.itemsCustom)return;
-  var byId={};S.sections.forEach(function(s){byId[s.id]=s;});
-  /* rows pointing at a section that no longer exists go away */
-  S.items=S.items.filter(function(r){return !r.sid||byId[r.sid];});
-  var used={};S.items.forEach(function(r){if(r.sid)used[r.sid]=true;});
-  /* older lists: link a typed row to the section with the same title, in order */
-  S.items.forEach(function(r){
-    if(r.sid||!(r.text||"").trim())return;
-    var t=r.text.trim().toLowerCase();
-    var s=S.sections.filter(function(x){return !used[x.id]&&(x.title||"").trim().toLowerCase()===t;})[0];
-    if(s){r.sid=s.id;used[s.id]=true;delete r.text;}
-  });
-  /* leftovers of an older typed list: line them up with the sections still unused, in order, and use the section titles */
-  S.items.forEach(function(r){
-    if(r.sid||r.free||!(r.text||"").trim())return;
-    var s=S.sections.filter(function(x){return !used[x.id];})[0];
-    if(s){r.sid=s.id;used[s.id]=true;delete r.text;}
-  });
-  /* any section not in the list yet is added right after the one before it */
-  S.sections.forEach(function(s,si){
-    if(used[s.id])return;
-    var at=S.items.length;
-    for(var k=si-1;k>=0;k--){var p=S.items.map(function(r){return r.sid;}).indexOf(S.sections[k].id);if(p>-1){at=p+1;break;}}
-    S.items.splice(at,0,{sid:s.id,label:""});used[s.id]=true;
-  });
-  /* linked rows always follow the section order; your own extra rows stay after the row they came after */
-  var anchor=null,after={};
-  S.items.forEach(function(r){if(r.sid)anchor=r.sid;else{(after[anchor||"_start"]=after[anchor||"_start"]||[]).push(r);}});
-  var order={};S.sections.forEach(function(s,i){order[s.id]=i;});
-  var linked=S.items.filter(function(r){return r.sid;}).sort(function(a,b){return order[a.sid]-order[b.sid];});
-  var res=(after._start||[]).slice();
-  linked.forEach(function(r){res.push(r);(after[r.sid]||[]).forEach(function(f){res.push(f);});});
-  S.items=res;
-}
-/* what the report prints: [{label,text}] */
+var ITEM_EXAMPLES=["e.g. Introduction","e.g. Pump details","e.g. Photo report","e.g. Conclusion"];
+function blankItems(){return [{label:"",text:""},{label:"",text:""},{label:"",text:""},{label:"",text:""}];}
+/* what the report prints: [{label,text}] - only rows that have something typed in */
 function itemRows(){
-  syncItems();
-  if(!S.itemsCustom)return S.sections.map(function(s,i){return {label:"Item "+(i+2),text:s.title};});
-  var out=[];
-  S.items.forEach(function(r,i){
-    var s=r.sid&&S.sections.filter(function(x){return x.id===r.sid;})[0];
-    var num=s?S.sections.indexOf(s)+2:i+2;
-    var text=(r.text||"").trim()?r.text:(s?s.title:"");
-    var label=(r.label||"").trim()||(s?"Item "+num:"");
-    if((text||"").trim()||(r.label||"").trim())out.push({label:label,text:text});
+  var out=[],n=0;
+  S.items.forEach(function(r){
+    var text=(r.text||"").trim(),lab=(r.label||"").trim();
+    if(!text&&!lab)return;
+    n++;
+    out.push({label:lab||("Item "+(n+1)),text:r.text||""});
   });
   return out;
 }
-function itemsFromSections(){return S.sections.map(function(s){return {sid:s.id,label:""};});}
 function itemsCard(){
-  syncItems();ITEM_INPUTS={};
-  var cb=el("input",{type:"checkbox"});cb.checked=!!S.itemsCustom;
-  cb.addEventListener("change",function(){
-    S.itemsCustom=cb.checked;
-    if(S.itemsCustom){S.itemsSkip={};if(!S.items.length)S.items=itemsFromSections();}
-    renderEditor();changed();
-  });
   var c=el("div",{class:"card sec","data-focus":"items"},[el("h3",{text:"1. Items of discussion"}),
-    el("div",{class:"chk"},[cb," Edit the list myself (otherwise it is built from the section titles below)"])]);
-  if(S.itemsCustom){
-    c.appendChild(el("p",{class:"hint",text:"Each row is tied to its section: moving a row with the arrows moves its section in the report too, deleting it deletes the section, and renaming or adding sections updates the list by itself. Type over a row to word it your own way, or type your own label such as 'Items 2-7'."}));
-    S.items.forEach(function(it,i){
-      var s=it.sid&&S.sections.filter(function(x){return x.id===it.sid;})[0];
-      var num=s?S.sections.indexOf(s)+2:i+2;
-      var l=el("input",{type:"text",placeholder:"Item "+num}),t=el("input",{type:"text",placeholder:s?"":"Description"});
-      l.value=it.label||"";t.value=(it.text||"").trim()?it.text:(s?s.title:"");
-      l.addEventListener("input",function(){it.label=l.value;changed();});
-      t.addEventListener("input",function(){
-        if(s&&t.value===s.title)delete it.text;else it.text=t.value;changed();});
-      if(s)ITEM_INPUTS[s.id]={input:t,row:it};
-      c.appendChild(el("div",{class:"row2",style:"grid-template-columns:90px 1fr auto auto auto"},[l,t,
-        el("button",{class:"btn sm ghost",text:"▲",title:s?"Move this item and its section up":"Move up",onclick:function(){if(s)mv(S.sections,S.sections.indexOf(s),-1);else mv(S.items,i,-1);renderEditor();changed();}}),
-        el("button",{class:"btn sm ghost",text:"▼",title:s?"Move this item and its section down":"Move down",onclick:function(){if(s)mv(S.sections,S.sections.indexOf(s),1);else mv(S.items,i,1);renderEditor();changed();}}),
-        el("button",{class:"btn sm del",text:"✕",title:"Delete this item (and its section)",onclick:function(){
-          if(s){
-            if(!confirm("Delete section "+num+" \""+s.title+"\" from the report as well, including everything in it (text and photos)?"))return;
-            S.sections.splice(S.sections.indexOf(s),1);
-          }else S.items.splice(i,1);
-          renderEditor();changed();}})]));
-    });
-    c.appendChild(el("div",{class:"adds"},[
-      el("button",{class:"btn sm pri",text:"+ Add item",onclick:function(){S.items.push({label:"",text:"",free:true});renderEditor();changed();}}),
-      el("button",{class:"btn sm ghost",text:"Reset from section titles",onclick:function(){if(confirm("Rebuild the list from the current sections? Your own wording is replaced.")){S.itemsSkip={};S.items=itemsFromSections();renderEditor();changed();}}})]));
-  }
+    el("p",{class:"hint",text:"Type your own items. Rows left empty do not appear in the report. Leave the label blank for automatic numbering (Item 2, Item 3 ...), or type your own, e.g. 'Items 2-7'."})]);
+  S.items.forEach(function(it,i){
+    var l=el("input",{type:"text",placeholder:"Item "+(i+2)}),t=el("input",{type:"text",placeholder:ITEM_EXAMPLES[i]||"Description"});
+    l.value=it.label||"";t.value=it.text||"";
+    l.addEventListener("input",function(){it.label=l.value;changed();});
+    t.addEventListener("input",function(){it.text=t.value;changed();});
+    c.appendChild(el("div",{class:"row2",style:"grid-template-columns:90px 1fr auto auto auto"},[l,t,
+      el("button",{class:"btn sm ghost",text:"▲",onclick:function(){mv(S.items,i,-1);renderEditor();changed();}}),
+      el("button",{class:"btn sm ghost",text:"▼",onclick:function(){mv(S.items,i,1);renderEditor();changed();}}),
+      el("button",{class:"btn sm del",text:"✕",title:"Remove this row",onclick:function(){S.items.splice(i,1);renderEditor();changed();}})]));
+  });
+  c.appendChild(el("div",{class:"adds"},[
+    el("button",{class:"btn sm pri",text:"+ Add item",onclick:function(){S.items.push({label:"",text:""});renderEditor();changed();}}),
+    el("button",{class:"btn sm ghost",text:"Fill from section titles",onclick:function(){
+      if(S.items.some(function(r){return (r.text||"").trim();})&&!confirm("Replace what you typed with the current section titles?"))return;
+      S.items=S.sections.map(function(s){return {label:"",text:s.title};});if(!S.items.length)S.items=blankItems();renderEditor();changed();}})]));
   var holder={blocks:S.itemsBlocks};
   renderBlocks(c,holder,"items-b");
   c.appendChild(addBar(holder));
