@@ -175,7 +175,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-06.4";
+var APP_BUILD="2026-10-06.5";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -202,6 +202,10 @@ var CHEM_INTRO=[
 ].join("\n\n");
 
 var TEMPLATES={
+ blank:{
+  label:"Blank",title:"",subject:"",intro:"",
+  sections:function(){return [];}
+ },
  test:{
   label:"Test & Scope  (performance test + internal inspection)",
   title:"PERFORMANCE TEST AND PUMP INSPECTION\nFEEDBACK REPORT",
@@ -323,12 +327,6 @@ function renderEditor(){
   var host=document.getElementById("edit"),keep=host.scrollTop;
   host.textContent="";
   /* template + people */
-  var tsel=el("select",{},Object.keys(TEMPLATES).map(function(k){var o=el("option",{value:k,text:TEMPLATES[k].label});if(k===S.template)o.selected=true;return o;}));
-  tsel.addEventListener("change",function(){
-    if(!confirm("Switch to this report type? This replaces the sections below with the new type's starting layout (your header details are kept)."))
-      {tsel.value=S.template;return;}
-    var T=TEMPLATES[tsel.value];S.template=tsel.value;S.sections=T.sections();S.title=T.title;S.subject=T.subject;S.intro=T.intro;renderEditor();changed();
-  });
   var fsel=el("select",{},Object.keys(PEOPLE).map(function(k){var o=el("option",{value:k,text:PEOPLE[k].name});if(k===S.from)o.selected=true;return o;}));
   fsel.addEventListener("change",function(){
     var old=S.from;S.from=fsel.value;
@@ -343,7 +341,6 @@ function renderEditor(){
   }));
   host.appendChild(el("div",{class:"card"},[el("h3",{text:"Report type & author"}),
     el("div",{class:"grid"},[
-      el("label",{class:"f full"},["Report type",tsel]),
       el("label",{class:"f"},["From (fills in details automatically)",moveArrows("from"),fsel]),
       el("div",{class:"f"},["Sign off with",chk])
     ])]));
@@ -636,11 +633,12 @@ function unitsFor(){
   U.push({e:el("p",{class:"p",text:(S.greeting||"Good day")+(first?" "+first:"")})});
   S.intro.split(/\n{2,}/).forEach(function(t){if(t.trim())U.push({e:el("p",{class:"p",text:T(t.trim())})});});
   var FK={items:U.length};
-  U.push({e:el("div",{class:"h1",text:"1. ITEMS OF DISCUSSION"}),keep:true});
+  var showItems=S.itemsCustom?S.items.some(function(x){return (x.text||"").trim();}):S.sections.length>0;
+  if(showItems)U.push({e:el("div",{class:"h1",text:"1. ITEMS OF DISCUSSION"}),keep:true});
   var it=el("div",{class:"items"});
   if(S.itemsCustom)S.items.forEach(function(x,i){if((x.text||"").trim()||(x.label||"").trim())it.appendChild(el("div",{},[el("b",{text:(x.label||"").trim()||"Item "+(i+2)}),"- "+T(x.text)]));});
   else S.sections.forEach(function(s,i){it.appendChild(el("div",{},[el("b",{text:"Item "+(i+2)}),"- "+T(s.title)]));});
-  U.push({e:it});
+  if(showItems)U.push({e:it});
   var GID=0,pk=false,gid=0;
   S.itemsBlocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["items-b"+bi]=U.length;var ek=effKeep(S.itemsBlocks,bi);if(!pk)gid=++GID;if(bu.length&&bi>0&&!pk)bu[0].gap=true;if(ek||pk)bu.forEach(function(u){u.grp=gid;});pk=ek;bu.forEach(function(u){U.push(u);});});
   S.sections.forEach(function(s,si){
@@ -853,7 +851,7 @@ function newRev(){
   var raw=document.getElementById("saved-data").textContent.trim();
   if(raw){try{S=JSON.parse(raw);embedded=true;}catch(e){}}
   if(!S){try{var d=localStorage.getItem(DRAFT_KEY);if(d)S=JSON.parse(d);}catch(e){}}
-  if(!S)S=newReport("test","andre");
+  if(!S)S=newReport("blank","andre");
   S=normalise(S);
   if(!embedded){
     try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
@@ -861,8 +859,8 @@ function newRev(){
   }
   document.getElementById("bNew").onclick=function(){
     if(!confirm(embedded?"Start a new report? Save HTML first if you want to keep this one.":"Start a new report? Your current draft is kept as the 'previous' backup on this device."))return;
-    var k=prompt("New report type:\n1 = Test & Scope\n2 = Chemical Flush / Descaling\n3 = Field Service","1");
-    var key={"1":"test","2":"flush","3":"service"}[(k||"").trim()];if(!key)return;
+    var k=prompt("Start from:\n0 = a blank report (you build it yourself)\n1 = Test & Scope\n2 = Chemical Flush / Descaling\n3 = Field Service","0");
+    var key={"0":"blank","1":"test","2":"flush","3":"service"}[k===null?"":(k.trim()||"0")];if(!key)return;
     backupDraft();S=newReport(key,S.from);embedded=false;dirty=false;lastSaved="";autosave();renderEditor();renderPreview();setStatus();
   };
   document.getElementById("bOpen").onclick=function(){document.getElementById("fOpen").click();};
