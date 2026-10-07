@@ -186,7 +186,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-07.4";
+var APP_BUILD="2026-10-07.5";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -430,7 +430,7 @@ function pumpCard(){
     renderEditor();changed();
   });
   var c=el("div",{class:"card sec","data-focus":"pump"},[el("h3",{text:"Pump details"}),
-    el("div",{class:"chk"},[cb,"Include the pump details table in the report"])]);
+    el("div",{class:"chk"},[cb,"Include the pump details table in the report"]),P.on?itemSelect(P):null]);
   if(P.on){
     c.appendChild(el("p",{class:"hint",text:"Fill in what you have. It prints under the item on the left that says Pump Details, with the same number. Lines you leave empty are left out."}));
     P.rows.forEach(function(r,i){
@@ -447,13 +447,25 @@ function pumpCard(){
   return c;
 }
 /* units for the report: heading + table, only when ticked and there is something to show */
+function itemSelect(obj){
+  var sel=el("select",{style:"padding:5px 7px;border:1px solid #bfc5ca;border-radius:5px;max-width:100%"});
+  var fill=function(){
+    sel.textContent="";sel.appendChild(el("option",{value:"",text:"\u2014 no item (keeps its own number)"}));
+    itemRows().forEach(function(r,i){var o=el("option",{value:r.id,text:"Item "+itemNum(r.label,i)+" \u2013 "+(r.text||"")});if(obj.item===r.id)o.selected=true;sel.appendChild(o);});
+  };
+  fill();sel.addEventListener("mousedown",fill);sel.addEventListener("focus",fill);
+  sel.addEventListener("change",function(){if(sel.value)obj.item=sel.value;else delete obj.item;changed();});
+  return el("div",{class:"hint",style:"display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:6px 0"},["Belongs to item:",sel]);
+}
 function pumpUnits(irows){
   var P=S.pump,out=[];if(!P||!P.on)return out;
-  var at=-1;irows.forEach(function(r,i){if(at<0&&/pump\s*details/i.test(r.text))at=i;});
+  var at=-1,tied=false;
+  if(P.item){irows.forEach(function(r,i){if(r.id===P.item)at=i;});tied=at>-1;}
+  if(at<0)irows.forEach(function(r,i){if(at<0&&/pump\s*details/i.test(r.text))at=i;});
   var filled=P.rows.some(function(r){return (r[1]||"").trim();});
   if(at<0&&!filled)return out;
-  var num="";if(at>-1){var m=/(\d+)/.exec(irows[at].label);num=(m?m[1]:String(at+2))+". ";}
-  out.push({e:el("div",{class:"h1",text:num+"PUMP DETAILS"}),keep:true,focus:"pump"});
+  var num=at>-1?itemNum(irows[at].label,at)+". ":"";
+  out.push({e:el("div",{class:"h1",text:num+(tied?T(irows[at].text):"PUMP DETAILS")}),keep:true});
   var tb=el("table",{class:"kv"});
   P.rows.forEach(function(r){if(!(r[0]||"").trim()&&!(r[1]||"").trim())return;tb.appendChild(el("tr",{},[el("td",{text:T(r[0])}),el("td",{text:"- "+T(r[1])})]));});
   out.push({e:tb});
@@ -487,15 +499,26 @@ function itemText(r){
   return s&&t?s+" - "+t:(s||t);
 }
 /* what the report prints: [{label,text}] - only rows that have something in them */
+function newItemId(){return "i"+Math.random().toString(36).slice(2,8);}
+function itemNum(label,i){var m=/(\d+)/.exec(label||"");return m?m[1]:String(i+2);}
 function itemRows(){
   var out=[],n=0;
   S.items.forEach(function(r){
     var text=itemText(r),lab=(r.label||"").trim();
     if(!text&&!lab)return;
+    if(!r.id)r.id=newItemId();
     n++;
-    out.push({label:lab||("Item "+(n+1)),text:text});
+    out.push({id:r.id,svc:!!(r.svc&&r.svc.length),label:lab||("Item "+(n+1)),text:text});
   });
   return out;
+}
+/* the number printed before the first service explanation: the number of the Item 2 row */
+function autoPrefix(b){
+  if(!b.auto)return "";
+  var first=null;S.itemsBlocks.forEach(function(x){if(!first&&x.auto)first=x;});
+  if(b!==first)return "\u2022 ";
+  var rows=itemRows(),i=-1;rows.forEach(function(r,ix){if(i<0&&r.svc)i=ix;});
+  return (i>-1?itemNum(rows[i].label,i):"2")+". ";
 }
 /* ---------- ticking a service brings in its standard explanation as a section ---------- */
 var AUTO={
@@ -512,34 +535,38 @@ var AUTO_ORDER=["flush","test","inspect"];
 var AUTO_TITLE={flush:AUTO.flush.title,test:AUTO.test.title,inspect:AUTO.inspect.title};
 var AUTO_TITLE_OLD={flush:"About the chemical flush",test:"About the performance test",inspect:"About the inspection"};   /* wording used by mistake in one earlier build */
 function bul(t){return String(t||"").split(/\n{2,}/).map(function(p){return p.trim();}).filter(Boolean).join("\n");}
+function nz(t){return String(t||"").split(/\n+/).map(function(x){return x.trim();}).filter(Boolean).join("\n");}
 function autoBlockUntouched(b,k){
-  var known=[bul(AUTO[k].text)].concat((AUTO_OLD[k]||[]).map(bul));
-  return b.t==="bullets"&&b.auto===k&&known.indexOf(b.text)>-1&&((b.title||"")===AUTO_TITLE[k]||(b.title||"")===AUTO_TITLE_OLD[k]);
+  var known=[AUTO[k].text].concat(AUTO_OLD[k]||[]).map(nz);
+  var t=b.title||"";
+  return b.auto===k&&known.indexOf(nz(b.text))>-1&&(t===AUTO_TITLE[k]||t===AUTO_TITLE_OLD[k]);
 }
 /* add the bullet blocks for ticked services; with removeToo, take away those of un-ticked services (only if you have not edited them) */
 function syncAuto(d,removeToo){
   var want={};(d.items||[]).forEach(function(r){(r.svc||[]).forEach(function(n){if(AUTO_OF[n])want[AUTO_OF[n]]=true;});});
   d.autoOff=d.autoOff||{};d.itemsBlocks=d.itemsBlocks||[];d.sections=d.sections||[];
   var has=function(k){return d.itemsBlocks.some(function(b){return b.auto===k;});};
+  /* explanations made as bullets by one earlier build go back to ordinary paragraphs */
+  d.itemsBlocks.forEach(function(b){if(b.auto&&b.t==="bullets"){b.t="text";b.text=String(b.text||"").split("\n").filter(function(x){return x.trim();}).join("\n\n");}});
   /* earlier versions made a numbered section: turn an untouched one into bullets, and let a section you added to stay as an ordinary section */
   d.sections=d.sections.filter(function(s){
     var k=s.auto;if(!k)return true;
     var only=s.blocks&&s.blocks.length===1&&s.blocks[0].t==="text";
     if(!only){delete s.auto;return true;}
-    if(!has(k)&&!d.autoOff[k])d.itemsBlocks.push({t:"bullets",auto:k,title:AUTO_TITLE[k],text:bul(s.blocks[0].text)});
+    if(!has(k)&&!d.autoOff[k])d.itemsBlocks.push({t:"text",auto:k,title:AUTO_TITLE[k],text:s.blocks[0].text});
     return false;
   });
   AUTO_ORDER.forEach(function(k){
     if(want[k]&&!has(k)&&!d.autoOff[k]){
       var at=0;d.itemsBlocks.forEach(function(b,i){if(b.auto&&AUTO_ORDER.indexOf(b.auto)<AUTO_ORDER.indexOf(k))at=i+1;});
-      d.itemsBlocks.splice(at,0,{t:"bullets",auto:k,title:AUTO_TITLE[k],text:bul(AUTO[k].text)});
+      d.itemsBlocks.splice(at,0,{t:"text",auto:k,title:AUTO_TITLE[k],text:AUTO[k].text});
     }else if(!want[k]&&removeToo){
       d.itemsBlocks=d.itemsBlocks.filter(function(b){return !(b.auto===k&&autoBlockUntouched(b,k));});
     }
   });
   /* bullets still holding an earlier version of the standard wording get the current wording */
   d.itemsBlocks.forEach(function(b){if(b.auto&&b.title===AUTO_TITLE_OLD[b.auto])b.title=AUTO_TITLE[b.auto];});
-  d.itemsBlocks.forEach(function(b){if(b.auto&&autoBlockUntouched(b,b.auto)){b.text=bul(AUTO[b.auto].text);b.title=AUTO_TITLE[b.auto];}});
+  d.itemsBlocks.forEach(function(b){if(b.auto&&autoBlockUntouched(b,b.auto)){b.text=AUTO[b.auto].text;b.title=AUTO_TITLE[b.auto];}});
 }
 
 var svcKeepOpen=false;
@@ -603,7 +630,7 @@ function sectionCard(sec,si){
       el("button",{class:"btn sm ghost",text:"▼",onclick:function(){mv(S.sections,si,1);renderEditor();changed();}}),
       el("button",{class:"btn sm del",text:"Delete",onclick:function(){if(confirm("Delete this whole section?")){if(sec.auto){S.autoOff=S.autoOff||{};S.autoOff[sec.auto]=true;}S.sections.splice(si,1);renderEditor();changed();}}})
     ]),
-    el("div",{class:"chk"},[np," Start this section on a new page"])
+    el("div",{class:"chk"},[np," Start this section on a new page"]),itemSelect(sec)
   ]);
   renderBlocks(c,sec,"s"+si+"-b");
   c.appendChild(addBar(sec));
@@ -823,10 +850,21 @@ function unitsFor(){
   if(showItems)U.push({e:it});
   var GID=0,pk=false,gid=0;
   S.itemsBlocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["items-b"+bi]=U.length;var ek=effKeep(S.itemsBlocks,bi);if(!pk)gid=++GID;if(bu.length&&bi>0&&!pk)bu[0].gap=true;if(ek||pk)bu.forEach(function(u){u.grp=gid;});pk=ek;bu.forEach(function(u){U.push(u);});});
-  var pu=pumpUnits(irows);if(pu.length)FK.pump=U.length;pu.forEach(function(u){U.push(u);});
-  S.sections.forEach(function(s,si){
+  /* the pump table and each section: one tied to an item prints in that item's order, with its number and wording; the rest stay where they were */
+  var parts=[{kind:"pump"}];S.sections.forEach(function(s,si){parts.push({kind:"sec",si:si});});
+  var itemAt=function(id){var at=-1;if(id)irows.forEach(function(r,i){if(r.id===id)at=i;});return at;};
+  var partItem=function(p){return itemAt(p.kind==="pump"?(S.pump&&S.pump.item):S.sections[p.si].item);};
+  var slots=[],tiedParts=[];parts.forEach(function(p,i){if(partItem(p)>-1){slots.push(i);tiedParts.push(p);}});
+  tiedParts.sort(function(a,b){return partItem(a)-partItem(b);});
+  slots.forEach(function(pos,k){parts[pos]=tiedParts[k];});
+  var firstSec=true;
+  parts.forEach(function(p){
+    if(p.kind==="pump"){var pu=pumpUnits(irows);if(pu.length)FK.pump=U.length;pu.forEach(function(u){U.push(u);});return;}
+    var si=p.si,s=S.sections[si],ia=partItem(p);
+    var head=ia>-1?itemNum(irows[ia].label,ia)+". "+T(irows[ia].text):(si+2)+". "+T(s.title);
     FK["s"+si]=U.length;
-    U.push({e:el("div",{class:"h1",text:(si+2)+". "+T(s.title)}),keep:true,brk:si===0||!!s.newPage});
+    U.push({e:el("div",{class:"h1",text:head}),keep:true,brk:firstSec||!!s.newPage});
+    firstSec=false;
     pk=false;
     s.blocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["s"+si+"-b"+bi]=U.length;var ek=effKeep(s.blocks,bi);if(!pk)gid=++GID;if(bu.length&&bi>0&&!pk)bu[0].gap=true;if(ek||pk)bu.forEach(function(u){u.grp=gid;});pk=ek;bu.forEach(function(u){U.push(u);});});
   });
@@ -842,6 +880,7 @@ function unitsFor(){
 function blockUnits(b){
   var out=[];
   if(b.t==="text"){
+    if(b.title)out.push({e:el("div",{class:"h1",text:autoPrefix(b)+T(b.title)}),keep:true});
     (b.text||"").split(/\n{2,}/).forEach(function(t){if(t.trim()!=="")out.push({e:el("p",{class:"p",text:T(t.replace(/^\n+|\n+$/g,""))})});});
   }else if(b.t==="bullets"){
     if(b.title)out.push({e:el("p",{class:"p",style:"font-weight:700;margin-bottom:1.5mm",text:T(b.title)}),keep:true});
