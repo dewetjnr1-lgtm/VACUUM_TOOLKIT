@@ -186,7 +186,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-07.3";
+var APP_BUILD="2026-10-07.4";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -274,7 +274,7 @@ function newReport(key,from){
   return {v:1,template:key,from:from||"andre",signers:[from||"andre"],
     ref:"",rev:"0",revNote:"",date:todayISO(),
     title:T.title,attn:"",company:"",attnEmail:"",phone:"",cc:"",ccEmail:"",
-    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),items:blankItems(),itemsV:4,itemsBlocks:[],hdrOrder:["company","phone","attn","from","attnEmail","cc","ccEmail","date"],hdrHide:{date:true}};
+    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),items:blankItems(),itemsV:4,pump:{on:true,rows:pumpRowsDefault()},itemsBlocks:[],hdrOrder:["company","phone","attn","from","attnEmail","cc","ccEmail","date"],hdrHide:{date:true}};
 }
 function todayISO(){var d=new Date();return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());}
 function p2(n){return (n<10?"0":"")+n;}
@@ -308,9 +308,11 @@ function autosave(){
 function backupDraft(){if(embedded||!S)return;try{idbSet("previous",JSON.parse(JSON.stringify(S)));}catch(e){}}
 /* fill in anything a newer version of the app expects, so older drafts keep working */
 function normalise(d,isDraft){
+  var needPumpRestore=!d.pump;
   var convert=!d.itemsV&&d.sections;   /* drafts from before the typed-in index */
   var base=newReport(d.template&&TEMPLATES[d.template]?d.template:"test",d.from||"andre");
   Object.keys(base).forEach(function(k){if(d[k]===undefined)d[k]=base[k];});
+  if(needPumpRestore&&isDraft)d.pumpRestore=true;   /* bring back typed pump details from the backup once */
   if(!PEOPLE[d.from])d.from="andre";
   if(convert){
     var byId={};d.sections.forEach(function(s){if(s.id)byId[s.id]=s;});
@@ -390,6 +392,7 @@ function renderEditor(){
   ]);
   host.appendChild(el("div",{class:"card","data-focus":"hdr"},[el("h3",{text:"Report header"}),g]));
   host.appendChild(itemsCard());
+  host.appendChild(pumpCard());
   /* sections */
   S.sections.forEach(function(sec,si){host.appendChild(sectionCard(sec,si));});
   host.appendChild(el("div",{class:"adds"},[
@@ -409,6 +412,67 @@ function addBar(sec){
     add("+ Details table",function(){return {t:"kv",rows:[["",""]]};}),
     add("+ Vibration table",function(){return {t:"vib",de:["","","",""],nde:["","","",""],note:VIB_NOTE};})
   ]);
+}
+
+/* ---------- pump details: a tick box, an editable table, and your own extra lines ---------- */
+function pumpRowsDefault(){return [["Manufacturer",""],["Model/Size",""],["Serial Number",""],["Plant",""],["Pump Duty",""],["Position Number",""],["Year of Manufacture/overhaul",""]];}
+function pumpItemIndex(){   /* which item row on the left says "Pump Details" (position among the filled rows), or -1 */
+  var rows=itemRows(),at=-1;rows.forEach(function(r,i){if(at<0&&/pump\s*details/i.test(r.text))at=i;});return at;
+}
+function pumpCard(){
+  var P=S.pump;
+  var cb=el("input",{type:"checkbox"});cb.checked=!!P.on;
+  cb.addEventListener("change",function(){
+    P.on=cb.checked;
+    var has=S.items.some(function(r){return /pump\s*details/i.test(r.text||"");});
+    if(P.on&&!has){var e=S.items.filter(function(r){return !(r.text||"").trim()&&!(r.label||"").trim()&&!r.svc;})[0];if(e)e.text="Pump Details";else S.items.push({label:"",text:"Pump Details"});}
+    if(!P.on)S.items.forEach(function(r){if((r.text||"").trim()==="Pump Details"&&!(r.label||"").trim())r.text="";});
+    renderEditor();changed();
+  });
+  var c=el("div",{class:"card sec","data-focus":"pump"},[el("h3",{text:"Pump details"}),
+    el("div",{class:"chk"},[cb,"Include the pump details table in the report"])]);
+  if(P.on){
+    c.appendChild(el("p",{class:"hint",text:"Fill in what you have. It prints under the item on the left that says Pump Details, with the same number. Lines you leave empty are left out."}));
+    P.rows.forEach(function(r,i){
+      var k=el("input",{type:"text",placeholder:"Label"}),v=el("input",{type:"text",placeholder:"Value"});
+      k.value=r[0];v.value=r[1];
+      k.addEventListener("input",function(){r[0]=k.value;changed();});v.addEventListener("input",function(){r[1]=v.value;changed();});
+      c.appendChild(el("div",{class:"row2",style:"grid-template-columns:1fr 1.4fr auto auto auto"},[k,v,
+        el("button",{class:"btn sm ghost",text:"▲",onclick:function(){mv(P.rows,i,-1);renderEditor();changed();}}),
+        el("button",{class:"btn sm ghost",text:"▼",onclick:function(){mv(P.rows,i,1);renderEditor();changed();}}),
+        el("button",{class:"btn sm del",text:"✕",title:"Remove this line",onclick:function(){P.rows.splice(i,1);renderEditor();changed();}})]));
+    });
+    c.appendChild(el("div",{class:"adds"},[el("button",{class:"btn sm pri",text:"+ Add line",onclick:function(){P.rows.push(["",""]);renderEditor();changed();}})]));
+  }
+  return c;
+}
+/* units for the report: heading + table, only when ticked and there is something to show */
+function pumpUnits(irows){
+  var P=S.pump,out=[];if(!P||!P.on)return out;
+  var at=-1;irows.forEach(function(r,i){if(at<0&&/pump\s*details/i.test(r.text))at=i;});
+  var filled=P.rows.some(function(r){return (r[1]||"").trim();});
+  if(at<0&&!filled)return out;
+  var num="";if(at>-1){var m=/(\d+)/.exec(irows[at].label);num=(m?m[1]:String(at+2))+". ";}
+  out.push({e:el("div",{class:"h1",text:num+"PUMP DETAILS"}),keep:true,focus:"pump"});
+  var tb=el("table",{class:"kv"});
+  P.rows.forEach(function(r){if(!(r[0]||"").trim()&&!(r[1]||"").trim())return;tb.appendChild(el("tr",{},[el("td",{text:T(r[0])}),el("td",{text:"- "+T(r[1])})]));});
+  out.push({e:tb});
+  return out;
+}
+/* bring back the details you typed before the clean-up, from the backup kept on this device */
+function restorePump(){
+  if(!S.pumpRestore)return;
+  var flag=S.pumpRestore;delete S.pumpRestore;
+  idbGet("previous").then(function(p){
+    if(!p||!p.sections)return;
+    var vals={};
+    p.sections.forEach(function(s){(s.blocks||[]).forEach(function(b){
+      if(b.t==="kv"&&b.rows&&b.rows.some(function(r){return /manufacturer/i.test(r[0]||"");}))b.rows.forEach(function(r){if((r[1]||"").trim())vals[(r[0]||"").trim().toLowerCase()]=r[1];});
+    });});
+    var alias={"size":"model/size"};var any=false;
+    S.pump.rows.forEach(function(r){var key=r[0].toLowerCase();var v=vals[key]||vals[Object.keys(alias).filter(function(a){return alias[a]===key;})[0]];if(v&&!(r[1]||"").trim()){r[1]=v;any=true;}});
+    if(any){renderEditor();renderPreview();autosave();}
+  }).catch(function(){});
 }
 
 /* ---------- index (items of discussion): typed by you; an empty row never prints ---------- */
@@ -759,6 +823,7 @@ function unitsFor(){
   if(showItems)U.push({e:it});
   var GID=0,pk=false,gid=0;
   S.itemsBlocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["items-b"+bi]=U.length;var ek=effKeep(S.itemsBlocks,bi);if(!pk)gid=++GID;if(bu.length&&bi>0&&!pk)bu[0].gap=true;if(ek||pk)bu.forEach(function(u){u.grp=gid;});pk=ek;bu.forEach(function(u){U.push(u);});});
+  var pu=pumpUnits(irows);if(pu.length)FK.pump=U.length;pu.forEach(function(u){U.push(u);});
   S.sections.forEach(function(s,si){
     FK["s"+si]=U.length;
     U.push({e:el("div",{class:"h1",text:(si+2)+". "+T(s.title)}),keep:true,brk:si===0||!!s.newPage});
@@ -972,9 +1037,10 @@ function newRev(){
   if(!S){try{var d=localStorage.getItem(DRAFT_KEY);if(d)S=JSON.parse(d);}catch(e){}}
   if(!S)S=newReport("blank","andre");
   S=normalise(S,!embedded);
+  if(!embedded)restorePump();
   if(!embedded){
     try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
-    idbGet("draft").then(function(d){if(d&&d.sections&&!dirty){S=normalise(d,true);lastSaved=JSON.stringify(S);renderEditor();renderPreview();setStatus();}}).catch(function(){});
+    idbGet("draft").then(function(d){if(d&&d.sections&&!dirty){S=normalise(d,true);restorePump();lastSaved=JSON.stringify(S);renderEditor();renderPreview();setStatus();}}).catch(function(){});
   }
   document.getElementById("bNew").onclick=function(){
     if(!confirm(embedded?"Start a new report? Save HTML first if you want to keep this one.":"Start a new report? Your current draft is kept as the 'previous' backup on this device."))return;
