@@ -188,7 +188,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-07.6";
+var APP_BUILD="2026-10-08.1";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -438,7 +438,7 @@ function addBar(sec,withPump){
     add("+ Bullet list",function(){return {t:"bullets",text:""};}),
     add("+ Details table",function(){return {t:"kv",rows:[["",""]]};}),
     add("+ Vibration table",function(){return {t:"vib",de:["","","",""],nde:["","","",""],note:VIB_NOTE};}),
-    withPump?add("+ Pump details table",function(){return {t:"kv",rows:pumpRowsDefault()};}):null
+    add("+ Pump details table",function(){return {t:"kv",rows:pumpRowsDefault()};})
   ]);
 }
 
@@ -628,7 +628,7 @@ function itemsCard(){
     var area=el("div",{class:"itemarea"});
     var paint=function(){
       area.textContent="";
-      if(it.svc||!itemText(it).trim())return;
+      if(!itemText(it).trim())return;
       it.blocks=it.blocks||[];
       var holder={blocks:it.blocks};
       area.appendChild(el("div",{class:"hint",text:"What goes under this item in the report:"}));
@@ -657,8 +657,11 @@ function itemsCard(){
       if(!confirm("Empty the whole Items of discussion list? Nothing else in the report is touched."))return;
       S.items=blankItems();renderEditor();changed();}})]));
   var holder={blocks:S.itemsBlocks};
-  renderBlocks(c,holder,"items-b");
-  c.appendChild(addBar(holder));
+  var under=el("div",{class:"itemarea"});
+  under.appendChild(el("div",{class:"hint",text:"Under the whole list (prints right below the items list on page 1):"}));
+  renderBlocks(under,holder,"items-b");
+  under.appendChild(addBar(holder,true));
+  c.appendChild(under);
   return c;
 }
 
@@ -894,6 +897,12 @@ function unitsFor(){
   if(showItems)U.push({e:it});
   var GID=0,pk=false,gid=0;
   S.itemsBlocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["items-b"+bi]=U.length;var ek=effKeep(S.itemsBlocks,bi);if(!pk)gid=++GID;if(bu.length&&bi>0&&!pk)bu[0].gap=true;if(ek||pk)bu.forEach(function(u){u.grp=gid;});pk=ek;bu.forEach(function(u){U.push(u);});});
+  /* anything added under Item 2 (the services row) prints after its explanations */
+  irows.forEach(function(ir){
+    if(!ir.svc)return;
+    var r=ir.row,key="it-"+ir.id;pk=false;
+    (r.blocks||[]).forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK[key+"-b"+bi]=U.length;var ek=effKeep(r.blocks,bi);if(!pk)gid=++GID;if(bu.length&&bi>0&&!pk)bu[0].gap=true;if(ek||pk)bu.forEach(function(u){u.grp=gid;});pk=ek;bu.forEach(function(u){U.push(u);});});
+  });
   /* each typed item (except the services row) is a heading with its own content */
   var firstSec=true;
   irows.forEach(function(ir,ii){
