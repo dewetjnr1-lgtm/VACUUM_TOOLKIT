@@ -188,7 +188,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-08.1";
+var APP_BUILD="2026-10-08.2";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -543,7 +543,7 @@ function itemRows(){
 /* the number printed before the first service explanation: the number of the Item 2 row */
 function autoPrefix(b){
   if(!b.auto)return "";
-  var first=null;S.itemsBlocks.forEach(function(x){if(!first&&x.auto)first=x;});
+  var first=null;containers().forEach(function(c){c.blocks.forEach(function(x){if(!first&&x.auto)first=x;});});
   if(b!==first)return "\u2022 ";
   var rows=itemRows(),i=-1;rows.forEach(function(r,ix){if(i<0&&r.svc)i=ix;});
   return (i>-1?itemNum(rows[i].label,i):"2")+". ";
@@ -661,7 +661,7 @@ function itemsCard(){
   under.appendChild(el("div",{class:"hint",text:"Under the whole list (prints right below the items list on page 1):"}));
   renderBlocks(under,holder,"items-b");
   under.appendChild(addBar(holder,true));
-  c.appendChild(under);
+  c.insertBefore(under,c.querySelector(".itemwrap"));
   return c;
 }
 
@@ -693,6 +693,24 @@ function effKeep(list,i){
   return false;
 }
 /* draw the blocks of a section, wrapping blocks that are kept together in one visible frame */
+/* every place that holds blocks, in the order they sit on screen and print */
+function containers(){
+  var cs=[{blocks:S.itemsBlocks}];
+  S.items.forEach(function(it){if(itemText(it).trim()){it.blocks=it.blocks||[];cs.push({blocks:it.blocks});}});
+  S.sections.forEach(function(s){cs.push({blocks:s.blocks});});
+  return cs;
+}
+/* move a block one step; at the top or bottom of its place it carries on into the next or previous place */
+function moveBlock(arr,i,d){
+  var j=i+d;
+  if(j>=0&&j<arr.length){var t=arr[i];arr[i]=arr[j];arr[j]=t;return;}
+  var cs=containers(),ci=-1;cs.forEach(function(c,k){if(c.blocks===arr)ci=k;});
+  var ni=ci+d;if(ci<0||ni<0||ni>=cs.length)return;
+  var b=arr.splice(i,1)[0];
+  if(i>0&&arr[i-1])arr[i-1].keep=undefined;
+  b.keep=undefined;
+  if(d>0)cs[ni].blocks.unshift(b);else cs[ni].blocks.push(b);
+}
 function renderBlocks(c,holder,keyPrefix){
   var list=holder.blocks,i=0;
   while(i<list.length){
@@ -709,8 +727,8 @@ function renderBlocks(c,holder,keyPrefix){
 
 function blockCard(sec,b,bi){
   var head=el("div",{class:"bh"},[el("span",{text:BNAME[b.t]}),
-    el("button",{class:"btn sm ghost",text:"▲",onclick:function(){mv(sec.blocks,bi,-1);renderEditor();changed();}}),
-    el("button",{class:"btn sm ghost",text:"▼",onclick:function(){mv(sec.blocks,bi,1);renderEditor();changed();}}),
+    el("button",{class:"btn sm ghost",text:"▲",onclick:function(){moveBlock(sec.blocks,bi,-1);renderEditor();changed();}}),
+    el("button",{class:"btn sm ghost",text:"▼",onclick:function(){moveBlock(sec.blocks,bi,1);renderEditor();changed();}}),
     el("button",{class:"btn sm del",text:"✕",onclick:function(){if(b.auto){S.autoOff=S.autoOff||{};S.autoOff[b.auto]=true;}sec.blocks.splice(bi,1);renderEditor();changed();}})]);
   var body;
   if(b.t==="text"||b.t==="bullets"){
@@ -802,7 +820,11 @@ function blockCard(sec,b,bi){
     body.appendChild(th);
   }
   var kp=el("input",{type:"checkbox"});kp.checked=effKeep(sec.blocks,bi);kp.addEventListener("change",function(){b.keep=kp.checked;renderEditor();changed();});
-  return el("div",{class:"blk"},[head,body,el("div",{class:"chk",style:"margin-top:6px"},[kp," Keep together with the block below (stays on one page)"])]);
+  var kpa=null;
+  if(bi>0){kpa=el("input",{type:"checkbox"});kpa.checked=effKeep(sec.blocks,bi-1);kpa.addEventListener("change",function(){sec.blocks[bi-1].keep=kpa.checked;renderEditor();changed();});}
+  return el("div",{class:"blk"},[head,body,
+    kpa?el("div",{class:"chk",style:"margin-top:6px"},[kpa," Keep together with the block above (stays on one page)"]):null,
+    el("div",{class:"chk",style:"margin-top:6px"},[kp," Keep together with the block below (stays on one page)"])]);
 }
 function addPhotos(b,files){
   var list=[].slice.call(files),n=0;
@@ -897,20 +919,15 @@ function unitsFor(){
   if(showItems)U.push({e:it});
   var GID=0,pk=false,gid=0;
   S.itemsBlocks.forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK["items-b"+bi]=U.length;var ek=effKeep(S.itemsBlocks,bi);if(!pk)gid=++GID;if(bu.length&&bi>0&&!pk)bu[0].gap=true;if(ek||pk)bu.forEach(function(u){u.grp=gid;});pk=ek;bu.forEach(function(u){U.push(u);});});
-  /* anything added under Item 2 (the services row) prints after its explanations */
-  irows.forEach(function(ir){
-    if(!ir.svc)return;
-    var r=ir.row,key="it-"+ir.id;pk=false;
-    (r.blocks||[]).forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK[key+"-b"+bi]=U.length;var ek=effKeep(r.blocks,bi);if(!pk)gid=++GID;if(bu.length&&bi>0&&!pk)bu[0].gap=true;if(ek||pk)bu.forEach(function(u){u.grp=gid;});pk=ek;bu.forEach(function(u){U.push(u);});});
-  });
   /* each typed item (except the services row) is a heading with its own content */
   var firstSec=true;
   irows.forEach(function(ir,ii){
-    if(ir.svc)return;
     var r=ir.row,key="it-"+ir.id;
-    FK[key]=U.length;
-    U.push({e:el("div",{class:"h1",text:itemNum(ir.label,ii)+". "+T(ir.text)}),keep:true,brk:firstSec||!!r.newPage});
-    firstSec=false;
+    if(!ir.svc){   /* the services row has no heading of its own: its explanations carry the number */
+      FK[key]=U.length;
+      U.push({e:el("div",{class:"h1",text:itemNum(ir.label,ii)+". "+T(ir.text)}),keep:true,brk:firstSec||!!r.newPage});
+      firstSec=false;
+    }
     pk=false;
     (r.blocks||[]).forEach(function(b,bi){var bu=blockUnits(b);if(bu.length)FK[key+"-b"+bi]=U.length;var ek=effKeep(r.blocks,bi);if(!pk)gid=++GID;if(bu.length&&bi>0&&!pk)bu[0].gap=true;if(ek||pk)bu.forEach(function(u){u.grp=gid;});pk=ek;bu.forEach(function(u){U.push(u);});});
   });
