@@ -188,7 +188,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-08.2";
+var APP_BUILD="2026-10-08.4";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -572,29 +572,42 @@ function autoBlockUntouched(b,k){
 /* add the bullet blocks for ticked services; with removeToo, take away those of un-ticked services (only if you have not edited them) */
 function syncAuto(d,removeToo){
   var want={};(d.items||[]).forEach(function(r){(r.svc||[]).forEach(function(n){if(AUTO_OF[n])want[AUTO_OF[n]]=true;});});
-  d.autoOff=d.autoOff||{};d.itemsBlocks=d.itemsBlocks||[];d.sections=d.sections||[];
-  var has=function(k){return d.itemsBlocks.some(function(b){return b.auto===k;});};
+  d.autoOff=d.autoOff||{};d.itemsBlocks=d.itemsBlocks||[];d.sections=d.sections||[];d.items=d.items||[];
+  var svcRow=null;d.items.forEach(function(r){if(!svcRow&&r.svc)svcRow=r;});
+  var lists=function(){var a=[d.itemsBlocks];d.items.forEach(function(r){if(r.blocks)a.push(r.blocks);});d.sections.forEach(function(s){a.push(s.blocks||[]);});return a;};
+  var each=function(fn){lists().forEach(function(l){l.forEach(fn);});};
+  var has=function(k){var f=false;each(function(b){if(b.auto===k)f=true;});return f;};
+  var target=function(){if(!svcRow)return d.itemsBlocks;svcRow.blocks=svcRow.blocks||[];return svcRow.blocks;};
   /* explanations made as bullets by one earlier build go back to ordinary paragraphs */
-  d.itemsBlocks.forEach(function(b){if(b.auto&&b.t==="bullets"){b.t="text";b.text=String(b.text||"").split("\n").filter(function(x){return x.trim();}).join("\n\n");}});
-  /* earlier versions made a numbered section: turn an untouched one into bullets, and let a section you added to stay as an ordinary section */
+  each(function(b){if(b.auto&&b.t==="bullets"){b.t="text";b.text=String(b.text||"").split("\n").filter(function(x){return x.trim();}).join("\n\n");}});
+  /* earlier versions made a numbered section: turn an untouched one into a block, and let a section you added to stay as an ordinary section */
   d.sections=d.sections.filter(function(s){
     var k=s.auto;if(!k)return true;
     var only=s.blocks&&s.blocks.length===1&&s.blocks[0].t==="text";
     if(!only){delete s.auto;return true;}
-    if(!has(k)&&!d.autoOff[k])d.itemsBlocks.push({t:"text",auto:k,title:AUTO_TITLE[k],text:s.blocks[0].text});
+    if(!has(k)&&!d.autoOff[k])target().push({t:"text",auto:k,title:AUTO_TITLE[k],text:s.blocks[0].text});
     return false;
   });
+  /* always: an explanation can never sit above the Item 2 title, so any found in the "under the whole list" box go under Item 2 */
+  if(svcRow){
+    var autos=d.itemsBlocks.filter(function(b){return b.auto;});
+    if(autos.length){d.itemsBlocks=d.itemsBlocks.filter(function(b){return !b.auto;});svcRow.blocks=autos.concat(svcRow.blocks||[]);}
+  }
+  d.autoUnderDone=true;
   AUTO_ORDER.forEach(function(k){
     if(want[k]&&!has(k)&&!d.autoOff[k]){
-      var at=0;d.itemsBlocks.forEach(function(b,i){if(b.auto&&AUTO_ORDER.indexOf(b.auto)<AUTO_ORDER.indexOf(k))at=i+1;});
-      d.itemsBlocks.splice(at,0,{t:"text",auto:k,title:AUTO_TITLE[k],text:AUTO[k].text});
+      var T=target(),at=0;T.forEach(function(b,i){if(b.auto&&AUTO_ORDER.indexOf(b.auto)<AUTO_ORDER.indexOf(k))at=i+1;});
+      T.splice(at,0,{t:"text",auto:k,title:AUTO_TITLE[k],text:AUTO[k].text});
     }else if(!want[k]&&removeToo){
-      d.itemsBlocks=d.itemsBlocks.filter(function(b){return !(b.auto===k&&autoBlockUntouched(b,k));});
+      var drop=function(l){return l.filter(function(b){return !(b.auto===k&&autoBlockUntouched(b,k));});};
+      d.itemsBlocks=drop(d.itemsBlocks);
+      d.items.forEach(function(r){if(r.blocks)r.blocks=drop(r.blocks);});
+      d.sections.forEach(function(s){if(s.blocks)s.blocks=drop(s.blocks);});
     }
   });
-  /* bullets still holding an earlier version of the standard wording get the current wording */
-  d.itemsBlocks.forEach(function(b){if(b.auto&&b.title===AUTO_TITLE_OLD[b.auto])b.title=AUTO_TITLE[b.auto];});
-  d.itemsBlocks.forEach(function(b){if(b.auto&&autoBlockUntouched(b,b.auto)){b.text=AUTO[b.auto].text;b.title=AUTO_TITLE[b.auto];}});
+  /* blocks still holding an earlier version of the standard wording get the current wording */
+  each(function(b){if(b.auto&&b.title===AUTO_TITLE_OLD[b.auto])b.title=AUTO_TITLE[b.auto];});
+  each(function(b){if(b.auto&&autoBlockUntouched(b,b.auto)){b.text=AUTO[b.auto].text;b.title=AUTO_TITLE[b.auto];}});
 }
 
 var svcKeepOpen=false;
@@ -706,6 +719,7 @@ function moveBlock(arr,i,d){
   if(j>=0&&j<arr.length){var t=arr[i];arr[i]=arr[j];arr[j]=t;return;}
   var cs=containers(),ci=-1;cs.forEach(function(c,k){if(c.blocks===arr)ci=k;});
   var ni=ci+d;if(ci<0||ni<0||ni>=cs.length)return;
+  if(d<0&&ni===0)return;   /* a block under an item never moves up above that item's title, into the box above the items */
   var b=arr.splice(i,1)[0];
   if(i>0&&arr[i-1])arr[i-1].keep=undefined;
   b.keep=undefined;
@@ -1065,6 +1079,15 @@ function renderPreview(){
     im.src=src;
   });
 }
+/* shrink a row of photos just enough to fit what is left of the page (not below a minimum) */
+function fitPhotoRow(row,over,minF){
+  row.style.zoom=minF;
+  if(over()){row.style.zoom="";return false;}
+  var lo=minF,hi=1;
+  for(var i=0;i<9;i++){var mid=(lo+hi)/2;row.style.zoom=mid;if(over())hi=mid;else lo=mid;}
+  row.style.zoom=lo;
+  return true;
+}
 function drawPages(){
   if(!document.getElementById("prevPane").offsetWidth)return;   /* pane hidden (narrow screen, Edit mode): measured when shown */
   var host=document.getElementById("pages");host.textContent="";
@@ -1078,6 +1101,7 @@ function drawPages(){
     if(u.gap)u.e.classList.add("gstart");
     cur.body.appendChild(u.e);
     var list=pu[pu.length-1];
+    if(u.e.classList.contains("phrow")&&over())fitPhotoRow(u.e,over,cur.body.children.length>1?0.4:0.15);
     if(over()&&cur.body.children.length>1){
       cur.body.removeChild(u.e);
       var moved=[],nx=u,i=list.length-1;
