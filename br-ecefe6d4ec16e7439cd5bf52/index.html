@@ -188,7 +188,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-08.4";
+var APP_BUILD="2026-10-09.1";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1069,7 +1069,8 @@ function zoomBlock(it){
 var DEFH=70,DIMS={},MM=96/25.4,rpToken=0;
 function renderPreview(){
   var tok=++rpToken,need=[];
-  S.sections.forEach(function(s){s.blocks.forEach(function(b){if(b.t==="photos")b.items.forEach(function(it){if(it.src&&!DIMS[it.src]&&need.indexOf(it.src)<0)need.push(it.src);});});});
+  /* measure every photo before drawing, wherever it sits (under an item, under the list, or in a section) */
+  containers().forEach(function(c){c.blocks.forEach(function(b){if(b.t==="photos")b.items.forEach(function(it){if(it.src&&!DIMS[it.src]&&need.indexOf(it.src)<0)need.push(it.src);});});});
   if(!need.length)return drawPages();
   var left=need.length;
   need.forEach(function(src){
