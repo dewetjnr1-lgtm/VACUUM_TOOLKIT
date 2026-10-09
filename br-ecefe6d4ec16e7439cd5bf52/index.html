@@ -188,7 +188,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-09.1";
+var APP_BUILD="2026-10-09.2";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -812,9 +812,12 @@ function blockCard(sec,b,bi){
       }
       var cap=el("textarea",{placeholder:"Caption / comment"});cap.value=it.cap||"";cap.addEventListener("input",function(){it.cap=cap.value;changed();});
       var zc=el("input",{type:"checkbox"});zc.checked=!!it.zoom;
-      zc.addEventListener("change",function(){it.zoom=zc.checked?{x:.38,y:.38,w:.24,h:.24}:null;renderEditor();changed();});
+      zc.addEventListener("change",function(){it.zoom=zc.checked?{x:.38,y:.38,w:.24,h:.24}:null;if(zc.checked)it.call=null;renderEditor();changed();});
+      var cc=el("input",{type:"checkbox"});cc.checked=!!it.call;
+      cc.addEventListener("change",function(){it.call=cc.checked?{x:.38,y:.38,w:.24,h:.24,text:"",tw:60}:null;if(cc.checked)it.zoom=null;renderEditor();changed();});
       var parts=[el("img",{src:it.src}),cap,num("Height","h",DEFH,10,250)];
       parts.push(el("div",{class:"chk",style:"margin:2px 0"},[zc," Zoom in on part of this photo (arrow to an enlarged detail)"]));
+      parts.push(el("div",{class:"chk",style:"margin:2px 0"},[cc," Text box that points at part of this photo (arrow to your words)"]));
       if(it.zoom){
         var box=el("div",{class:"zsel"},[el("img",{src:it.src,draggable:"false"})]),rect=el("div",{class:"zrect"});box.appendChild(rect);
         var draw=function(){rect.style.left=it.zoom.x*100+"%";rect.style.top=it.zoom.y*100+"%";rect.style.width=it.zoom.w*100+"%";rect.style.height=it.zoom.h*100+"%";};draw();
@@ -829,7 +832,20 @@ function blockCard(sec,b,bi){
         parts.push(el("p",{class:"hint",text:"Drag on the photo below to draw the box around the detail you want to enlarge."}),box,
           el("div",{class:"hint",style:"display:flex;align-items:center;gap:6px"},["Zoom height",zn,"mm"]),zcp);
       }
-      th.appendChild(el("div",{class:"th"+(it.zoom?" wide":"")},parts.concat(common())));
+      if(it.call){
+        var cbox=el("div",{class:"zsel"},[el("img",{src:it.src,draggable:"false"})]),crect=el("div",{class:"zrect"});cbox.appendChild(crect);
+        var cdraw=function(){crect.style.left=it.call.x*100+"%";crect.style.top=it.call.y*100+"%";crect.style.width=it.call.w*100+"%";crect.style.height=it.call.h*100+"%";};cdraw();
+        var cstart=null,cpt=function(e){var r=cbox.getBoundingClientRect();return [Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)),Math.min(1,Math.max(0,(e.clientY-r.top)/r.height))];};
+        cbox.addEventListener("pointerdown",function(e){cstart=cpt(e);cbox.setPointerCapture(e.pointerId);e.preventDefault();});
+        cbox.addEventListener("pointermove",function(e){if(!cstart)return;var p=cpt(e),x=Math.min(cstart[0],p[0]),y=Math.min(cstart[1],p[1]),w=Math.abs(p[0]-cstart[0]),h=Math.abs(p[1]-cstart[1]);
+          if(w<.03)w=.03;if(h<.03)h=.03;if(x+w>1)x=1-w;if(y+h>1)y=1-h;it.call.x=x;it.call.y=y;it.call.w=w;it.call.h=h;cdraw();changed();});
+        var cend=function(){cstart=null;};cbox.addEventListener("pointerup",cend);cbox.addEventListener("pointercancel",cend);
+        var ctext=el("textarea",{placeholder:"Type the words for the box that points at the photo",style:"min-height:70px"});ctext.value=it.call.text||"";ctext.addEventListener("input",function(){it.call.text=ctext.value;changed();});
+        var cw=el("input",{type:"number",min:"20",max:"140",step:"1",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});cw.value=it.call.tw||60;
+        cw.addEventListener("input",function(){var v=parseFloat(cw.value);if(v>=20&&v<=140){it.call.tw=v;changed();}});
+        parts.push(el("p",{class:"hint",text:"Drag on the photo below to mark the spot you want the box to point at."}),cbox,ctext,el("div",{class:"hint",style:"display:flex;align-items:center;gap:6px"},["Text box width",cw,"mm"]));
+      }
+      th.appendChild(el("div",{class:"th"+((it.zoom||it.call)?" wide":"")},parts.concat(common())));
     });
     body.appendChild(th);
   }
@@ -1010,6 +1026,8 @@ function blockUnits(b){
           box=el("div",{class:"ph",style:"width:"+s[0]+"px"},[nb]);
         }else if(it.zoom){
           box=zoomBlock(it);
+        }else if(it.call){
+          box=callBlock(it);
         }else{
           var im=el("img",{src:it.src});im.style.width=s[0]+"px";im.style.height=s[1]+"px";
           box=el("div",{class:"ph",style:"width:"+s[0]+"px"},[im,it.cap?el("div",{class:"cap",text:T(it.cap)}):null]);
@@ -1036,9 +1054,34 @@ function zoomGeom(it){
 function itemSize(it){
   if(it.kind==="note")return [Math.round((it.w||80)*MM),0];
   if(it.zoom){var g=zoomGeom(it);return [Math.round(g.tot),Math.round(Math.max(g.ho,g.hz))];}
+  if(it.call){var cg=callGeom(it);return [Math.round(cg.tot),Math.round(cg.ho)];}
   var d=DIMS[it.src]||[4,3],W=178*MM,h=(it.h||DEFH)*MM,w=d[0]/d[1]*h;if(w>W){w=W;h=w*d[1]/d[0];}return [Math.round(w),Math.round(h)];
 }
 function itemWidthMm(it){return itemSize(it)[0]/MM;}
+/* a text box that points at a marked part of a photo (same idea as the zoom, with words instead of an enlarged picture) */
+function callGeom(it){
+  var d=DIMS[it.src]||[4,3],c=it.call,ho=(it.h||DEFH)*MM,wo=d[0]/d[1]*ho,tw=(c.tw||60)*MM,gap=ZGAP*MM,tot=wo+gap+tw,W=178*MM;
+  if(tot>W){var f=W/tot;ho*=f;wo*=f;tw*=f;gap*=f;tot=W;}
+  return {wo:wo,ho:ho,tw:tw,gap:gap,tot:tot};
+}
+function callBlock(it){
+  var g=callGeom(it),c=it.call,wrap=el("div",{class:"ph cm",style:"width:"+Math.round(g.tot)+"px"});
+  var area=el("div",{class:"zrow",style:"display:flex;align-items:flex-start;gap:"+Math.round(g.gap)+"px"});
+  var im=el("img",{src:it.src});im.style.cssText="flex:none;width:"+Math.round(g.wo)+"px;height:"+Math.round(g.ho)+"px";
+  var nb=el("div",{class:"nbox",text:T(c.text||"")});nb.style.cssText="flex:none;width:"+Math.round(g.tw)+"px;min-height:"+Math.round(g.ho)+"px";
+  var rx=c.x*g.wo,ry=c.y*g.ho,rw=c.w*g.wo,rh=c.h*g.ho;
+  var rc=el("div",{class:"zbd"});rc.style.cssText="left:"+rx+"px;top:"+ry+"px;width:"+rw+"px;height:"+rh+"px";
+  /* arrow from the right edge of the marked spot to the left edge of the text box */
+  var x1=rx+rw+3,y1=ry+rh/2,x2=g.wo+g.gap-3,y2=g.ho/2,ang=Math.atan2(y2-y1,x2-x1),hl=16,hw=hl*0.55;
+  var bx=x2-hl*Math.cos(ang),by=y2-hl*Math.sin(ang);
+  var pts=[x2,y2,bx+hw*Math.sin(ang),by-hw*Math.cos(ang),bx-hw*Math.sin(ang),by+hw*Math.cos(ang)].map(function(v){return v.toFixed(1);});
+  var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+g.tot+'" height="'+g.ho+'" style="position:absolute;left:0;top:0;overflow:visible"><line x1="'+x1+'" y1="'+y1+'" x2="'+bx+'" y2="'+by+'" stroke="#ff5a00" stroke-width="2.2"/><polygon points="'+pts[0]+','+pts[1]+' '+pts[2]+','+pts[3]+' '+pts[4]+','+pts[5]+'" fill="#ff5a00"/></svg>';
+  var holder=el("div",{});holder.innerHTML=svg;
+  area.appendChild(im);area.appendChild(nb);area.appendChild(rc);area.appendChild(holder.firstChild);
+  wrap.appendChild(area);
+  if(it.cap)wrap.appendChild(el("div",{class:"cap",style:"width:"+Math.round(g.wo)+"px",text:T(it.cap)}));
+  return wrap;
+}
 function zoomBlock(it){
   var g=zoomGeom(it),z=it.zoom,H=Math.max(g.ho,g.hz),oy=(H-g.ho)/2,zy=(H-g.hz)/2,zx=g.wo+g.gap;
   var wrap=el("div",{class:"ph zm",style:"width:"+Math.round(g.tot)+"px"});
