@@ -80,6 +80,8 @@ label.f textarea{resize:vertical;min-height:70px;line-height:1.4}
 .ctxmenu{position:fixed;z-index:60;display:none;background:#fff;border:1px solid #bfc5ca;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.25);padding:4px}
 .ctxmenu button{display:block;border:0;background:#fff;padding:8px 14px;font-size:14px;cursor:pointer;border-radius:6px;white-space:nowrap}
 .ctxmenu button:hover{background:#ffe9dc}
+@keyframes flashkf{0%{box-shadow:0 0 0 4px rgba(255,90,0,.75)}100%{box-shadow:0 0 0 4px rgba(255,90,0,0)}}
+.flash{animation:flashkf 1.5s ease-out;border-radius:8px}
 .itemwrap{margin-bottom:2px}
 .itemarea{margin:2px 0 10px 14px;padding-left:10px;border-left:3px solid var(--orange)}
 .chk{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;margin-top:4px}
@@ -191,7 +193,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-10.1";
+var APP_BUILD="2026-10-10.2";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -900,6 +902,18 @@ function initSync(){
     focusKey=c.dataset.focus;if(focusKey!==lastScrolled){lastScrolled=focusKey;jumpPreview(focusKey);}
   };
   edit.addEventListener("focusin",go);edit.addEventListener("click",go);
+  document.getElementById("pages").addEventListener("click",function(e){
+    var ed=document.getElementById("edit");if(!ed.offsetWidth)return;
+    var u=e.target.closest&&e.target.closest("[data-src]");if(!u)return;
+    var key=u.dataset.src,t=ed.querySelector('[data-focus="'+key+'"]');
+    if(!t&&key.indexOf("-b")>0)t=ed.querySelector('[data-focus="'+key.split("-b")[0]+'"]');
+    if(!t)return;
+    lastScrolled=key;focusKey=key;
+    var r=t.getBoundingClientRect(),er=ed.getBoundingClientRect();
+    ed.scrollTo({top:Math.max(0,ed.scrollTop+(r.top-er.top)-12),behavior:"smooth"});
+    t.classList.remove("flash");void t.offsetWidth;t.classList.add("flash");
+    setTimeout(function(){t.classList.remove("flash");},1500);
+  });
   document.addEventListener("click",function(e){[].forEach.call(document.querySelectorAll("details.svc[open]"),function(d){if(!d.contains(e.target))d.removeAttribute("open");});});
 }
 
@@ -983,6 +997,11 @@ function unitsFor(){
   });
   FK.hdr=0;
   Object.keys(FK).forEach(function(k){var u=U[FK[k]];if(u)u.e.dataset.focus=((u.e.dataset.focus||"")+" "+k).trim();});
+  /* tag every unit with the editor part it came from, so a click in the report can jump to it */
+  var marks=Object.keys(FK).map(function(k){return [FK[k],k];}).filter(function(p){return U[p[0]];});
+  marks.sort(function(a,b){return a[0]-b[0];});
+  var mi=0,curKey="hdr";
+  for(var ui=0;ui<U.length;ui++){while(mi<marks.length&&marks[mi][0]<=ui){curKey=marks[mi][1];mi++;}U[ui].e.dataset.src=curKey;}
   /* sign-off */
   var sg=el("div",{class:"sign"},S.signers.filter(function(k){return PEOPLE[k];}).sort(function(a,b){return (b===S.from)-(a===S.from);}).map(function(k){var q=PEOPLE[k];
     return el("div",{},[el("div",{class:"nm",text:q.name}),q.title,el("br"),q.region,el("br"),"Mob: "+q.mob,el("br"),q.email]);}));
