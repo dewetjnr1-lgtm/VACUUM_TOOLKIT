@@ -82,6 +82,9 @@ label.f textarea{resize:vertical;min-height:70px;line-height:1.4}
 .ctxmenu button:hover{background:#ffe9dc}
 @keyframes flashkf{0%{box-shadow:0 0 0 4px rgba(255,90,0,.75)}100%{box-shadow:0 0 0 4px rgba(255,90,0,0)}}
 .flash{animation:flashkf 1.5s ease-out;border-radius:8px}
+.colsrow{display:grid;gap:6mm;margin:0 0 3mm}
+.colcell .p{margin:0 0 2mm}
+.colcell ul.bl{margin:0 0 2mm}
 .itemwrap{margin-bottom:2px}
 .itemarea{margin:2px 0 10px 14px;padding-left:10px;border-left:3px solid var(--orange)}
 .chk{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;margin-top:4px}
@@ -193,7 +196,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-10.3";
+var APP_BUILD="2026-10-10.4";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -443,7 +446,8 @@ function addBar(sec,withPump){
     add("+ Bullet list",function(){return {t:"bullets",text:""};}),
     add("+ Details table",function(){return {t:"kv",rows:[["",""]]};}),
     add("+ Vibration table",function(){return {t:"vib",de:["","","",""],nde:["","","",""],note:VIB_NOTE};}),
-    add("+ Pump details table",function(){return {t:"kv",rows:pumpRowsDefault()};})
+    add("+ Pump details table",function(){return {t:"kv",rows:pumpRowsDefault()};}),
+    add("+ Columns",function(){return {t:"cols",n:2,cols:[{text:"",bul:false},{text:"",bul:false},{text:"",bul:false},{text:"",bul:false}]};})
   ]);
 }
 
@@ -701,7 +705,7 @@ function sectionCard(sec,si){
   c.appendChild(addBar(sec));
   return c;
 }
-var BNAME={text:"Text",bullets:"Bullet list (one per line)",kv:"Details table",vib:"Vibration results",photos:"Photos"};
+var BNAME={cols:"Columns",text:"Text",bullets:"Bullet list (one per line)",kv:"Details table",vib:"Vibration results",photos:"Photos"};
 /* a block is kept with the one below it when ticked; by default text/bullets stay with the photos right after them */
 function effKeep(list,i){
   var b=list[i],n=list[i+1];
@@ -856,6 +860,20 @@ function blockCard(sec,b,bi){
       th.appendChild(el("div",{class:"th"+((it.zoom||it.call)?" wide":"")},parts.concat(common())));
     });
     body.appendChild(th);
+  }else if(b.t==="cols"){
+    b.n=b.n||2;b.cols=b.cols||[];while(b.cols.length<4)b.cols.push({text:"",bul:false});
+    body=el("div",{});
+    var ns=el("select",{},[2,3,4].map(function(k){var o=el("option",{value:String(k),text:k+" columns"});if(k===b.n)o.selected=true;return o;}));
+    ns.addEventListener("change",function(){b.n=+ns.value;renderEditor();changed();});
+    body.appendChild(el("div",{class:"adds"},[el("span",{class:"hint",text:"How many columns:"}),ns]));
+    var cgrid=el("div",{style:"display:grid;gap:8px;margin-top:8px;grid-template-columns:repeat("+b.n+",minmax(0,1fr))"});
+    b.cols.slice(0,b.n).forEach(function(c,ci){
+      var cta=el("textarea",{rows:5,placeholder:"Column "+(ci+1),style:"width:100%;padding:6px;border:1px solid #bfc5ca;border-radius:5px;line-height:1.4"});
+      cta.value=c.text||"";cta.addEventListener("input",function(){c.text=cta.value;changed();});
+      var cbb=el("input",{type:"checkbox"});cbb.checked=!!c.bul;cbb.addEventListener("change",function(){c.bul=cbb.checked;changed();});
+      cgrid.appendChild(el("div",{},[cta,el("div",{class:"chk",style:"margin-top:4px"},[cbb," Bullet points (one per line)"])]));
+    });
+    body.appendChild(cgrid);
   }
   var kp=el("input",{type:"checkbox"});kp.checked=effKeep(sec.blocks,bi);kp.addEventListener("change",function(){b.keep=kp.checked;renderEditor();changed();});
   var kpa=null;
@@ -1031,6 +1049,18 @@ function blockUnits(b){
     [["Drive end",b.de],["Non-drive end",b.nde]].forEach(function(r){t.appendChild(el("tr",{},[el("td",{text:r[0]}),el("td",{text:r[1][1]}),el("td",{text:r[1][2]}),el("td",{text:r[1][3]})]));});
     out.push({e:t,keep:!!b.note});
     if(b.note)out.push({e:el("div",{class:"note",text:T(b.note)})});
+  }else if(b.t==="cols"){
+    var cn=Math.max(2,Math.min(4,b.n||2)),cs=(b.cols||[]).slice(0,cn);
+    if(cs.some(function(c){return (c.text||"").trim();})){
+      var cg=el("div",{class:"colsrow",style:"grid-template-columns:repeat("+cn+",minmax(0,1fr))"});
+      cs.forEach(function(c){
+        var cell=el("div",{class:"colcell"}),t=c.text||"";
+        if(c.bul){var ul=el("ul",{class:"bl"});t.split("\n").filter(function(x){return x.trim();}).forEach(function(x){ul.appendChild(el("li",{text:T(x.replace(/^[\-•*]\s*/,""))}));});cell.appendChild(ul);}
+        else t.split(/\n{2,}/).forEach(function(p){if(p.trim())cell.appendChild(el("p",{class:"p",text:T(p.trim())}));});
+        cg.appendChild(cell);
+      });
+      out.push({e:cg});
+    }
   }else if(b.t==="photos"){
     /* each item has its own width/height; items share a row while they fit (and the per-row limit allows) */
     var n=Math.max(1,b.cols||2),W=178*MM,G=4*MM,rows=[],cur=[],curW=0;
