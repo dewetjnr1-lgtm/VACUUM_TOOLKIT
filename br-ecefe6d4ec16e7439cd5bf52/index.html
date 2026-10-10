@@ -198,7 +198,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-10.5";
+var APP_BUILD="2026-10-10.6";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -815,8 +815,10 @@ function blockCard(sec,b,bi){
         var px=el("input",{type:"range",min:"0",max:String(maxp),step:"1",style:"width:100%"});px.value=it.px==null?0:Math.min(maxp,it.px);
         var pn=el("input",{type:"number",min:"0",max:String(maxp),step:"1",placeholder:"auto",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});pn.value=it.px==null?"":it.px;
         var setP=function(v){it.px=v;delete it.x;changed();};
+        /* a photo that has not been measured yet is measured now, so the slider's range fits its real shape */
+        if(it.src&&!DIMS[it.src]){var mim=new Image();mim.onload=function(){DIMS[it.src]=[mim.naturalWidth,mim.naturalHeight];var mx=Math.max(0,178-Math.round(itemWidthMm(it)));px.max=String(mx);pn.max=String(mx);if(it.px!=null)px.value=String(Math.min(mx,it.px));};mim.src=it.src;}
         px.addEventListener("input",function(){pn.value=px.value;setP(+px.value);});
-        pn.addEventListener("input",function(){var v=parseFloat(pn.value);if(v>=0&&v<=maxp){px.value=v;setP(v);}});
+        pn.addEventListener("input",function(){var v=parseFloat(pn.value);if(v>=0&&v<=+pn.max){px.value=v;setP(v);}});
         var pxl=el("div",{class:"hint",style:"display:flex;align-items:center;gap:6px;flex-wrap:wrap"},["Position from left margin",pn,"mm",el("span",{text:legacy?"(old-style move in use - set a position to replace it)":(it.px==null?"(automatic)":""),style:"color:#a55"})]);
         var ctr=el("button",{class:"btn sm ghost",text:"Centre",onclick:function(){setP(Math.round((178-itemWidthMm(it))/2));renderEditor();}});
         var rst=el("button",{class:"btn sm ghost",text:"Automatic",onclick:function(){delete it.px;delete it.x;renderEditor();changed();}});
