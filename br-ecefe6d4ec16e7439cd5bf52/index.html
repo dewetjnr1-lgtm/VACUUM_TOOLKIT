@@ -77,6 +77,9 @@ label.f textarea{resize:vertical;min-height:70px;line-height:1.4}
 .svcpop{position:absolute;z-index:20;left:0;right:0;top:100%;margin-top:2px;background:#fff;border:1px solid #bfc5ca;border-radius:6px;padding:8px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
 .svcopt{display:inline-flex;align-items:center;gap:8px;width:fit-content;padding:3px 0;margin-right:14px;cursor:pointer;font-size:13px}
 .svcopt input{width:18px;height:18px;margin:0;flex:none}
+.ctxmenu{position:fixed;z-index:60;display:none;background:#fff;border:1px solid #bfc5ca;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.25);padding:4px}
+.ctxmenu button{display:block;border:0;background:#fff;padding:8px 14px;font-size:14px;cursor:pointer;border-radius:6px;white-space:nowrap}
+.ctxmenu button:hover{background:#ffe9dc}
 .itemwrap{margin-bottom:2px}
 .itemarea{margin:2px 0 10px 14px;padding-left:10px;border-left:3px solid var(--orange)}
 .chk{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;margin-top:4px}
@@ -150,7 +153,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
 @page{size:A4;margin:0}
 @media print{
   html,body{height:auto;background:#fff}
-  #bar,#edit,#toast{display:none!important}
+  #bar,#edit,#toast,.ctxmenu{display:none!important}
   #app,#split{display:block;height:auto}
   #prevPane{display:block!important;overflow:visible;padding:0;background:#fff}
   #scaler{transform:none!important;width:auto}
@@ -188,7 +191,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-09.2";
+var APP_BUILD="2026-10-10.1";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1029,7 +1032,7 @@ function blockUnits(b){
         }else if(it.call){
           box=callBlock(it);
         }else{
-          var im=el("img",{src:it.src});im.style.width=s[0]+"px";im.style.height=s[1]+"px";
+          var im=el("img",{src:it.src});im.style.width=s[0]+"px";im.style.height=s[1]+"px";im._it=it;
           box=el("div",{class:"ph",style:"width:"+s[0]+"px"},[im,it.cap?el("div",{class:"cap",text:T(it.cap)}):null]);
         }
         /* moved left/right by the typed position, kept inside the page margins */
@@ -1067,7 +1070,7 @@ function callGeom(it){
 function callBlock(it){
   var g=callGeom(it),c=it.call,wrap=el("div",{class:"ph cm",style:"width:"+Math.round(g.tot)+"px"});
   var area=el("div",{class:"zrow",style:"display:flex;align-items:flex-start;gap:"+Math.round(g.gap)+"px"});
-  var im=el("img",{src:it.src});im.style.cssText="flex:none;width:"+Math.round(g.wo)+"px;height:"+Math.round(g.ho)+"px";
+  var im=el("img",{src:it.src});im._it=it;im.style.cssText="flex:none;width:"+Math.round(g.wo)+"px;height:"+Math.round(g.ho)+"px";
   var nb=el("div",{class:"nbox",text:T(c.text||"")});nb.style.cssText="flex:none;width:"+Math.round(g.tw)+"px;min-height:"+Math.round(g.ho)+"px";
   var rx=c.x*g.wo,ry=c.y*g.ho,rw=c.w*g.wo,rh=c.h*g.ho;
   var rc=el("div",{class:"zbd"});rc.style.cssText="left:"+rx+"px;top:"+ry+"px;width:"+rw+"px;height:"+rh+"px";
@@ -1086,7 +1089,7 @@ function zoomBlock(it){
   var g=zoomGeom(it),z=it.zoom,H=Math.max(g.ho,g.hz),oy=(H-g.ho)/2,zy=(H-g.hz)/2,zx=g.wo+g.gap;
   var wrap=el("div",{class:"ph zm",style:"width:"+Math.round(g.tot)+"px"});
   var area=el("div",{class:"zrow",style:"height:"+Math.round(H)+"px"});
-  var im=el("img",{src:it.src});im.style.cssText="position:absolute;left:0;top:"+Math.round(oy)+"px;width:"+Math.round(g.wo)+"px;height:"+Math.round(g.ho)+"px";
+  var im=el("img",{src:it.src});im._it=it;im.style.cssText="position:absolute;left:0;top:"+Math.round(oy)+"px;width:"+Math.round(g.wo)+"px;height:"+Math.round(g.ho)+"px";
   var rx=z.x*g.wo,ry=oy+z.y*g.ho,rw=z.w*g.wo,rh=z.h*g.ho;
   var rc=el("div",{class:"zbd"});rc.style.cssText="left:"+rx+"px;top:"+ry+"px;width:"+rw+"px;height:"+rh+"px";
   var zb=el("div",{class:"zbd zimg"});
@@ -1217,6 +1220,44 @@ function newRev(){
   S.rev=String(n);renderEditor();renderPreview();saveHtml();
 }
 
+/* ---------- right-click a photo in the report: Replace photo (only the picture changes) ---------- */
+var ctxItem=null;
+function readPhoto(file,cb){
+  var r=new FileReader();
+  r.onload=function(){
+    var im=new Image();
+    im.onload=function(){
+      var M=1600,s=Math.min(1,M/Math.max(im.width,im.height)),c=document.createElement("canvas");
+      c.width=Math.round(im.width*s);c.height=Math.round(im.height*s);
+      var x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);
+      cb(c.toDataURL("image/jpeg",0.82));
+    };
+    im.onerror=function(){toast("Could not read that photo.");};
+    im.src=r.result;
+  };
+  r.readAsDataURL(file);
+}
+function initPhotoMenu(){
+  var btn=el("button",{type:"button",text:"Replace photo…"}),menu=el("div",{class:"ctxmenu"},[btn]);
+  var fi=el("input",{type:"file",accept:"image/*",hidden:"hidden"});
+  document.body.appendChild(menu);document.body.appendChild(fi);
+  var hide=function(){menu.style.display="none";};
+  document.getElementById("pages").addEventListener("contextmenu",function(e){
+    var ph=e.target.closest&&e.target.closest(".ph"),im=ph&&ph.querySelector("img");
+    if(!im||!im._it){hide();return;}   /* not a photo: the normal menu */
+    e.preventDefault();ctxItem=im._it;
+    menu.style.display="block";menu.style.left=Math.max(4,Math.min(e.clientX,innerWidth-190))+"px";menu.style.top=Math.max(4,Math.min(e.clientY,innerHeight-50))+"px";
+  });
+  document.addEventListener("click",hide);
+  document.addEventListener("keydown",function(e){if(e.key==="Escape")hide();});
+  window.addEventListener("scroll",hide,true);
+  btn.addEventListener("click",function(){fi.value="";fi.click();});
+  fi.addEventListener("change",function(){
+    var f=fi.files[0],it=ctxItem;if(!f||!it)return;
+    readPhoto(f,function(src){it.src=src;renderEditor();changed();toast("Photo replaced. Caption, size and position are kept.");});
+  });
+}
+
 /* ---------- start-up ---------- */
 (function init(){
   var raw=document.getElementById("saved-data").textContent.trim();
@@ -1252,6 +1293,7 @@ function newRev(){
   document.addEventListener("visibilitychange",function(){if(document.hidden&&!embedded)autosave();});
   window.addEventListener("beforeunload",function(e){if(embedded&&dirty){e.preventDefault();e.returnValue="";}});
   initSync();
+  initPhotoMenu();
   renderEditor();renderPreview();setStatus();
 })();
 </script>
