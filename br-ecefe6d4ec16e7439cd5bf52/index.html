@@ -198,7 +198,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-10.6";
+var APP_BUILD="2026-10-13.1";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -454,9 +454,10 @@ function renderEditor(){
   host.scrollTop=keep;
 }
 function mv(arr,i,d){var j=i+d;if(j<0||j>=arr.length)return;var t=arr[i];arr[i]=arr[j];arr[j]=t;}
-function addBar(sec,withPump){
-  var add=function(label,mk){return el("button",{class:"btn sm ghost",text:label,onclick:function(){sec.blocks.push(mk());renderEditor();changed();}});};
+function addBar(sec,withPump,atTop){
+  var add=function(label,mk){return el("button",{class:"btn sm ghost",text:label,onclick:function(){if(atTop)sec.blocks.unshift(mk());else sec.blocks.push(mk());renderEditor();changed();}});};
   return el("div",{class:"adds"},[
+    atTop?el("span",{class:"hint",text:"Add at the top:"}):null,
     add("+ Photos",function(){return {t:"photos",cols:2,items:[]};}),
     add("+ Text",function(){return {t:"text",text:""};}),
     add("+ Bullet list",function(){return {t:"bullets",text:""};}),
@@ -670,6 +671,7 @@ function itemsCard(){
       it.blocks=it.blocks||[];
       var holder={blocks:it.blocks};
       area.appendChild(el("div",{class:"hint",text:"What goes under this item in the report:"}));
+      if(it.blocks.length)area.appendChild(addBar(holder,true,true));
       renderBlocks(area,holder,"it-"+it.id+"-b");
       area.appendChild(addBar(holder,true));
     };
@@ -697,6 +699,7 @@ function itemsCard(){
   var holder={blocks:S.itemsBlocks};
   var under=el("div",{class:"itemarea"});
   under.appendChild(el("div",{class:"hint",text:"Under the whole list (prints right below the items list on page 1):"}));
+  if(S.itemsBlocks.length)under.appendChild(addBar(holder,true,true));
   renderBlocks(under,holder,"items-b");
   under.appendChild(addBar(holder,true));
   c.insertBefore(under,c.querySelector(".itemwrap"));
@@ -717,6 +720,7 @@ function sectionCard(sec,si){
     ]),
     el("div",{class:"chk"},[np," Start this section on a new page"]),itemSelect(sec)
   ]);
+  if(sec.blocks.length)c.appendChild(addBar(sec,true,true));
   renderBlocks(c,sec,"s"+si+"-b");
   c.appendChild(addBar(sec));
   return c;
