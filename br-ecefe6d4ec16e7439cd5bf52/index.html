@@ -198,7 +198,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-14.1";
+var APP_BUILD="2026-10-14.2";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -422,10 +422,19 @@ function renderEditor(){
     c.addEventListener("change",function(){S.signers=Object.keys(PEOPLE).filter(function(x){return x===k?c.checked:S.signers.indexOf(x)>-1;});changed();});
     return el("div",{style:"display:flex;align-items:center;gap:6px"},[c,PEOPLE[k].name]);
   }));
+  var sgSl=el("input",{type:"range",min:"40",max:"100",step:"1",style:"flex:1;min-width:120px"});
+  var sgNum=el("input",{type:"number",min:"40",max:"100",step:"1",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});
+  sgSl.value=sgNum.value=Math.max(40,Math.min(100,+S.signSize||100));
+  sgSl.addEventListener("input",function(){S.signSize=+sgSl.value;sgNum.value=sgSl.value;changed();});
+  sgNum.addEventListener("input",function(){var v=parseFloat(sgNum.value);if(v>=40&&v<=100){S.signSize=v;sgSl.value=v;changed();}});
+  var sgFit=el("input",{type:"checkbox"});sgFit.checked=!!S.signFit;
+  sgFit.addEventListener("change",function(){S.signFit=sgFit.checked;changed();});
   host.appendChild(el("div",{class:"card"},[el("h3",{text:"Report type & author"}),
     el("div",{class:"grid"},[
       el("label",{class:"f"},[labelRow("From (fills in details automatically)","from"),fsel]),
       el("div",{class:"f"},["Sign off with",chk])
+,
+      el("div",{class:"f full"},["Sign-off size (the closing line and your names)",el("div",{style:"display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px"},[sgSl,sgNum,"%",el("div",{class:"chk",style:"margin:0"},[sgFit," Fit it on the page above if there is room"])])])
     ])]));
   /* header */
   var g=el("div",{class:"grid"},[
@@ -1065,8 +1074,9 @@ function unitsFor(){
   /* sign-off */
   var sg=el("div",{class:"sign"},S.signers.filter(function(k){return PEOPLE[k];}).sort(function(a,b){return (b===S.from)-(a===S.from);}).map(function(k){var q=PEOPLE[k];
     return el("div",{},[el("div",{class:"nm",text:q.name}),q.title,el("br"),q.region,el("br"),"Mob: "+q.mob,el("br"),q.email]);}));
-  U.push({e:el("p",{class:"p",text:"Should you require any further assistance, please contact me.",style:"margin-top:6mm"}),keep:true});
-  U.push({e:sg});
+  var so=el("div",{class:"signoff"},[el("p",{class:"p",text:"Should you require any further assistance, please contact me.",style:"margin-top:6mm"}),sg]);
+  var szf=Math.max(40,Math.min(100,+S.signSize||100))/100;if(szf<1)so.style.zoom=szf;
+  U.push({e:so,signoff:true});
   return U;
 }
 function blockUnits(b){
@@ -1223,6 +1233,15 @@ function fitPhotoRow(row,over,minF){
   row.style.zoom=lo;
   return true;
 }
+/* shrink the sign-off just enough to fit what is left of the page (never below 40%, never above the size you chose) */
+function fitSignoff(el_,over,minF,maxF){
+  el_.style.zoom=minF;
+  if(over()){el_.style.zoom=maxF<1?maxF:"";return false;}
+  var lo=minF,hi=maxF;
+  for(var i=0;i<9;i++){var mid=(lo+hi)/2;el_.style.zoom=mid;if(over())hi=mid;else lo=mid;}
+  el_.style.zoom=lo;
+  return true;
+}
 function drawPages(){
   if(!document.getElementById("prevPane").offsetWidth)return;   /* pane hidden (narrow screen, Edit mode): measured when shown */
   var host=document.getElementById("pages");host.textContent="";
@@ -1237,6 +1256,7 @@ function drawPages(){
     cur.body.appendChild(u.e);
     var list=pu[pu.length-1];
     if(u.e.classList.contains("phrow")&&over())fitPhotoRow(u.e,over,cur.body.children.length>1?0.4:0.15);
+    if(u.signoff&&S.signFit&&over())fitSignoff(u.e,over,0.4,Math.max(40,Math.min(100,+S.signSize||100))/100);
     if(over()&&cur.body.children.length>1){
       cur.body.removeChild(u.e);
       var moved=[],nx=u,i=list.length-1;
