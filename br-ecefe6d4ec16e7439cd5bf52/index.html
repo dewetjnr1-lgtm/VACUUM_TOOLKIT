@@ -201,7 +201,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-14.5";
+var APP_BUILD="2026-10-14.6";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -289,7 +289,7 @@ function newReport(key,from){
   return {v:1,template:key,from:from||"andre",signers:[from||"andre"],
     ref:"",rev:"0",revNote:"",date:todayISO(),
     title:T.title,attn:"",company:"",attnEmail:"",phone:"",cc:"",ccEmail:"",
-    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),items:blankItems(),itemsV:5,pump:{on:false,rows:pumpRowsDefault()},itemsBlocks:[],hdrOrder:["company","phone","attn","from","attnEmail","cc","ccEmail","date"],hdrHide:{date:true}};
+    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),items:blankItems(),itemsV:5,pump:{on:false,rows:pumpRowsDefault()},itemsBlocks:[],hdrOrder:["company","phone","attn","from","fromEmail","attnEmail","cc","ccEmail","date"],hdrHide:{date:true}};
 }
 function todayISO(){var d=new Date();return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());}
 function p2(n){return (n<10?"0":"")+n;}
@@ -383,6 +383,7 @@ function normalise(d,isDraft){
     d.itemsV=4;
   }
   if(isDraft&&d.itemsV<5){migrateToItems(d);d.itemsV=5;}
+  if(isDraft&&d.hdrOrder&&d.hdrOrder.indexOf("fromEmail")<0){var fei=d.hdrOrder.indexOf("from");d.hdrOrder.splice(fei<0?d.hdrOrder.length:fei+1,0,"fromEmail");}
   if(d.items&&d.items.length&&!d.items.some(function(r){return r.svc;}))d.items[0].svc=[];
   if(isDraft)syncAuto(d,false);
   d.signers=(d.signers||[]).filter(function(k){return PEOPLE[k];});if(!d.signers.length)d.signers=[d.from];
@@ -425,6 +426,14 @@ function renderEditor(){
     c.addEventListener("change",function(){S.signers=Object.keys(PEOPLE).filter(function(x){return x===k?c.checked:S.signers.indexOf(x)>-1;});changed();});
     return el("div",{style:"display:flex;align-items:center;gap:6px"},[c,PEOPLE[k].name]);
   }));
+  var feBox=el("input",{type:"checkbox"});feBox.checked=S.hdrOrder.indexOf("fromEmail")>-1&&!S.hdrHide.fromEmail;
+  feBox.addEventListener("change",function(){
+    if(feBox.checked){
+      delete S.hdrHide.fromEmail;
+      if(S.hdrOrder.indexOf("fromEmail")<0){var fi=S.hdrOrder.indexOf("from");S.hdrOrder.splice(fi<0?S.hdrOrder.length:fi+1,0,"fromEmail");}
+    }else S.hdrHide.fromEmail=true;
+    changed();
+  });
   var sgSl=el("input",{type:"range",min:"40",max:"100",step:"1",style:"flex:1;min-width:120px"});
   var sgNum=el("input",{type:"number",min:"40",max:"100",step:"1",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});
   sgSl.value=sgNum.value=Math.max(40,Math.min(100,+S.signSize||100));
@@ -437,6 +446,7 @@ function renderEditor(){
       el("label",{class:"f"},[labelRow("From (fills in details automatically)","from"),fsel]),
       el("div",{class:"f"},["Sign off with",chk])
 ,
+      el("div",{class:"f"},[el("span",{class:"lh"},[el("span",{class:"lt"},[el("div",{class:"chk",style:"margin:0"},[feBox," Show my email in the top block"])]),moveArrows("fromEmail")])]),
       el("div",{class:"f full"},["Sign-off size (the closing line and your names)",el("div",{style:"display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px"},[sgSl,sgNum,"%",el("div",{class:"chk",style:"margin:0"},[sgFit," Fit it on the page above if there is room"])])])
     ])]));
   /* header */
@@ -1028,7 +1038,7 @@ function unitsFor(){
   var kv=function(k,v){return [el("div",{class:"k",text:k}),v];};
   U.push({e:el("div",{class:"doc-title",text:T(S.title),style:"white-space:pre-line"})});
   var h=el("div",{class:"hdr"});
-  var HF={company:["COMPANY",esc(S.company)],attn:["ATTENTION",esc(S.attn)],attnEmail:["EMAIL",esc(S.attnEmail),1],phone:["PHONE",esc(S.phone)],from:["FROM",P.name],date:["DATE",fmtDate(S.date)],cc:["CC",esc(S.cc)],ccEmail:["EMAIL",esc(S.ccEmail),1]};
+  var HF={company:["COMPANY",esc(S.company)],attn:["ATTENTION",esc(S.attn)],attnEmail:["EMAIL",esc(S.attnEmail),1],phone:["PHONE",esc(S.phone)],from:["FROM",P.name],date:["DATE",fmtDate(S.date)],cc:["CC",esc(S.cc)],ccEmail:["EMAIL",esc(S.ccEmail),1],fromEmail:["EMAIL",esc(P.email),1]};
   S.hdrOrder.forEach(function(k){
     var f=HF[k];if(!f||S.hdrHide[k])return;
     if((k==="cc"||k==="ccEmail")&&!String(f[1]).trim())return;
