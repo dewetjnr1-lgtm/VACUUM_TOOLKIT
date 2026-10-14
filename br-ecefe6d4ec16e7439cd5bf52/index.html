@@ -198,7 +198,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-14.3";
+var APP_BUILD="2026-10-14.4";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -870,10 +870,11 @@ function blockCard(sec,b,bi){
           if(w<.03)w=.03;if(h<.03)h=.03;if(x+w>1)x=1-w;if(y+h>1)y=1-h;it.zoom.x=x;it.zoom.y=y;it.zoom.w=w;it.zoom.h=h;draw();changed();});
         var end=function(){start=null;};box.addEventListener("pointerup",end);box.addEventListener("pointercancel",end);
         var zcp=el("textarea",{placeholder:"Caption for the zoomed-in detail"});zcp.value=it.zcap||"";zcp.addEventListener("input",function(){it.zcap=zcp.value;changed();});
+        var znote=el("textarea",{placeholder:"Comment next to the enlarged picture (optional). Leave empty for none.",style:"min-height:70px"});znote.value=it.zoom.note||"";znote.addEventListener("input",function(){it.zoom.note=znote.value;changed();});
         var zn=el("input",{type:"number",min:"10",max:"250",step:"1",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});zn.value=it.zoom.hz||it.h||DEFH;
         zn.addEventListener("input",function(){var v=parseFloat(zn.value);if(v>=10&&v<=250){it.zoom.hz=v;changed();}});
         parts.push(el("p",{class:"hint",text:"Drag on the photo below to draw the box around the detail you want to enlarge."}),box,
-          el("div",{class:"hint",style:"display:flex;align-items:center;gap:6px"},["Zoom height",zn,"mm"]),zcp);
+          el("div",{class:"hint",style:"display:flex;align-items:center;gap:6px"},["Zoom height",zn,"mm"]),zcp,znote);
       }
       if(it.call){
         var cbox=el("div",{class:"zsel"},[el("img",{src:it.src,draggable:"false"})]),crect=el("div",{class:"zrect"});cbox.appendChild(crect);
@@ -1154,7 +1155,7 @@ function zoomGeom(it){
 }
 function itemSize(it){
   if(it.kind==="note")return [Math.round((it.w||80)*MM),0];
-  if(it.zoom){var g=zoomGeom(it);return [Math.round(g.tot),Math.round(Math.max(g.ho,g.hz))];}
+  if(it.zoom){var g=zoomGeom(it),nt=zoomNote(it,g);return [Math.round(g.tot+(nt.mode==="beside"?nt.gap2+nt.w:0)),Math.round(Math.max(g.ho,g.hz))];}
   if(it.call){var cg=callGeom(it);return [Math.round(cg.tot),Math.round(cg.ho)];}
   var d=DIMS[it.src]||[4,3],W=178*MM,h=(it.h||DEFH)*MM,w=d[0]/d[1]*h;if(w>W){w=W;h=w*d[1]/d[0];}return [Math.round(w),Math.round(h)];
 }
@@ -1183,10 +1184,19 @@ function callBlock(it){
   if(it.cap)wrap.appendChild(el("div",{class:"cap",style:"width:"+Math.round(g.wo)+"px",text:T(it.cap)}));
   return wrap;
 }
+/* optional comment on the zoomed-in picture: beside it when there is room on the page, otherwise under it */
+function zoomNote(it,g){
+  var z=it.zoom;if(!z||!(z.note||"").trim())return {mode:"none",w:0,gap2:0};
+  var W=178*MM,gap2=4*MM,rem=W-g.tot;
+  if(rem>=gap2+40*MM)return {mode:"beside",w:Math.min(rem-gap2,80*MM),gap2:gap2};
+  var zx=g.wo+g.gap;
+  return {mode:"below",w:Math.min(W-zx,Math.max(g.wz,60*MM)),gap2:gap2};
+}
 function zoomBlock(it){
-  var g=zoomGeom(it),z=it.zoom,H=Math.max(g.ho,g.hz),oy=(H-g.ho)/2,zy=(H-g.hz)/2,zx=g.wo+g.gap;
-  var wrap=el("div",{class:"ph zm",style:"width:"+Math.round(g.tot)+"px"});
-  var area=el("div",{class:"zrow",style:"height:"+Math.round(H)+"px"});
+  var g=zoomGeom(it),z=it.zoom,H=Math.max(g.ho,g.hz),oy=(H-g.ho)/2,zy=(H-g.hz)/2,zx=g.wo+g.gap,nt=zoomNote(it,g);
+  var wrap=el("div",{class:"ph zm",style:"width:"+Math.round(g.tot+(nt.mode==="beside"?nt.gap2+nt.w:0))+"px"});
+  var area=el("div",{class:"zrow",style:"display:flex;align-items:flex-start"});
+  var left=el("div",{style:"position:relative;flex:none;width:"+Math.round(g.tot)+"px;height:"+Math.round(H)+"px"});
   var im=el("img",{src:it.src});im._it=it;im.style.cssText="position:absolute;left:0;top:"+Math.round(oy)+"px;width:"+Math.round(g.wo)+"px;height:"+Math.round(g.ho)+"px";
   var rx=z.x*g.wo,ry=oy+z.y*g.ho,rw=z.w*g.wo,rh=z.h*g.ho;
   var rc=el("div",{class:"zbd"});rc.style.cssText="left:"+rx+"px;top:"+ry+"px;width:"+rw+"px;height:"+rh+"px";
@@ -1199,7 +1209,9 @@ function zoomBlock(it){
   var pts=[x2,y2,bx+hw*Math.sin(ang),by-hw*Math.cos(ang),bx-hw*Math.sin(ang),by+hw*Math.cos(ang)].map(function(v){return v.toFixed(1);});
   var svg='<svg xmlns="http://www.w3.org/2000/svg" width="'+g.tot+'" height="'+H+'" style="position:absolute;left:0;top:0;overflow:visible"><line x1="'+x1+'" y1="'+y1+'" x2="'+bx+'" y2="'+by+'" stroke="#ff5a00" stroke-width="2.2"/><polygon points="'+pts[0]+','+pts[1]+' '+pts[2]+','+pts[3]+' '+pts[4]+','+pts[5]+'" fill="#ff5a00"/></svg>';
   var holder=el("div",{});holder.innerHTML=svg;
-  area.appendChild(im);area.appendChild(zb);area.appendChild(rc);area.appendChild(holder.firstChild);
+  left.appendChild(im);left.appendChild(zb);left.appendChild(rc);left.appendChild(holder.firstChild);
+  area.appendChild(left);
+  if(nt.mode==="beside"){var nb=el("div",{class:"nbox",text:T(z.note)});nb.style.cssText="flex:none;margin-left:"+Math.round(nt.gap2)+"px;margin-top:"+Math.round(zy)+"px;width:"+Math.round(nt.w)+"px;min-height:"+Math.round(g.hz)+"px";area.appendChild(nb);}
   wrap.appendChild(area);
   if(it.cap||it.zcap){
     var caps=el("div",{class:"zcaps",style:"gap:"+Math.round(g.gap)+"px"},[
@@ -1207,6 +1219,7 @@ function zoomBlock(it){
       el("div",{class:"cap",style:"width:"+Math.round(g.wz)+"px",text:T(it.zcap||"")})]);
     wrap.appendChild(caps);
   }
+  if(nt.mode==="below"){var nb2=el("div",{class:"nbox",text:T(z.note)});nb2.style.cssText="margin-left:"+Math.round(zx)+"px;margin-top:"+Math.round(1.5*MM)+"px;width:"+Math.round(nt.w)+"px";wrap.appendChild(nb2);}
   return wrap;
 }
 
