@@ -90,6 +90,8 @@ table.gt.last{margin-bottom:3mm}
 .itemwrap.collapsed .itemarea{display:none}
 .csum{display:none;margin:0 0 8px 34px;font-size:12px;color:var(--mute)}
 .itemwrap.collapsed .csum{display:block}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:80}
+.mbox{background:#fff;border-radius:10px;padding:18px;width:92%;max-width:540px;max-height:90vh;overflow:auto;box-shadow:0 8px 30px rgba(0,0,0,.35);font-size:14px}
 .itemwrap{margin-bottom:2px}
 .itemarea{margin:2px 0 10px 14px;padding-left:10px;border-left:3px solid var(--orange)}
 .chk{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;margin-top:4px}
@@ -174,7 +176,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
 @page{size:A4;margin:0}
 @media print{
   html,body{height:auto;background:#fff}
-  #bar,#edit,#toast,.ctxmenu{display:none!important}
+  #bar,#edit,#toast,.ctxmenu,.modal{display:none!important}
   #app,#split{display:block;height:auto}
   #prevPane{display:block!important;overflow:visible;padding:0;background:#fff}
   #scaler{transform:none!important;width:auto;margin:0!important;height:auto!important}
@@ -212,7 +214,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-14.11";
+var APP_BUILD="2026-10-14.12";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1520,6 +1522,72 @@ document.addEventListener("keydown",function(e){
   else if(k==="y"||(k==="z"&&e.shiftKey)){e.preventDefault();doRedo();}
 });
 
+/* ---------- New report: optionally carry the client information and the structure of the items over ---------- */
+function clone(x){return JSON.parse(JSON.stringify(x));}
+/* a block keeps its shape but loses the job-specific content (standard explanations stay) */
+function clearBlock(b){
+  var c=clone(b);delete c.id;
+  if(c.t==="text"){if(!c.auto)c.text="";}
+  else if(c.t==="bullets")c.text="";
+  else if(c.t==="kv")c.rows=c.rows.map(function(r){return [r[0],""];});
+  else if(c.t==="vib"){c.de=["","","",""];c.nde=["","","",""];}
+  else if(c.t==="photos")c.items=[];
+  else if(c.t==="table")c.rows=c.rows.map(function(r){return r.map(function(){return "";});});
+  return c;
+}
+function carryOver(src,dst,opt){
+  if(opt.client){
+    ["company","attn","attnEmail","phone","cc","ccEmail","greeting","greetName"].forEach(function(k){if(src[k]!==undefined)dst[k]=src[k];});
+    dst.hdrOrder=clone(src.hdrOrder||dst.hdrOrder);dst.hdrSide=clone(src.hdrSide||{});dst.hdrHide=clone(src.hdrHide||{});
+  }
+  if(opt.items){
+    ["title","subject","intro"].forEach(function(k){if(src[k]!==undefined)dst[k]=src[k];});
+    var map={};
+    dst.items=(src.items||[]).map(function(r){
+      var n={label:r.label||"",text:r.text||""};if(r.svc)n.svc=r.svc.slice();
+      n.id=newItemId();if(r.id)map[r.id]=n.id;
+      n.blocks=(r.blocks||[]).map(clearBlock);return n;
+    });
+    if(!dst.items.length)dst.items=blankItems();
+    dst.itemsBlocks=(src.itemsBlocks||[]).map(clearBlock);
+    dst.sections=(src.sections||[]).map(function(s){var n={title:s.title,newPage:!!s.newPage,blocks:(s.blocks||[]).map(clearBlock)};if(s.item&&map[s.item])n.item=map[s.item];return n;});
+    if(src.pump){dst.pump={on:!!src.pump.on,rows:(src.pump.rows||[]).map(function(r){return [r[0],""];})};if(src.pump.item&&map[src.pump.item])dst.pump.item=map[src.pump.item];}
+    dst.autoOff=clone(src.autoOff||{});
+  }
+  return dst;
+}
+function openNewReportDialog(){
+  var ov=el("div",{class:"modal"}),box=el("div",{class:"mbox"});ov.appendChild(box);
+  var close=function(){ov.remove();document.removeEventListener("keydown",esc);};
+  var esc=function(e){if(e.key==="Escape")close();};document.addEventListener("keydown",esc);
+  ov.addEventListener("mousedown",function(e){if(e.target===ov)close();});
+  box.appendChild(el("h3",{text:"Start a new report",style:"margin:0 0 10px;font-size:18px;color:#1b1b1b;text-transform:none;letter-spacing:0"}));
+  var sel=el("select",{style:"padding:6px 8px;border:1px solid #bfc5ca;border-radius:5px;width:100%"},[["blank","A blank report (you build it yourself)"],["test","Test & Scope layout"],["flush","Chemical Flush / Descaling layout"],["service","Field Service layout"]].map(function(o){return el("option",{value:o[0],text:o[1]});}));
+  box.appendChild(el("div",{class:"hint",text:"Start from:"}));box.appendChild(sel);
+  box.appendChild(el("div",{class:"hint",style:"margin-top:12px",text:"Carry anything over from the report you have open now?"}));
+  var no=el("input",{type:"radio",name:"carry",checked:"checked"}),yes=el("input",{type:"radio",name:"carry"});
+  var chk1=el("input",{type:"checkbox"}),chk2=el("input",{type:"checkbox"});chk1.checked=true;chk2.checked=true;
+  var picks=el("div",{style:"display:none;margin:8px 0 0 26px"},[
+    el("div",{class:"chk",style:"margin:0 0 6px"},[chk1,el("span",{},[el("b",{text:" Client information"}),": company, attention, emails, phone, CC, the greeting, and how the top block is laid out."])]),
+    el("div",{class:"chk",style:"margin:0"},[chk2,el("span",{},[el("b",{text:" Items and headings"}),": the report title, subject, opening paragraph and your list of items with their blocks. Pump details keep their lines but the values are cleared, and photos and notes are removed. The standard explanations stay."])])]);
+  var show=function(){picks.style.display=yes.checked?"block":"none";};
+  no.addEventListener("change",show);yes.addEventListener("change",show);
+  box.appendChild(el("div",{class:"chk",style:"margin:6px 0 0"},[no," No, start empty"]));
+  box.appendChild(el("div",{class:"chk",style:"margin:6px 0 0"},[yes," Yes, choose what to keep"]));
+  box.appendChild(picks);
+  box.appendChild(el("p",{class:"hint",style:"margin-top:12px",text:embedded?"Save HTML first if you want to keep the report you have open now.":"The report you have open now is kept as the 'previous' backup on this computer."}));
+  box.appendChild(el("div",{class:"adds",style:"justify-content:flex-end;margin-top:6px"},[
+    el("button",{type:"button",class:"btn ghost",text:"Cancel",onclick:close}),
+    el("button",{type:"button",class:"btn pri",text:"Start new report",onclick:function(){
+      var old=clone(S),opt={client:yes.checked&&chk1.checked,items:yes.checked&&chk2.checked};
+      backupDraft();S=newReport(sel.value,old.from);
+      carryOver(old,S,opt);
+      embedded=false;dirty=false;lastSaved="";autosave();resetHistory();renderEditor();renderPreview();setStatus();close();
+      if(opt.client||opt.items)toast("New report started with your "+(opt.client&&opt.items?"client information and items":opt.client?"client information":"items and headings")+" carried over.");
+    }})]));
+  document.body.appendChild(ov);
+}
+
 /* ---------- start-up ---------- */
 (function init(){
   var raw=document.getElementById("saved-data").textContent.trim();
@@ -1532,12 +1600,7 @@ document.addEventListener("keydown",function(e){
     try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
     idbGet("draft").then(function(d){if(d&&d.sections&&!dirty){S=normalise(d,true);restorePump();lastSaved=JSON.stringify(S);resetHistory();renderEditor();renderPreview();setStatus();}}).catch(function(){});
   }
-  document.getElementById("bNew").onclick=function(){
-    if(!confirm(embedded?"Start a new report? Save HTML first if you want to keep this one.":"Start a new report? Your current draft is kept as the 'previous' backup on this device."))return;
-    var k=prompt("Start from:\n0 = a blank report (you build it yourself)\n1 = Test & Scope\n2 = Chemical Flush / Descaling\n3 = Field Service","0");
-    var key={"0":"blank","1":"test","2":"flush","3":"service"}[k===null?"":(k.trim()||"0")];if(!key)return;
-    backupDraft();S=newReport(key,S.from);embedded=false;dirty=false;lastSaved="";autosave();resetHistory();renderEditor();renderPreview();setStatus();
-  };
+  document.getElementById("bNew").onclick=openNewReportDialog;
   document.getElementById("bOpen").onclick=function(){document.getElementById("fOpen").click();};
   document.getElementById("fOpen").onchange=function(e){if(e.target.files[0])openFile(e.target.files[0]);e.target.value="";};
   document.getElementById("bSave").onclick=saveHtml;
