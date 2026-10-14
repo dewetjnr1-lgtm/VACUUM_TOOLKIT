@@ -87,6 +87,9 @@ table.gt td{border:1px solid #777;border-top:none;padding:1.5mm 2mm;vertical-ali
 table.gt.first td{border-top:1px solid #777}
 table.gt.head td{font-weight:700;background:#f0f0f0}
 table.gt.last{margin-bottom:3mm}
+.itemwrap.collapsed .itemarea{display:none}
+.csum{display:none;margin:0 0 8px 34px;font-size:12px;color:var(--mute)}
+.itemwrap.collapsed .csum{display:block}
 .itemwrap{margin-bottom:2px}
 .itemarea{margin:2px 0 10px 14px;padding-left:10px;border-left:3px solid var(--orange)}
 .chk{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-size:13px;margin-top:4px}
@@ -198,7 +201,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-14.4";
+var APP_BUILD="2026-10-14.5";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -674,15 +677,19 @@ function itemsCard(){
     var l=el("input",{type:"text",placeholder:"Item "+(i+2)});
     l.value=it.label||"";l.addEventListener("input",function(){it.label=l.value;changed();});
     var area=el("div",{class:"itemarea"});
+    var tg=el("button",{type:"button",class:"btn sm ghost ctog",text:COLLAPSED[it.id]?"\u25B8":"\u25BE",title:"Show or hide what is under this item",style:"padding:2px 7px",onclick:function(){setCollapsed(it.id,!COLLAPSED[it.id]);}});
+    var csum=el("div",{class:"csum"});
     var paint=function(){
       area.textContent="";
-      if(!itemText(it).trim())return;
+      var filled=!!itemText(it).trim();tg.style.visibility=filled?"visible":"hidden";
+      if(!filled){csum.textContent="";return;}
       it.blocks=it.blocks||[];
       var holder={blocks:it.blocks};
       area.appendChild(el("div",{class:"hint",text:"What goes under this item in the report:"}));
       if(it.blocks.length)area.appendChild(addBar(holder,true,true));
       renderBlocks(area,holder,"it-"+it.id+"-b");
       area.appendChild(addBar(holder,true));
+      csum.textContent=it.blocks.length+" block"+(it.blocks.length===1?"":"s")+" hidden";
     };
     var t;
     if(it.svc)t=serviceDrop(it);
@@ -691,13 +698,13 @@ function itemsCard(){
       t.value=it.text||"";
       t.addEventListener("input",function(){var was=!!itemText(it).trim();it.text=t.value;if(was!==!!itemText(it).trim())paint();changed();});
     }
-    var row=el("div",{class:"row2",style:"grid-template-columns:90px 1fr auto auto auto"},[l,t,
+    var row=el("div",{class:"row2",style:"grid-template-columns:auto 90px 1fr auto auto auto"},[tg,l,t,
       el("button",{class:"btn sm ghost",text:"\u25B2",onclick:function(){mv(S.items,i,-1);renderEditor();changed();}}),
       el("button",{class:"btn sm ghost",text:"\u25BC",onclick:function(){mv(S.items,i,1);renderEditor();changed();}}),
       el("button",{class:"btn sm del",text:"\u2715",title:"Remove this row",onclick:function(){
         if(it.blocks&&it.blocks.length&&!confirm("Remove this item and everything under it?"))return;
         S.items.splice(i,1);renderEditor();changed();}})]);
-    c.appendChild(el("div",{class:"itemwrap","data-focus":"it-"+it.id},[row,area]));
+    c.appendChild(el("div",{class:"itemwrap"+(COLLAPSED[it.id]?" collapsed":""),"data-focus":"it-"+it.id},[row,csum,area]));
     paint();
   });
   c.appendChild(el("div",{class:"adds"},[
@@ -744,6 +751,15 @@ function effKeep(list,i){
   return false;
 }
 /* draw the blocks of a section, wrapping blocks that are kept together in one visible frame */
+/* ---------- fold an item away with its little arrow (remembered on this computer, not part of the report) ---------- */
+var COLLAPSED={};try{COLLAPSED=JSON.parse(localStorage.getItem("busch-collapsed-v1")||"{}");}catch(e){}
+function saveCollapsed(){try{localStorage.setItem("busch-collapsed-v1",JSON.stringify(COLLAPSED));}catch(e){}}
+function setCollapsed(id,on){
+  if(on)COLLAPSED[id]=1;else delete COLLAPSED[id];
+  saveCollapsed();
+  var w=document.querySelector('#edit .itemwrap[data-focus="it-'+id+'"]');
+  if(w){w.classList.toggle("collapsed",!!on);var b=w.querySelector(".ctog");if(b)b.textContent=on?"▸":"▾";}
+}
 /* every place that holds blocks, in the order they sit on screen and print */
 function containers(){
   var cs=[{blocks:S.itemsBlocks}];
@@ -762,6 +778,7 @@ function moveBlock(arr,i,d){
   if(i>0&&arr[i-1])arr[i-1].keep=undefined;
   b.keep=undefined;
   if(d>0)cs[ni].blocks.unshift(b);else cs[ni].blocks.push(b);
+  S.items.forEach(function(it){if(it.blocks===cs[ni].blocks)delete COLLAPSED[it.id];});saveCollapsed();
 }
 function renderBlocks(c,holder,keyPrefix){
   var list=holder.blocks,i=0;
@@ -978,6 +995,7 @@ function initSync(){
     var key=u.dataset.src,t=ed.querySelector('[data-focus="'+key+'"]');
     if(!t&&key.indexOf("-b")>0)t=ed.querySelector('[data-focus="'+key.split("-b")[0]+'"]');
     if(!t)return;
+    var cw=t.closest&&t.closest(".itemwrap");if(cw&&cw.classList.contains("collapsed"))setCollapsed(cw.dataset.focus.slice(3),false);
     lastScrolled=key;focusKey=key;
     var r=t.getBoundingClientRect(),er=ed.getBoundingClientRect();
     ed.scrollTo({top:Math.max(0,ed.scrollTop+(r.top-er.top)-12),behavior:"smooth"});
