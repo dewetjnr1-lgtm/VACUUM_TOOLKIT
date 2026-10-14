@@ -208,7 +208,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-14.8";
+var APP_BUILD="2026-10-14.9";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1050,6 +1050,13 @@ function initSync(){
     t.classList.remove("flash");void t.offsetWidth;t.classList.add("flash");
     setTimeout(function(){t.classList.remove("flash");},1500);
   });
+  /* scroll or click on the report side and the field you were typing in on the left lets go, so a stray key cannot change it */
+  var releasePane=document.getElementById("prevPane");
+  var releaseEdit=function(){
+    var a=document.activeElement,ed=document.getElementById("edit");
+    if(a&&a!==document.body&&ed.contains(a))a.blur();
+  };
+  ["wheel","pointerdown","touchstart"].forEach(function(t){releasePane.addEventListener(t,releaseEdit,{passive:true});});
   document.addEventListener("click",function(e){[].forEach.call(document.querySelectorAll("details.svc[open]"),function(d){if(!d.contains(e.target))d.removeAttribute("open");});});
 }
 
