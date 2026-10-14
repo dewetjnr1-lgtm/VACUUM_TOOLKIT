@@ -118,6 +118,13 @@ table.gt.last{margin-bottom:3mm}
 .hdr .k{font-weight:700}
 .hdr .kw{grid-column:1}
 .hdr .wide{grid-column:2/-1;overflow-wrap:anywhere}
+.hdr2{font-size:10pt;margin-bottom:3mm}
+.hdr2 .grp2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);column-gap:8mm;margin-bottom:1.2mm}
+.hdr2 .side{display:grid;grid-template-columns:max-content minmax(0,1fr);column-gap:2mm;row-gap:1.2mm;align-content:start}
+.hdr2 .side.l{grid-template-columns:23mm minmax(0,1fr)}
+.hdr2 .wide2{display:grid;grid-template-columns:23mm minmax(0,1fr);column-gap:2mm;margin-bottom:1.2mm}
+.hdr2 .k{font-weight:700}
+.hdr2 .v{overflow-wrap:anywhere}
 .hdr.subj{border-top:1px solid #999;padding-top:3mm;grid-template-columns:23mm 1fr}
 .hdr .v{word-break:break-word;padding-right:4mm}
 .revbox{border:1px solid #999;padding:2mm 3mm;font-size:9pt;margin-bottom:4mm;background:#fff6ef}
@@ -201,7 +208,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-14.6";
+var APP_BUILD="2026-10-14.7";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1037,13 +1044,17 @@ function unitsFor(){
   var U=[],P=PEOPLE[S.from]||PEOPLE.andre;
   var kv=function(k,v){return [el("div",{class:"k",text:k}),v];};
   U.push({e:el("div",{class:"doc-title",text:T(S.title),style:"white-space:pre-line"})});
-  var h=el("div",{class:"hdr"});
+  var h=el("div",{class:"hdr2"});
   var HF={company:["COMPANY",esc(S.company)],attn:["ATTENTION",esc(S.attn)],attnEmail:["EMAIL",esc(S.attnEmail),1],phone:["PHONE",esc(S.phone)],from:["FROM",P.name],date:["DATE",fmtDate(S.date)],cc:["CC",esc(S.cc)],ccEmail:["EMAIL",esc(S.ccEmail),1],fromEmail:["EMAIL",esc(P.email),1]};
+  /* short items fill the left and right halves in turn; an email (full width) closes the group above it */
+  var gL=null,gR=null,flip=0;
   S.hdrOrder.forEach(function(k){
     var f=HF[k];if(!f||S.hdrHide[k])return;
     if((k==="cc"||k==="ccEmail")&&!String(f[1]).trim())return;
-    h.appendChild(el("div",{class:"k"+(f[2]?" kw":""),text:f[0]}));
-    h.appendChild(el("div",{class:"v"+(f[2]?" wide":""),text:": "+f[1]}));
+    var lab=el("div",{class:"k",text:f[0]}),val=el("div",{class:"v",text:": "+f[1]});
+    if(f[2]){gL=gR=null;flip=0;h.appendChild(el("div",{class:"wide2"},[lab,val]));return;}
+    if(!gL){var g2=el("div",{class:"grp2"});gL=el("div",{class:"side l"});gR=el("div",{class:"side"});g2.appendChild(gL);g2.appendChild(gR);h.appendChild(g2);}
+    var side=(flip++%2===0)?gL:gR;side.appendChild(lab);side.appendChild(val);
   });
   U.push({e:h});
   var sj=el("div",{class:"hdr subj"});
