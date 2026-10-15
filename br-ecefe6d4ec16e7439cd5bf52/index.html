@@ -214,7 +214,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-15.2";
+var APP_BUILD="2026-10-15.3";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -302,7 +302,7 @@ function newReport(key,from){
   return {v:1,template:key,from:from||"andre",signers:[from||"andre"],
     ref:"",rev:"0",revNote:"",date:todayISO(),
     title:T.title,attn:"",company:"",attnEmail:"",phone:"",cc:"",ccEmail:"",
-    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),items:blankItems(),itemsV:5,pump:{on:false,rows:pumpRowsDefault()},itemsBlocks:[],hdrOrder:["company","phone","attn","from","fromEmail","attnEmail","cc","ccEmail","date"],hdrSide:{},photoFit:"shrink",hdrHide:{date:true}};
+    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),items:blankItems(),itemsV:5,pump:{on:false,rows:pumpRowsDefault()},itemsBlocks:[],hdrOrder:["company","phone","attn","from","fromEmail","attnEmail","cc","ccEmail","date"],hdrSide:{},photoFit:"move",hdrHide:{date:true}};
 }
 function todayISO(){var d=new Date();return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());}
 function p2(n){return (n<10?"0":"")+n;}
@@ -465,7 +465,7 @@ function renderEditor(){
     }else S.hdrHide.fromEmail=true;
     changed();
   });
-  var pfSel=el("select",{style:"padding:6px 8px;border:1px solid #bfc5ca;border-radius:5px;width:100%;margin-top:4px"},[["shrink","Shrink the photo to fit the page"],["move","Never shrink: move it to the next page at full size"],["same","Same size: shrink all photos in that block together"]].map(function(o){var op=el("option",{value:o[0],text:o[1]});if((S.photoFit||"shrink")===o[0])op.selected=true;return op;}));
+  var pfSel=el("select",{style:"padding:6px 8px;border:1px solid #bfc5ca;border-radius:5px;width:100%;margin-top:4px"},[["shrink","Shrink the photo to fit the page"],["move","Never shrink: move it to the next page at full size"],["same","Same size: shrink all photos in that block together"]].map(function(o){var op=el("option",{value:o[0],text:o[1]});if((S.photoFit||"move")===o[0])op.selected=true;return op;}));
   pfSel.addEventListener("change",function(){S.photoFit=pfSel.value;changed();});
   var sgSl=el("input",{type:"range",min:"40",max:"100",step:"1",style:"flex:1;min-width:120px"});
   var sgNum=el("input",{type:"number",min:"40",max:"100",step:"1",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});
@@ -1464,7 +1464,7 @@ function drawPages(){
   var newPage=function(){cur=mkPage();host.appendChild(cur.pg);pages.push(cur);return cur;};
   var over=function(){return cur.body.scrollHeight>cur.body.clientHeight+1;};
   var pu=[[]];   /* units on each page, so a group can move together */
-  var fitMode=S.photoFit||"shrink",BZ={};   /* BZ: in "same" mode, the size factor already settled for each block of photos */
+  var fitMode=S.photoFit||"move",BZ={};   /* BZ: in "same" mode, the size factor already settled for each block of photos */
   units.forEach(function(u){
     if(u.brk&&cur.body.children.length){newPage();pu.push([]);}
     if(u.gap)u.e.classList.add("gstart");
