@@ -64,6 +64,9 @@ label.f textarea{resize:vertical;min-height:70px;line-height:1.4}
 .row2 input{padding:5px 7px;border:1px solid #bfc5ca;border-radius:5px;min-width:0}
 .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
 .th{border:1px solid var(--line);border-radius:6px;padding:6px;background:#fff}
+.thsm img{width:100%;display:block;border-radius:3px}
+.thsm.sel{outline:3px solid #ff6a00;outline-offset:1px}
+.selpanel{margin-top:8px;border:2px solid #ff6a00;max-width:520px}
 .th img{width:100%;height:90px;object-fit:cover;border-radius:4px;display:block}
 .th textarea{width:100%;margin-top:4px;min-height:48px;padding:4px;border:1px solid #bfc5ca;border-radius:4px;font-size:12px;resize:vertical}
 .th .tb{display:flex;gap:4px;margin-top:4px}
@@ -214,7 +217,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-15.3";
+var APP_BUILD="2026-10-15.4";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -898,6 +901,13 @@ function blockCard(sec,b,bi){
     body.appendChild(el("p",{class:"hint",text:"Photos sit side by side (e.g. before / after) when they fit. Type a height in mm for each photo, slide it left or right, or tick 'On its own row' for a single large photo. 'Per row' is the most that will sit together."}));
     body.appendChild(el("div",{class:"adds"},[(b.layout==="fill"?null:cs),(b.layout==="fill"?null:allb),el("button",{class:"btn sm pri",text:"+ Add photos",onclick:function(){fi.click();}}),el("button",{class:"btn sm ghost",text:"+ Add text box",onclick:function(){b.items.push({kind:"note",text:"",w:80,fit:true,x:0});renderEditor();changed();}}),fi]));
     var th=el("div",{class:"thumbs",style:"margin-top:8px"});
+    var selCard=null;
+    /* the photos sit as small pictures; the options appear once, below them, for the photo that was clicked */
+    var place=function(it,pic,card){
+      var on=(selItem===it);
+      var t=el("div",{class:"th thsm"+(on?" sel":""),style:"cursor:pointer",onclick:function(){selItem=on?null:it;renderEditor();}},[pic]);
+      th.appendChild(t);if(on)selCard=card;
+    };
     b.items.forEach(function(it,ii){
       var common=function(){
         /* position = distance of the item's left edge from the left page margin, so the same number always lines up */
@@ -928,7 +938,7 @@ function blockCard(sec,b,bi){
       if(it.kind==="note"){
         var nt=el("textarea",{placeholder:"Type the text for this box…",style:"min-height:90px"});nt.value=it.text||"";nt.addEventListener("input",function(){it.text=nt.value;changed();});
         var fit=el("input",{type:"checkbox"});fit.checked=it.fit!==false;fit.addEventListener("change",function(){it.fit=fit.checked;changed();});
-        th.appendChild(el("div",{class:"th"},[el("div",{class:"nthumb",text:"TEXT BOX"}),nt,num("Width","w",80,30,178),
+        place(it,el("div",{class:"nthumb",text:"TEXT BOX"}),el("div",{class:"th selpanel"},[el("div",{class:"nthumb",text:"TEXT BOX"}),nt,num("Width","w",80,30,178),
           el("div",{class:"chk",style:"margin:2px 0"},[fit," Match the photo height next to it"])].concat(common())));
         return;
       }
@@ -968,9 +978,10 @@ function blockCard(sec,b,bi){
         cw.addEventListener("input",function(){var v=parseFloat(cw.value);if(v>=20&&v<=140){it.call.tw=v;changed();}});
         parts.push(el("p",{class:"hint",text:"Drag on the photo below to mark the spot you want the box to point at."}),cbox,ctext,el("div",{class:"hint",style:"display:flex;align-items:center;gap:6px"},["Text box width",cw,"mm"]));
       }
-      th.appendChild(el("div",{class:"th"+((it.zoom||it.call)?" wide":"")},parts.concat(common())));
+      place(it,el("img",{src:it.src,title:it.cap||"Click to work on this photo"}),el("div",{class:"th selpanel"},parts.concat(common())));
     });
     body.appendChild(th);
+    if(selCard)body.appendChild(selCard);
   }else if(b.t==="table"){
     b.cols=Math.max(1,b.cols||2);b.rows=b.rows||[];
     b.rows.forEach(function(r){while(r.length<b.cols)r.push("");});
@@ -1036,6 +1047,7 @@ function photoTaken(f,cb){
   r.onerror=function(){cb(fb);};
   r.readAsArrayBuffer(f.slice(0,131072));
 }
+var selItem=null;   /* the photo being worked on in the left sheet */
 function addPhotos(b,files){
   var list=[].slice.call(files),n=0,got=[];
   var finish=function(){
