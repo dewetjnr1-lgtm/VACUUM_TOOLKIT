@@ -217,7 +217,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-15.4";
+var APP_BUILD="2026-10-16.1";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -270,12 +270,12 @@ var TEMPLATES={
   sections:function(){return [
    {title:"INTRODUCTION TO BUSCH LIQUID RING VACUUM PUMP FLUSH CHEMICAL",newPage:false,blocks:[{t:"text",text:CHEM_INTRO}]},
    {title:"PUMP DETAILS",newPage:false,blocks:[{t:"kv",rows:[["Manufacturer",""],["Size",""],["Plant",""],["Position Number",""]]}]},
-   {title:"PRE-FLUSH PHOTOS",newPage:false,blocks:[{t:"photos",cols:2,items:[]}]},
+   {title:"PRE-FLUSH PHOTOS",newPage:false,blocks:[{t:"photos",cols:2,layout:"fill",items:[]}]},
    {title:"PUMP FLUSH IN PROGRESS",newPage:false,blocks:[
-     {t:"photos",cols:2,items:[]},
+     {t:"photos",cols:2,layout:"fill",items:[]},
      {t:"text",text:"The chemical is introduced and recirculated through the pump for a nominated period. After the shift change the valves are shut and the chemical remains in the pump overnight."}]},
-   {title:"POST-FLUSH PHOTOS",newPage:false,blocks:[{t:"photos",cols:2,items:[]}]},
-   {title:"ADDITIONAL WORKS COMPLETED",newPage:false,blocks:[{t:"bullets",text:""},{t:"photos",cols:2,items:[]}]},
+   {title:"POST-FLUSH PHOTOS",newPage:false,blocks:[{t:"photos",cols:2,layout:"fill",items:[]}]},
+   {title:"ADDITIONAL WORKS COMPLETED",newPage:false,blocks:[{t:"bullets",text:""},{t:"photos",cols:2,layout:"fill",items:[]}]},
    conclusion("Busch Vacuum Solutions would like to take the opportunity to thank all involved at [SITE].")
   ];}
  },
@@ -286,7 +286,7 @@ var TEMPLATES={
   intro:"Thank you for the opportunity for Busch Vacuum Solutions to offer our field services at [SITE]. This feedback report is based on the recent service work on the pump detailed below, and our recommendations are for your kind perusal.",
   sections:function(){return [
    {title:"PUMP DETAILS",newPage:false,blocks:[{t:"kv",rows:[["Manufacturer",""],["Model/Size",""],["Serial Number",""],["Plant",""],["Position Number",""]]}]},
-   {title:"OVERVIEW OF THE WORK COMPLETED",newPage:false,blocks:[{t:"text",text:""},{t:"photos",cols:2,items:[]}]},
+   {title:"OVERVIEW OF THE WORK COMPLETED",newPage:false,blocks:[{t:"text",text:""},{t:"photos",cols:2,layout:"fill",items:[]}]},
    {title:"OTHER FINDINGS AND RECOMMENDATIONS",newPage:false,blocks:[{t:"bullets",text:""}]},
    conclusion("")
   ];}
@@ -296,7 +296,7 @@ function pumpSection(title,newPage){return {title:title,newPage:newPage!==false,
   {t:"kv",rows:PUMP_ROWS.map(function(r){return r.slice();})},
   {t:"vib",de:["","","",""],nde:["","","",""],note:VIB_NOTE},
   {t:"text",text:""},
-  {t:"photos",cols:2,items:[]}
+  {t:"photos",cols:2,layout:"fill",items:[]}
 ]};}
 function conclusion(txt){return {title:"CONCLUSION",newPage:false,blocks:[{t:"text",text:txt}]};}
 
@@ -305,7 +305,7 @@ function newReport(key,from){
   return {v:1,template:key,from:from||"andre",signers:[from||"andre"],
     ref:"",rev:"0",revNote:"",date:todayISO(),
     title:T.title,attn:"",company:"",attnEmail:"",phone:"",cc:"",ccEmail:"",
-    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),items:blankItems(),itemsV:5,pump:{on:false,rows:pumpRowsDefault()},itemsBlocks:[],hdrOrder:["company","phone","attn","from","fromEmail","attnEmail","cc","ccEmail","date"],hdrSide:{},photoFit:"move",hdrHide:{date:true}};
+    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),items:blankItems(),itemsV:5,pump:{on:false,rows:pumpRowsDefault()},itemsBlocks:[],hdrOrder:["company","phone","attn","from","fromEmail","attnEmail","cc","ccEmail","date"],hdrSide:{},photoFit:"move",photoFitV:2,hdrHide:{date:true}};
 }
 function todayISO(){var d=new Date();return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());}
 function p2(n){return (n<10?"0":"")+n;}
@@ -378,6 +378,7 @@ function convertColsBlocks(d){
 function normalise(d,isDraft){
   var needPumpRestore=!d.pump;
   var convert=!d.itemsV&&d.sections;   /* drafts from before the typed-in index */
+  if(d.photoFitV!==2&&d.photoFit==="shrink")d.photoFit="move";   /* "shrink" was only the old default: reports saved before now stop shrinking photos (choose it again in the drop-down if wanted) */
   var base=newReport(d.template&&TEMPLATES[d.template]?d.template:"test",d.from||"andre");
   Object.keys(base).forEach(function(k){if(d[k]===undefined)d[k]=base[k];});
   convertColsBlocks(d);
@@ -519,7 +520,7 @@ function addBar(sec,withPump,atTop){
   var add=function(label,mk){return el("button",{class:"btn sm ghost",text:label,onclick:function(){if(atTop)sec.blocks.unshift(mk());else sec.blocks.push(mk());renderEditor();changed();}});};
   return el("div",{class:"adds"},[
     atTop?el("span",{class:"hint",text:"Add at the top:"}):null,
-    add("+ Photos",function(){return {t:"photos",cols:2,items:[]};}),
+    add("+ Photos",function(){return {t:"photos",cols:2,layout:"fill",items:[]};}),
     add("+ Text",function(){return {t:"text",text:""};}),
     add("+ Bullet list",function(){return {t:"bullets",text:""};}),
     add("+ Details table",function(){return {t:"kv",rows:[["",""]]};}),
@@ -888,7 +889,7 @@ function blockCard(sec,b,bi){
     lay.addEventListener("change",function(){b.layout=lay.value;renderEditor();changed();});
     var layRow=el("div",{class:"adds",style:"align-items:center"},[el("span",{class:"hint",text:"Layout:"}),lay]);
     if(b.layout==="fill"){
-      var rh=el("input",{type:"number",min:"20",max:"140",step:"1",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});rh.value=b.rowH||50;
+      var rh=el("input",{type:"number",min:"20",max:"140",step:"1",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});rh.value=b.rowH||40;
       rh.addEventListener("input",function(){var v=parseFloat(rh.value);if(v>=20&&v<=140){b.rowH=v;changed();}});
       layRow.appendChild(el("span",{class:"hint",text:"Row height about"}));layRow.appendChild(rh);layRow.appendChild(el("span",{class:"hint",text:"mm (smaller = more photos per row)"}));
     }
@@ -1260,7 +1261,7 @@ function unitsFor(){
 }
 /* "Fill the page" layout: photos sit in rows that fill the full width; the photos in one row share a height, so a mix of portrait and landscape photos uses the page well */
 function galleryUnits(b){
-  var out=[],W=178*MM,gap=4*MM,targetH=(b.rowH||50)*MM,maxH=130*MM,seg=[];
+  var out=[],W=178*MM,gap=4*MM,targetH=(b.rowH||40)*MM,maxH=130*MM,seg=[];
   var plain=function(it){return it.kind!=="note"&&!it.zoom&&!it.call;};
   var flush=function(){
     if(!seg.length)return;
