@@ -226,7 +226,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-16.4";
+var APP_BUILD="2026-10-16.5";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -314,7 +314,7 @@ function newReport(key,from){
   return {v:1,template:key,from:from||"andre",signers:[from||"andre"],
     ref:"",rev:"0",revNote:"",date:todayISO(),
     title:T.title,attn:"",company:"",attnEmail:"",phone:"",cc:"",ccEmail:"",
-    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),items:blankItems(),itemsV:5,pump:{on:false,rows:pumpRowsDefault()},itemsBlocks:[],hdrOrder:["company","phone","attn","from","fromEmail","attnEmail","cc","ccEmail","date"],hdrSide:{},photoFit:"move",photoFitV:2,hdrHide:{date:true}};
+    subject:T.subject,yourRef:"",greeting:"Good day",intro:T.intro,sections:T.sections(),items:blankItems(),itemsV:5,pump:{on:false,rows:pumpRowsDefault()},itemsBlocks:[],hdrOrder:["company","phone","attn","from","fromEmail","attnEmail","cc","ccEmail","date"],hdrSide:{},photoFit:"move",photoFitV:2,photoHV:2,hdrHide:{date:true}};
 }
 function todayISO(){var d=new Date();return d.getFullYear()+"-"+p2(d.getMonth()+1)+"-"+p2(d.getDate());}
 function p2(n){return (n<10?"0":"")+n;}
@@ -388,6 +388,10 @@ function normalise(d,isDraft){
   var needPumpRestore=!d.pump;
   var convert=!d.itemsV&&d.sections;   /* drafts from before the typed-in index */
   if(d.photoFitV!==2&&d.photoFit==="shrink")d.photoFit="move";   /* "shrink" was only the old default: reports saved before now stop shrinking photos (choose it again in the drop-down if wanted) */
+  if(d.photoHV!==2){   /* photos saved at the old 70mm starting size become 60mm, the new starting size */
+    var fixH=function(bl){(bl||[]).forEach(function(b){if(b.t==="photos")(b.items||[]).forEach(function(i){if(i.kind!=="note"&&i.h===70)i.h=60;});});};
+    (d.items||[]).forEach(function(r){fixH(r.blocks);});fixH(d.itemsBlocks);(d.sections||[]).forEach(function(s){fixH(s.blocks);});
+  }
   var base=newReport(d.template&&TEMPLATES[d.template]?d.template:"test",d.from||"andre");
   Object.keys(base).forEach(function(k){if(d[k]===undefined)d[k]=base[k];});
   convertColsBlocks(d);
@@ -1010,7 +1014,7 @@ function blockCard(sec,b,bi){
         cw.addEventListener("input",function(){var v=parseFloat(cw.value);if(v>=20&&v<=140){it.call.tw=v;changed();}});
         parts.push(el("p",{class:"hint",text:"Drag on the photo below to mark the spot you want the box to point at."}),cbox,ctext,el("div",{class:"hint",style:"display:flex;align-items:center;gap:6px"},["Text box width",cw,"mm"]));
       }
-      place(it,el("img",{src:it.src,title:it.name||it.cap||"Click to work on this photo"}),el("div",{class:"th selpanel"},parts.concat(common())));
+      place(it,thumbImg(it),el("div",{class:"th selpanel"},parts.concat(common())));
     });
     body.appendChild(th);
     if(selCard)body.appendChild(selCard);
@@ -1080,6 +1084,20 @@ function photoTaken(f,cb){
   r.readAsArrayBuffer(f.slice(0,131072));
 }
 var selItem=null;   /* the photo being worked on in the left sheet */
+/* small copies of the photos for the worksheet, made once, so clicking around stays quick with many photos */
+var THUMB={};
+function thumbImg(it){
+  var im=el("img",{title:it.name||it.cap||"Click to work on this photo"}),src=it.src;
+  if(THUMB[src]){im.src=THUMB[src];return im;}
+  loadImg(src,function(img){
+    if(!img){im.src=src;return;}
+    var s=Math.min(1,300/Math.max(img.naturalWidth,img.naturalHeight)),c=document.createElement("canvas");
+    c.width=Math.max(1,Math.round(img.naturalWidth*s));c.height=Math.max(1,Math.round(img.naturalHeight*s));
+    c.getContext("2d").drawImage(img,0,0,c.width,c.height);
+    THUMB[src]=c.toDataURL("image/jpeg",0.72);im.src=THUMB[src];
+  });
+  return im;
+}
 var cropItem=null;   /* the photo whose crop frame is open in the left sheet */
 function loadImg(src,cb){var im=new Image();im.onload=function(){cb(im);};im.onerror=function(){cb(null);};im.src=src;}
 function removeCrop(it){
