@@ -229,7 +229,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-19.2";
+var APP_BUILD="2026-10-19.3";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1437,13 +1437,19 @@ function galleryUnits(b){
   var plain=function(it){return it.kind!=="note"&&!it.zoom&&!it.call&&!bubOn(it);};
   var flush=function(){
     if(!seg.length)return;
-    var rows=[],cur=[],sumA=0;
-    seg.forEach(function(it){
-      var d=DIMS[it.src]||[4,3],a=d[0]/d[1];
-      if(cur.length&&((sumA+a)*targetH+cur.length*gap)>W){rows.push({items:cur,a:sumA});cur=[];sumA=0;}
-      cur.push({it:it,a:a});sumA+=a;
-    });
-    if(cur.length)rows.push({items:cur,a:sumA,last:true});
+    var rows=[],asp=function(it){var d=DIMS[it.src]||[4,3];return d[0]/d[1];};
+    /* each row takes the number of photos that brings its height closest to the row height you typed, so a photo is never stretched just to fill the width */
+    for(var i=0;i<seg.length;){
+      var sumA=0,take=0,prevH=null,done=false;
+      for(var j=i;j<seg.length;j++){
+        sumA+=asp(seg[j]);var cnt=j-i+1,h=(W-(cnt-1)*gap)/sumA;
+        if(h<=targetH){take=(cnt>1&&Math.abs(prevH-targetH)<Math.abs(h-targetH))?cnt-1:cnt;done=true;break;}
+        prevH=h;take=cnt;
+      }
+      var its=seg.slice(i,i+take),a=0;its.forEach(function(it){a+=asp(it);});
+      rows.push({items:its.map(function(it){return {it:it,a:asp(it)};}),a:a,last:!done&&i+take>=seg.length});
+      i+=take;
+    }
     rows.forEach(function(r){
       var h=(W-(r.items.length-1)*gap)/r.a;
       if(r.last)h=Math.min(h,targetH);
