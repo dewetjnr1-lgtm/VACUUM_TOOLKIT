@@ -173,6 +173,9 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
 .zcaps{display:flex;margin-top:1.2mm}
 .zcaps .cap{margin-top:0}
 .th.wide{grid-column:1/-1}
+.ntile{aspect-ratio:4/3;box-sizing:border-box;overflow:hidden;background:#fff4ec;border-left:4px solid var(--orange);border-radius:4px;padding:5px 6px;font-size:11px;line-height:1.25;color:#222;white-space:pre-wrap;overflow-wrap:anywhere}
+.ntile b{display:block;color:#c44600;font-size:10px;margin-bottom:2px}
+.thsm .ntile{pointer-events:none}
 .nthumb{height:50px;display:flex;align-items:center;justify-content:center;background:#fff4ec;border:1px dashed var(--orange);border-radius:4px;color:#c44600;font-weight:700;font-size:12px;margin-bottom:4px}
 .zsel{position:relative;touch-action:none;cursor:crosshair;user-select:none;margin:4px 0}
 .zsel img{width:100%;height:auto;display:block;object-fit:fill;border-radius:0}
@@ -229,7 +232,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-19.5";
+var APP_BUILD="2026-10-19.6";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -918,7 +921,7 @@ function blockCard(sec,b,bi){
     sameN.addEventListener("input",function(){var v=parseFloat(sameN.value);if(v>=10&&v<=250){b.sameH=v;changed();}});
     var allb=el("span",{style:"display:inline-flex;align-items:center;gap:6px"},[el("button",{class:"btn sm ghost",text:"Make all the same size",onclick:function(){var h=parseFloat(sameN.value);if(!(h>=10&&h<=250))h=DEFH;b.items.forEach(function(x){if(x.kind!=="note")x.h=h;});renderEditor();changed();}}),"at",sameN,"mm"]);
     body.appendChild(el("p",{class:"hint",text:"Photos sit side by side (e.g. before / after) when they fit. Type a height in mm for each photo, slide it left or right, or tick 'On its own row' for a single large photo. 'Per row' is the most that will sit together. Click a photo to change its name, caption, size, position (Centre), crop and more."}));
-    body.appendChild(el("div",{class:"adds"},[(b.layout==="fill"?null:cs),(b.layout==="fill"?null:allb),el("button",{class:"btn sm pri",text:"+ Add photos",onclick:function(){fi.click();}}),el("button",{class:"btn sm ghost",text:"+ Add text box",onclick:function(){b.items.push({kind:"note",text:"",w:80,fit:true,x:0});renderEditor();changed();}}),fi]));
+    body.appendChild(el("div",{class:"adds"},[(b.layout==="fill"?null:cs),(b.layout==="fill"?null:allb),el("button",{class:"btn sm pri",text:"+ Add photos",onclick:function(){fi.click();}}),el("button",{class:"btn sm ghost",text:"+ Add text box",onclick:function(){var nn={kind:"note",text:"",w:80,fit:true,x:0};b.items.push(nn);selItem=nn;cropItem=null;renderEditor();changed();}}),fi]));
     var th=el("div",{class:"thumbs",style:"margin-top:8px"});
     var selCard=null;
     th.addEventListener("dragover",function(e){if(dragPh&&e.target===th){e.preventDefault();e.dataTransfer.dropEffect="move";}});
@@ -977,9 +980,12 @@ function blockCard(sec,b,bi){
         return el("div",{class:"hint",style:"display:flex;align-items:center;gap:6px"},[label,n,"mm"]);
       };
       if(it.kind==="note"){
-        var nt=el("textarea",{placeholder:"Type the text for this box…",style:"min-height:90px"});nt.value=it.text||"";nt.addEventListener("input",function(){it.text=nt.value;changed();});
+        var nt=el("textarea",{placeholder:"Type the text for this box…",style:"min-height:90px"});nt.value=it.text||"";
+        /* in the list of photos a text box looks like a photo with its words on it, and moves the same way */
+        var ntile=el("div",{class:"ntile"});var fillTile=function(){ntile.textContent="";ntile.appendChild(el("b",{text:"TEXT"}));ntile.appendChild(el("span",{text:(it.text||"").trim()||"(empty text box)"}));};fillTile();
+        nt.addEventListener("input",function(){it.text=nt.value;fillTile();changed();});
         var fit=el("input",{type:"checkbox"});fit.checked=it.fit!==false;fit.addEventListener("change",function(){it.fit=fit.checked;changed();});
-        place(it,el("div",{class:"nthumb",text:"TEXT BOX"}),el("div",{class:"th selpanel"},[el("div",{class:"nthumb",text:"TEXT BOX"}),nt,num("Width","w",80,30,178),
+        place(it,ntile,el("div",{class:"th selpanel"},[el("div",{class:"nthumb",text:"TEXT BOX"}),nt,num("Width","w",80,30,178),
           el("div",{class:"chk",style:"margin:2px 0"},[fit," Match the photo height next to it"])].concat(common())));
         return;
       }
