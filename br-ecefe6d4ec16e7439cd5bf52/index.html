@@ -239,7 +239,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-21.2";
+var APP_BUILD="2026-10-21.3";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -944,8 +944,8 @@ function blockCard(sec,b,bi){
       var rh=el("input",{type:"number",min:"20",max:"140",step:"1",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});rh.value=b.rowH||40;
       rh.addEventListener("input",function(){var v=parseFloat(rh.value);if(v>=20&&v<=140){b.rowH=v;changed();}});
       layRow.appendChild(el("span",{class:"hint",text:"Row height about"}));layRow.appendChild(rh);layRow.appendChild(el("span",{class:"hint",text:"mm (smaller = more photos per row)"}));
-      var fs=el("input",{type:"checkbox"});fs.checked=!!b.fillSame;fs.addEventListener("change",function(){b.fillSame=fs.checked;changed();});
-      layRow.appendChild(el("div",{class:"chk",style:"margin:0 0 0 10px"},[fs," Every photo exactly this height (rows spread evenly, not stretched)"]));
+      var fs=el("input",{type:"checkbox"});fs.checked=b.fillSame!==false;fs.addEventListener("change",function(){b.fillSame=fs.checked;changed();});
+      layRow.appendChild(el("div",{class:"chk",style:"margin:0 0 0 10px"},[fs," All photos the same size, packed in as well as possible (untick to stretch each row to the page width)"]));
     }
     body.appendChild(layRow);
     var cs=el("select",{},[["1","1 photo per row"],["2","2 photos per row"],["3","3 photos per row"]].map(function(o){var op=el("option",{value:o[0],text:o[1]});if(+o[0]===b.cols)op.selected=true;return op;}));
@@ -1538,7 +1538,7 @@ function galleryUnits(b){
     seg=[];
   };
   /* every photo exactly the same height; rows are filled left to right and spread evenly */
-  var buildEqualRows=function(items,tH){
+  var buildEqualRows=function(items,tH,isFu){
     var groups=[],g=[],gw=0,els=[];
     items.forEach(function(it){
       var d=DIMS[it.src]||[4,3],a=d[0]/d[1],h0=Math.min(tH,maxH),w0=Math.min(a*h0,W);
@@ -1550,31 +1550,34 @@ function galleryUnits(b){
       var row=el("div",{class:"phrow"});
       if(gi<groups.length-1&&gr.length>1)row.style.justifyContent="space-between";
       gr.forEach(function(x){var w=Math.floor(x.w),im=el("img",{src:x.it.src});im._it=x.it;im.style.width=w+"px";im.style.height=Math.round(x.h)+"px";row.appendChild(el("div",{class:"ph",style:"width:"+w+"px"},[im,capEl(x.it)]));});
-      row.dataset.blk=b.id||"";row.dataset.fill="1";row.dataset.fu="1";els.push(row);
+      row.dataset.blk=b.id||"";row.dataset.fill="1";if(isFu)row.dataset.fu="1";els.push(row);
     });
     return els;
   };
+  /* the height (never more than the one typed, at most a quarter less) at which equal-size photos pack into rows with the least empty space */
+  var bestHeight=function(items,tH){
+    var best=tH,bestScore=1e9,asp=function(it){var d=DIMS[it.src]||[4,3];return d[0]/d[1];};
+    for(var hp=tH;hp>=tH*0.75;hp-=0.5*MM){
+      var cur=0,cnt=0,waste=0,rowsN=0;
+      items.forEach(function(it){
+        var w=Math.min(asp(it)*Math.min(hp,maxH),W);
+        if(cnt&&cur+gap+w>W+1){waste+=(W-cur);rowsN++;cur=0;cnt=0;}
+        cur+=(cnt?gap:0)+w;cnt++;
+      });
+      var score=(rowsN?waste/(W*rowsN):0)+0.6*(tH-hp)/tH;
+      if(score<bestScore-1e-9){bestScore=score;best=hp;}
+    }
+    return best;
+  };
   var layoutRun=function(items,targetH,fu,look){
     if(fu){   /* the page filler rebuilds this set at a smaller or larger scale until it fits */
-      var build=function(f){return buildEqualRows(items,targetH*f);};
+      var build=function(f){return buildEqualRows(items,targetH*f,true);};
       build(1).forEach(function(e){out.push({e:e,blk:b.id||"",fill:true,fu:true,fuBuild:build});});
       return;
     }
-    if(b.fillSame){
-      /* every photo exactly the row height: rows are filled left to right and spread evenly, never stretched */
-      var groups=[],g=[],gw=0;
-      items.forEach(function(it){
-        var d=DIMS[it.src]||[4,3],a=d[0]/d[1],h0=Math.min(targetH,maxH),w0=Math.min(a*h0,W);
-        if(g.length&&gw+gap+w0>W+1){groups.push(g);g=[];gw=0;}
-        g.push({it:it,w:w0,h:Math.min(h0,w0/a)});gw+=(g.length>1?gap:0)+w0;
-      });
-      if(g.length)groups.push(g);
-      groups.forEach(function(gr,gi){
-        var row=el("div",{class:"phrow"});
-        if(gi<groups.length-1&&gr.length>1)row.style.justifyContent="space-between";
-        gr.forEach(function(x){var w=Math.floor(x.w),im=el("img",{src:x.it.src});im._it=x.it;im.style.width=w+"px";im.style.height=Math.round(x.h)+"px";row.appendChild(el("div",{class:"ph",style:"width:"+w+"px"},[im,capEl(x.it)]));});
-        row.dataset.blk=b.id||"";row.dataset.fill="1";if(fu)row.dataset.fu="1";out.push({e:row,blk:b.id||"",fill:true,fu:!!fu});
-      });
+    if(b.fillSame!==false){
+      /* photos keep one equal size and are packed in as well as possible; rows are never stretched */
+      buildEqualRows(items,bestHeight(items,targetH),false).forEach(function(e){out.push({e:e,blk:b.id||"",fill:true});});
       return;
     }
     var n0=items.length,all=items.concat(look||[]),rows=[],asp=function(it){var d=DIMS[it.src]||[4,3];return d[0]/d[1];};
