@@ -239,7 +239,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-20.4";
+var APP_BUILD="2026-10-20.7";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1107,6 +1107,8 @@ function blockCard(sec,b,bi){
           picked.forEach(function(x){x.rh=v;});renderEditor();changed();
         }}));
         if(picked.some(function(x){return x.rh>0;}))bar.appendChild(el("button",{type:"button",class:"btn sm ghost",text:"Back to the block's size",onclick:function(){picked.forEach(function(x){delete x.rh;});renderEditor();changed();}}));
+        var allFu=picked.every(function(x){return x.fu;});
+        bar.appendChild(el("button",{type:"button",class:"btn sm "+(allFu?"ghost":"pri"),title:"The ticked photos are made just small enough to fit in the space left on the page above. No other photo changes.",text:allFu?"Stop fitting on the page above":"Fit on the page above",onclick:function(){picked.forEach(function(x){if(allFu)delete x.fu;else x.fu=true;});renderEditor();changed();}}));
       }else{
         var mh=el("input",{type:"number",min:"10",max:"250",step:"1",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});mh.value=picked[0].h||DEFH;
         bar.appendChild(el("span",{class:"hint",text:"Height"}));bar.appendChild(mh);bar.appendChild(el("span",{class:"hint",text:"mm"}));
@@ -1531,11 +1533,11 @@ function galleryUnits(b){
     if(!seg.length)return;
     /* photos with their own row height are laid out as a group of their own, so they never change the size of the other photos */
     var runs=[],cur=null;
-    seg.forEach(function(it){var k=it.rh>0?it.rh:0;if(!cur||cur.k!==k){cur={k:k,items:[]};runs.push(cur);}cur.items.push(it);});
-    runs.forEach(function(run){layoutRun(run.items,(run.k||(b.rowH||40))*MM);});
+    seg.forEach(function(it){var k=(it.rh>0?it.rh:0)+(it.fu?"f":"");if(!cur||cur.k!==k){cur={k:k,fu:!!it.fu,items:[]};runs.push(cur);}cur.items.push(it);});
+    runs.forEach(function(run,ri){layoutRun(run.items,(parseFloat(run.k)||(b.rowH||40))*MM,run.fu,runs[ri+1]?runs[ri+1].items:[]);});
     seg=[];
   };
-  var layoutRun=function(items,targetH){
+  var layoutRun=function(items,targetH,fu,look){
     if(b.fillSame){
       /* every photo exactly the row height: rows are filled left to right and spread evenly, never stretched */
       var groups=[],g=[],gw=0;
@@ -1549,33 +1551,37 @@ function galleryUnits(b){
         var row=el("div",{class:"phrow"});
         if(gi<groups.length-1&&gr.length>1)row.style.justifyContent="space-between";
         gr.forEach(function(x){var w=Math.floor(x.w),im=el("img",{src:x.it.src});im._it=x.it;im.style.width=w+"px";im.style.height=Math.round(x.h)+"px";row.appendChild(el("div",{class:"ph",style:"width:"+w+"px"},[im,capEl(x.it)]));});
-        row.dataset.blk=b.id||"";out.push({e:row,blk:b.id||""});
+        row.dataset.blk=b.id||"";row.dataset.fill="1";if(fu)row.dataset.fu="1";out.push({e:row,blk:b.id||"",fill:true,fu:!!fu});
       });
       return;
     }
-    var rows=[],asp=function(it){var d=DIMS[it.src]||[4,3];return d[0]/d[1];};
+    var n0=items.length,all=items.concat(look||[]),rows=[],asp=function(it){var d=DIMS[it.src]||[4,3];return d[0]/d[1];};
     /* each row takes the number of photos that brings its height closest to the row height you typed, so a photo is never stretched just to fill the width */
-    for(var i=0;i<items.length;){
+    for(var i=0;i<all.length;){
       var sumA=0,take=0,prevH=null,done=false;
-      for(var j=i;j<items.length;j++){
-        sumA+=asp(items[j]);var cnt=j-i+1,h=(W-(cnt-1)*gap)/sumA;
+      for(var j=i;j<all.length;j++){
+        sumA+=asp(all[j]);var cnt=j-i+1,h=(W-(cnt-1)*gap)/sumA;
         if(h<=targetH){take=(cnt>1&&Math.abs(prevH-targetH)<Math.abs(h-targetH))?cnt-1:cnt;done=true;break;}
         prevH=h;take=cnt;
       }
-      var its=items.slice(i,i+take),a=0;its.forEach(function(it){a+=asp(it);});
-      rows.push({items:its.map(function(it){return {it:it,a:asp(it)};}),a:a,last:!done&&i+take>=items.length});
+      var its=all.slice(i,i+take),a=0;its.forEach(function(it){a+=asp(it);});
+      var rh0=(W-(its.length-1)*gap)/a,last=!done&&i+take>=all.length;
+      if(last)rh0=Math.min(rh0,targetH);
+      rh0=Math.min(rh0,maxH);
+      if(i>=n0)break;
+      /* a row that carries on into the next group keeps the size it had, with only this group's photos in it */
+      if(i+take>n0){its=its.slice(0,n0-i);}
+      rows.push({items:its.map(function(it){return {it:it,a:asp(it)};}),h:rh0});
       i+=take;
     }
     rows.forEach(function(r){
-      var h=(W-(r.items.length-1)*gap)/r.a;
-      if(r.last)h=Math.min(h,targetH);
-      h=Math.min(h,maxH);
+      var h=r.h;
       var row=el("div",{class:"phrow"});
       r.items.forEach(function(x){
         var w=Math.floor(x.a*h),im=el("img",{src:x.it.src});im._it=x.it;im.style.width=w+"px";im.style.height=Math.round(h)+"px";
         row.appendChild(el("div",{class:"ph",style:"width:"+w+"px"},[im,capEl(x.it)]));
       });
-      row.dataset.blk=b.id||"";out.push({e:row,blk:b.id||""});
+      row.dataset.blk=b.id||"";row.dataset.fill="1";if(fu)row.dataset.fu="1";out.push({e:row,blk:b.id||"",fill:true,fu:!!fu});
     });
   };
   (b.items||[]).forEach(function(it){
@@ -1776,18 +1782,48 @@ function drawPages(){
   var over=function(){return cur.body.scrollHeight>cur.body.clientHeight+1;};
   var pu=[[]];   /* units on each page, so a group can move together */
   var fitMode=S.photoFit||"move",BZ={};   /* BZ: in "same" mode, the size factor already settled for each block of photos */
+  /* photos marked "fit on the page above": their rows are shrunk together, only as much as needed to use the space left on the page */
+  var fuPrev=null;
   units.forEach(function(u){
+    if(u.fu){
+      if(fuPrev&&fuPrev.blk===u.blk){fuPrev.fuG.push(u);u.fuSkip=true;}
+      else{u.fuG=[u];fuPrev=u;}
+    }else fuPrev=null;
+  });
+  units.forEach(function(u){
+    if(u.fuSkip)return;
+    if(u.fuG){
+      var G=u.fuG,setZ=function(z){
+        /* only the pictures get smaller; the words under them keep their size */
+        G.forEach(function(g){[].forEach.call(g.e.querySelectorAll(".ph"),function(ph){
+          var im=ph.querySelector("img");if(!im)return;
+          if(!im.dataset.ow){im.dataset.ow=parseFloat(im.style.width);im.dataset.oh=parseFloat(im.style.height);}
+          var f=z===""?1:z,w=Math.round(im.dataset.ow*f);
+          im.style.width=w+"px";im.style.height=Math.round(im.dataset.oh*f)+"px";ph.style.width=w+"px";
+        });});
+      };
+      if(u.brk&&cur.body.children.length){}
+      G.forEach(function(g){cur.body.appendChild(g.e);});setZ("");
+      var okG=true;
+      if(over()){
+        setZ(0.4);
+        if(over())okG=false;
+        else{var lo=0.4,hi=1;for(var it2=0;it2<10;it2++){var mid=(lo+hi)/2;setZ(mid);if(over())hi=mid;else lo=mid;}setZ(lo);}
+      }
+      if(okG){G.forEach(function(g){pu[pu.length-1].push(g);});return;}
+      setZ("");G.forEach(function(g){cur.body.removeChild(g.e);g.fuSkip=false;});u.fuG=null;   /* it cannot fit up here: handled like any other row */
+    }
     if(u.brk&&cur.body.children.length){newPage();pu.push([]);}
     if(u.gap)u.e.classList.add("gstart");
     cur.body.appendChild(u.e);
     var list=pu[pu.length-1];
     var isRow=u.e.classList.contains("phrow");
-    if(isRow&&u.blk&&BZ[u.blk])u.e.style.zoom=BZ[u.blk];
-    if(isRow&&over()&&(fitMode!=="move"||cur.body.children.length<=1)){
+    if(isRow&&!u.fill&&u.blk&&BZ[u.blk])u.e.style.zoom=BZ[u.blk];
+    if(isRow&&!u.fill&&over()&&(fitMode!=="move"||cur.body.children.length<=1)){   /* "Fill the page" rows keep exactly the size you gave them */
       var okf=fitPhotoRow(u.e,over,cur.body.children.length>1?0.4:0.15);
       if(okf&&fitMode==="same"&&u.blk){
         var zf=+u.e.style.zoom||1;BZ[u.blk]=Math.min(BZ[u.blk]||1,zf);
-        [].forEach.call(host.querySelectorAll('.phrow[data-blk="'+u.blk+'"]'),function(r){r.style.zoom=BZ[u.blk];});
+        [].forEach.call(host.querySelectorAll('.phrow[data-blk="'+u.blk+'"]'),function(r){if(r.dataset.fill!=="1")r.style.zoom=BZ[u.blk];});
       }else if(!okf&&u.blk&&BZ[u.blk])u.e.style.zoom=BZ[u.blk];
     }
     if(u.signoff&&S.signFit&&over())fitSignoff(u.e,over,0.4,Math.max(40,Math.min(100,+S.signSize||100))/100);
@@ -1807,7 +1843,7 @@ function drawPages(){
       });
       list=pu[pu.length-1];
       cur.body.appendChild(u.e);
-      if(fitMode==="shrink"&&over()){moved.map(function(m){return m.e;}).concat([u.e]).forEach(function(e){if(e.classList.contains("phrow")&&over())fitPhotoRow(e,over,0.4);});}
+      if(fitMode==="shrink"&&over()){moved.map(function(m){return m.e;}).concat([u.e]).forEach(function(e){if(e.classList.contains("phrow")&&e.dataset.fill!=="1"&&over())fitPhotoRow(e,over,0.4);});}
       if(moved.length&&over()){   /* group plus this block is taller than a page: leave the group where it was */
         moved.forEach(function(m){if(m._z!==undefined)m.e.style.zoom=m._z;old.body.appendChild(m.e);oldList.push(m);});
         list.length=0;
