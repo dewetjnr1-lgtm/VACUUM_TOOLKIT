@@ -65,6 +65,9 @@ label.f textarea{resize:vertical;min-height:70px;line-height:1.4}
 .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
 .th{border:1px solid var(--line);border-radius:6px;padding:6px;background:#fff}
 .thsm{position:relative}
+.thsm.dragging{opacity:.4}
+.thsm.dropL{box-shadow:-5px 0 0 #ff6a00}
+.thsm.dropR{box-shadow:5px 0 0 #ff6a00}
 .thx{position:absolute;top:3px;right:3px;width:22px;height:22px;padding:0;line-height:20px;border:0;border-radius:50%;background:rgba(255,255,255,.92);color:#b33;font-size:13px;font-weight:700;cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.4)}
 .thx:hover{background:#b33;color:#fff}
 .thsm img{width:100%;display:block;border-radius:3px}
@@ -226,7 +229,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-16.5";
+var APP_BUILD="2026-10-19.1";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -918,11 +921,32 @@ function blockCard(sec,b,bi){
     body.appendChild(el("div",{class:"adds"},[(b.layout==="fill"?null:cs),(b.layout==="fill"?null:allb),el("button",{class:"btn sm pri",text:"+ Add photos",onclick:function(){fi.click();}}),el("button",{class:"btn sm ghost",text:"+ Add text box",onclick:function(){b.items.push({kind:"note",text:"",w:80,fit:true,x:0});renderEditor();changed();}}),fi]));
     var th=el("div",{class:"thumbs",style:"margin-top:8px"});
     var selCard=null;
+    th.addEventListener("dragover",function(e){if(dragPh&&e.target===th){e.preventDefault();e.dataTransfer.dropEffect="move";}});
+    th.addEventListener("drop",function(e){
+      if(!dragPh||e.target!==th)return;e.preventDefault();
+      var s=dragPh;dragPh=null;var k=s.b.items.indexOf(s.it);if(k>=0)s.b.items.splice(k,1);b.items.push(s.it);renderEditor();changed();
+    });
     /* the photos sit as small pictures; the options appear once, below them, for the photo that was clicked */
     var place=function(it,pic,card){
       var on=(selItem===it);
       var x=el("button",{type:"button",class:"thx",title:"Remove this photo",text:"✕",onclick:function(e){e.stopPropagation();var k=b.items.indexOf(it);if(k>=0)b.items.splice(k,1);if(selItem===it){selItem=null;cropItem=null;}renderEditor();changed();}});
       var t=el("div",{class:"th thsm"+(on?" sel":""),style:"cursor:pointer",onclick:function(){selItem=on?null:it;cropItem=null;renderEditor();}},[pic,x]);
+      /* drag a photo to another place: onto the left or right half of another photo, in this block or another one */
+      t.draggable=true;t.style.cursor="grab";
+      var side=function(e){var r=t.getBoundingClientRect();return e.clientX>r.left+r.width/2?"R":"L";};
+      var clr=function(){t.classList.remove("dropL","dropR");};
+      t.addEventListener("dragstart",function(e){dragPh={b:b,it:it};e.dataTransfer.effectAllowed="move";try{e.dataTransfer.setData("text/plain","photo");}catch(x){}t.classList.add("dragging");});
+      t.addEventListener("dragend",function(){dragPh=null;t.classList.remove("dragging");[].forEach.call(document.querySelectorAll(".dropL,.dropR"),function(n){n.classList.remove("dropL","dropR");});});
+      t.addEventListener("dragover",function(e){if(!dragPh||dragPh.it===it)return;e.preventDefault();e.stopPropagation();e.dataTransfer.dropEffect="move";clr();t.classList.add("drop"+side(e));});
+      t.addEventListener("dragleave",clr);
+      t.addEventListener("drop",function(e){
+        if(!dragPh||dragPh.it===it)return;e.preventDefault();e.stopPropagation();
+        var s=dragPh,after=side(e)==="R";clr();dragPh=null;
+        var k=s.b.items.indexOf(s.it);if(k>=0)s.b.items.splice(k,1);
+        var at=b.items.indexOf(it);if(at<0)at=b.items.length;
+        b.items.splice(at+(after?1:0),0,s.it);
+        renderEditor();changed();
+      });
       th.appendChild(t);if(on)selCard=card;
     };
     b.items.forEach(function(it,ii){
@@ -1085,9 +1109,10 @@ function photoTaken(f,cb){
 }
 var selItem=null;   /* the photo being worked on in the left sheet */
 /* small copies of the photos for the worksheet, made once, so clicking around stays quick with many photos */
+var dragPh=null;   /* the photo being dragged in the worksheet */
 var THUMB={};
 function thumbImg(it){
-  var im=el("img",{title:it.name||it.cap||"Click to work on this photo"}),src=it.src;
+  var im=el("img",{title:it.name||it.cap||"Click to work on this photo, drag it to move it"}),src=it.src;
   if(THUMB[src]){im.src=THUMB[src];return im;}
   loadImg(src,function(img){
     if(!img){im.src=src;return;}
