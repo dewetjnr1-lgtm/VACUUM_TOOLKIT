@@ -97,6 +97,11 @@ table.gt.first td{border-top:1px solid #777}
 table.gt.head td{font-weight:700;background:#f0f0f0}
 table.gt.last{margin-bottom:3mm}
 .itemwrap.collapsed .itemarea{display:none}
+.blk.bcol>:not(.bh){display:none}
+.blk .bsum{display:none;color:#666;font-weight:400;font-size:12px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0;flex:1 1 auto}
+.blk.bcol .bsum{display:inline}
+.blk.bcol .bh{margin-bottom:0}
+.blk.bcol .bh span:first-of-type{flex:none}
 .csum{display:none;margin:0 0 8px 34px;font-size:12px;color:var(--mute)}
 .itemwrap.collapsed .csum{display:block}
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center;z-index:80}
@@ -232,7 +237,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-19.6";
+var APP_BUILD="2026-10-19.7";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -829,6 +834,14 @@ function setCollapsed(id,on){
   var w=document.querySelector('#edit .itemwrap[data-focus="it-'+id+'"]');
   if(w){w.classList.toggle("collapsed",!!on);var b=w.querySelector(".ctog");if(b)b.textContent=on?"▸":"▾";}
 }
+/* fold a block (Photos, Text, ...) away to just its title line; remembered on this computer like the items */
+function setBlockCollapsed(card,on){
+  var id=card.dataset.bid;if(!id)return;
+  if(on)COLLAPSED[id]=1;else delete COLLAPSED[id];
+  saveCollapsed();card.classList.toggle("bcol",!!on);
+  var b=card.querySelector(".btog");if(b)b.textContent=on?"▸":"▾";
+}
+function expandBlockOf(node){var c=node&&node.closest&&node.closest(".blk.bcol");if(c)setBlockCollapsed(c,false);}
 /* a lasting id for every block: the editor and the report find each other by it, not by position in a list */
 function newBlockId(){return "k"+Math.random().toString(36).slice(2,8);}
 function ensureBlockIds(){
@@ -870,7 +883,10 @@ function renderBlocks(c,holder,keyPrefix){
 }
 
 function blockCard(sec,b,bi){
-  var head=el("div",{class:"bh"},[el("span",{text:BNAME[b.t]}),
+  if(!b.id)b.id=newBlockId();
+  var bsum=(b.t==="photos")?((b.items||[]).length+" photo"+((b.items||[]).length===1?"":"s")):((b.t==="text"||b.t==="bullets")?String(b.text||"").replace(/\s+/g," ").trim().slice(0,60):"");
+  var btog=el("button",{type:"button",class:"btn sm ghost btog",title:"Fold this block away or show it again",text:COLLAPSED[b.id]?"▸":"▾",style:"padding:2px 7px"});
+  var head=el("div",{class:"bh"},[btog,el("span",{text:BNAME[b.t]}),el("span",{class:"bsum",text:bsum?"  · "+bsum:""}),
     el("button",{class:"btn sm ghost",text:"▲",onclick:function(){moveBlock(sec.blocks,bi,-1);renderEditor();changed();}}),
     el("button",{class:"btn sm ghost",text:"▼",onclick:function(){moveBlock(sec.blocks,bi,1);renderEditor();changed();}}),
     el("button",{class:"btn sm del",text:"✕",onclick:function(){if(b.auto){S.autoOff=S.autoOff||{};S.autoOff[b.auto]=true;}sec.blocks.splice(bi,1);renderEditor();changed();}})]);
@@ -1083,9 +1099,11 @@ function blockCard(sec,b,bi){
   var kp=el("input",{type:"checkbox"});kp.checked=effKeep(sec.blocks,bi);kp.addEventListener("change",function(){b.keep=kp.checked;renderEditor();changed();});
   var kpa=null;
   if(bi>0){kpa=el("input",{type:"checkbox"});kpa.checked=effKeep(sec.blocks,bi-1);kpa.addEventListener("change",function(){sec.blocks[bi-1].keep=kpa.checked;renderEditor();changed();});}
-  return el("div",{class:"blk"},[head,body,
+  var bcard=el("div",{class:"blk"+(COLLAPSED[b.id]?" bcol":""),"data-bid":b.id},[head,body,
     kpa?el("div",{class:"chk",style:"margin-top:6px"},[kpa," Keep together with the block above (stays on one page)"]):null,
     el("div",{class:"chk",style:"margin-top:6px"},[kp," Keep together with the block below (stays on one page)"])]);
+  btog.addEventListener("click",function(){var on=!bcard.classList.contains("bcol");setBlockCollapsed(bcard,on);});
+  return bcard;
 }
 /* the date a photo was taken: the camera's date inside the JPEG (EXIF); if there is none, the file's own date */
 function photoTaken(f,cb){
@@ -1278,10 +1296,12 @@ function initSync(){
     if(!t&&key.indexOf("-b")>0)t=ed.querySelector('[data-focus="'+key.split("-b")[0]+'"]');
     if(!t)return;
     var cw=t.closest&&t.closest(".itemwrap");if(cw&&cw.classList.contains("collapsed"))setCollapsed(cw.dataset.focus.slice(3),false);
+    expandBlockOf(t);
     var tgt=t;
     if(pit){   /* highlight that photo on the left and open its options */
       selItem=pit;cropItem=null;renderEditor();
       var th=ed.querySelector(".thsm.sel");
+      expandBlockOf(th);
       if(th)tgt=th;else{var t2=ed.querySelector('[data-focus="'+key+'"]');if(t2)tgt=t2;}
     }
     lastScrolled=key;focusKey=key;focusPar=(u.dataset.par!==undefined)?+u.dataset.par:null;
