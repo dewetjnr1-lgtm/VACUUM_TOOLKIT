@@ -229,7 +229,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-19.4";
+var APP_BUILD="2026-10-19.5";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1267,15 +1267,22 @@ function initSync(){
   document.getElementById("pages").addEventListener("click",function(e){
     var ed=document.getElementById("edit");if(!ed.offsetWidth)return;
     var u=e.target.closest&&e.target.closest("[data-src]");if(!u)return;
+    var pph=e.target.closest(".ph"),pim=pph&&pph.querySelector("img"),pit=(pim&&pim._it&&pim._it.src)?pim._it:null;   /* a photo was clicked */
     var key=u.dataset.src,t=ed.querySelector('[data-focus="'+key+'"]');
     if(!t&&key.indexOf("-b")>0)t=ed.querySelector('[data-focus="'+key.split("-b")[0]+'"]');
     if(!t)return;
     var cw=t.closest&&t.closest(".itemwrap");if(cw&&cw.classList.contains("collapsed"))setCollapsed(cw.dataset.focus.slice(3),false);
+    var tgt=t;
+    if(pit){   /* highlight that photo on the left and open its options */
+      selItem=pit;cropItem=null;renderEditor();
+      var th=ed.querySelector(".thsm.sel");
+      if(th)tgt=th;else{var t2=ed.querySelector('[data-focus="'+key+'"]');if(t2)tgt=t2;}
+    }
     lastScrolled=key;focusKey=key;focusPar=(u.dataset.par!==undefined)?+u.dataset.par:null;
-    var r=t.getBoundingClientRect(),er=ed.getBoundingClientRect();
+    var r=tgt.getBoundingClientRect(),er=ed.getBoundingClientRect();
     ed.scrollTo({top:Math.max(0,ed.scrollTop+(r.top-er.top)-12),behavior:"smooth"});
-    t.classList.remove("flash");void t.offsetWidth;t.classList.add("flash");
-    setTimeout(function(){t.classList.remove("flash");},1500);
+    tgt.classList.remove("flash");void tgt.offsetWidth;tgt.classList.add("flash");
+    setTimeout(function(){tgt.classList.remove("flash");},1500);
   });
   /* scroll or click on the report side and the field you were typing in on the left lets go, so a stray key cannot change it */
   var releasePane=document.getElementById("prevPane");
