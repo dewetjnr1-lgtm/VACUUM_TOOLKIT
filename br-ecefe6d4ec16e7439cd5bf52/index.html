@@ -237,7 +237,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-19.9";
+var APP_BUILD="2026-10-19.10";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -882,11 +882,26 @@ function renderBlocks(c,holder,keyPrefix){
   }
 }
 
+/* a Text block can be turned into a text box inside the nearest block of photos, so it can be dragged in among them */
+function textIntoPhotos(blocks,bi){
+  var b=blocks[bi],pb=null,k;
+  for(k=bi-1;k>=0&&!pb;k--)if(blocks[k].t==="photos")pb=blocks[k];
+  for(k=bi+1;k<blocks.length&&!pb;k++)if(blocks[k].t==="photos")pb=blocks[k];
+  if(!pb){toast("There is no Photos block next to this text. Add a Photos block first.");return;}
+  var txt=((b.title?b.title+"\n":"")+(b.text||"")).replace(/^\n+|\n+$/g,"");
+  var nn={kind:"note",text:txt,w:178,fit:false,x:0,alone:true};
+  pb.items=pb.items||[];pb.items.push(nn);
+  blocks.splice(bi,1);
+  if(pb.id)delete COLLAPSED[pb.id];saveCollapsed();
+  selItem=nn;cropItem=null;renderEditor();changed();
+  toast("The text is now a text box at the end of the photos. Drag it to where you want it.");
+}
 function blockCard(sec,b,bi){
   if(!b.id)b.id=newBlockId();
   var bsum=(b.t==="photos")?((b.items||[]).length+" photo"+((b.items||[]).length===1?"":"s")):((b.t==="text"||b.t==="bullets")?String(b.text||"").replace(/\s+/g," ").trim().slice(0,60):"");
   var btog=el("button",{type:"button",class:"btn sm ghost btog",title:"Fold this block away or show it again",text:COLLAPSED[b.id]?"▸":"▾",style:"padding:2px 7px"});
   var head=el("div",{class:"bh"},[btog,el("span",{text:BNAME[b.t]}),el("span",{class:"bsum",text:bsum?"  · "+bsum:""}),
+    (b.t==="text"?el("button",{type:"button",class:"btn sm ghost",title:"Turn this text into a text box among the photos next to it, so you can drag it between the photos",text:"Move into the photos",onclick:function(){textIntoPhotos(sec.blocks,bi);}}):null),
     el("button",{class:"btn sm ghost",text:"▲",onclick:function(){moveBlock(sec.blocks,bi,-1);renderEditor();changed();}}),
     el("button",{class:"btn sm ghost",text:"▼",onclick:function(){moveBlock(sec.blocks,bi,1);renderEditor();changed();}}),
     el("button",{class:"btn sm del",text:"✕",onclick:function(){if(b.auto){S.autoOff=S.autoOff||{};S.autoOff[b.auto]=true;}sec.blocks.splice(bi,1);renderEditor();changed();}})]);
