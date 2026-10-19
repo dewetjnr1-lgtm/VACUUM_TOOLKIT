@@ -65,6 +65,8 @@ label.f textarea{resize:vertical;min-height:70px;line-height:1.4}
 .thumbs{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
 .th{border:1px solid var(--line);border-radius:6px;padding:6px;background:#fff}
 .thsm{position:relative}
+.thc{position:absolute;top:4px;left:4px;width:20px;height:20px;margin:0;cursor:pointer;accent-color:#2a7de1}
+.thsm.msel{box-shadow:0 0 0 3px #2a7de1}
 .thsm.dragging{opacity:.4}
 .thsm.dropL{box-shadow:-5px 0 0 #ff6a00}
 .thsm.dropR{box-shadow:5px 0 0 #ff6a00}
@@ -237,7 +239,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-19.10";
+var APP_BUILD="2026-10-20.1";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -951,7 +953,7 @@ function blockCard(sec,b,bi){
     var sameN=el("input",{type:"number",min:"10",max:"250",step:"1",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});sameN.value=b.sameH||DEFH;
     sameN.addEventListener("input",function(){var v=parseFloat(sameN.value);if(v>=10&&v<=250){b.sameH=v;changed();}});
     var allb=el("span",{style:"display:inline-flex;align-items:center;gap:6px"},[el("button",{class:"btn sm ghost",text:"Make all the same size",onclick:function(){var h=parseFloat(sameN.value);if(!(h>=10&&h<=250))h=DEFH;b.items.forEach(function(x){if(x.kind!=="note")x.h=h;});renderEditor();changed();}}),"at",sameN,"mm"]);
-    body.appendChild(el("p",{class:"hint",text:"Photos sit side by side (e.g. before / after) when they fit. Type a height in mm for each photo, slide it left or right, or tick 'On its own row' for a single large photo. 'Per row' is the most that will sit together. Click a photo to change its name, caption, size, position (Centre), crop and more."}));
+    body.appendChild(el("p",{class:"hint",text:"Photos sit side by side (e.g. before / after) when they fit. Type a height in mm for each photo, slide it left or right, or tick 'On its own row' for a single large photo. 'Per row' is the most that will sit together. Click a photo to change its name, caption, size, position (Centre), crop and more. Tick the small box on photos to change the size of only those."}));
     body.appendChild(el("div",{class:"adds"},[(b.layout==="fill"?null:cs),(b.layout==="fill"?null:allb),el("button",{class:"btn sm pri",text:"+ Add photos",onclick:function(){fi.click();}}),el("button",{class:"btn sm ghost",text:"+ Add text box",onclick:function(){var nn={kind:"note",text:"",w:80,fit:true,x:0};b.items.push(nn);selItem=nn;cropItem=null;renderEditor();changed();}}),fi]));
     var th=el("div",{class:"thumbs",style:"margin-top:8px"});
     var selCard=null;
@@ -965,6 +967,21 @@ function blockCard(sec,b,bi){
       var isSel=(selItem===it),on=isSel||(!selItem&&selItem!==false&&b.items.length===1);   /* a block with one photo opens its options straight away */
       var x=el("button",{type:"button",class:"thx",title:"Remove this photo",text:"✕",onclick:function(e){e.stopPropagation();var k=b.items.indexOf(it);if(k>=0)b.items.splice(k,1);if(selItem===it){selItem=null;cropItem=null;}renderEditor();changed();}});
       var t=el("div",{class:"th thsm"+(isSel?" sel":""),style:"cursor:pointer",onclick:function(){selItem=on?false:it;cropItem=null;renderEditor();}},[pic,x]);
+      if(it.kind!=="note"){
+        var mc=el("input",{type:"checkbox",class:"thc",title:"Tick photos (Shift to tick a range) to change the size of just those"});
+        mc.checked=selMulti.indexOf(it)>=0;if(mc.checked)t.classList.add("msel");
+        mc.addEventListener("click",function(e){
+          e.stopPropagation();
+          var k=b.items.indexOf(it),last=multiLast[b.id];
+          if(e.shiftKey&&last!=null&&last>=0){
+            var lo=Math.min(k,last),hi=Math.max(k,last);
+            for(var q=lo;q<=hi;q++){var pi=b.items[q];if(pi&&pi.kind!=="note"&&selMulti.indexOf(pi)<0)selMulti.push(pi);}
+          }else{var ix=selMulti.indexOf(it);if(ix>=0)selMulti.splice(ix,1);else selMulti.push(it);}
+          multiLast[b.id]=k;renderEditor();
+        });
+        mc.addEventListener("dblclick",function(e){e.stopPropagation();});
+        t.appendChild(mc);
+      }
       /* drag a photo to another place: onto the left or right half of another photo, in this block or another one */
       t.draggable=true;t.style.cursor="grab";
       var side=function(e){var r=t.getBoundingClientRect();return e.clientX>r.left+r.width/2?"R":"L";};
@@ -1077,6 +1094,23 @@ function blockCard(sec,b,bi){
       }
       place(it,thumbImg(it),el("div",{class:"th selpanel"},parts.concat(common())));
     });
+    var picked=b.items.filter(function(x){return selMulti.indexOf(x)>=0;});
+    if(picked.length){
+      var bar=el("div",{class:"adds multibar",style:"align-items:center;margin-top:8px;padding:6px 8px;border:2px solid #2a7de1;border-radius:6px;background:#eef5ff"},[el("b",{text:picked.length+" photo"+(picked.length===1?"":"s")+" ticked"})]);
+      if(b.layout==="fill"){
+        bar.appendChild(el("span",{class:"hint",text:"Switch Layout to 'I set each photo's size and position' to give just these a different size."}));
+      }else{
+        var mh=el("input",{type:"number",min:"10",max:"250",step:"1",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});mh.value=picked[0].h||DEFH;
+        bar.appendChild(el("span",{class:"hint",text:"Height"}));bar.appendChild(mh);bar.appendChild(el("span",{class:"hint",text:"mm"}));
+        bar.appendChild(el("button",{type:"button",class:"btn sm pri",text:"Set size for these only",onclick:function(){
+          var v=parseFloat(mh.value);if(!(v>=10&&v<=250)){toast("Type a height between 10 and 250 mm.");return;}
+          picked.forEach(function(x){x.h=v;});renderEditor();changed();
+        }}));
+      }
+      bar.appendChild(el("button",{type:"button",class:"btn sm ghost",text:"Tick all photos",onclick:function(){b.items.forEach(function(x){if(x.kind!=="note"&&selMulti.indexOf(x)<0)selMulti.push(x);});renderEditor();}}));
+      bar.appendChild(el("button",{type:"button",class:"btn sm ghost",text:"Untick all",onclick:function(){selMulti=selMulti.filter(function(x){return b.items.indexOf(x)<0;});renderEditor();}}));
+      body.appendChild(bar);
+    }
     body.appendChild(th);
     if(selCard)body.appendChild(selCard);
   }else if(b.t==="table"){
@@ -1149,6 +1183,7 @@ function photoTaken(f,cb){
 var selItem=null;   /* the photo being worked on in the left sheet */
 /* small copies of the photos for the worksheet, made once, so clicking around stays quick with many photos */
 var dragPh=null;   /* the photo being dragged in the worksheet */
+var selMulti=[],multiLast={};   /* photos ticked in the worksheet, to change the size of just those */
 var THUMB={};
 function thumbImg(it){
   var im=el("img",{title:it.name||it.cap||"Click to work on this photo, drag it to move it"}),src=it.src;
