@@ -237,7 +237,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-19.7";
+var APP_BUILD="2026-10-19.9";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -947,9 +947,9 @@ function blockCard(sec,b,bi){
     });
     /* the photos sit as small pictures; the options appear once, below them, for the photo that was clicked */
     var place=function(it,pic,card){
-      var on=(selItem===it)||(b.items.length===1&&selItem!==false);   /* a block with one photo opens its options straight away */
+      var isSel=(selItem===it),on=isSel||(!selItem&&selItem!==false&&b.items.length===1);   /* a block with one photo opens its options straight away */
       var x=el("button",{type:"button",class:"thx",title:"Remove this photo",text:"✕",onclick:function(e){e.stopPropagation();var k=b.items.indexOf(it);if(k>=0)b.items.splice(k,1);if(selItem===it){selItem=null;cropItem=null;}renderEditor();changed();}});
-      var t=el("div",{class:"th thsm"+(on?" sel":""),style:"cursor:pointer",onclick:function(){selItem=on?false:it;cropItem=null;renderEditor();}},[pic,x]);
+      var t=el("div",{class:"th thsm"+(isSel?" sel":""),style:"cursor:pointer",onclick:function(){selItem=on?false:it;cropItem=null;renderEditor();}},[pic,x]);
       /* drag a photo to another place: onto the left or right half of another photo, in this block or another one */
       t.draggable=true;t.style.cursor="grab";
       var side=function(e){var r=t.getBoundingClientRect();return e.clientX>r.left+r.width/2?"R":"L";};
@@ -1306,7 +1306,8 @@ function initSync(){
     }
     lastScrolled=key;focusKey=key;focusPar=(u.dataset.par!==undefined)?+u.dataset.par:null;
     var r=tgt.getBoundingClientRect(),er=ed.getBoundingClientRect();
-    ed.scrollTo({top:Math.max(0,ed.scrollTop+(r.top-er.top)-12),behavior:"smooth"});
+    var dist=r.top-er.top-12;
+    ed.scrollTo({top:Math.max(0,ed.scrollTop+dist),behavior:(pit||Math.abs(dist)>900)?"auto":"smooth"});   /* a long way: go straight there */
     tgt.classList.remove("flash");void tgt.offsetWidth;tgt.classList.add("flash");
     setTimeout(function(){tgt.classList.remove("flash");},1500);
   });
