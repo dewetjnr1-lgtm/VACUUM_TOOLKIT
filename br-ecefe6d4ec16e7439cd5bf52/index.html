@@ -239,7 +239,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-20.9";
+var APP_BUILD="2026-10-21.2";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1108,7 +1108,7 @@ function blockCard(sec,b,bi){
         }}));
         if(picked.some(function(x){return x.rh>0;}))bar.appendChild(el("button",{type:"button",class:"btn sm ghost",text:"Back to the block's size",onclick:function(){picked.forEach(function(x){delete x.rh;});renderEditor();changed();}}));
         var allFu=picked.every(function(x){return x.fu;});
-        bar.appendChild(el("button",{type:"button",class:"btn sm "+(allFu?"ghost":"pri"),title:"The ticked photos are made just small enough to fit in the space left on the page above. No other photo changes.",text:allFu?"Stop fitting on the page above":"Fit on the page above",onclick:function(){picked.forEach(function(x){if(allFu)delete x.fu;else x.fu=true;});renderEditor();changed();}}));
+        bar.appendChild(el("button",{type:"button",class:"btn sm "+(allFu?"ghost":"pri"),title:"The ticked photos become one equal size, as big as possible while they all sit on one page: on the page above if they fit there, otherwise on a page of their own. Captions keep their size. Other photos do not change.",text:allFu?"Stop fitting on one page":"Fit these on one page (all the same size)",onclick:function(){picked.forEach(function(x){if(allFu)delete x.fu;else x.fu=true;});renderEditor();changed();}}));
       }else{
         var mh=el("input",{type:"number",min:"10",max:"250",step:"1",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});mh.value=picked[0].h||DEFH;
         bar.appendChild(el("span",{class:"hint",text:"Height"}));bar.appendChild(mh);bar.appendChild(el("span",{class:"hint",text:"mm"}));
@@ -1537,7 +1537,29 @@ function galleryUnits(b){
     runs.forEach(function(run,ri){layoutRun(run.items,(parseFloat(run.k)||(b.rowH||40))*MM,run.fu,runs[ri+1]?runs[ri+1].items:[]);});
     seg=[];
   };
+  /* every photo exactly the same height; rows are filled left to right and spread evenly */
+  var buildEqualRows=function(items,tH){
+    var groups=[],g=[],gw=0,els=[];
+    items.forEach(function(it){
+      var d=DIMS[it.src]||[4,3],a=d[0]/d[1],h0=Math.min(tH,maxH),w0=Math.min(a*h0,W);
+      if(g.length&&gw+gap+w0>W+1){groups.push(g);g=[];gw=0;}
+      g.push({it:it,w:w0,h:Math.min(h0,w0/a)});gw+=(g.length>1?gap:0)+w0;
+    });
+    if(g.length)groups.push(g);
+    groups.forEach(function(gr,gi){
+      var row=el("div",{class:"phrow"});
+      if(gi<groups.length-1&&gr.length>1)row.style.justifyContent="space-between";
+      gr.forEach(function(x){var w=Math.floor(x.w),im=el("img",{src:x.it.src});im._it=x.it;im.style.width=w+"px";im.style.height=Math.round(x.h)+"px";row.appendChild(el("div",{class:"ph",style:"width:"+w+"px"},[im,capEl(x.it)]));});
+      row.dataset.blk=b.id||"";row.dataset.fill="1";row.dataset.fu="1";els.push(row);
+    });
+    return els;
+  };
   var layoutRun=function(items,targetH,fu,look){
+    if(fu){   /* the page filler rebuilds this set at a smaller or larger scale until it fits */
+      var build=function(f){return buildEqualRows(items,targetH*f);};
+      build(1).forEach(function(e){out.push({e:e,blk:b.id||"",fill:true,fu:true,fuBuild:build});});
+      return;
+    }
     if(b.fillSame){
       /* every photo exactly the row height: rows are filled left to right and spread evenly, never stretched */
       var groups=[],g=[],gw=0;
@@ -1786,32 +1808,38 @@ function drawPages(){
   var fuPrev=null;
   units.forEach(function(u){
     if(u.fu){
-      if(fuPrev&&fuPrev.blk===u.blk){fuPrev.fuG.push(u);u.fuSkip=true;}
+      if(fuPrev&&fuPrev.blk===u.blk&&fuPrev.fuBuild===u.fuBuild){fuPrev.fuG.push(u);u.fuSkip=true;}
       else{u.fuG=[u];fuPrev=u;}
     }else fuPrev=null;
   });
   units.forEach(function(u){
     if(u.fuSkip)return;
     if(u.fuG){
-      var G=u.fuG,setZ=function(z){
-        /* only the pictures get smaller; the words under them keep their size */
-        G.forEach(function(g){[].forEach.call(g.e.querySelectorAll(".ph"),function(ph){
-          var im=ph.querySelector("img");if(!im)return;
-          if(!im.dataset.ow){im.dataset.ow=parseFloat(im.style.width);im.dataset.oh=parseFloat(im.style.height);}
-          var f=z===""?1:z,w=Math.round(im.dataset.ow*f);
-          im.style.width=w+"px";im.style.height=Math.round(im.dataset.oh*f)+"px";ph.style.width=w+"px";
-        });});
+      /* a set of photos marked "fit": one equal size for all of them, as big as can be while the whole set sits on one page */
+      var G0=u.fuG,build=u.fuBuild,G=G0;
+      var put=function(f){
+        G.forEach(function(g){if(g.e.parentNode)g.e.parentNode.removeChild(g.e);});
+        G=build(f).map(function(e){return {e:e,blk:u.blk,fill:true,fu:true};});
+        G.forEach(function(g){cur.body.appendChild(g.e);});
       };
-      if(u.brk&&cur.body.children.length){}
-      G.forEach(function(g){cur.body.appendChild(g.e);});setZ("");
-      var okG=true;
-      if(over()){
-        setZ(0.4);
-        if(over())okG=false;
-        else{var lo=0.4,hi=1;for(var it2=0;it2<10;it2++){var mid=(lo+hi)/2;setZ(mid);if(over())hi=mid;else lo=mid;}setZ(lo);}
+      var best=function(lo,hi){for(var q=0;q<9;q++){var mid=(lo+hi)/2;put(mid);if(over())hi=mid;else lo=mid;}put(lo);};
+      var done=false;
+      put(1);
+      if(!over())done=true;
+      else{
+        put(0.6);   /* on this page only if it does not have to get much smaller */
+        if(!over()){best(0.6,1);done=true;}
+        else if(cur.body.children.length>G.length){   /* start a page of its own */
+          G.forEach(function(g){cur.body.removeChild(g.e);});
+          newPage();pu.push([]);
+          put(1);
+          if(!over())done=true;
+          else{put(0.35);if(!over()){best(0.35,1);done=true;}}
+        }else{put(0.35);if(!over()){best(0.35,1);done=true;}}
       }
-      if(okG){G.forEach(function(g){pu[pu.length-1].push(g);});return;}
-      setZ("");G.forEach(function(g){cur.body.removeChild(g.e);g.fuSkip=false;});u.fuG=null;   /* it cannot fit up here: handled like any other row */
+      if(done){G.forEach(function(g){pu[pu.length-1].push(g);});return;}
+      G.forEach(function(g){if(g.e.parentNode)g.e.parentNode.removeChild(g.e);});
+      G0.forEach(function(g){g.fuSkip=false;});u.fuG=null;   /* it cannot be fitted: handled like any other rows */
     }
     if(u.brk&&cur.body.children.length){newPage();pu.push([]);}
     if(u.gap)u.e.classList.add("gstart");
