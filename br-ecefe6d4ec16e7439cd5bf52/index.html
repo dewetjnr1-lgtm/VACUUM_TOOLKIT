@@ -229,7 +229,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-19.3";
+var APP_BUILD="2026-10-19.4";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -917,7 +917,7 @@ function blockCard(sec,b,bi){
     var sameN=el("input",{type:"number",min:"10",max:"250",step:"1",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});sameN.value=b.sameH||DEFH;
     sameN.addEventListener("input",function(){var v=parseFloat(sameN.value);if(v>=10&&v<=250){b.sameH=v;changed();}});
     var allb=el("span",{style:"display:inline-flex;align-items:center;gap:6px"},[el("button",{class:"btn sm ghost",text:"Make all the same size",onclick:function(){var h=parseFloat(sameN.value);if(!(h>=10&&h<=250))h=DEFH;b.items.forEach(function(x){if(x.kind!=="note")x.h=h;});renderEditor();changed();}}),"at",sameN,"mm"]);
-    body.appendChild(el("p",{class:"hint",text:"Photos sit side by side (e.g. before / after) when they fit. Type a height in mm for each photo, slide it left or right, or tick 'On its own row' for a single large photo. 'Per row' is the most that will sit together."}));
+    body.appendChild(el("p",{class:"hint",text:"Photos sit side by side (e.g. before / after) when they fit. Type a height in mm for each photo, slide it left or right, or tick 'On its own row' for a single large photo. 'Per row' is the most that will sit together. Click a photo to change its name, caption, size, position (Centre), crop and more."}));
     body.appendChild(el("div",{class:"adds"},[(b.layout==="fill"?null:cs),(b.layout==="fill"?null:allb),el("button",{class:"btn sm pri",text:"+ Add photos",onclick:function(){fi.click();}}),el("button",{class:"btn sm ghost",text:"+ Add text box",onclick:function(){b.items.push({kind:"note",text:"",w:80,fit:true,x:0});renderEditor();changed();}}),fi]));
     var th=el("div",{class:"thumbs",style:"margin-top:8px"});
     var selCard=null;
@@ -928,9 +928,9 @@ function blockCard(sec,b,bi){
     });
     /* the photos sit as small pictures; the options appear once, below them, for the photo that was clicked */
     var place=function(it,pic,card){
-      var on=(selItem===it);
+      var on=(selItem===it)||(b.items.length===1&&selItem!==false);   /* a block with one photo opens its options straight away */
       var x=el("button",{type:"button",class:"thx",title:"Remove this photo",text:"✕",onclick:function(e){e.stopPropagation();var k=b.items.indexOf(it);if(k>=0)b.items.splice(k,1);if(selItem===it){selItem=null;cropItem=null;}renderEditor();changed();}});
-      var t=el("div",{class:"th thsm"+(on?" sel":""),style:"cursor:pointer",onclick:function(){selItem=on?null:it;cropItem=null;renderEditor();}},[pic,x]);
+      var t=el("div",{class:"th thsm"+(on?" sel":""),style:"cursor:pointer",onclick:function(){selItem=on?false:it;cropItem=null;renderEditor();}},[pic,x]);
       /* drag a photo to another place: onto the left or right half of another photo, in this block or another one */
       t.draggable=true;t.style.cursor="grab";
       var side=function(e){var r=t.getBoundingClientRect();return e.clientX>r.left+r.width/2?"R":"L";};
