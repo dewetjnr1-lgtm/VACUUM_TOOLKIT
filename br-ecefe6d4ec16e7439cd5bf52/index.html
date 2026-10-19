@@ -229,7 +229,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-19.1";
+var APP_BUILD="2026-10-19.2";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1217,13 +1217,24 @@ function findFocusEl(key){
 }
 function jumpPreview(key,onlyIfHidden,par){
   var pane=document.getElementById("prevPane");if(!key||!pane.offsetWidth)return;
-  var e=null;
-  if(par!=null)e=document.getElementById("pages").querySelector('[data-src="'+key+'"][data-par="'+par+'"]');
-  if(!e)e=findFocusEl(key);if(!e)return;
+  var pages=document.getElementById("pages"),e=null,all=[];
+  /* working on a photo: stay on that photo */
+  if(selItem){
+    var im=[].filter.call(pages.querySelectorAll("img"),function(x){return x._it===selItem;})[0];
+    if(im&&(im.closest('[data-src="'+key+'"]')||im.closest('[data-focus~="'+key+'"]')||(key.indexOf("-b")>0&&(im.closest('[data-src="'+key.split("-b")[0]+'"]')||im.closest('[data-focus~="'+key.split("-b")[0]+'"]')))))e=im;
+  }
+  if(!e&&par!=null)e=pages.querySelector('[data-src="'+key+'"][data-par="'+par+'"]');
+  if(!e){
+    e=findFocusEl(key);if(!e)return;
+    all=[].slice.call(pages.querySelectorAll('[data-focus~="'+key+'"],[data-src="'+key+'"]'));
+    if(!all.length&&key.indexOf("-b")>0)all=[].slice.call(pages.querySelectorAll('[data-focus~="'+key.split("-b")[0]+'"],[data-src="'+key.split("-b")[0]+'"]'));
+  }else all=[e];
   var pr=pane.getBoundingClientRect(),er=e.getBoundingClientRect();
-  if(onlyIfHidden&&er.bottom>pr.top&&er.top<pr.bottom)return;
+  /* nothing to do while any part of what you are working on is already on screen */
+  if(onlyIfHidden&&all.some(function(x){var r=x.getBoundingClientRect();return r.bottom>pr.top&&r.top<pr.bottom;}))return;
   pane.scrollTo({top:Math.max(0,pane.scrollTop+(er.top-pr.top)-24),behavior:onlyIfHidden?"auto":"smooth"});
 }
+
 function initSync(){
   var edit=document.getElementById("edit");
   /* which paragraph (or bullet, or table row) the cursor is in */
@@ -1636,6 +1647,7 @@ function fitSignoff(el_,over,minF,maxF){
 }
 function drawPages(){
   if(!document.getElementById("prevPane").offsetWidth)return;   /* pane hidden (narrow screen, Edit mode): measured when shown */
+  var keepTop=document.getElementById("prevPane").scrollTop;   /* the report side stays where it was while it is redrawn */
   var host=document.getElementById("pages");host.textContent="";
   var units=unitsFor(),pages=[],cur=mkPage();
   host.appendChild(cur.pg);pages.push(cur);
@@ -1684,6 +1696,7 @@ function drawPages(){
   });
   pages.forEach(function(p,i){p.pg.querySelector(".pn").textContent="Page "+(i+1)+" of "+pages.length;});
   fitScale();
+  document.getElementById("prevPane").scrollTop=keepTop;
   jumpPreview(focusKey,true,focusPar);
 }
 function fitScale(){
