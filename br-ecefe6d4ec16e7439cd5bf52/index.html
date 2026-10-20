@@ -239,7 +239,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-22.6";
+var APP_BUILD="2026-10-22.7";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1066,15 +1066,13 @@ function blockCard(sec,b,bi){
       if(!it.zoom&&!it.call){
         var bc=el("input",{type:"checkbox"});bc.checked=!!it.bub;
         bc.addEventListener("change",function(){it.bub=bc.checked?{text:"",pos:"beside",w:55}:null;renderEditor();changed();});
-        parts.push(el("div",{class:"chk",style:"margin:2px 0"},[bc," Comment bubble next to this photo (beside or below)"]));
+        parts.push(el("div",{class:"chk",style:"margin:2px 0"},[bc," Text box on the right of this photo"]));
         if(it.bub){
-          var bt=el("textarea",{placeholder:"Type your comment for this photo",style:"min-height:70px"});bt.value=it.bub.text||"";bt.addEventListener("input",function(){it.bub.text=bt.value;changed();});
-          var bp=el("select",{style:"padding:5px 7px;border:1px solid #bfc5ca;border-radius:5px"},[["beside","Beside the photo (right)"],["below","Below the photo"]].map(function(o){var op=el("option",{value:o[0],text:o[1]});if((it.bub.pos||"beside")===o[0])op.selected=true;return op;}));
-          bp.addEventListener("change",function(){it.bub.pos=bp.value;renderEditor();changed();});
+          var bt=el("textarea",{placeholder:"Type the words for the text box on the right of this photo",style:"min-height:70px"});bt.value=it.bub.text||"";bt.addEventListener("input",function(){it.bub.text=bt.value;changed();});
           var bw=el("input",{type:"number",min:"25",max:"120",step:"1",style:"width:70px;padding:4px;border:1px solid #bfc5ca;border-radius:4px"});bw.value=it.bub.w||55;
           bw.addEventListener("input",function(){var v=parseFloat(bw.value);if(v>=25&&v<=120){it.bub.w=v;changed();}});
-          parts.push(bt,bp);
-          if((it.bub.pos||"beside")==="beside")parts.push(el("div",{class:"hint",style:"display:flex;align-items:center;gap:6px"},["Bubble width",bw,"mm"]));
+          parts.push(bt);
+          parts.push(el("div",{class:"hint",style:"display:flex;align-items:center;gap:6px"},["Text box width",bw,"mm (it gets narrower by itself if the row is short of room)"]));
         }
       }
       /* crop: drag a corner of the photo inwards; the original is kept so the crop can be changed or undone later */
@@ -1518,12 +1516,12 @@ function capEl(it,style,force){
   return el("div",{class:"cap",style:style||""},kids);
 }
 /* a comment bubble beside or below a photo */
-function bubOn(it){return !!(it.bub&&(it.bub.text||"").trim());}
+function bubOn(it){return !!it.bub;}   /* a photo with a text box on its right (the box is there even before any words are typed) */
+var BUBFIT=new WeakMap();   /* when a row is short of room, the text box is made narrower instead of the photo moving to another row */
 function bubGeom(it){
   var d=DIMS[it.src]||[4,3],W=178*MM,G=4*MM,ho=(it.h||DEFH)*MM,wo=d[0]/d[1]*ho;
   if(wo>W){wo=W;ho=wo*d[1]/d[0];}
-  if(it.bub.pos==="below"){return {below:true,wo:wo,ho:ho,bw:Math.max(wo,45*MM),tot:Math.max(wo,45*MM),gap:G};}
-  var bw=(it.bub.w||55)*MM,tot=wo+G+bw;
+  var bw=(BUBFIT.has(it)?BUBFIT.get(it):(it.bub.w||55)*MM),tot=wo+G+bw;
   if(tot>W){var f=W/tot;wo*=f;ho*=f;bw*=f;G*=f;tot=W;}
   return {below:false,wo:wo,ho:ho,bw:bw,tot:tot,gap:G};
 }
@@ -1531,13 +1529,10 @@ function bubBlock(it){
   var g=bubGeom(it),wrap=el("div",{class:"ph bm",style:"width:"+Math.round(g.tot)+"px"});
   var im=el("img",{src:it.src});im._it=it;im.style.width=Math.round(g.wo)+"px";im.style.height=Math.round(g.ho)+"px";
   var cp=capEl(it,"width:"+Math.round(g.wo)+"px");
-  var bub=el("div",{class:"bub "+(g.below?"below":"beside"),style:"width:"+Math.round(g.bw)+"px",text:T(it.bub.text)});
-  if(g.below){wrap.appendChild(im);if(cp)wrap.appendChild(cp);bub.style.marginTop=Math.round(3*MM)+"px";wrap.appendChild(bub);}
-  else{
-    var left=el("div",{style:"flex:none;width:"+Math.round(g.wo)+"px"},[im,cp]);
-    var hold=el("div",{style:"flex:none;margin-left:"+Math.round(g.gap)+"px;height:"+Math.round(g.ho)+"px;display:flex;align-items:center"},[bub]);
-    wrap.appendChild(el("div",{style:"display:flex;align-items:flex-start"},[left,hold]));
-  }
+  var bub=el("div",{class:"nbox",style:"width:"+Math.round(g.bw)+"px;min-height:"+Math.round(g.ho)+"px",text:T(it.bub.text||"")});
+  var left=el("div",{style:"flex:none;width:"+Math.round(g.wo)+"px"},[im,cp]);
+  var hold=el("div",{style:"flex:none;margin-left:"+Math.round(g.gap)+"px"},[bub]);
+  wrap.appendChild(el("div",{style:"display:flex;align-items:flex-start"},[left,hold]));
   return wrap;
 }
 /* "Fill the page" layout: photos sit in rows that fill the full width; the photos in one row share a height, so a mix of portrait and landscape photos uses the page well */
@@ -1565,7 +1560,10 @@ function galleryUnits(b){
     var groups=[],g=[],gw=0,els=[];
     items.forEach(function(it){
       var d=DIMS[it.src]||[4,3],a=d[0]/d[1],h0=Math.min(tH,maxH),w0=Math.min(a*h0,W);
-      if(flowable(it))w0=Math.min(itemSize(it)[0],W);
+      if(flowable(it)){
+        BUBFIT.delete(it);w0=Math.min(itemSize(it)[0],W);
+        if(it.bub&&g.length&&!solo(it)&&!solo(g[g.length-1].it)){var rem=W-gw-gap,bgm=bubGeom(it);if(w0>rem+1&&bgm.wo+bgm.gap+20*MM<=rem+1){BUBFIT.set(it,rem-bgm.wo-bgm.gap);w0=Math.min(itemSize(it)[0],W);}}
+      }
       if(g.length&&(solo(it)||solo(g[g.length-1].it)||gw+gap+w0>W+1)){groups.push(g);g=[];gw=0;}
       g.push({it:it,w:w0,h:flowable(it)?itemSize(it)[1]:Math.min(h0,w0/a)});gw+=(g.length>1?gap:0)+w0;
     });
@@ -1694,7 +1692,8 @@ function blockUnits(b){
     /* each item has its own width/height; items share a row while they fit (and the per-row limit allows) */
     var n=Math.max(1,b.cols||2),W=178*MM,G=4*MM,rows=[],cur=[],curW=0;
     b.items.forEach(function(it){
-      var w=itemSize(it)[0];
+      BUBFIT.delete(it);var w=itemSize(it)[0];
+      if(it.bub&&cur.length&&!it.alone&&!cur[cur.length-1].alone&&cur.length<n){var remM=W-curW-G,bgM=bubGeom(it);if(w>remM+1&&bgM.wo+bgM.gap+20*MM<=remM+1){BUBFIT.set(it,remM-bgM.wo-bgM.gap);w=itemSize(it)[0];}}
       if(cur.length&&(it.alone||cur[cur.length-1].alone||cur.length>=n||curW+G+w>W+1)){rows.push(cur);cur=[];curW=0;}
       cur.push(it);curW+=(cur.length>1?G:0)+w;
     });
