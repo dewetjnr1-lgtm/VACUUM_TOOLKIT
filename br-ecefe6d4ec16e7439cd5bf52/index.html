@@ -122,12 +122,6 @@ table.gt.last{margin-bottom:3mm}
 .lockup .row{display:flex;align-items:center;gap:6mm}
 .lockup .bu{width:32mm}
 .lockup .pf{width:39mm;position:relative;top:.55mm}
-.endlogo{margin-top:14mm;text-align:center}
-.endlogo .lockup{display:inline-flex;align-items:flex-start;text-align:left;gap:3mm}
-.endlogo .lockup .top{width:96mm}
-.endlogo .lockup .row{gap:9mm}
-.endlogo .lockup .bu{width:50mm}
-.endlogo .lockup .pf{width:61mm}
 .pg-head .ref{font-size:8pt;color:#444;text-align:right;line-height:1.3}
 .pg-body{position:absolute;left:16mm;right:16mm;top:33mm;height:230mm;overflow:hidden}
 .pg-foot{position:absolute;left:16mm;right:16mm;bottom:5mm;font-size:5.8pt;line-height:1.35;color:#222;border-top:1px solid #bbb;padding-top:1.2mm}
@@ -245,7 +239,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-22.13";
+var APP_BUILD="2026-10-22.14";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -501,7 +495,6 @@ function renderEditor(){
     }else S.hdrHide.fromEmail=true;
     changed();
   });
-  var elChk=el("input",{type:"checkbox"});elChk.checked=S.endLogo!==false;elChk.addEventListener("change",function(){S.endLogo=elChk.checked;changed();});
   var pfSel=el("select",{style:"padding:6px 8px;border:1px solid #bfc5ca;border-radius:5px;width:100%;margin-top:4px"},[["shrink","Shrink the photo to fit the page"],["move","Never shrink: move it to the next page at full size"],["same","Same size: shrink all photos in that block together"]].map(function(o){var op=el("option",{value:o[0],text:o[1]});if((S.photoFit||"move")===o[0])op.selected=true;return op;}));
   pfSel.addEventListener("change",function(){S.photoFit=pfSel.value;changed();});
   var sgSl=el("input",{type:"range",min:"40",max:"100",step:"1",style:"flex:1;min-width:120px"});
@@ -519,8 +512,7 @@ function renderEditor(){
       el("div",{class:"f"},[el("span",{class:"lh"},[el("span",{class:"lt"},[el("div",{class:"chk",style:"margin:0"},[feBox," Show my email in the top block"])]),moveArrows("fromEmail")])]),
       el("div",{class:"f full"},["Sign-off size (the closing line and your names)",el("div",{style:"display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px"},[sgSl,sgNum,"%",el("div",{class:"chk",style:"margin:0"},[sgFit," Fit it on the page above if there is room"])])])
 ,
-      el("div",{class:"f full"},["Photos that do not fit at the bottom of a page",pfSel]),
-      el("div",{class:"f full"},[el("div",{class:"chk",style:"margin:0"},[elChk," Show the Busch logo right after the signature"])])
+      el("div",{class:"f full"},["Photos that do not fit at the bottom of a page",pfSel])
     ])]));
   /* header */
   var g=el("div",{class:"grid"},[
@@ -964,7 +956,8 @@ function blockCard(sec,b,bi){
     sameN.addEventListener("input",function(){var v=parseFloat(sameN.value);if(v>=10&&v<=250){b.sameH=v;changed();}});
     var allb=el("span",{style:"display:inline-flex;align-items:center;gap:6px"},[el("button",{class:"btn sm ghost",text:"Make all the same size",onclick:function(){var h=parseFloat(sameN.value);if(!(h>=10&&h<=250))h=DEFH;b.items.forEach(function(x){if(x.kind!=="note")x.h=h;});renderEditor();changed();}}),"at",sameN,"mm"]);
     body.appendChild(el("p",{class:"hint",text:"Photos sit side by side (e.g. before / after) when they fit. Type a height in mm for each photo, slide it left or right, or tick 'On its own row' for a single large photo. 'Per row' is the most that will sit together. Click a photo to change its name, caption, size, position (Centre), crop and more. Tick the small box on photos to change the size of only those."}));
-    body.appendChild(el("div",{class:"adds"},[(b.layout==="fill"?null:cs),(b.layout==="fill"?null:allb),el("button",{class:"btn sm pri",text:"+ Add photos",onclick:function(){fi.click();}}),el("button",{class:"btn sm ghost",text:"+ Add text box",onclick:function(){var nn={kind:"note",text:"",w:80,fit:true,x:0};b.items.push(nn);selItem=nn;cropItem=null;renderEditor();changed();}}),fi]));
+    body.appendChild(el("div",{class:"adds"},[(b.layout==="fill"?null:cs),(b.layout==="fill"?null:allb),el("button",{class:"btn sm pri",text:"+ Add photos",onclick:function(){fi.click();}}),el("button",{class:"btn sm ghost",text:"+ Add text box",onclick:function(){var nn={kind:"note",text:"",w:80,fit:true,x:0};b.items.push(nn);selItem=nn;cropItem=null;renderEditor();changed();}}),
+      b.items.some(function(x){return x.px!=null||x.dy||x.x;})?el("button",{class:"btn sm ghost",title:"Clears every position and up/down move in this block, so all its photos sit where the layout puts them. Sizes, captions and order are kept.",text:"Reset all positions in this block",onclick:function(){b.items.forEach(function(x){delete x.px;delete x.dy;delete x.x;});renderEditor();changed();}}):null,fi]));
     var th=el("div",{class:"thumbs",style:"margin-top:8px"});
     var selCard=null;
     th.addEventListener("dragover",function(e){if(dragPh&&e.target===th){e.preventDefault();e.dataTransfer.dropEffect="move";}});
@@ -1138,6 +1131,7 @@ function blockCard(sec,b,bi){
           picked.forEach(function(x){x.h=v;});renderEditor();changed();
         }}));
       }
+      if(picked.some(function(x){return x.px!=null||x.dy||x.x;}))bar.appendChild(el("button",{type:"button",class:"btn sm ghost",title:"Clears any position or up/down move on the ticked photos",text:"Reset position of these",onclick:function(){picked.forEach(function(x){delete x.px;delete x.dy;delete x.x;});renderEditor();changed();}}));
       bar.appendChild(el("button",{type:"button",class:"btn sm ghost",text:"Tick all photos",onclick:function(){b.items.forEach(function(x){if(x.kind!=="note"&&selMulti.indexOf(x)<0)selMulti.push(x);});renderEditor();}}));
       bar.appendChild(el("button",{type:"button",class:"btn sm ghost",text:"Untick all",onclick:function(){selMulti=selMulti.filter(function(x){return b.items.indexOf(x)<0;});renderEditor();}}));
       body.appendChild(bar);
@@ -1514,10 +1508,6 @@ function unitsFor(){
   var so=el("div",{class:"signoff"},[el("p",{class:"p",text:"Should you require any further assistance, please contact me.",style:"margin-top:6mm"}),sg]);
   var szf=Math.max(40,Math.min(100,+S.signSize||100))/100;if(szf<1)so.style.zoom=szf;
   U.push({e:so,signoff:true});
-  if(S.endLogo!==false){
-    var endLogo=el("div",{class:"endlogo"},[el("div",{class:"lockup"},[el("img",{class:"top",src:window.LOGO_TOP,alt:"Part of the Busch Group"}),el("div",{class:"row"},[el("img",{class:"bu",src:window.LOGO_BUSCH,alt:"Busch Vacuum Solutions"}),el("img",{class:"pf",src:window.LOGO_PF,alt:"Pfeiffer Vacuum+Fab Solutions"})])])]);
-    U.push({e:endLogo,optional:true});
-  }
   return U;
 }
 /* the photo's name (bold) and caption under it */
@@ -1872,7 +1862,6 @@ function drawPages(){
     }else fuPrev=null;
   });
   units.forEach(function(u){
-    if(u.optional){cur.body.appendChild(u.e);if(over())cur.body.removeChild(u.e);return;}   /* the closing logo: only if it fits where it lands */
     if(u.fuSkip)return;
     if(u.fuG){
       /* a set of photos marked "fit": one equal size for all of them, as big as can be while the whole set sits on one page */
