@@ -239,7 +239,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-21.5";
+var APP_BUILD="2026-10-21.4";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1096,18 +1096,7 @@ function blockCard(sec,b,bi){
         cw.addEventListener("input",function(){var v=parseFloat(cw.value);if(v>=20&&v<=140){it.call.tw=v;changed();}});
         parts.push(el("p",{class:"hint",text:"Drag on the photo below to mark the spot you want the box to point at."}),cbox,ctext,el("div",{class:"hint",style:"display:flex;align-items:center;gap:6px"},["Text box width",cw,"mm"]));
       }
-      var panel=el("div",{class:"th selpanel"},parts.concat(common()));
-      if(it.zoom||it.call){
-        /* shows what the report really uses, so a size that cannot be reached is never a mystery */
-        var sizeNote=el("div",{class:"hint",style:"margin:2px 0 4px"});
-        var refreshNote=function(){
-          if(it.zoom){var gz=zoomGeom(it);sizeNote.textContent="On the report: the photo is "+Math.round(gz.ho/MM)+" mm high and the enlarged detail "+Math.round(gz.hz/MM)+" mm high.";}
-          else if(it.call){var gc=callGeom(it);sizeNote.textContent="On the report: the photo is "+Math.round(gc.ho/MM)+" mm high and the text box "+Math.round(gc.tw/MM)+" mm wide.";}
-        };
-        refreshNote();panel.addEventListener("input",function(){refreshNote();});
-        panel.insertBefore(sizeNote,panel.children[Math.min(4,panel.children.length)]||null);
-      }
-      place(it,thumbImg(it),panel);
+      place(it,thumbImg(it),el("div",{class:"th selpanel"},parts.concat(common())));
     });
     var picked=b.items.filter(function(x){return selMulti.indexOf(x)>=0;});
     if(picked.length){
@@ -1713,12 +1702,7 @@ var ZGAP=16;   /* mm between the photo and its enlarged detail */
 function zoomGeom(it){
   var d=DIMS[it.src]||[4,3],z=it.zoom,ho=(it.h||DEFH)*MM,hz=(z.hz||it.h||DEFH)*MM;
   var wo=d[0]/d[1]*ho,ar=(z.w*d[0])/(z.h*d[1]),wz=ar*hz,gap=ZGAP*MM,tot=wo+gap+wz,W=178*MM;
-  if(tot>W){
-    /* too wide for the page: the enlarged detail gets narrower first, so the photo keeps the height you set */
-    var avail=W-wo-gap;
-    if(avail>=Math.min(wz,35*MM)){wz=avail;hz=wz/ar;tot=W;}
-    else{var f=W/tot;ho*=f;hz*=f;wo*=f;wz*=f;gap*=f;tot=W;}
-  }
+  if(tot>W){var f=W/tot;ho*=f;hz*=f;wo*=f;wz*=f;gap*=f;tot=W;}
   return {wo:wo,ho:ho,wz:wz,hz:hz,gap:gap,tot:tot,d:d};
 }
 function itemSize(it){
@@ -1732,12 +1716,7 @@ function itemWidthMm(it){return itemSize(it)[0]/MM;}
 /* a text box that points at a marked part of a photo (same idea as the zoom, with words instead of an enlarged picture) */
 function callGeom(it){
   var d=DIMS[it.src]||[4,3],c=it.call,ho=(it.h||DEFH)*MM,wo=d[0]/d[1]*ho,tw=(c.tw||60)*MM,gap=ZGAP*MM,tot=wo+gap+tw,W=178*MM;
-  if(tot>W){
-    /* too wide for the page: the text box gets narrower first, so the photo keeps the height you set */
-    var availT=W-wo-gap;
-    if(availT>=Math.min(tw,30*MM)){tw=availT;tot=W;}
-    else{var f=W/tot;ho*=f;wo*=f;tw*=f;gap*=f;tot=W;}
-  }
+  if(tot>W){var f=W/tot;ho*=f;wo*=f;tw*=f;gap*=f;tot=W;}
   return {wo:wo,ho:ho,tw:tw,gap:gap,tot:tot};
 }
 function callBlock(it){
