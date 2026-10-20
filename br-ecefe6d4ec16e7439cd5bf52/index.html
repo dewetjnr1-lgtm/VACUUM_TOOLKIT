@@ -239,7 +239,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-22.1";
+var APP_BUILD="2026-10-22.2";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1542,11 +1542,13 @@ function galleryUnits(b){
   var out=[],W=178*MM,gap=4*MM,targetH=(b.rowH||40)*MM,maxH=130*MM,seg=[];
   var plain=function(it){return it.kind!=="note"&&!it.zoom&&!it.call&&!bubOn(it);};
   var solo=function(it){return it.alone||it.px!=null;};   /* a photo with a position set sits on its own row so the position can work */
+  var soloN=0;
   var flush=function(){
     if(!seg.length)return;
     /* photos with their own row height are laid out as a group of their own, so they never change the size of the other photos */
     var runs=[],cur=null;
-    seg.forEach(function(it){var k=((it.rh>0&&it.rh!==(b.rowH||40))?it.rh:0)+(it.fu?"f":"");if(!cur||cur.k!==k){cur={k:k,fu:!!it.fu,items:[]};runs.push(cur);}cur.items.push(it);});
+    seg.forEach(function(it){var k=((it.rh>0&&it.rh!==(b.rowH||40))?it.rh:0)+(it.fu?"f":"");
+      if(b.fillSame===false&&solo(it)){runs.push({k:k+"s"+(soloN++),fu:!!it.fu,items:[it]});cur=null;return;}   /* stretched rows: a photo with a position, or set to its own row, gets a row to itself */if(!cur||cur.k!==k){cur={k:k,fu:!!it.fu,items:[]};runs.push(cur);}cur.items.push(it);});
     runs.forEach(function(run,ri){layoutRun(run.items,(parseFloat(run.k)||(b.rowH||40))*MM,run.fu,runs[ri+1]?runs[ri+1].items:[]);});
     seg=[];
   };
@@ -1625,7 +1627,7 @@ var hb=bestHeight(items,targetH);USEDH[b.id]=hb/MM;
       var row=el("div",{class:"phrow"});
       r.items.forEach(function(x){
         var w=Math.floor(x.a*h),im=el("img",{src:x.it.src});im._it=x.it;im.style.width=w+"px";im.style.height=Math.round(h)+"px";
-        var ph2=el("div",{class:"ph",style:"width:"+w+"px"},[im,capEl(x.it)]);if(x.it.dy){ph2.style.position="relative";ph2.style.top=Math.round(x.it.dy*MM)+"px";}
+        var ph2=el("div",{class:"ph",style:"width:"+w+"px"},[im,capEl(x.it)]);if(r.items.length===1&&x.it.px!=null){ph2.style.position="relative";ph2.style.left=Math.round(Math.max(0,Math.min(W-w,x.it.px*MM)))+"px";}if(x.it.dy){ph2.style.position="relative";ph2.style.top=Math.round(x.it.dy*MM)+"px";}
         row.appendChild(ph2);
       });
       row.dataset.blk=b.id||"";row.dataset.fill="1";if(fu)row.dataset.fu="1";out.push({e:row,blk:b.id||"",fill:true,fu:!!fu});
