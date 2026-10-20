@@ -239,7 +239,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-22.4";
+var APP_BUILD="2026-10-22.5";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1045,8 +1045,11 @@ function blockCard(sec,b,bi){
         var ntile=el("div",{class:"ntile"});var fillTile=function(){ntile.textContent="";ntile.appendChild(el("b",{text:"TEXT"}));ntile.appendChild(el("span",{text:(it.text||"").trim()||"(empty text box)"}));};fillTile();
         nt.addEventListener("input",function(){it.text=nt.value;fillTile();changed();});
         var fit=el("input",{type:"checkbox"});fit.checked=it.fit!==false;fit.addEventListener("change",function(){it.fit=fit.checked;changed();});
+        var bs=el("input",{type:"checkbox"});bs.checked=!!it.beside;bs.addEventListener("change",function(){it.beside=bs.checked;changed();});
         place(it,ntile,el("div",{class:"th selpanel"},[el("div",{class:"nthumb",text:"TEXT BOX"}),nt,num("Width","w",80,30,178),
-          el("div",{class:"chk",style:"margin:2px 0"},[fit," Match the photo height next to it"])].concat(common())));
+          el("div",{class:"chk",style:"margin:2px 0"},[fit," Match the photo height next to it"]),
+          el("div",{class:"chk",style:"margin:2px 0"},[bs," Put it to the right of the photo before it, if there is room"]),
+          el("div",{class:"hint",text:"(In \"Fill the page\" with equal-size photos. In the manual layout a text box already sits next to the photos when it fits.)"})].concat(common())));
         return;
       }
       var cap=el("textarea",{placeholder:"Caption / comment"});cap.value=it.cap||"";cap.addEventListener("input",function(){it.cap=cap.value;changed();});
@@ -1541,7 +1544,7 @@ function fillWidthMm(it,b){var d=DIMS[it.src]||[4,3],h=USEDH[b.id]||(b.rowH||40)
 function galleryUnits(b){
   var out=[],W=178*MM,gap=4*MM,targetH=(b.rowH||40)*MM,maxH=130*MM,seg=[];
   var plain=function(it){return it.kind!=="note"&&!it.zoom&&!it.call&&!bubOn(it);};
-  var flowable=function(it){return !!(it.zoom||it.call||bubOn(it));};   /* these keep their own size but may share a row with other photos if there is room */
+  var flowable=function(it){return !!(it.zoom||it.call||bubOn(it)||(it.kind==="note"&&it.beside));};   /* these keep their own size but may share a row with other photos if there is room */
   var solo=function(it){return !!it.alone;};   /* only "On its own row" puts a photo on a row by itself */
   /* a photo's position (mm from the left margin) shifts it sideways inside its own row, the same as in the manual layout; L is where it would sit without the shift */
   var shiftIn=function(ph,it,L,w){if(it.px!=null){var want=it.px*MM-L,sh=Math.max(-L,Math.min(W-L-w,want));ph.style.position="relative";ph.style.left=Math.round(sh)+"px";}if(it.dy){ph.style.position="relative";ph.style.top=Math.round(it.dy*MM)+"px";}};
@@ -1572,12 +1575,17 @@ function galleryUnits(b){
       var Lq=0;
       gr.forEach(function(x){
         var w=Math.floor(x.w),ph;
-        if(flowable(x.it)){ph=x.it.zoom?zoomBlock(x.it):(x.it.call?callBlock(x.it):bubBlock(x.it));}
+        if(flowable(x.it)){
+          if(x.it.kind==="note"){var nbx=el("div",{class:"nbox",text:T(x.it.text||"")});x.nb=nbx;ph=el("div",{class:"ph",style:"width:"+w+"px"},[nbx]);}
+          else ph=x.it.zoom?zoomBlock(x.it):(x.it.call?callBlock(x.it):bubBlock(x.it));
+        }
         else{var im=el("img",{src:x.it.src});im._it=x.it;im.style.width=w+"px";im.style.height=Math.round(x.h)+"px";
           ph=el("div",{class:"ph",style:"width:"+w+"px"},[im,capEl(x.it)]);}
         shiftIn(ph,x.it,Lq,w);Lq+=w+gap;
         row.appendChild(ph);
       });
+      var hM=0;gr.forEach(function(x){if(x.it.kind!=="note"&&!flowable(x.it))hM=Math.max(hM,x.h);});
+      gr.forEach(function(x){if(x.nb&&x.it.fit!==false&&hM)x.nb.style.minHeight=Math.round(hM)+"px";});
       row.dataset.blk=b.id||"";row.dataset.fill="1";if(isFu)row.dataset.fu="1";els.push(row);
     });
     return els;
