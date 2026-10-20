@@ -245,7 +245,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-22.16";
+var APP_BUILD="2026-10-23.1";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -502,6 +502,8 @@ function renderEditor(){
     changed();
   });
   var elChk=el("input",{type:"checkbox"});elChk.checked=S.endLogo!==false;elChk.addEventListener("change",function(){S.endLogo=elChk.checked;changed();});
+  var pdfSel=el("select",{style:"padding:6px 8px;border:1px solid #bfc5ca;border-radius:5px;width:100%;margin-top:4px"},[["full","Full quality (largest file)"],["email","Email size (small enough for Outlook)"]].map(function(o){var op=el("option",{value:o[0],text:o[1]});if((S.pdfSize||"full")===o[0])op.selected=true;return op;}));
+  pdfSel.addEventListener("change",function(){S.pdfSize=pdfSel.value;changed();});
   var pfSel=el("select",{style:"padding:6px 8px;border:1px solid #bfc5ca;border-radius:5px;width:100%;margin-top:4px"},[["shrink","Shrink the photo to fit the page"],["move","Never shrink: move it to the next page at full size"],["same","Same size: shrink all photos in that block together"]].map(function(o){var op=el("option",{value:o[0],text:o[1]});if((S.photoFit||"move")===o[0])op.selected=true;return op;}));
   pfSel.addEventListener("change",function(){S.photoFit=pfSel.value;changed();});
   var sgSl=el("input",{type:"range",min:"40",max:"100",step:"1",style:"flex:1;min-width:120px"});
@@ -520,6 +522,7 @@ function renderEditor(){
       el("div",{class:"f full"},["Sign-off size (the closing line and your names)",el("div",{style:"display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px"},[sgSl,sgNum,"%",el("div",{class:"chk",style:"margin:0"},[sgFit," Fit it on the page above if there is room"])])])
 ,
       el("div",{class:"f full"},["Photos that do not fit at the bottom of a page",pfSel]),
+      el("div",{class:"f full"},["PDF size",pdfSel,el("div",{class:"hint",id:"pdfEst",style:"margin-top:4px"})]),
       el("div",{class:"f full"},[el("div",{class:"chk",style:"margin:0"},[elChk," Show the Busch logo right after the signature"])])
     ])]));
   /* header */
@@ -1408,6 +1411,48 @@ function initSync(){
 function esc(s){return String(s==null?"":s);}
 /* [SITE] anywhere in the report text is replaced live with the Company / site field */
 function T(s){return esc(s).split("[SITE]").join((S.company||"").trim()||"[SITE]");}
+/* ---------- PDF size: "Email size" prepares smaller copies of the photos for the PDF; the stored photos and the saved file stay full quality ---------- */
+var DSCACHE={},EMAILPEND=0,emailRun=0;
+function dataBytes(s){return s?Math.round(s.length*0.75):0;}
+/* a copy of the photo with enough pixels for the size it is printed at (targetW across), saved as JPEG */
+function downscale(src,targetW,q,cb){
+  var key=targetW+"|"+q+"|"+src.length+"|"+src.slice(-48);
+  if(DSCACHE[key]){cb(DSCACHE[key]);return;}
+  loadImg(src,function(img){
+    if(!img||img.naturalWidth<=targetW*1.1){cb(src);return;}
+    var s=targetW/img.naturalWidth,c=document.createElement("canvas");c.width=targetW;c.height=Math.max(1,Math.round(img.naturalHeight*s));
+    var x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.imageSmoothingQuality="high";x.drawImage(img,0,0,c.width,c.height);
+    var out=c.toDataURL("image/jpeg",q);DSCACHE[key]=(out.length<src.length)?out:src;cb(DSCACHE[key]);
+  });
+}
+function pdfPieces(){
+  var host=document.getElementById("pages"),list=[];
+  [].forEach.call(host.querySelectorAll(".ph img"),function(im){var w=parseFloat(im.style.width);if(!w)return;var o=(im._it&&im._it.src)||im._orig||im.getAttribute("src");im._orig=o;list.push({el:im,css:w,src:o,bg:false});});
+  [].forEach.call(host.querySelectorAll(".zimg"),function(z){var m=/url\(["']?([^"')]+)["']?\)/.exec(z.style.backgroundImage||"");var w=parseFloat((z.style.backgroundSize||"").split(" ")[0]);if(!w)return;var o=z._orig||(m&&m[1]);if(!o)return;z._orig=o;list.push({el:z,css:w,src:o,bg:true});});
+  return list;
+}
+function showEst(bytes,note){var e=document.getElementById("pdfEst");if(e)e.textContent=bytes?("Estimated PDF size: about "+(bytes/1048576).toFixed(1)+" MB"+(note?" ("+note+")":"")):"";}
+function emailPass(){
+  var run=++emailRun,list=pdfPieces();
+  var levels=[{dpi:200,q:0.78},{dpi:170,q:0.74},{dpi:145,q:0.70},{dpi:125,q:0.66}],BUDGET=8.5*1048576;
+  var attempt=function(li){
+    if(run!==emailRun)return;
+    var lv=levels[li],left=list.length,total=0;EMAILPEND=left;
+    if(!left){showEst(0);return;}
+    list.forEach(function(t){
+      var dpi=t.bg?Math.max(lv.dpi,230):lv.dpi,target=Math.ceil(t.css/96*dpi/64)*64;   /* the enlarged close-ups keep more pixels */
+      downscale(t.src,target,lv.q,function(out){
+        if(run!==emailRun)return;
+        if(t.bg)t.el.style.backgroundImage='url("'+out+'")';else t.el.src=out;
+        total+=dataBytes(out);
+        if(--left===0){EMAILPEND=0;if(total>BUDGET&&li<levels.length-1)attempt(li+1);else showEst(total,"photos prepared at about "+lv.dpi+" dpi");}
+      });
+    });
+  };
+  attempt(0);
+}
+function fullEst(){var t=0;pdfPieces().forEach(function(p){t+=dataBytes(p.src);});showEst(t,"full quality");}
+function afterDraw(){emailRun++;if(S.pdfSize==="email")emailPass();else{EMAILPEND=0;fullEst();}}
 function mkPage(){
   var pg=el("div",{class:"page"});
   var ref=(S.ref||"")+(S.ref?" Rev."+S.rev:"");
@@ -1943,6 +1988,7 @@ function drawPages(){
   });
   pages.forEach(function(p,i){p.pg.querySelector(".pn").textContent="Page "+(i+1)+" of "+pages.length;});
   fitScale();
+  afterDraw();
   document.getElementById("prevPane").scrollTop=keepTop;
   jumpPreview(focusKey,true,focusPar);
 }
@@ -1984,9 +2030,13 @@ function openFile(f){
   r.readAsText(f);
 }
 function pdf(){
-  var old=document.title;document.title=fileBase();
-  toast("In the print window choose 'Save as PDF', Paper A4, Margins: None, and untick 'Headers and footers'.");
-  setTimeout(function(){window.print();document.title=old;},400);
+  var go=function(){
+    var old=document.title;document.title=fileBase();
+    toast("In the print window choose 'Save as PDF', Paper A4, Margins: None, and untick 'Headers and footers'.");
+    setTimeout(function(){window.print();document.title=old;},400);
+  };
+  if(S.pdfSize==="email"&&EMAILPEND>0){toast("Preparing the photos for the PDF...");var tw=setInterval(function(){if(!EMAILPEND){clearInterval(tw);go();}},300);}
+  else go();
 }
 function newRev(){
   var n=(parseInt(S.rev,10)||0)+1;
