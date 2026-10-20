@@ -239,7 +239,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-21.4";
+var APP_BUILD="2026-10-21.6";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -945,7 +945,7 @@ function blockCard(sec,b,bi){
       rh.addEventListener("input",function(){var v=parseFloat(rh.value);if(v>=20&&v<=140){b.rowH=v;changed();}});
       layRow.appendChild(el("span",{class:"hint",text:"Row height about"}));layRow.appendChild(rh);layRow.appendChild(el("span",{class:"hint",text:"mm (smaller = more photos per row)"}));
       var fs=el("input",{type:"checkbox"});fs.checked=b.fillSame!==false;fs.addEventListener("change",function(){b.fillSame=fs.checked;changed();});
-      layRow.appendChild(el("div",{class:"chk",style:"margin:0 0 0 10px"},[fs," All photos the same size, packed in as well as possible (untick to stretch each row to the page width)"]));
+      layRow.appendChild(el("div",{class:"chk",style:"margin:0 0 0 10px"},[fs," All photos exactly this height, rows spread evenly (untick to stretch each row to the page width)"]));
     }
     body.appendChild(layRow);
     var cs=el("select",{},[["1","1 photo per row"],["2","2 photos per row"],["3","3 photos per row"]].map(function(o){var op=el("option",{value:o[0],text:o[1]});if(+o[0]===b.cols)op.selected=true;return op;}));
@@ -1564,21 +1564,6 @@ function galleryUnits(b){
     });
     return els;
   };
-  /* the height (never more than the one typed, at most a quarter less) at which equal-size photos pack into rows with the least empty space */
-  var bestHeight=function(items,tH){
-    var best=tH,bestScore=1e9,asp=function(it){var d=DIMS[it.src]||[4,3];return d[0]/d[1];};
-    for(var hp=tH;hp>=tH*0.75;hp-=0.5*MM){
-      var cur=0,cnt=0,waste=0,rowsN=0;
-      items.forEach(function(it){
-        var w=Math.min(asp(it)*Math.min(hp,maxH),W);
-        if(cnt&&(it.alone||cur+gap+w>W+1)){if(!it.alone)waste+=(W-cur);rowsN++;cur=0;cnt=0;}
-        cur+=(cnt?gap:0)+w;cnt++;
-      });
-      var score=(rowsN?waste/(W*rowsN):0)+0.6*(tH-hp)/tH;
-      if(score<bestScore-1e-9){bestScore=score;best=hp;}
-    }
-    return best;
-  };
   var layoutRun=function(items,targetH,fu,look){
     if(fu){   /* the page filler rebuilds this set at a smaller or larger scale until it fits */
       var build=function(f){return buildEqualRows(items,targetH*f,true);};
@@ -1587,7 +1572,7 @@ function galleryUnits(b){
     }
     if(b.fillSame!==false){
       /* photos keep one equal size and are packed in as well as possible; rows are never stretched */
-var hb=bestHeight(items,targetH);USEDH[b.id]=hb/MM;
+var hb=Math.min(targetH,maxH);USEDH[b.id]=hb/MM;   /* exactly the row height you typed */
       buildEqualRows(items,hb,false).forEach(function(e){out.push({e:e,blk:b.id||"",fill:true});});
       return;
     }
