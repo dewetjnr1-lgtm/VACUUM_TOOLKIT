@@ -239,7 +239,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-22.5";
+var APP_BUILD="2026-10-22.6";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1046,9 +1046,11 @@ function blockCard(sec,b,bi){
         nt.addEventListener("input",function(){it.text=nt.value;fillTile();changed();});
         var fit=el("input",{type:"checkbox"});fit.checked=it.fit!==false;fit.addEventListener("change",function(){it.fit=fit.checked;changed();});
         var bs=el("input",{type:"checkbox"});bs.checked=!!it.beside;bs.addEventListener("change",function(){it.beside=bs.checked;changed();});
+        var wa=el("input",{type:"checkbox"});wa.checked=!!it.withAbove;wa.addEventListener("change",function(){it.withAbove=wa.checked;changed();});
         place(it,ntile,el("div",{class:"th selpanel"},[el("div",{class:"nthumb",text:"TEXT BOX"}),nt,num("Width","w",80,30,178),
           el("div",{class:"chk",style:"margin:2px 0"},[fit," Match the photo height next to it"]),
           el("div",{class:"chk",style:"margin:2px 0"},[bs," Put it to the right of the photo before it, if there is room"]),
+          el("div",{class:"chk",style:"margin:2px 0"},[wa," Keep it under the photos above on one page (those photos must be ticked and set to 'Fit these on one page'; only their pictures get smaller)"]),
           el("div",{class:"hint",text:"(In \"Fill the page\" with equal-size photos. In the manual layout a text box already sits next to the photos when it fits.)"})].concat(common())));
         return;
       }
@@ -1549,13 +1551,13 @@ function galleryUnits(b){
   /* a photo's position (mm from the left margin) shifts it sideways inside its own row, the same as in the manual layout; L is where it would sit without the shift */
   var shiftIn=function(ph,it,L,w){if(it.px!=null){var want=it.px*MM-L,sh=Math.max(-L,Math.min(W-L-w,want));ph.style.position="relative";ph.style.left=Math.round(sh)+"px";}if(it.dy){ph.style.position="relative";ph.style.top=Math.round(it.dy*MM)+"px";}};
   var soloN=0;
-  var flush=function(){
+  var flush=function(tail){
     if(!seg.length)return;
     /* photos with their own row height are laid out as a group of their own, so they never change the size of the other photos */
     var runs=[],cur=null;
     seg.forEach(function(it){var k=((it.rh>0&&it.rh!==(b.rowH||40)&&plain(it))?it.rh:0)+((it.fu&&plain(it))?"f":"");
       if(b.fillSame===false&&solo(it)){runs.push({k:k+"s"+(soloN++),fu:!!it.fu,items:[it]});cur=null;return;}   /* stretched rows: a photo with a position, or set to its own row, gets a row to itself */if(!cur||cur.k!==k){cur={k:k,fu:!!(it.fu&&plain(it)),items:[]};runs.push(cur);}cur.items.push(it);});
-    runs.forEach(function(run,ri){layoutRun(run.items,(parseFloat(run.k)||(b.rowH||40))*MM,run.fu,runs[ri+1]?runs[ri+1].items:[]);});
+    runs.forEach(function(run,ri){layoutRun(run.items,(parseFloat(run.k)||(b.rowH||40))*MM,run.fu,runs[ri+1]?runs[ri+1].items:[],(tail&&ri===runs.length-1&&run.fu)?tail:null);});
     seg=[];
   };
   /* every photo exactly the same height; rows are filled left to right and spread evenly */
@@ -1605,9 +1607,13 @@ function galleryUnits(b){
     }
     return best;
   };
-  var layoutRun=function(items,targetH,fu,look){
+  var layoutRun=function(items,targetH,fu,look,tail){
     if(fu){   /* the page filler rebuilds this set at a smaller or larger scale until it fits */
-      var build=function(f){return buildEqualRows(items,targetH*f,true);};
+      var build=function(f){
+        var els=buildEqualRows(items,targetH*f,true);
+        if(tail){blockUnits({t:"photos",cols:1,id:b.id,items:[tail]}).forEach(function(u){u.e.dataset.fill="1";u.e.dataset.fu="1";els.push(u.e);});}   /* the text box keeps its own size */
+        return els;
+      };
       build(1).forEach(function(e){out.push({e:e,blk:b.id||"",fill:true,fu:true,fuBuild:build});});
       return;
     }
@@ -1649,6 +1655,7 @@ var hb=bestHeight(items,targetH);USEDH[b.id]=hb/MM;
   };
   (b.items||[]).forEach(function(it){
     if(plain(it)||(b.fillSame!==false&&flowable(it)))seg.push(it);
+    else if(it.kind==="note"&&it.withAbove&&b.fillSame!==false&&seg.length&&seg[seg.length-1].fu&&plain(seg[seg.length-1])){flush(it);}
     else{flush();blockUnits({t:"photos",cols:1,id:b.id,items:[it]}).forEach(function(u){out.push(u);});}
   });
   flush();
