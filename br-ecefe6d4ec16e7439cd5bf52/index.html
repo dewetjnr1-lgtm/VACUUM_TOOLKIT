@@ -239,7 +239,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-22.14";
+var APP_BUILD="2026-10-22.15";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1553,7 +1553,7 @@ function galleryUnits(b){
     /* photos with their own row height are laid out as a group of their own, so they never change the size of the other photos */
     var runs=[],cur=null;
     seg.forEach(function(it){var k=((it.rh>0&&it.rh!==(b.rowH||40)&&plain(it))?it.rh:0)+((it.fu&&plain(it))?"f":"");
-      if(b.fillSame===false&&solo(it)&&!seg.some(flowable)){runs.push({k:k+"s"+(soloN++),fu:!!it.fu,items:[it]});cur=null;return;}   /* stretched rows: a photo with a position, or set to its own row, gets a row to itself */if(!cur||cur.k!==k){cur={k:k,fu:!!(it.fu&&plain(it)),items:[]};runs.push(cur);}cur.items.push(it);});
+      if(b.fillSame===false&&solo(it)&&!seg.some(bubOn)){runs.push({k:k+"s"+(soloN++),fu:!!it.fu,items:[it]});cur=null;return;}   /* stretched rows: a photo with a position, or set to its own row, gets a row to itself */if(!cur||cur.k!==k){cur={k:k,fu:!!(it.fu&&plain(it)),items:[]};runs.push(cur);}cur.items.push(it);});
     runs.forEach(function(run,ri){layoutRun(run.items,(parseFloat(run.k)||(b.rowH||40))*MM,run.fu,runs[ri+1]?runs[ri+1].items:[],(tail&&ri===runs.length-1&&run.fu)?tail:null);});
     seg=[];
   };
@@ -1617,7 +1617,7 @@ function galleryUnits(b){
       build(1).forEach(function(e){out.push({e:e,blk:b.id||"",fill:true,fu:true,fuBuild:build});});
       return;
     }
-    if(b.fillSame!==false||items.some(flowable)){
+    if(b.fillSame!==false||items.some(bubOn)){
       /* photos keep one equal size and are packed in as well as possible; rows are never stretched */
 var hb=bestHeight(items,targetH);USEDH[b.id]=hb/MM;
       buildEqualRows(items,hb,false).forEach(function(e){out.push({e:e,blk:b.id||"",fill:true});});
@@ -1654,7 +1654,7 @@ var hb=bestHeight(items,targetH);USEDH[b.id]=hb/MM;
     });
   };
   (b.items||[]).forEach(function(it){
-    if(plain(it)||flowable(it))seg.push(it);
+    if(plain(it)||(b.fillSame!==false?flowable(it):bubOn(it)))seg.push(it);
     else if(it.kind==="note"&&it.withAbove&&b.fillSame!==false&&seg.length&&seg[seg.length-1].fu&&plain(seg[seg.length-1])){flush(it);}
     else{flush();blockUnits({t:"photos",cols:1,id:b.id,items:[it]}).forEach(function(u){out.push(u);});}
   });
