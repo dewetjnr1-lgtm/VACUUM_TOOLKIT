@@ -122,7 +122,7 @@ table.gt.last{margin-bottom:3mm}
 .lockup .row{display:flex;align-items:center;gap:6mm}
 .lockup .bu{width:32mm}
 .lockup .pf{width:39mm;position:relative;top:.55mm}
-.endlogo{position:absolute;left:0;right:0;bottom:3mm;text-align:center}
+.endlogo{margin-top:14mm;text-align:center}
 .endlogo .lockup{display:inline-flex;align-items:flex-start;text-align:left;gap:3mm}
 .endlogo .lockup .top{width:96mm}
 .endlogo .lockup .row{gap:9mm}
@@ -245,7 +245,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-22.9";
+var APP_BUILD="2026-10-22.11";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -520,7 +520,7 @@ function renderEditor(){
       el("div",{class:"f full"},["Sign-off size (the closing line and your names)",el("div",{style:"display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:4px"},[sgSl,sgNum,"%",el("div",{class:"chk",style:"margin:0"},[sgFit," Fit it on the page above if there is room"])])])
 ,
       el("div",{class:"f full"},["Photos that do not fit at the bottom of a page",pfSel]),
-      el("div",{class:"f full"},[el("div",{class:"chk",style:"margin:0"},[elChk," Show the Busch logo at the foot of the last page"])])
+      el("div",{class:"f full"},[el("div",{class:"chk",style:"margin:0"},[elChk," Show the Busch logo right after the signature"])])
     ])]));
   /* header */
   var g=el("div",{class:"grid"},[
@@ -1934,13 +1934,13 @@ function drawPages(){
     }
     list.push(u);
   });
-  /* the Busch logo at the foot of the last page, so the report ends with it instead of an empty page under the signature */
+  /* the Busch logo right after the signature on the last page, so the report ends with it */
   if(S.endLogo!==false&&pages.length){
     var lastPg=pages[pages.length-1],lb=lastPg.body,kids=lb.children,lk=kids[kids.length-1];
     var used=lk?lk.offsetTop+lk.offsetHeight:0;
     var endLogo=el("div",{class:"endlogo"},[el("div",{class:"lockup"},[el("img",{class:"top",src:window.LOGO_TOP,alt:"Part of the Busch Group"}),el("div",{class:"row"},[el("img",{class:"bu",src:window.LOGO_BUSCH,alt:"Busch Vacuum Solutions"}),el("img",{class:"pf",src:window.LOGO_PF,alt:"Pfeiffer Vacuum+Fab Solutions"})])])]);
     lb.appendChild(endLogo);
-    if(used+36*MM>lb.clientHeight)lb.removeChild(endLogo);   /* no room under the last content: no logo, never a page of its own */
+    if(lb.scrollHeight>lb.clientHeight+1)lb.removeChild(endLogo);   /* no room under the last content: no logo, never a page of its own */
   }
   pages.forEach(function(p,i){p.pg.querySelector(".pn").textContent="Page "+(i+1)+" of "+pages.length;});
   fitScale();
