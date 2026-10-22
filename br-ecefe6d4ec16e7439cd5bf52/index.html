@@ -253,7 +253,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-23.4";
+var APP_BUILD="2026-10-23.5";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -360,14 +360,22 @@ function el(tag,attrs,kids){
   return e;
 }
 function toast(m){var t=document.getElementById("toast");t.textContent=m;t.style.display="block";clearTimeout(toast.h);toast.h=setTimeout(function(){t.style.display="none";},4500);}
-function changed(){dirty=true;setStatus();clearTimeout(snapTimer);snapTimer=setTimeout(commitSnap,500);clearTimeout(changed.h);changed.h=setTimeout(function(){renderPreview();if(!embedded)autosave();},180);}
-function setStatus(){document.getElementById("status").textContent=(embedded?(dirty?"● Unsaved changes - use Save HTML":"✓ Saved"):"✓ Draft kept on this device")+" · build "+APP_BUILD;}
+function changed(){dirty=true;setStatus();clearTimeout(snapTimer);snapTimer=setTimeout(commitSnap,500);clearTimeout(changed.h);changed.h=setTimeout(function(){renderPreview();autosave();},180);}
+function setStatus(){document.getElementById("status").textContent=(embedded?(dirty?"● Not saved to a file yet (a recovery copy is kept) - use Save HTML":"✓ Saved"):"✓ Draft kept on this device")+" · build "+APP_BUILD;}
 /* Drafts live in this browser's IndexedDB (roomy enough for photos) and survive app updates. localStorage is only a fallback. */
 function idb(){return new Promise(function(res,rej){var r=indexedDB.open("busch-report-builder",1);r.onupgradeneeded=function(){r.result.createObjectStore("kv");};r.onsuccess=function(){res(r.result);};r.onerror=function(){rej(r.error);};});}
 function idbSet(k,v){return idb().then(function(db){return new Promise(function(res,rej){var t=db.transaction("kv","readwrite");t.objectStore("kv").put(v,k);t.oncomplete=function(){res();};t.onerror=function(){rej(t.error);};});});}
 function idbGet(k){return idb().then(function(db){return new Promise(function(res,rej){var q=db.transaction("kv").objectStore("kv").get(k);q.onsuccess=function(){res(q.result);};q.onerror=function(){rej(q.error);};});});}
 var lastSaved="";
+var EMBKEY=null;   /* recovery copy of a saved file that is open: stored in this browser, keyed to that file's content */
+function strHash(s){var h=5381;for(var i=0;i<s.length;i++)h=((h<<5)+h+s.charCodeAt(i))|0;return (h>>>0).toString(36)+"-"+s.length;}
 function autosave(){
+  if(embedded){
+    if(!EMBKEY||!S)return;
+    var j=JSON.stringify(S);if(j===lastSaved)return;
+    idbSet(EMBKEY,{t:Date.now(),data:JSON.parse(j)}).then(function(){lastSaved=j;}).catch(function(){});
+    return;
+  }
   var json=JSON.stringify(S);if(json===lastSaved)return;
   var snap=JSON.parse(json);
   idbSet("draft",snap).then(function(){lastSaved=json;setStatus();}).catch(function(){try{localStorage.setItem(DRAFT_KEY,json);lastSaved=json;}catch(e){toast("Could not save a draft on this device - use Save HTML to keep your work.");}});
@@ -2141,7 +2149,7 @@ function commitSnap(){
   redoSt.length=0;lastSnap=cur;
 }
 function resetHistory(){clearTimeout(snapTimer);snapTimer=null;undoSt=[];redoSt=[];lastSnap=snapStr();}
-function applySnap(s,msg){S=snapParse(s);lastSnap=s;dirty=true;renderEditor();renderPreview();setStatus();if(!embedded)autosave();toast(msg);}
+function applySnap(s,msg){S=snapParse(s);lastSnap=s;dirty=true;renderEditor();renderPreview();setStatus();autosave();toast(msg);}
 function doUndo(){commitSnap();if(!undoSt.length){toast("Nothing to undo.");return;}redoSt.push(lastSnap);applySnap(undoSt.pop(),"Undone. Ctrl+Y brings it back.");}
 function doRedo(){commitSnap();if(!redoSt.length){toast("Nothing to redo.");return;}undoSt.push(lastSnap);applySnap(redoSt.pop(),"Redone.");}
 document.addEventListener("keydown",function(e){
@@ -2220,7 +2228,7 @@ function openNewReportDialog(){
 /* ---------- start-up ---------- */
 (function init(){
   var raw=document.getElementById("saved-data").textContent.trim();
-  if(raw){try{S=JSON.parse(raw);embedded=true;}catch(e){}}
+  if(raw){try{S=JSON.parse(raw);embedded=true;EMBKEY="emb:"+strHash(raw);}catch(e){}}
   if(!S){try{var d=localStorage.getItem(DRAFT_KEY);if(d)S=JSON.parse(d);}catch(e){}}
   if(!S)S=newReport("blank","andre");
   S=normalise(S,!embedded);
@@ -2228,6 +2236,14 @@ function openNewReportDialog(){
   if(!embedded){
     try{if(navigator.storage&&navigator.storage.persist)navigator.storage.persist();}catch(e){}
     idbGet("draft").then(function(d){if(d&&d.sections&&!dirty){S=normalise(d,true);restorePump();lastSaved=JSON.stringify(S);resetHistory();renderEditor();renderPreview();setStatus();}}).catch(function(){});
+  }
+  if(embedded&&EMBKEY){
+    idbGet(EMBKEY).then(function(r){
+      if(r&&r.data&&r.data.sections&&!dirty){
+        S=normalise(r.data,false);lastSaved=JSON.stringify(S);dirty=true;resetHistory();renderEditor();renderPreview();setStatus();
+        toast("Restored your unsaved work from "+new Date(r.t).toLocaleTimeString()+". Press Save HTML to keep it in a file.");
+      }
+    }).catch(function(){});
   }
   document.getElementById("bNew").onclick=openNewReportDialog;
   document.getElementById("bOpen").onclick=function(){document.getElementById("fOpen").click();};
@@ -2256,8 +2272,8 @@ function openNewReportDialog(){
   window.addEventListener("resize",function(){clearTimeout(init.rh);init.rh=setTimeout(renderPreview,150);});
   window.addEventListener("beforeprint",function(){var sc=document.getElementById("scaler");sc.style.height="auto";});
   window.addEventListener("afterprint",fitScale);
-  window.addEventListener("pagehide",function(){if(!embedded)autosave();});
-  document.addEventListener("visibilitychange",function(){if(document.hidden&&!embedded)autosave();});
+  window.addEventListener("pagehide",function(){autosave();});
+  document.addEventListener("visibilitychange",function(){if(document.hidden)autosave();});
   window.addEventListener("beforeunload",function(e){if(embedded&&dirty){e.preventDefault();e.returnValue="";}});
   initSync();
   initPhotoMenu();
