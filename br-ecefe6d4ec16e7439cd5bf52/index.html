@@ -88,6 +88,14 @@ label.f textarea{resize:vertical;min-height:70px;line-height:1.4}
 .svcpop{position:absolute;z-index:20;left:0;right:0;top:100%;margin-top:2px;background:#fff;border:1px solid #bfc5ca;border-radius:6px;padding:8px;box-shadow:0 4px 14px rgba(0,0,0,.18)}
 .svcopt{display:inline-flex;align-items:center;gap:8px;width:fit-content;padding:3px 0;margin-right:14px;cursor:pointer;font-size:13px}
 .svcopt input{width:18px;height:18px;margin:0;flex:none}
+.pdfsplit{display:inline-flex}
+.pdfsplit #bPdf{border-top-right-radius:0;border-bottom-right-radius:0}
+.pdfsplit #bPdfMenu{border-top-left-radius:0;border-bottom-left-radius:0;border-left:1px solid rgba(255,255,255,.55);padding-left:8px;padding-right:8px}
+.pdfmenu{position:fixed;z-index:70;display:none;background:#fff;color:#1b1b1b;border:1px solid #bfc5ca;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.25);padding:6px;min-width:260px;font-size:14px}
+.pdfmenu button{display:block;width:100%;text-align:left;border:0;background:#fff;padding:9px 12px;font-size:14px;cursor:pointer;border-radius:6px}
+.pdfmenu button:hover{background:#fff0e6}
+.pdfmenu button.cur{font-weight:700}
+.pdfmenu .est{padding:4px 12px 6px;color:#555;font-size:12px}
 .ctxmenu{position:fixed;z-index:60;display:none;background:#fff;border:1px solid #bfc5ca;border-radius:8px;box-shadow:0 4px 16px rgba(0,0,0,.25);padding:4px}
 .ctxmenu button{display:block;border:0;background:#fff;padding:8px 14px;font-size:14px;cursor:pointer;border-radius:6px;white-space:nowrap}
 .ctxmenu button:hover{background:#ffe9dc}
@@ -227,7 +235,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
     <input type="file" id="fOpen" accept=".html,.htm,.json" hidden>
     <button class="btn" id="bSave">Save HTML</button>
     <button class="btn" id="bRev">Save as new Rev.</button>
-    <button class="btn pri" id="bPdf">Download PDF</button>
+    <span class="pdfsplit"><button class="btn pri" id="bPdf">Download PDF</button><button class="btn pri" id="bPdfMenu" title="Choose the PDF size: full quality, or small enough for email" aria-label="PDF size">&#9662;</button></span>
     <span class="sp"></span>
     <span id="status"></span>
     <span class="seg"><button class="btn" data-m="edit">Edit</button><button class="btn on" data-m="split">Split</button><button class="btn" data-m="prev">Preview</button></span>
@@ -245,7 +253,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-23.1";
+var APP_BUILD="2026-10-23.2";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -1431,7 +1439,7 @@ function pdfPieces(){
   [].forEach.call(host.querySelectorAll(".zimg"),function(z){var m=/url\(["']?([^"')]+)["']?\)/.exec(z.style.backgroundImage||"");var w=parseFloat((z.style.backgroundSize||"").split(" ")[0]);if(!w)return;var o=z._orig||(m&&m[1]);if(!o)return;z._orig=o;list.push({el:z,css:w,src:o,bg:true});});
   return list;
 }
-function showEst(bytes,note){var e=document.getElementById("pdfEst");if(e)e.textContent=bytes?("Estimated PDF size: about "+(bytes/1048576).toFixed(1)+" MB"+(note?" ("+note+")":"")):"";}
+function showEst(bytes,note){var t=bytes?("Estimated PDF size: about "+(bytes/1048576).toFixed(1)+" MB"+(note?" ("+note+")":"")):"";var e=document.getElementById("pdfEst");if(e)e.textContent=t;var e2=document.getElementById("pdfEst2");if(e2)e2.textContent=t;}
 function emailPass(){
   var run=++emailRun,list=pdfPieces();
   var levels=[{dpi:200,q:0.78},{dpi:170,q:0.74},{dpi:145,q:0.70},{dpi:125,q:0.66}],BUDGET=8.5*1048576;
@@ -2203,6 +2211,19 @@ function openNewReportDialog(){
   document.getElementById("bSave").onclick=saveHtml;
   document.getElementById("bRev").onclick=newRev;
   document.getElementById("bPdf").onclick=pdf;
+  (function(){
+    var caret=document.getElementById("bPdfMenu"),menu=el("div",{class:"pdfmenu"});document.body.appendChild(menu);
+    var paint=function(){
+      menu.textContent="";var cur=(S.pdfSize==="email")?"email":"full";
+      [["full","Full quality (largest file)"],["email","Email size (small enough for Outlook)"]].forEach(function(o){
+        menu.appendChild(el("button",{type:"button",class:(cur===o[0]?"cur":""),text:(cur===o[0]?"✓ ":"    ")+o[1],onclick:function(){S.pdfSize=o[0];menu.style.display="none";changed();renderEditor();toast(o[0]==="email"?"PDF size: Email size. Now press Download PDF.":"PDF size: Full quality.");}}));
+      });
+      var e=document.getElementById("pdfEst");menu.appendChild(el("div",{class:"est",id:"pdfEst2",text:e?e.textContent:""}));
+    };
+    caret.addEventListener("click",function(ev){ev.stopPropagation();if(menu.style.display==="block"){menu.style.display="none";return;}paint();var r=caret.getBoundingClientRect();menu.style.left=Math.max(8,Math.min(r.left-200,innerWidth-menu.offsetWidth-8))+"px";menu.style.top=(r.bottom+6)+"px";menu.style.display="block";var e2=document.getElementById("pdfEst2");if(e2&&!e2.textContent)e2.textContent="";});
+    document.addEventListener("click",function(ev){if(!menu.contains(ev.target))menu.style.display="none";});
+    document.addEventListener("keydown",function(ev){if(ev.key==="Escape")menu.style.display="none";});
+  })();
   [].forEach.call(document.querySelectorAll(".seg button"),function(b){b.onclick=function(){
     document.body.className="mode-"+b.dataset.m;
     [].forEach.call(document.querySelectorAll(".seg button"),function(x){x.classList.toggle("on",x===b);});
