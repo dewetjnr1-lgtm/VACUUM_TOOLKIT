@@ -253,7 +253,7 @@ table.vib td:first-child,table.vib th:first-child{text-align:left}
    Busch Report Builder — one self-contained file.
    Saved reports are a copy of this file with the report inside it.
    ============================================================ */
-var APP_BUILD="2026-10-23.2";
+var APP_BUILD="2026-10-23.3";
 var SRC="<!DOCTYPE html>\n"+document.documentElement.outerHTML;   /* captured before anything is drawn */
 
 var PEOPLE={
@@ -976,6 +976,16 @@ function blockCard(sec,b,bi){
     var allb=el("span",{style:"display:inline-flex;align-items:center;gap:6px"},[el("button",{class:"btn sm ghost",text:"Make all the same size",onclick:function(){var h=parseFloat(sameN.value);if(!(h>=10&&h<=250))h=DEFH;b.items.forEach(function(x){if(x.kind!=="note")x.h=h;});renderEditor();changed();}}),"at",sameN,"mm"]);
     body.appendChild(el("p",{class:"hint",text:"Photos sit side by side (e.g. before / after) when they fit. Type a height in mm for each photo, slide it left or right, or tick 'On its own row' for a single large photo. 'Per row' is the most that will sit together. Click a photo to change its name, caption, size, position (Centre), crop and more. Tick the small box on photos to change the size of only those."}));
     body.appendChild(el("div",{class:"adds"},[(b.layout==="fill"?null:cs),(b.layout==="fill"?null:allb),el("button",{class:"btn sm pri",text:"+ Add photos",onclick:function(){fi.click();}}),el("button",{class:"btn sm ghost",text:"+ Add text box",onclick:function(){var nn={kind:"note",text:"",w:80,fit:true,x:0};b.items.push(nn);selItem=nn;cropItem=null;renderEditor();changed();}}),
+      (b.items.filter(function(x){return x.kind!=="note";}).length>1)?el("button",{class:"btn sm ghost",title:"Takes the first photo out of this block and puts it above as one big, centred photo (like the pump picture at the top of a photo report), with the caption '<pump> Vacuum Pump'. The other photos stay here.",text:"Make the first photo the big pump photo",onclick:function(){
+        var k=0;while(k<b.items.length&&b.items[k].kind==="note")k++;
+        var ph=b.items[k];if(!ph)return;
+        b.items.splice(k,1);
+        var d=DIMS[ph.src]||[4,3],h=120,w=d[0]/d[1]*h;if(w>178){h=178*d[1]/d[0];w=178;}
+        ph.h=Math.round(h);ph.px=Math.round((178-w)/2);ph.alone=true;delete ph.rh;delete ph.fu;delete ph.dy;delete ph.x;
+        if(!(ph.cap||"").trim()){var itm=S.items.filter(function(r){return r.blocks===sec.blocks;})[0],mt=/^\s*([^:]+):/.exec((itm&&itm.text)||"");if(mt)ph.cap=mt[1].trim()+" Vacuum Pump";}
+        sec.blocks.splice(bi,0,{t:"photos",cols:1,id:newBlockId(),items:[ph]});
+        selItem=ph;cropItem=null;renderEditor();changed();toast("The first photo is now the big photo above the others. Change its size or caption by clicking it.");
+      }}):null,
       b.items.some(function(x){return x.px!=null||x.dy||x.x;})?el("button",{class:"btn sm ghost",title:"Clears every position and up/down move in this block, so all its photos sit where the layout puts them. Sizes, captions and order are kept.",text:"Reset all positions in this block",onclick:function(){b.items.forEach(function(x){delete x.px;delete x.dy;delete x.x;});renderEditor();changed();}}):null,fi]));
     var th=el("div",{class:"thumbs",style:"margin-top:8px"});
     var selCard=null;
